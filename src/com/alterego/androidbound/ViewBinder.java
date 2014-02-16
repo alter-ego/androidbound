@@ -1,8 +1,10 @@
 package com.alterego.androidbound;
 
 import com.alterego.androidbound.android.BindableLayoutInflaterFactory;
-import com.alterego.androidbound.android.BooleanToVisibilityConverter;
+import com.alterego.androidbound.android.converters.BooleanToVisibilityConverter;
+import com.alterego.androidbound.android.converters.FontConverter;
 import com.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
+import com.alterego.androidbound.android.interfaces.IFontManager;
 import com.alterego.androidbound.binders.TextSpecificationBinder;
 import com.alterego.androidbound.factories.SourceBindingFactory;
 import com.alterego.androidbound.factories.TargetBindingFactory;
@@ -17,6 +19,7 @@ import com.alterego.androidbound.services.ResourceService;
 import com.alterego.androidbound.services.ValueConverterService;
 import com.alterego.androidbound.zzzztoremove.reactive.IScheduler;
 
+import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.content.Context;
@@ -33,64 +36,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+@Accessors(prefix="m")
 public class ViewBinder implements IViewBinder {
     private static List<IBindingAssociation> emptyBindings = Arrays.asList(new IBindingAssociation[0]);
-    private final IAndroidLogger mLogger;
+    @Getter @Setter private IAndroidLogger mLogger = NullAndroidLogger.instance;
 
     private ValueConverterService converters;
     private ResourceService resources;
     private IBindableLayoutInflaterFactory inflaterFactory;
     private ChainedViewResolver viewResolver;
     private Map<View, List<IBindingAssociation>> boundViews = new HashMap<View, List<IBindingAssociation>>();
-
-    private static class ChainedViewResolver implements IViewResolver {
-    	private List<IViewResolver> baseResolvers;
-
-    	public ChainedViewResolver() {
-    		this.baseResolvers = new ArrayList<IViewResolver>();
-    	}
-    	public ChainedViewResolver(IViewResolver...initialViewResolvers) {
-    		this();
-    		if(initialViewResolvers == null) {
-    			return;
-    		}
-
-    		for(IViewResolver r: initialViewResolvers) {
-    			this.baseResolvers.add(r);
-    		}
-    	}
-
-		@Override
-		public void setLogger(IAndroidLogger logger) {
-		}
-
-		@Override
-		public View createView(String name, Context context, AttributeSet attrs) {
-			for(IViewResolver resolver: this.baseResolvers) {
-				View retval = resolver.createView(name, context, attrs);
-				if(retval != null) {
-					return retval;
-				}
-			}
-
-			return null;
-		}
-
-		public void addResolverFront(IViewResolver resolver) {
-			this.baseResolvers.add(0, resolver);
-		}
-
-		public void addResolverBack(IViewResolver resolver) {
-			this.baseResolvers.add(resolver);
-		}
-
-		public void removeesolver(IViewResolver resolver) {
-			this.baseResolvers.remove(resolver);
-		}
-    }
+    @Getter @Setter private IFontManager mFontManager;
 
     public ViewBinder(IScheduler notificationScheduler, IAndroidLogger logger) {
-        mLogger = logger;
+        setLogger(logger);
         converters = new ValueConverterService(logger);
         resources = new ResourceService(logger);
 
@@ -104,8 +67,14 @@ public class ViewBinder implements IViewBinder {
 
         viewResolver = new ChainedViewResolver(new ViewResolver(logger));
         inflaterFactory = new BindableLayoutInflaterFactory(binder, this, viewResolver);
+        setFontManager(new FontManager(getLogger()));
 
-        registerConverter("ToVisibility", new BooleanToVisibilityConverter());
+        registerDefaultConverters();
+    }
+    
+    private void registerDefaultConverters() {
+    	registerConverter(BooleanToVisibilityConverter.getConverterName(), new BooleanToVisibilityConverter());
+    	registerConverter(FontConverter.getConverterName(), new FontConverter(getFontManager(), getLogger()));
     }
 
     @Override
@@ -260,5 +229,51 @@ public class ViewBinder implements IViewBinder {
 
     public int size() {
         return boundViews.size();
+    }
+    
+    private static class ChainedViewResolver implements IViewResolver {
+    	private List<IViewResolver> baseResolvers;
+
+    	public ChainedViewResolver() {
+    		this.baseResolvers = new ArrayList<IViewResolver>();
+    	}
+    	public ChainedViewResolver(IViewResolver...initialViewResolvers) {
+    		this();
+    		if(initialViewResolvers == null) {
+    			return;
+    		}
+
+    		for(IViewResolver r: initialViewResolvers) {
+    			this.baseResolvers.add(r);
+    		}
+    	}
+
+		@Override
+		public void setLogger(IAndroidLogger logger) {
+		}
+
+		@Override
+		public View createView(String name, Context context, AttributeSet attrs) {
+			for(IViewResolver resolver: this.baseResolvers) {
+				View retval = resolver.createView(name, context, attrs);
+				if(retval != null) {
+					return retval;
+				}
+			}
+
+			return null;
+		}
+
+		public void addResolverFront(IViewResolver resolver) {
+			this.baseResolvers.add(0, resolver);
+		}
+
+		public void addResolverBack(IViewResolver resolver) {
+			this.baseResolvers.add(resolver);
+		}
+
+		public void removeesolver(IViewResolver resolver) {
+			this.baseResolvers.remove(resolver);
+		}
     }
 }

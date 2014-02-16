@@ -1,4 +1,4 @@
-package com.alterego.androidbound.android;
+package com.alterego.androidbound.android.converters;
 
 import java.util.Locale;
 
@@ -8,6 +8,8 @@ import com.alterego.androidbound.interfaces.IBinding;
 import com.alterego.androidbound.interfaces.IValueConverter;
 
 public class BooleanToVisibilityConverter implements IValueConverter {
+	
+	public static final String CONVERTER_NAME = "ToVisibility";
 
 	@Override
 	public Object convert(Object value, Class<?> targetType, Object parameter, Locale culture) {
@@ -19,6 +21,10 @@ public class BooleanToVisibilityConverter implements IValueConverter {
 	@Override
 	public Object convertBack(Object value, Class<?> targetType, Object parameter, Locale culture) {
 		return IBinding.noValue;
+	}
+	
+	public static String getConverterName() {
+		return CONVERTER_NAME;
 	}
 
 }
