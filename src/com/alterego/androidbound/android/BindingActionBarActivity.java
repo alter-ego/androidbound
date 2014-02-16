@@ -20,30 +20,30 @@ public abstract class BindingActionBarActivity extends ActionBarActivity impleme
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if(getViewBinder() != null)
-		    getViewBinder().clearAllBindings();
+			getViewBinder().clearAllBindings();
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-	    if(getViewBinder() != null)
-	        getViewBinder().clearAllBindings();
+		if(getViewBinder() != null)
+			getViewBinder().clearAllBindings();
 	}
 
 	@Override
 	public void setContentView(int layoutResID) {
 		if(mBoundData == null)
 			throw new RuntimeException("call setBoundData(Object) before calling setContentView!");
-		
+
 		if(getViewBinder() == null) 
-		    throw new RuntimeException("getViewBinder must not be null!");
+			throw new RuntimeException("getViewBinder must not be null!");
 
 		View view = getViewBinder().inflate(this, mBoundData, layoutResID, null);
 		setContentView(view);
 	}
 
 	public void dispose() {
-	    if(this.getViewBinder() != null)
-	        getViewBinder().clearAllBindings();
+		if(getViewBinder() != null)
+			getViewBinder().clearAllBindings();
 	}
 }

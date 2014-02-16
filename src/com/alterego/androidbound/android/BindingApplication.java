@@ -1,6 +1,11 @@
 package com.alterego.androidbound.android;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import com.alterego.advancedandroidlogger.implementations.AndroidLogger;
+import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.ViewBinder;
 import com.alterego.androidbound.interfaces.IViewBinder;
@@ -11,40 +16,32 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Handler;
 
+@Accessors(prefix="m")
 public class BindingApplication extends Application {
-	protected IAndroidLogger logger;
-	protected IScheduler notificationScheduler;
-	protected IViewBinder viewBinder;
+	@Getter @Setter protected IAndroidLogger mLogger = NullAndroidLogger.instance;
+	@Getter @Setter protected IScheduler mHandlerScheduler;
+	@Getter @Setter protected IViewBinder mViewBinder;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 
-		logger = new AndroidLogger(getApplicationName());
-		notificationScheduler = new HandlerScheduler(new Handler());
-		viewBinder = new ViewBinder(notificationScheduler, logger);
-	}
-	
-	public IScheduler getScheduler() {
-		return notificationScheduler;
-	}
-	
-	public IViewBinder getViewBinder() {
-		return viewBinder;
+		setLogger(new AndroidLogger(getApplicationName()));
+		setHandlerScheduler(new HandlerScheduler(new Handler()));
+		setViewBinder(new ViewBinder(mHandlerScheduler, mLogger));
 	}
 
 	public String getApplicationName() {
 		PackageManager pm = getApplicationContext().getPackageManager();
-		ApplicationInfo ai;
+		ApplicationInfo a_info;
+		String app_name = "UNKNOWN_APP";
 		try {
-		    ai = pm.getApplicationInfo( this.getPackageName(), 0);
+			a_info = pm.getApplicationInfo( this.getPackageName(), 0);
+			app_name =  (String) pm.getApplicationLabel(a_info);
 		} catch (final NameNotFoundException e) {
-		    ai = null;
+			//do nothing
 		}
-		return (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");		
+		return app_name;		
 	}
-	
-	public IAndroidLogger getLogger() {
-		return logger;
-	}
+
 }
