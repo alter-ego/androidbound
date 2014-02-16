@@ -9,6 +9,7 @@ import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.ViewBinder;
 import com.alterego.androidbound.interfaces.IViewBinder;
+import com.alterego.androidbound.zzzztoremove.HandlerScheduler;
 import com.alterego.androidbound.zzzztoremove.reactive.IScheduler;
 import android.app.Application;
 import android.content.pm.ApplicationInfo;

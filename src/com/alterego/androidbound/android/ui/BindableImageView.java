@@ -15,12 +15,12 @@ import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
-import com.alterego.androidbound.android.UiThreadScheduler;
 import com.alterego.androidbound.interfaces.ICommand;
 import com.alterego.androidbound.interfaces.INotifyPropertyChanged;
 import com.alterego.androidbound.zzzztoremove.Exceptional;
 import com.alterego.androidbound.zzzztoremove.HttpBitmapProvider;
 import com.alterego.androidbound.zzzztoremove.IContentProvider;
+import com.alterego.androidbound.zzzztoremove.UiThreadScheduler;
 import com.alterego.androidbound.zzzztoremove.reactive.IObservable;
 import com.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import com.alterego.androidbound.zzzztoremove.reactive.Subject;

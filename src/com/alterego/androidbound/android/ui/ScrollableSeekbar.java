@@ -30,10 +30,10 @@ import android.view.ViewGroup.OnHierarchyChangeListener;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
-import com.alterego.androidbound.android.UiThreadScheduler;
 import com.alterego.androidbound.binds.BindableMap;
 import com.alterego.androidbound.interfaces.ICommand;
 import com.alterego.androidbound.interfaces.INotifyPropertyChanged;
+import com.alterego.androidbound.zzzztoremove.UiThreadScheduler;
 import com.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import com.alterego.androidbound.zzzztoremove.reactive.IObservable;
 import com.alterego.androidbound.zzzztoremove.reactive.ISubject;
