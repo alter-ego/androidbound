@@ -1,5 +1,5 @@
 
-package com.alterego.androidbound.android;
+package com.alterego.androidbound.zzzztoremove;
 
 import java.util.concurrent.TimeUnit;
 
