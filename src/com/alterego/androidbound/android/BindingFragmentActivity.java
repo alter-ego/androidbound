@@ -1,17 +1,15 @@
 package com.alterego.androidbound.android;
 
+import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.interfaces.IBindableView;
-import com.alterego.androidbound.interfaces.IViewBinder;
-import com.alterego.androidbound.zzzztoremove.ILogger;
-import com.alterego.androidbound.zzzztoremove.NullLogger;
-
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
 public abstract class BindingFragmentActivity extends FragmentActivity implements IBindableView {
 	private Object dataContext;
-	protected ILogger logger = NullLogger.instance;
+	protected IAndroidLogger logger = NullAndroidLogger.instance;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +45,7 @@ public abstract class BindingFragmentActivity extends FragmentActivity implement
         setContentView(view);
     }
 
-    public void setLogger(ILogger logger) {
+    public void setLogger(IAndroidLogger logger) {
         this.logger = logger.getLogger(this);
     }
 

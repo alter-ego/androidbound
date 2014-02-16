@@ -2,6 +2,8 @@ package com.alterego.androidbound.zzzztoremove;
 
 import java.util.concurrent.TimeUnit;
 
+import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.interfaces.INeedsLogger;
 import com.alterego.androidbound.interfaces.IParser;
 import com.alterego.androidbound.zzzztoremove.reactive.Func;
@@ -18,7 +20,7 @@ public class PollDataProvider<T> implements IObservable<T>, INeedsLogger {
 	private IContentProvider<String> provider;
 	private IParser<T> parser;
 	private String location;
-	private ILogger logger = NullLogger.instance;
+	private IAndroidLogger logger = NullAndroidLogger.instance;
 
 	public PollDataProvider(String location, long pollInterval, TimeUnit unit, IContentProvider<String> provider, IParser<T> parser) {
 		this(location, pollInterval, unit, provider, parser, ThreadPoolScheduler.instance);
@@ -84,7 +86,7 @@ public class PollDataProvider<T> implements IObservable<T>, INeedsLogger {
 	}
 
 	@Override
-	public void setLogger(ILogger logger) {
+	public void setLogger(IAndroidLogger logger) {
 		this.logger  = logger.getLogger(this);
 	}
 }

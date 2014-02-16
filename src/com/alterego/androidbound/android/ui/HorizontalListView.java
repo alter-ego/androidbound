@@ -1,8 +1,5 @@
 package com.alterego.androidbound.android.ui;
 
-import com.alterego.androidbound.zzzztoremove.ILogger;
-import com.alterego.androidbound.zzzztoremove.NullLogger;
-
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Rect;
@@ -17,6 +14,9 @@ import android.widget.Scroller;
 
 import java.util.LinkedList;
 import java.util.Queue;
+
+import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 /*
  * HorizontalListView.java v1.5
@@ -66,7 +66,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
     private int mShouldSelectItemPosition = 0;
     //private int mRightViewsWidth;
     private int mCurrentViewsWidth;
-    ILogger mLogger = NullLogger.instance;
+    IAndroidLogger mLogger = NullAndroidLogger.instance;
     int mChildWith = 0;
 
     public HorizontalListView(Context context, AttributeSet attrs) {
@@ -128,11 +128,11 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 
     };
 
-    public void setLogger(ILogger logger) {
+    public void setLogger(IAndroidLogger logger) {
         mLogger = logger;
     }
 
-    public ILogger getLogger() {
+    public IAndroidLogger getLogger() {
         return mLogger;
     }
 

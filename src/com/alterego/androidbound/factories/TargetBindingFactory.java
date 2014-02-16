@@ -1,14 +1,14 @@
 package com.alterego.androidbound.factories;
 
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.binds.TargetPropertyBinding;
 import com.alterego.androidbound.interfaces.IBinding;
-import com.alterego.androidbound.zzzztoremove.ILogger;
 import com.alterego.androidbound.zzzztoremove.reactive.IScheduler;
 
 public class TargetBindingFactory extends SourceBindingFactory {
 	private IScheduler scheduler;
 	
-	public TargetBindingFactory(IScheduler scheduler, ILogger logger) {
+	public TargetBindingFactory(IScheduler scheduler, IAndroidLogger logger) {
 		super(logger);
 		this.scheduler = scheduler;
 	}

@@ -3,6 +3,8 @@ package com.alterego.androidbound.parsers;
 
 import java.util.Map;
 
+import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.binds.BindingMode;
 import com.alterego.androidbound.binds.BindingSpecification;
 import com.alterego.androidbound.helpers.Matcher;
@@ -10,32 +12,19 @@ import com.alterego.androidbound.helpers.Pattern;
 import com.alterego.androidbound.interfaces.IParser;
 import com.alterego.androidbound.interfaces.IResourceProvider;
 import com.alterego.androidbound.interfaces.IValueConverterProvider;
-import com.alterego.androidbound.zzzztoremove.ILogger;
-import com.alterego.androidbound.zzzztoremove.NullLogger;
 
 public class BindingSpecificationParser implements IParser<BindingSpecification> {
-    private ILogger logger = NullLogger.instance;
+    private IAndroidLogger logger = NullAndroidLogger.instance;
     private IValueConverterProvider converterProvider;
     private IResourceProvider resourceProvider;
 
-    public BindingSpecificationParser(IValueConverterProvider converterProvider, IResourceProvider resourceProvider, ILogger logger) {
+    public BindingSpecificationParser(IValueConverterProvider converterProvider, IResourceProvider resourceProvider, IAndroidLogger logger) {
         this.converterProvider = converterProvider;
         this.resourceProvider = resourceProvider;
         setLogger(logger);
     }
 
-    // Original version, target does not support dot notation for chained path
-    //	private final static Pattern pattern = Pattern
-    //			.compile("\\s*(?<target>[a-zA-Z][a-zA-Z0-9]*)\\s*(?<mode><=>|<-|->|=>|"
-    //					+ "=|<=)\\s*(?:(?<converter>[a-zA-Z][a-zA-Z0-9]*)\\s*\\()?\\s*("
-    //					+ "?<path>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z][a-zA-Z0-9]*)*)*"
-    //					+ ")\\s*(?:,\\s*(?:(?<parameterName>[a-zA-Z][a-zA-Z0-9]*)+?|(?:"
-    //					+ "'(?<parameterString>(?:[^'\\\\]|\\\\.)*)')+?))?\\s*\\)?(?:\\s"
-    //					+ "*\\|\\|\\s*(?:(?:(?<fallbackName>[a-zA-Z][a-zA-Z0-9]*)+?|(?:"
-    //					+ "'(?<fallbackString>(?:[^'\\\\]|\\\\.)*)')+?))?)?");
-
-    // Modified version, target supports dot notation for chained bindings
-    private final static Pattern pattern = Pattern
+     private final static Pattern pattern = Pattern
             .compile("\\s*(?<target>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z]" +
                     "[a-zA-Z0-9]*)*)*)\\s*(?<mode><=>|<-|->|=>|=|<=)\\s*(" +
                     "?:(?<converter>[a-zA-Z][a-zA-Z0-9]*)\\s*\\()?\\s*(?<" +
@@ -46,7 +35,7 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
                     "ame>[a-zA-Z][a-zA-Z0-9]*)+?|(?:'(?<fallbackString>(?" +
                     ":[^'\\\\]|\\\\.)*)')+?))?)?");
 
-    public void setLogger(ILogger logger) {
+    public void setLogger(IAndroidLogger logger) {
         this.logger = logger.getLogger(this);
     }
 

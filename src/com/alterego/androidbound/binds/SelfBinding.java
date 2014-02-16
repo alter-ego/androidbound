@@ -2,8 +2,8 @@ package com.alterego.androidbound.binds;
 
 import java.security.InvalidParameterException;
 
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import com.alterego.androidbound.zzzztoremove.ILogger;
 import com.alterego.androidbound.zzzztoremove.reactive.Action;
 import com.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import com.alterego.androidbound.zzzztoremove.reactive.Observables;
@@ -13,7 +13,7 @@ import com.alterego.androidbound.zzzztoremove.reactive.Predicate;
 public class SelfBinding extends BindingBase {
 	private IDisposable subscription;
 	
-	public SelfBinding(Object subject, ILogger logger) {
+	public SelfBinding(Object subject, IAndroidLogger logger) {
 		super(subject, logger);
 		setupBinding(subject);
 	}

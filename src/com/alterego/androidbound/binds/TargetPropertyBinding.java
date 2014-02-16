@@ -1,7 +1,7 @@
 
 package com.alterego.androidbound.binds;
 
-import com.alterego.androidbound.zzzztoremove.ILogger;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.zzzztoremove.reactive.IScheduler;
 
 public class TargetPropertyBinding extends PropertyBinding {
@@ -13,7 +13,7 @@ public class TargetPropertyBinding extends PropertyBinding {
     private String propertyName;
     private IScheduler scheduler;
 
-    public TargetPropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, IScheduler scheduler, ILogger logger) {
+    public TargetPropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, IScheduler scheduler, IAndroidLogger logger) {
         super(subject, propertyName, needChangesIfPossible, logger);
         this.propertyName = propertyName;
         this.scheduler = scheduler;

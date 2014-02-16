@@ -3,16 +3,16 @@ package com.alterego.androidbound.services;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.interfaces.INeedsLogger;
 import com.alterego.androidbound.interfaces.IResourceProvider;
 import com.alterego.androidbound.interfaces.IResourceRegistry;
-import com.alterego.androidbound.zzzztoremove.ILogger;
 
 public class ResourceService implements IResourceProvider, IResourceRegistry, INeedsLogger {
 	Map<String, Object> resources = new HashMap<String, Object>();
-	private ILogger logger;
+	private IAndroidLogger logger;
 	
-	public ResourceService(ILogger logger) {
+	public ResourceService(IAndroidLogger logger) {
 		setLogger(logger);
 	}
 	
@@ -29,7 +29,7 @@ public class ResourceService implements IResourceProvider, IResourceRegistry, IN
 		return null;
 	}
 
-	public void setLogger(ILogger logger) {
+	public void setLogger(IAndroidLogger logger) {
 		this.logger = logger.getLogger(this);
 	}
 }

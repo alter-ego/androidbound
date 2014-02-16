@@ -15,8 +15,9 @@ import com.alterego.androidbound.parsers.BindingSpecificationListParser;
 import com.alterego.androidbound.parsers.BindingSpecificationParser;
 import com.alterego.androidbound.services.ResourceService;
 import com.alterego.androidbound.services.ValueConverterService;
-import com.alterego.androidbound.zzzztoremove.ILogger;
 import com.alterego.androidbound.zzzztoremove.reactive.IScheduler;
+
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -34,7 +35,7 @@ import java.util.Map;
 
 public class ViewBinder implements IViewBinder {
     private static List<IBindingAssociation> emptyBindings = Arrays.asList(new IBindingAssociation[0]);
-    private final ILogger mLogger;
+    private final IAndroidLogger mLogger;
 
     private ValueConverterService converters;
     private ResourceService resources;
@@ -60,7 +61,7 @@ public class ViewBinder implements IViewBinder {
     	}
 
 		@Override
-		public void setLogger(ILogger logger) {
+		public void setLogger(IAndroidLogger logger) {
 		}
 
 		@Override
@@ -88,7 +89,7 @@ public class ViewBinder implements IViewBinder {
 		}
     }
 
-    public ViewBinder(IScheduler notificationScheduler, ILogger logger) {
+    public ViewBinder(IScheduler notificationScheduler, IAndroidLogger logger) {
         mLogger = logger;
         converters = new ValueConverterService(logger);
         resources = new ResourceService(logger);

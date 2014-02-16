@@ -1,7 +1,7 @@
 package com.alterego.androidbound.interfaces;
 
-import com.alterego.androidbound.zzzztoremove.ILogger;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 public interface INeedsLogger {
-	void setLogger(ILogger logger);
+	void setLogger(IAndroidLogger logger);
 }

@@ -4,18 +4,18 @@ package com.alterego.androidbound.services;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.interfaces.INeedsLogger;
 import com.alterego.androidbound.interfaces.IValueConverter;
 import com.alterego.androidbound.interfaces.IValueConverterProvider;
 import com.alterego.androidbound.interfaces.IValueConverterRegistry;
-import com.alterego.androidbound.zzzztoremove.ILogger;
 
 public class ValueConverterService implements IValueConverterRegistry, IValueConverterProvider, INeedsLogger {
     Map<String, IValueConverter> converters = new HashMap<String, IValueConverter>();
 
-    private ILogger logger;
+    private IAndroidLogger logger;
 
-    public ValueConverterService(ILogger logger) {
+    public ValueConverterService(IAndroidLogger logger) {
         setLogger(logger);
     }
 
@@ -32,7 +32,7 @@ public class ValueConverterService implements IValueConverterRegistry, IValueCon
         return DefaultConverter.instance;
     }
 
-    public void setLogger(ILogger logger) {
+    public void setLogger(IAndroidLogger logger) {
         this.logger = logger.getLogger(this);
     }
 

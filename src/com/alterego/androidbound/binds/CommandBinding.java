@@ -1,9 +1,9 @@
 package com.alterego.androidbound.binds;
 
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.helpers.Reflector;
 import com.alterego.androidbound.helpers.Reflector.CommandInfo;
 import com.alterego.androidbound.interfaces.ICommand;
-import com.alterego.androidbound.zzzztoremove.ILogger;
 
 public class CommandBinding extends BindingBase {
 	private ICommand command = ICommand.empty;
@@ -17,7 +17,7 @@ public class CommandBinding extends BindingBase {
 		return Reflector.isCommand(subject.getClass(), commandName);
 	}
 
-	public CommandBinding(Object subject, String commandName, ILogger logger) {
+	public CommandBinding(Object subject, String commandName, IAndroidLogger logger) {
 		super(subject, logger);
 		
 		this.info = Reflector.getCommand(subject.getClass(), commandName);

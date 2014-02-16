@@ -1,9 +1,9 @@
 package com.alterego.androidbound.android;
 
+import com.alterego.advancedandroidlogger.implementations.AndroidLogger;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.ViewBinder;
 import com.alterego.androidbound.interfaces.IViewBinder;
-import com.alterego.androidbound.zzzztoremove.AndroidLogger;
-import com.alterego.androidbound.zzzztoremove.ILogger;
 import com.alterego.androidbound.zzzztoremove.reactive.IScheduler;
 import android.app.Application;
 import android.content.pm.ApplicationInfo;
@@ -12,7 +12,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Handler;
 
 public class BindingApplication extends Application {
-	protected ILogger logger;
+	protected IAndroidLogger logger;
 	protected IScheduler notificationScheduler;
 	protected IViewBinder viewBinder;
 
@@ -44,7 +44,7 @@ public class BindingApplication extends Application {
 		return (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");		
 	}
 	
-	public ILogger getLogger() {
+	public IAndroidLogger getLogger() {
 		return logger;
 	}
 }

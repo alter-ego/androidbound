@@ -2,9 +2,9 @@ package com.alterego.androidbound.binds;
 
 import java.util.List;
 
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.interfaces.IBinding;
 import com.alterego.androidbound.interfaces.IBindingFactory;
-import com.alterego.androidbound.zzzztoremove.ILogger;
 import com.alterego.androidbound.zzzztoremove.reactive.Action;
 import com.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import com.alterego.androidbound.zzzztoremove.reactive.Observers;
@@ -17,7 +17,7 @@ public class ChainedBinding extends PropertyBinding {
 	private IDisposable currentBindingChanged;
 	private String memberName;
 
-	public ChainedBinding(Object source, String propertyName, List<String> tokens, boolean needChangesIfPossible, IBindingFactory factory, ILogger logger) {
+	public ChainedBinding(Object source, String propertyName, List<String> tokens, boolean needChangesIfPossible, IBindingFactory factory, IAndroidLogger logger) {
 		super(source, propertyName, needChangesIfPossible, logger);
 		this.needChangesIfPossible = needChangesIfPossible;
 		this.memberName = propertyName;

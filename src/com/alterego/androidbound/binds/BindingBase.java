@@ -1,9 +1,9 @@
 package com.alterego.androidbound.binds;
 
+import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.interfaces.IBinding;
 import com.alterego.androidbound.interfaces.INeedsLogger;
-import com.alterego.androidbound.zzzztoremove.ILogger;
-import com.alterego.androidbound.zzzztoremove.NullLogger;
 import com.alterego.androidbound.zzzztoremove.reactive.IObservable;
 import com.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import com.alterego.androidbound.zzzztoremove.reactive.Observables;
@@ -13,9 +13,9 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
 	private static final IObservable<Object> noChanges = Observables.<Object>empty();
 	private ISubject<Object> changes;
 	private Object subject;
-	private ILogger logger = NullLogger.instance;
+	private IAndroidLogger logger = NullAndroidLogger.instance;
 	
-	public BindingBase(Object subject, ILogger logger) {
+	public BindingBase(Object subject, IAndroidLogger logger) {
 		this.subject = subject;
 		setLogger(logger);
 	}
@@ -63,11 +63,11 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
 		return subject;
 	}
 	
-	protected ILogger getLogger() {
+	protected IAndroidLogger getLogger() {
 		return logger;
 	}
 	
-	public void setLogger(ILogger logger) {
+	public void setLogger(IAndroidLogger logger) {
 		this.logger = logger.getLogger(this);
 	}
 

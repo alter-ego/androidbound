@@ -3,20 +3,20 @@ package com.alterego.androidbound.parsers;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.binds.BindingSpecification;
 import com.alterego.androidbound.interfaces.IParser;
-import com.alterego.androidbound.zzzztoremove.ILogger;
 
 public class BindingSpecificationListParser implements IParser<List<BindingSpecification>> {
-	private ILogger logger;
+	private IAndroidLogger logger;
 	private IParser<BindingSpecification> singleParser;
 
-	public BindingSpecificationListParser(IParser<BindingSpecification> singleParser, ILogger logger) {
+	public BindingSpecificationListParser(IParser<BindingSpecification> singleParser, IAndroidLogger logger) {
 		this.singleParser = singleParser;
 		setLogger(logger);
 	}
 	
-	public void setLogger(ILogger logger) {
+	public void setLogger(IAndroidLogger logger) {
 		this.logger = logger.getLogger(this);
 	}
 

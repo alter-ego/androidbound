@@ -1,11 +1,11 @@
 
 package com.alterego.androidbound.binds;
 
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.helpers.Reflector;
 import com.alterego.androidbound.helpers.Reflector.PropertyInfo;
 import com.alterego.androidbound.interfaces.IBinding;
 import com.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import com.alterego.androidbound.zzzztoremove.ILogger;
 import com.alterego.androidbound.zzzztoremove.reactive.Action;
 import com.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import com.alterego.androidbound.zzzztoremove.reactive.Observables;
@@ -16,7 +16,7 @@ public class PropertyBinding extends BindingBase {
     private IDisposable memberSubscription;
     private PropertyInfo info;
 
-    public PropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, ILogger logger) {
+    public PropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, IAndroidLogger logger) {
         super(subject, logger);
 
         this.info = Reflector.getProperty(subject.getClass(), propertyName); //new PropertyInfo(subject.getClass(), propertyName);

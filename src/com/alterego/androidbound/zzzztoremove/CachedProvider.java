@@ -4,6 +4,8 @@ package com.alterego.androidbound.zzzztoremove;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+
 
 public class CachedProvider<T> implements IContentProvider<T> {
     private Map<String, Exceptional<T>> cache = new HashMap<String, Exceptional<T>>();
@@ -20,7 +22,7 @@ public class CachedProvider<T> implements IContentProvider<T> {
         return cache.get(location);
     }
 
-    public void setLogger(ILogger logger) {
+    public void setLogger(IAndroidLogger logger) {
         source.setLogger(logger);
     }
 }

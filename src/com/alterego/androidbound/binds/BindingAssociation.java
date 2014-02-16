@@ -1,11 +1,11 @@
 
 package com.alterego.androidbound.binds;
 
+import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.interfaces.IBinding;
 import com.alterego.androidbound.interfaces.IBindingAssociation;
 import com.alterego.androidbound.interfaces.IBindingFactory;
-import com.alterego.androidbound.zzzztoremove.ILogger;
-import com.alterego.androidbound.zzzztoremove.NullLogger;
 import com.alterego.androidbound.zzzztoremove.reactive.Action;
 import com.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import com.alterego.androidbound.zzzztoremove.reactive.Observers;
@@ -21,12 +21,12 @@ public class BindingAssociation implements IBindingAssociation {
     private IBinding targetBinding;
     private IDisposable sourceSubscription;
     private IDisposable targetSubscription;
-    private ILogger logger = NullLogger.instance;
+    private IAndroidLogger logger = NullAndroidLogger.instance;
     private IBindingFactory sourceFactory;
 
     private IBindingFactory targetFactory;
 
-    public BindingAssociation(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, ILogger logger) {
+    public BindingAssociation(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, IAndroidLogger logger) {
         this.mode = request.Specification.Mode;
         this.sourceFactory = sourceFactory;
         this.targetFactory = targetFactory;
@@ -182,7 +182,7 @@ public class BindingAssociation implements IBindingAssociation {
         }
     }
 
-    public void setLogger(ILogger logger) {
+    public void setLogger(IAndroidLogger logger) {
         this.logger = logger.getLogger(this);
     }
 

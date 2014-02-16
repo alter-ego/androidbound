@@ -1,6 +1,7 @@
 
 package com.alterego.androidbound;
 
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.android.ui.BindableButton;
 import com.alterego.androidbound.android.ui.BindableGridView;
 import com.alterego.androidbound.android.ui.BindableHorizontalListView;
@@ -17,8 +18,6 @@ import com.alterego.androidbound.android.ui.BindableToggleButton;
 import com.alterego.androidbound.android.ui.BindableVideoView;
 import com.alterego.androidbound.helpers.Reflector;
 import com.alterego.androidbound.interfaces.IViewResolver;
-import com.alterego.androidbound.zzzztoremove.ILogger;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -56,9 +55,9 @@ public class ViewResolver implements IViewResolver {
         }
     };
 
-    private ILogger logger;
+    private IAndroidLogger logger;
 
-    public ViewResolver(ILogger logger) {
+    public ViewResolver(IAndroidLogger logger) {
         setLogger(logger);
     }
 
@@ -122,7 +121,7 @@ public class ViewResolver implements IViewResolver {
     }
 
     @Override
-    public void setLogger(ILogger logger) {
+    public void setLogger(IAndroidLogger logger) {
         this.logger = logger.getLogger(this);
     }
 }

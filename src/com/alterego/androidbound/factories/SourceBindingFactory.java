@@ -3,18 +3,18 @@ package com.alterego.androidbound.factories;
 import java.util.Arrays;
 import java.util.List;
 
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.binds.ChainedBinding;
 import com.alterego.androidbound.binds.CommandBinding;
 import com.alterego.androidbound.binds.PropertyBinding;
 import com.alterego.androidbound.binds.SelfBinding;
 import com.alterego.androidbound.interfaces.IBinding;
 import com.alterego.androidbound.interfaces.IBindingFactory;
-import com.alterego.androidbound.zzzztoremove.ILogger;
 
 public class SourceBindingFactory implements IBindingFactory {
-	protected ILogger logger;
+	protected IAndroidLogger logger;
 
-	public SourceBindingFactory(ILogger logger) {
+	public SourceBindingFactory(IAndroidLogger logger) {
 		setLogger(logger);
 	}
 	
@@ -47,7 +47,7 @@ public class SourceBindingFactory implements IBindingFactory {
 		return new ChainedBinding(source, property, remainingTokens, needChangesIfPossible, this, logger);
 	}
 
-	public void setLogger(ILogger logger) {
+	public void setLogger(IAndroidLogger logger) {
 		this.logger = logger.getLogger(this);
 	}
 }

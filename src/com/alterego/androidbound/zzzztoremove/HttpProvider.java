@@ -5,6 +5,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+
 
 public abstract class HttpProvider<T> implements IContentProvider<T> {
 
@@ -13,7 +16,7 @@ public abstract class HttpProvider<T> implements IContentProvider<T> {
     protected boolean mUseCaches = false;
     protected int mConnectionTimeout = -1;
 
-    private ILogger mLogger = NullLogger.instance;
+    private IAndroidLogger mLogger = NullAndroidLogger.instance;
     private long mServerTime;
     private HttpURLConnection mConnection;
     private String mCookie;
@@ -77,7 +80,7 @@ public abstract class HttpProvider<T> implements IContentProvider<T> {
 
     protected abstract T getContentFromStream(InputStream stream) throws Exception;
 
-    public void setLogger(ILogger logger) {
+    public void setLogger(IAndroidLogger logger) {
         this.mLogger = logger.getLogger(this);
     }
 

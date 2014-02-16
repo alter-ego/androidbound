@@ -4,14 +4,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.interfaces.IBindableView;
-import com.alterego.androidbound.interfaces.IViewBinder;
-import com.alterego.androidbound.zzzztoremove.ILogger;
-import com.alterego.androidbound.zzzztoremove.NullLogger;
 
 public abstract class BindingActivity extends Activity implements IBindableView {
 	private Object dataContext;
-	protected ILogger logger = NullLogger.instance;
+	protected IAndroidLogger logger = NullAndroidLogger.instance;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +46,7 @@ public abstract class BindingActivity extends Activity implements IBindableView 
 		setContentView(view);
 	}
 
-	public void setLogger(ILogger logger) {
+	public void setLogger(IAndroidLogger logger) {
 		this.logger = logger.getLogger(this);
 	}
 
