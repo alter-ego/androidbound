@@ -21,114 +21,87 @@ import com.alterego.androidbound.interfaces.IViewBinder;
 import com.alterego.androidbound.interfaces.IViewResolver;
 
 public class BindableLayoutInflaterFactory implements IBindableLayoutInflaterFactory {
-    private IBinder binder;
-    private IViewResolver resolver;
-    private IViewBinder viewBinder;
+	private IBinder mBinder;
+	private IViewResolver mViewResolver;
+	private IViewBinder mViewBinder;
 
-    private static abstract class InflaterFactoryBase implements LayoutInflater.Factory {
-        public InflaterFactoryBase(IViewBinder viewBinder, IBinder binder) {
-            this.binder = binder;
-            this.viewBinder = viewBinder;
-        }
+	public BindableLayoutInflaterFactory(IBinder binder, IViewBinder viewBinder, IViewResolver resolver) {
+		mBinder = binder;
+		mViewBinder = viewBinder;
+		mViewResolver = resolver;
+	}
 
-        protected void bindView(View view, Context context, AttributeSet attrs, Object source) {
-            String bindingString = attrs.getAttributeValue(null,
-                    BindingResources.attr.BindingBase.binding);
+	@Override
+	public LayoutInflater.Factory inflaterFor(final Object source) {
+		return new InflaterFactoryBase(mViewBinder, mBinder) {
+			public View onCreateView(String name, Context context, AttributeSet attrs) {
+				View view = mViewResolver.createView(name, context, attrs);
+				if (view instanceof IBindableView) {
+					((IBindableView) view).setViewBinder(mViewBinder);
+				}
+				if (view != null)
+					bindView(view, context, attrs, source);
+				return view;
+			}
+		};
+	}
 
-            if (bindingString != null && !bindingString.equals("")) {
-                List<IBindingAssociation> bindings = binder.bind(source, view, bindingString);
-                this.viewBinder.registerBindingsFor(view, bindings);
-                //storeBindings(view, bindings);
-            }
-            /*
-            TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.binding);
-            int styles = array.getIndexCount();
-            for(int i = 0; i < styles; ++i) {
-            	int id = array.getIndex(i);
-            	if(id == R.styleable.binding_binding) {
-            		String bindingString = array.getString(id);
-            		List<IBindingAssociation> bindings = binder.bind(source, view, bindingString);
-            		storeBindings(view, bindings);
-            	}				
-            }
-            array.recycle();
-            */
-        }
+	@Override
+	public Factory inflaterFor(final Object source, final Factory factory) {
+		return new InflaterFactoryBase(mViewBinder, mBinder) {
+			public View onCreateView(String name, Context context, AttributeSet attrs) {
+				View view = mViewResolver.createView(name, context, attrs);
+				if (view == null && factory != null) {
+					view = factory.onCreateView(name, context, attrs);
+				}
+				if (view instanceof IBindableView) {
+					((IBindableView) view).setViewBinder(mViewBinder);
+				}
+				if (view != null)
+					bindView(view, context, attrs, source);
+				return view;
+			}
+		};
+	}
 
-        /*
-        @SuppressWarnings("unchecked")
-        protected void storeBindings(View view, List<IBindingAssociation> bindings) {
-        	//Object tag = view.getTag(R.id.bindingTagUnique);
-        	Object tag = view.getTag(BindingResources.id.bindingTagUnique);
-        	if(tag != null)
-        		for(IBindingAssociation binding : (List<IBindingAssociation>)tag)
-        			binding.dispose();
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	@Override
+	public Factory inflaterFor(final Object source, final Factory2 factory2) {
+		return new InflaterFactoryBase(mViewBinder, mBinder) {
+			public View onCreateView(String name, Context context, AttributeSet attrs) {
+				View view = mViewResolver.createView(name, context, attrs);
+				if (view == null && factory2 != null) {
+					view = factory2.onCreateView(name, context, attrs);
+				}
+				if (view instanceof IBindableView) {
+					((IBindableView) view).setViewBinder(mViewBinder);
+				}
+				if (view != null)
+					bindView(view, context, attrs, source);
+				return view;
+			}
+		};
+	}
 
-        	//view.setTag(R.id.bindingTagUnique, bindings);
-        	view.setTag(BindingResources.id.bindingTagUnique, bindings);
-        }
-        */
+	private static abstract class InflaterFactoryBase implements LayoutInflater.Factory {
 
-        private IBinder binder;
-        private IViewBinder viewBinder;
-    }
+		private IBinder mBaseBinder;
+		private IViewBinder mBaseViewBinder;
 
-    public BindableLayoutInflaterFactory(IBinder binder, IViewBinder viewBinder,
-            IViewResolver resolver) {
-        this.binder = binder;
-        this.viewBinder = viewBinder;
-        this.resolver = resolver;
-    }
+		public InflaterFactoryBase(IViewBinder viewBinder, IBinder binder) {
+			mBaseBinder = binder;
+			mBaseViewBinder = viewBinder;
+		}
 
-    @Override
-    public LayoutInflater.Factory inflaterFor(final Object source) {
-        return new InflaterFactoryBase(this.viewBinder, this.binder) {
-            public View onCreateView(String name, Context context, AttributeSet attrs) {
-                View view = resolver.createView(name, context, attrs);
-                if (view instanceof IBindableView) {
-                    ((IBindableView) view).setViewBinder(viewBinder);
-                }
-                if (view != null)
-                    bindView(view, context, attrs, source);
-                return view;
-            }
-        };
-    }
+		protected void bindView(View view, Context context, AttributeSet attrs, Object source) {
+			String bindingString = attrs.getAttributeValue(null,
+					BindingResources.attr.BindingBase.binding);
 
-    @Override
-    public Factory inflaterFor(final Object source, final Factory factory) {
-        return new InflaterFactoryBase(this.viewBinder, this.binder) {
-            public View onCreateView(String name, Context context, AttributeSet attrs) {
-                View view = resolver.createView(name, context, attrs);
-                if (view == null && factory != null) {
-                    view = factory.onCreateView(name, context, attrs);
-                }
-                if (view instanceof IBindableView) {
-                    ((IBindableView) view).setViewBinder(viewBinder);
-                }
-                if (view != null)
-                    bindView(view, context, attrs, source);
-                return view;
-            }
-        };
-    }
+			if (bindingString != null && !bindingString.equals("")) {
+				List<IBindingAssociation> bindings = mBaseBinder.bind(source, view, bindingString);
+				mBaseViewBinder.registerBindingsFor(view, bindings);
+			}
+		}
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    @Override
-    public Factory inflaterFor(final Object source, final Factory2 factory2) {
-        return new InflaterFactoryBase(this.viewBinder, this.binder) {
-            public View onCreateView(String name, Context context, AttributeSet attrs) {
-                View view = resolver.createView(name, context, attrs);
-                if (view == null && factory2 != null) {
-                    view = factory2.onCreateView(name, context, attrs);
-                }
-                if (view instanceof IBindableView) {
-                    ((IBindableView) view).setViewBinder(viewBinder);
-                }
-                if (view != null)
-                    bindView(view, context, attrs, source);
-                return view;
-            }
-        };
-    }
+	}
 }
