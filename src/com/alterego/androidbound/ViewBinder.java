@@ -23,7 +23,6 @@ import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.content.Context;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.LayoutInflater.Factory;
 import android.view.LayoutInflater.Factory2;
@@ -31,7 +30,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,31 +40,30 @@ import lombok.experimental.Accessors;
 
 @Accessors(prefix="m")
 public class ViewBinder implements IViewBinder {
-    private static List<IBindingAssociation> emptyBindings = Arrays.asList(new IBindingAssociation[0]);
-    @Getter @Setter private IAndroidLogger mLogger = NullAndroidLogger.instance;
 
-    private ValueConverterService converters;
-    private ResourceService resources;
-    private IBindableLayoutInflaterFactory inflaterFactory;
-    private ChainedViewResolver viewResolver;
-    private Map<View, List<IBindingAssociation>> boundViews = new HashMap<View, List<IBindingAssociation>>();
+	@Getter @Setter private IAndroidLogger mLogger = NullAndroidLogger.instance;
+    private ValueConverterService mConverterService;
+    private ResourceService mResourceService;
+    private IBindableLayoutInflaterFactory mInflaterFactory;
+    private ChainedViewResolver mViewResolver;
+    private Map<View, List<IBindingAssociation>> mBoundViews = new HashMap<View, List<IBindingAssociation>>();
     @Getter @Setter private IFontManager mFontManager;
 
     public ViewBinder(IScheduler notificationScheduler, IAndroidLogger logger) {
         setLogger(logger);
-        converters = new ValueConverterService(logger);
-        resources = new ResourceService(logger);
+        mConverterService = new ValueConverterService(getLogger());
+        mResourceService = new ResourceService(getLogger());
 
-        SourceBindingFactory sourceFactory = new SourceBindingFactory(logger);
-        TargetBindingFactory targetFactory = new TargetBindingFactory(notificationScheduler, logger);
+        SourceBindingFactory sourceFactory = new SourceBindingFactory(getLogger());
+        TargetBindingFactory targetFactory = new TargetBindingFactory(notificationScheduler, getLogger());
+        BindingSpecificationParser bindingParser = new BindingSpecificationParser(mConverterService, mResourceService, getLogger());
+        BindingSpecificationListParser listParser = new BindingSpecificationListParser(bindingParser, getLogger());
+        
+        IBinder binder = new TextSpecificationBinder(listParser, sourceFactory, targetFactory, getLogger());
 
-        BindingSpecificationParser bindingParser = new BindingSpecificationParser(converters, resources, logger);
-        BindingSpecificationListParser listParser = new BindingSpecificationListParser( bindingParser, logger);
-        IBinder binder = new TextSpecificationBinder(listParser, sourceFactory, targetFactory, logger);
 
-
-        viewResolver = new ChainedViewResolver(new ViewResolver(logger));
-        inflaterFactory = new BindableLayoutInflaterFactory(binder, this, viewResolver);
+        mViewResolver = new ChainedViewResolver(new ViewResolver(getLogger()));
+        mInflaterFactory = new BindableLayoutInflaterFactory(binder, this, mViewResolver);
         setFontManager(new FontManager(getLogger()));
 
         registerDefaultConverters();
@@ -79,22 +76,22 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public void registerConverter(String name, IValueConverter converter) {
-        converters.registerConverter(name, converter);
+        mConverterService.registerConverter(name, converter);
     }
 
     @Override
     public void registerResource(String name, Object resource) {
-        resources.registerResource(name, resource);
+        mResourceService.registerResource(name, resource);
     }
 
     @Override
     public void registerViewResolver(IViewResolver resolver) {
-    	this.viewResolver.addResolverFront(resolver);
+    	mViewResolver.addResolverToFront(resolver);
     }
 
     @Override
     public void unregisterViewResolver(IViewResolver resolver) {
-    	this.viewResolver.removeesolver(resolver);
+    	mViewResolver.removeResolver(resolver);
     }
 
     @Override
@@ -113,68 +110,67 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public void clearBindingsFor(View view) {
-        if (!boundViews.containsKey(view)) {
+        if (!mBoundViews.containsKey(view)) {
             return;
         }
 
-        List<IBindingAssociation> bindings = boundViews.get(view);
+        List<IBindingAssociation> bindings = mBoundViews.get(view);
 
         for (IBindingAssociation binding : bindings) {
             binding.dispose();
         }
 
         bindings.clear();
-        boundViews.remove(view);
+        mBoundViews.remove(view);
     }
 
     @Override
     public void clearAllBindings() {
-        for (List<IBindingAssociation> bindings : boundViews.values()) {
+        for (List<IBindingAssociation> bindings : mBoundViews.values()) {
             for (IBindingAssociation binding : bindings) {
                 binding.dispose();
             }
             bindings.clear();
         }
-        boundViews.clear();
+        mBoundViews.clear();
     }
 
     @Override
     public View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup) {
         if (source == null) {
-            mLogger.error("ViewModel is null -_-'");
+            mLogger.error("ViewModel source cannot be null!");
             return null;
         }
 
         LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(context);
-
+      //TODO remove double casts???
         if (((Object) context) instanceof Factory) {
-            inflater.setFactory(inflaterFactory.inflaterFor(source, (Factory) (Object) context));
+            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) (Object) context));
         } else if (((Object) context) instanceof Factory2) {
-            inflater.setFactory(inflaterFactory.inflaterFor(source, (Factory2) (Object) context));
+            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory2) (Object) context));
         } else {
-            inflater.setFactory(inflaterFactory.inflaterFor(source));
+            inflater.setFactory(mInflaterFactory.inflaterFor(source));
         }
 
         return inflater.inflate(layoutResID, viewGroup);
     }
 
 	@Override
-	public View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup, IViewResolver additionalResolver) {
+	public View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup, IViewResolver resolver) {
 		LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(context);
 
-		this.viewResolver.addResolverFront(additionalResolver);
-
+		mViewResolver.addResolverToFront(resolver);
+		//TODO remove double casts???
         if (((Object) context) instanceof Factory) {
-            inflater.setFactory(inflaterFactory.inflaterFor(source, (Factory) (Object) context));
+            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) (Object) context));
         } else if (((Object) context) instanceof Factory2) {
-            inflater.setFactory(inflaterFactory.inflaterFor(source, (Factory2) (Object) context));
+            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory2) (Object) context));
         } else {
-            inflater.setFactory(inflaterFactory.inflaterFor(source));
+            inflater.setFactory(mInflaterFactory.inflaterFor(source));
         }
 
         View view = inflater.inflate(layoutResID, viewGroup);
-
-        this.viewResolver.removeesolver(additionalResolver);
+        mViewResolver.removeResolver(resolver);
 
         return view;
 	}
@@ -186,33 +182,31 @@ public class ViewBinder implements IViewBinder {
             return;
         }
 
-        if (boundViews.containsKey(view)) {
-            boundViews.get(view).addAll(bindings);
+        if (mBoundViews.containsKey(view)) {
+            mBoundViews.get(view).addAll(bindings);
         } else {
-            boundViews.put(view, bindings);
+            mBoundViews.put(view, bindings);
         }
     }
 
     @Override
     public List<IBindingAssociation> getBindingsFor(View view) {
-        if (boundViews.containsKey(view)) {
-            return boundViews.get(view);
+        if (mBoundViews.containsKey(view)) {
+            return mBoundViews.get(view);
         }
 
-        return emptyBindings;
+        return new ArrayList<IBindingAssociation> ();
     }
 
     @Override
     public List<IBindingAssociation> getBindingsForViewAndChildren(View rootView) {
-        return this.getBindingsForViewAndChildrenRecursive(rootView,
-                new ArrayList<IBindingAssociation>());
+        return this.getBindingsForViewAndChildrenRecursive(rootView, new ArrayList<IBindingAssociation>());
     }
 
-    private List<IBindingAssociation> getBindingsForViewAndChildrenRecursive(View rootView,
-            List<IBindingAssociation> bindings) {
+    private List<IBindingAssociation> getBindingsForViewAndChildrenRecursive(View rootView, List<IBindingAssociation> bindings) {
 
-        if (this.boundViews.containsKey(rootView)) {
-            bindings.addAll(this.boundViews.get(rootView));
+        if (this.mBoundViews.containsKey(rootView)) {
+            bindings.addAll(this.mBoundViews.get(rootView));
         }
 
         if (!(rootView instanceof ViewGroup)) {
@@ -227,53 +221,4 @@ public class ViewBinder implements IViewBinder {
         return bindings;
     }
 
-    public int size() {
-        return boundViews.size();
-    }
-    
-    private static class ChainedViewResolver implements IViewResolver {
-    	private List<IViewResolver> baseResolvers;
-
-    	public ChainedViewResolver() {
-    		this.baseResolvers = new ArrayList<IViewResolver>();
-    	}
-    	public ChainedViewResolver(IViewResolver...initialViewResolvers) {
-    		this();
-    		if(initialViewResolvers == null) {
-    			return;
-    		}
-
-    		for(IViewResolver r: initialViewResolvers) {
-    			this.baseResolvers.add(r);
-    		}
-    	}
-
-		@Override
-		public void setLogger(IAndroidLogger logger) {
-		}
-
-		@Override
-		public View createView(String name, Context context, AttributeSet attrs) {
-			for(IViewResolver resolver: this.baseResolvers) {
-				View retval = resolver.createView(name, context, attrs);
-				if(retval != null) {
-					return retval;
-				}
-			}
-
-			return null;
-		}
-
-		public void addResolverFront(IViewResolver resolver) {
-			this.baseResolvers.add(0, resolver);
-		}
-
-		public void addResolverBack(IViewResolver resolver) {
-			this.baseResolvers.add(resolver);
-		}
-
-		public void removeesolver(IViewResolver resolver) {
-			this.baseResolvers.remove(resolver);
-		}
-    }
 }
