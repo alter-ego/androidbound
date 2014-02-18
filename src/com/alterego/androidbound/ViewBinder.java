@@ -38,19 +38,27 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import com.android.volley.toolbox.ImageLoader;
+
 @Accessors(prefix="m")
 public class ViewBinder implements IViewBinder {
 
-	@Getter @Setter private IAndroidLogger mLogger = NullAndroidLogger.instance;
+	@Getter @Setter private static IAndroidLogger mLogger = NullAndroidLogger.instance;
     private ValueConverterService mConverterService;
     private ResourceService mResourceService;
     private IBindableLayoutInflaterFactory mInflaterFactory;
     private ChainedViewResolver mViewResolver;
     private Map<View, List<IBindingAssociation>> mBoundViews = new HashMap<View, List<IBindingAssociation>>();
     @Getter @Setter private IFontManager mFontManager;
+    @Getter @Setter private static ImageLoader mImageLoader;
 
     public ViewBinder(IScheduler notificationScheduler, IAndroidLogger logger) {
-        setLogger(logger);
+        this(notificationScheduler, logger, null);
+    }
+    
+    public ViewBinder(IScheduler notificationScheduler, IAndroidLogger logger, ImageLoader imageLoader) {
+    	setImageLoader(imageLoader);
+    	setLogger(logger);
         mConverterService = new ValueConverterService(getLogger());
         mResourceService = new ResourceService(getLogger());
 
