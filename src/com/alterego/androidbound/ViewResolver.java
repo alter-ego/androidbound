@@ -9,6 +9,7 @@ import com.alterego.androidbound.android.ui.BindableHorizontalScrollView;
 import com.alterego.androidbound.android.ui.BindableImageView;
 import com.alterego.androidbound.android.ui.BindableLinearLayout;
 import com.alterego.androidbound.android.ui.BindableListView;
+import com.alterego.androidbound.android.ui.BindableNetworkImageView;
 import com.alterego.androidbound.android.ui.BindableRelativeLayout;
 import com.alterego.androidbound.android.ui.BindableScrollView;
 import com.alterego.androidbound.android.ui.BindableSeekbar;
@@ -52,6 +53,7 @@ public class ViewResolver implements IViewResolver {
             if (android.os.Build.VERSION.SDK_INT > 13)
                 put("android.widget.Switch", BindableSwitch.class);
             put("android.widget.ToggleButton", BindableToggleButton.class);
+            put("com.android.volley.toolbox.NetworkImageView", BindableNetworkImageView.class);
         }
     };
 
