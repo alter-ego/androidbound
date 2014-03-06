@@ -10,12 +10,21 @@ import com.alterego.androidbound.interfaces.IValueConverter;
 public class BooleanToVisibilityConverter implements IValueConverter {
 	
 	public static final String CONVERTER_NAME = "ToVisibility";
-
+	public static final String PARAMETER_INVERT_TAG = "invert";
+	
 	@Override
 	public Object convert(Object value, Class<?> targetType, Object parameter, Locale culture) {
+		boolean result = false;
+		
 		if(value instanceof Boolean)
-			return ((Boolean)value) ? View.VISIBLE : View.GONE;
-		return value == null ? View.GONE : View.VISIBLE;
+			result = ((Boolean)value);
+		else if (value!=null)
+			result = true;
+		
+		if (parameter!=null && (parameter instanceof String) && ((String)parameter).equalsIgnoreCase(PARAMETER_INVERT_TAG))
+			result = !result;
+		
+		return result ? View.VISIBLE : View.GONE;
 	}
 
 	@Override
