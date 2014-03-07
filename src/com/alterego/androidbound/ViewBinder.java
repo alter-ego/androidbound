@@ -94,11 +94,11 @@ public class ViewBinder implements IViewBinder {
         /**
          * Universal Image Loader configuration and instantiation
          */
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder().cacheInMemory(true).bitmapConfig(Bitmap.Config.RGB_565)
-                .cacheOnDisc(true).build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext()).defaultDisplayImageOptions(defaultOptions).build();
-        CommonSettings.UniversalImageLoader.sImageLoader = ImageLoader.getInstance();
-        CommonSettings.UniversalImageLoader.sImageLoader.init(config);
+//        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder().cacheInMemory(true).bitmapConfig(Bitmap.Config.RGB_565)
+//                .cacheOnDisc(true).build();
+//        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext()).defaultDisplayImageOptions(defaultOptions).build();
+//        CommonSettings.UniversalImageLoader.sImageLoader = ImageLoader.getInstance();
+//        CommonSettings.UniversalImageLoader.sImageLoader.init(config);
 
     }
     
