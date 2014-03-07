@@ -15,6 +15,8 @@ import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
+import com.alterego.androidbound.CommonSettings;
+import com.alterego.androidbound.android.cache.CacheSystem;
 import com.alterego.androidbound.interfaces.ICommand;
 import com.alterego.androidbound.interfaces.INotifyPropertyChanged;
 import com.alterego.androidbound.zzzztoremove.Exceptional;
@@ -28,188 +30,189 @@ import com.alterego.androidbound.zzzztoremove.reactive.ThreadPoolScheduler;
 
 public class BindableImageView extends ImageView implements OnClickListener, INotifyPropertyChanged {
 
-    ImageView mImageView = null;
-    static Context context;
+	ImageView mImageView = null;
+	static Context context;
+	private final static IContentProvider<Bitmap> provider = new CacheSystem<Bitmap>(new HttpBitmapProvider(), CommonSettings.CacheImage.cache);
 
-    public BindableImageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        BindableImageView.context = context;
-    }
 
-    public BindableImageView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        BindableImageView.context = context;
-    }
+	public BindableImageView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		BindableImageView.context = context;
+	}
 
-//    public String getSource() {
-//        return source;
-//    }
-//
-//    public void setSource(String value) {
-//        mImageView = this;
-//        source = value;
-//        loadImage();
-//    }
-//
-//    private void loadImage() {
-//        ThreadPoolScheduler.instance.schedule(new Runnable() {
-//            public void run() {
-//                final Exceptional<Bitmap> result = provider.getContent(source);
-//                if (result.hasValue()) {
-//                    UiThreadScheduler.instance.schedule(new Runnable() {
-//                        public void run() {
-//                            setImage(mImageView, result.value());
-//                        }
-//                    });
-//                }
-//            }
-//        });
-//    }
+	public BindableImageView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		BindableImageView.context = context;
+	}
 
-    public ICommand getClick() {
-        return onClick;
-    }
+	public String getSource() {
+		return source;
+	}
 
-    public void setClick(ICommand value) {
-        if (value == null) {
-            setClickable(false);
-            setOnClickListener(null);
-            onClick = ICommand.empty;
-            return;
-        }
-        setClickable(true);
-        setOnClickListener(this);
-        onClick = value;
-    }
+	public void setSource(String value) {
+		mImageView = this;
+		source = value;
+		loadImage();
+	}
 
-    @Override
-    public void onClick(View v) {
-        if (onClick.canExecute(null)) {
-            onClick.execute(null);
-        }
-    }
+	private void loadImage() {
+		ThreadPoolScheduler.instance.schedule(new Runnable() {
+			public void run() {
+				final Exceptional<Bitmap> result = provider.getContent(source);
+				if (result.hasValue()) {
+					UiThreadScheduler.instance.schedule(new Runnable() {
+						public void run() {
+							setImage(mImageView, result.value());
+						}
+					});
+				}
+			}
+		});
+	}
 
-    @Override
-    public void dispose() {
-        if (this.disposed) {
-            return;
-        }
+	public ICommand getClick() {
+		return onClick;
+	}
 
-        this.disposed = true;
-        if (this.propertyChanged != null) {
-            this.propertyChanged.dispose();
-        }
+	public void setClick(ICommand value) {
+		if (value == null) {
+			setClickable(false);
+			setOnClickListener(null);
+			onClick = ICommand.empty;
+			return;
+		}
+		setClickable(true);
+		setOnClickListener(this);
+		onClick = value;
+	}
 
-        this.propertyChanged = null;
-        this.onClick = null;
-    }
+	@Override
+	public void onClick(View v) {
+		if (onClick.canExecute(null)) {
+			onClick.execute(null);
+		}
+	}
 
-    @Override
-    public IObservable<String> onPropertyChanged() {
-        if (this.propertyChanged == null) {
-            this.propertyChanged = new Subject<String>();
-        }
+	@Override
+	public void dispose() {
+		if (this.disposed) {
+			return;
+		}
 
-        return this.propertyChanged;
-    }
+		this.disposed = true;
+		if (this.propertyChanged != null) {
+			this.propertyChanged.dispose();
+		}
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+		this.propertyChanged = null;
+		this.onClick = null;
+	}
 
-        if (this.disposed || this.propertyChanged == null) {
-            return;
-        }
+	@Override
+	public IObservable<String> onPropertyChanged() {
+		if (this.propertyChanged == null) {
+			this.propertyChanged = new Subject<String>();
+		}
 
-        if (w != oldw) {
-            this.propertyChanged.onNext("Width");
-        }
+		return this.propertyChanged;
+	}
 
-        if (h != oldh) {
-            this.propertyChanged.onNext("Height");
-        }
-    }
+	@Override
+	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+		super.onSizeChanged(w, h, oldw, oldh);
 
-    public void setBitmap(Bitmap bmp) {
-        this.currentBitmap = bmp;
-        this.setImageBitmap(bmp);
-        this.invalidate();
-    }
+		if (this.disposed || this.propertyChanged == null) {
+			return;
+		}
 
-    public Bitmap getBitmap() {
-        return this.currentBitmap;
-    }
+		if (w != oldw) {
+			this.propertyChanged.onNext("Width");
+		}
 
-    public void setDrawable(Drawable drawable) {
-        this.currentDrawable = drawable;
-        this.setImageDrawable(drawable);
-        this.invalidate();
-    }
+		if (h != oldh) {
+			this.propertyChanged.onNext("Height");
+		}
+	}
 
-    public Drawable getDrawable() {
-        return this.currentDrawable;
-    }
+	public void setBitmap(Bitmap bmp) {
+		this.currentBitmap = bmp;
+		this.setImageBitmap(bmp);
+		this.invalidate();
+	}
 
-    public void setResource(Integer resId) {
-        this.currentResId = resId;
-        this.setImageResource(this.currentResId);
-        this.invalidate();
-    }
+	public Bitmap getBitmap() {
+		return this.currentBitmap;
+	}
 
-    public Integer getResource() {
-        return this.currentResId;
-    }
+	public void setDrawable(Drawable drawable) {
+		this.currentDrawable = drawable;
+		this.setImageDrawable(drawable);
+		this.invalidate();
+	}
 
-    public void setWidth(int width) {
-        if (width == this.getWidth()) {
-            return;
-        }
+	public Drawable getDrawable() {
+		return this.currentDrawable;
+	}
 
-        ViewGroup.LayoutParams p = this.getLayoutParams();
-        p.width = width;
-        this.setLayoutParams(p);
-    }
+	public void setResource(Integer resId) {
+		this.currentResId = resId;
+		this.setImageResource(this.currentResId);
+		this.invalidate();
+	}
 
-    public void setHeight(int height) {
-        if (height == this.getHeight()) {
-            return;
-        }
+	public Integer getResource() {
+		return this.currentResId;
+	}
 
-        ViewGroup.LayoutParams p = this.getLayoutParams();
-        p.height = height;
-        this.setLayoutParams(p);
-    }
+	public void setWidth(int width) {
+		if (width == this.getWidth()) {
+			return;
+		}
 
-    private boolean disposed;
-    private int currentResId;
-    private Bitmap currentBitmap;
-    private Drawable currentDrawable;
-    private ISubject<String> propertyChanged;
-    private ICommand onClick = ICommand.empty;
-    private String source;
-    //private final static IContentProvider<Bitmap> provider = new CacheSystem<Bitmap>(new HttpBitmapProvider(), CommonSettings.CacheImage.cache);
+		ViewGroup.LayoutParams p = this.getLayoutParams();
+		p.width = width;
+		this.setLayoutParams(p);
+	}
 
-    private void setImage(final ImageView view, Bitmap remoteImage) {
-        int fadeInDuration = 2000;
-        int fadeOutDuration = 1500;
+	public void setHeight(int height) {
+		if (height == this.getHeight()) {
+			return;
+		}
 
-        view.setVisibility(View.VISIBLE);
+		ViewGroup.LayoutParams p = this.getLayoutParams();
+		p.height = height;
+		this.setLayoutParams(p);
+	}
 
-//        if (CommonSettings.Images.isAnimated) {
-//            Animation fadeIn = new AlphaAnimation(0, 1);
-//            fadeIn.setInterpolator(new DecelerateInterpolator());
-//            fadeIn.setDuration(fadeInDuration);
-//
-//            Animation fadeOut = new AlphaAnimation(1, 0);
-//            fadeOut.setInterpolator(new AccelerateInterpolator());
-//            fadeOut.setStartOffset(fadeInDuration);
-//            fadeOut.setDuration(fadeOutDuration);
-//
-//            AnimationSet animation = new AnimationSet(false);
-//            animation.addAnimation(fadeIn);
-//            animation.setRepeatCount(0);
-//            view.setAnimation(animation);
-//        }
-        view.setImageBitmap(remoteImage);
-    }
+	private boolean disposed;
+	private int currentResId;
+	private Bitmap currentBitmap;
+	private Drawable currentDrawable;
+	private ISubject<String> propertyChanged;
+	private ICommand onClick = ICommand.empty;
+	private String source;
+
+	private void setImage(final ImageView view, Bitmap remoteImage) {
+		int fadeInDuration = 2000;
+		int fadeOutDuration = 1500;
+
+		view.setVisibility(View.VISIBLE);
+
+		if (CommonSettings.Images.isAnimated) {
+			Animation fadeIn = new AlphaAnimation(0, 1);
+			fadeIn.setInterpolator(new DecelerateInterpolator());
+			fadeIn.setDuration(fadeInDuration);
+
+			Animation fadeOut = new AlphaAnimation(1, 0);
+			fadeOut.setInterpolator(new AccelerateInterpolator());
+			fadeOut.setStartOffset(fadeInDuration);
+			fadeOut.setDuration(fadeOutDuration);
+
+			AnimationSet animation = new AnimationSet(false);
+			animation.addAnimation(fadeIn);
+			animation.setRepeatCount(0);
+			view.setAnimation(animation);
+		}
+		view.setImageBitmap(remoteImage);
+	}
 }

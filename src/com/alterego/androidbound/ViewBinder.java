@@ -1,6 +1,7 @@
 package com.alterego.androidbound;
 
 import com.alterego.androidbound.android.BindableLayoutInflaterFactory;
+import com.alterego.androidbound.android.cache.ICache;
 import com.alterego.androidbound.android.converters.BooleanToVisibilityConverter;
 import com.alterego.androidbound.android.converters.FontConverter;
 import com.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
@@ -19,10 +20,18 @@ import com.alterego.androidbound.services.ResourceService;
 import com.alterego.androidbound.services.ValueConverterService;
 import com.alterego.androidbound.zzzztoremove.reactive.IScheduler;
 
+import com.alterego.androidbound.android.cache.CacheImage;
+
 import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
+
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.LayoutInflater.Factory;
 import android.view.LayoutInflater.Factory2;
@@ -38,11 +47,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import com.android.volley.toolbox.ImageLoader;
-
 @Accessors(prefix="m")
 public class ViewBinder implements IViewBinder {
 
+	@Getter @Setter Context mContext;
 	@Getter @Setter private static IAndroidLogger mLogger = NullAndroidLogger.instance;
     private ValueConverterService mConverterService;
     private ResourceService mResourceService;
@@ -50,15 +58,16 @@ public class ViewBinder implements IViewBinder {
     private ChainedViewResolver mViewResolver;
     private Map<View, List<IBindingAssociation>> mBoundViews = new HashMap<View, List<IBindingAssociation>>();
     @Getter @Setter private IFontManager mFontManager;
-    @Getter @Setter private static ImageLoader mImageLoader;
+    @Getter @Setter private static com.android.volley.toolbox.ImageLoader mImageLoader;
 
-    public ViewBinder(IScheduler notificationScheduler, IAndroidLogger logger) {
-        this(notificationScheduler, logger, null);
+    public ViewBinder(Context ctx, IScheduler notificationScheduler, IAndroidLogger logger) {
+        this(ctx, notificationScheduler, logger, null);
     }
     
-    public ViewBinder(IScheduler notificationScheduler, IAndroidLogger logger, ImageLoader imageLoader) {
+    public ViewBinder(Context ctx, IScheduler notificationScheduler, IAndroidLogger logger, com.android.volley.toolbox.ImageLoader imageLoader) {
     	setImageLoader(imageLoader);
     	setLogger(logger);
+    	setContext(ctx);
         mConverterService = new ValueConverterService(getLogger());
         mResourceService = new ResourceService(getLogger());
 
@@ -75,6 +84,22 @@ public class ViewBinder implements IViewBinder {
         setFontManager(new FontManager(getLogger()));
 
         registerDefaultConverters();
+        
+        ICache cacheImage = new CacheImage(getContext(), getLogger());
+        if (((CacheImage)cacheImage).getDiskLruCache() != null)
+            CommonSettings.CacheImage.cache = cacheImage;
+
+        CommonSettings.Images.isAnimated = true;
+
+        /**
+         * Universal Image Loader configuration and instantiation
+         */
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder().cacheInMemory(true).bitmapConfig(Bitmap.Config.RGB_565)
+                .cacheOnDisc(true).build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext()).defaultDisplayImageOptions(defaultOptions).build();
+        CommonSettings.UniversalImageLoader.sImageLoader = ImageLoader.getInstance();
+        CommonSettings.UniversalImageLoader.sImageLoader.init(config);
+
     }
     
     private void registerDefaultConverters() {

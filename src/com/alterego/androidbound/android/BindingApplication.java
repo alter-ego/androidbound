@@ -29,7 +29,7 @@ public class BindingApplication extends Application {
 
 		setLogger(new AndroidLogger(getApplicationName()));
 		setHandlerScheduler(new HandlerScheduler(new Handler()));
-		setViewBinder(new ViewBinder(mHandlerScheduler, mLogger));
+		setViewBinder(new ViewBinder(this, mHandlerScheduler, mLogger));
 	}
 
 	public String getApplicationName() {
