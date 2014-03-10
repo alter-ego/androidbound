@@ -1,6 +1,16 @@
 package com.alterego.androidbound;
 
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.LayoutInflater.Factory;
+import android.view.LayoutInflater.Factory2;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.android.BindableLayoutInflaterFactory;
+import com.alterego.androidbound.android.cache.CacheImage;
 import com.alterego.androidbound.android.cache.ICache;
 import com.alterego.androidbound.android.converters.BooleanToVisibilityConverter;
 import com.alterego.androidbound.android.converters.FontConverter;
@@ -19,24 +29,6 @@ import com.alterego.androidbound.parsers.BindingSpecificationParser;
 import com.alterego.androidbound.services.ResourceService;
 import com.alterego.androidbound.services.ValueConverterService;
 import com.alterego.androidbound.zzzztoremove.reactive.IScheduler;
-
-import com.alterego.androidbound.android.cache.CacheImage;
-
-import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
-
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.view.LayoutInflater;
-import android.view.LayoutInflater.Factory;
-import android.view.LayoutInflater.Factory2;
-import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,7 +69,6 @@ public class ViewBinder implements IViewBinder {
         BindingSpecificationListParser listParser = new BindingSpecificationListParser(bindingParser, getLogger());
         
         IBinder binder = new TextSpecificationBinder(listParser, sourceFactory, targetFactory, getLogger());
-
 
         mViewResolver = new ChainedViewResolver(new ViewResolver(getLogger()));
         mInflaterFactory = new BindableLayoutInflaterFactory(binder, this, mViewResolver);
