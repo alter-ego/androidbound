@@ -1,15 +1,16 @@
 package com.alterego.androidbound.android.adapters;
 
-import com.alterego.androidbound.android.ui.BindableListItemView;
-import com.alterego.androidbound.interfaces.IBindableView;
-import com.alterego.androidbound.interfaces.IBindingAssociation;
-import com.alterego.androidbound.interfaces.IViewBinder;
-
 import android.content.Context;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import com.alterego.androidbound.ViewBinder;
+import com.alterego.androidbound.android.ui.BindableListItemView;
+import com.alterego.androidbound.interfaces.IBindableView;
+import com.alterego.androidbound.interfaces.IBindingAssociation;
+import com.alterego.androidbound.interfaces.IViewBinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,6 +124,14 @@ public class BindableListAdapter extends BaseAdapter {
             return null;
         }
 
+        View currentView = this.findView(position);
+
+        //we already have the view
+        if (currentView != null) {
+            ViewBinder.getLogger().debug("BindableListAdapter getView currentView != null");
+            return currentView;
+        }
+
         //        BindableListItemView recycleView = null;
         //
         //        if (convertView instanceof BindableListItemView) {
@@ -140,11 +149,9 @@ public class BindableListAdapter extends BaseAdapter {
         //            }
         //        }
 
-        View currentView = this.findView(position);
 
-        if (currentView != null) {
-            return currentView;
-        }
+
+
 
         /*
         if(convertView instanceof BindableListItemView) {
@@ -156,14 +163,29 @@ public class BindableListAdapter extends BaseAdapter {
         try {
             Object source = itemsSource.get(position);
 
+            //we have the same view instance, we need to clear the bindings, remove the view, and rebind it
+            if (convertView!=null && convertView instanceof BindableListItemView) {
+//                ViewBinder.getLogger().debug("BindableListAdapter getView convertView != null, unbinding");
+//                ((BindableListItemView) convertView).unbind();
+//                ViewBinder.getLogger().debug("BindableListAdapter getView convertView != null, removing views");
+//                ((BindableListItemView) convertView).removeAllViews();
+                ViewBinder.getLogger().debug("BindableListAdapter getView convertView != null, binding with source again");
+                ((BindableListItemView) convertView).bindTo(source);
+            } else { //create the view ex-novo
+                ViewBinder.getLogger().debug("BindableListAdapter getView inflate view from zero");
+                currentView = new BindableListItemView(context, viewBinder, itemTemplate, source);
+                this.insertView(position, currentView);
+            }
+
+
             //if (recycleView != null) {
             //    currentView = recycleView;
             //    currentView.bindTo(source);
             //} else {
-            currentView = new BindableListItemView(context, viewBinder, itemTemplate, source);
+            //currentView = new BindableListItemView(context, viewBinder, itemTemplate, source);
             //}
 
-            this.insertView(position, currentView);
+            //this.insertView(position, currentView);
         } catch (Exception e) {
             //we do nothing
         }

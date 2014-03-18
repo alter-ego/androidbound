@@ -1,11 +1,11 @@
 
 package com.alterego.androidbound.interfaces;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.List;
 
 
 public interface IViewBinder extends IResourceRegistry, IValueConverterRegistry {
@@ -28,4 +28,5 @@ public interface IViewBinder extends IResourceRegistry, IValueConverterRegistry 
     public abstract void registerViewResolver(IViewResolver resolver);
     
     public abstract void unregisterViewResolver(IViewResolver resolver);
+
 }
