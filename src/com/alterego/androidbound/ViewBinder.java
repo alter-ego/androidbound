@@ -29,6 +29,9 @@ import com.alterego.androidbound.parsers.BindingSpecificationParser;
 import com.alterego.androidbound.services.ResourceService;
 import com.alterego.androidbound.services.ValueConverterService;
 import com.alterego.androidbound.zzzztoremove.reactive.IScheduler;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,14 +53,12 @@ public class ViewBinder implements IViewBinder {
     private ChainedViewResolver mViewResolver;
     private Map<View, List<IBindingAssociation>> mBoundViews = new HashMap<View, List<IBindingAssociation>>();
     @Getter @Setter private IFontManager mFontManager;
-    @Getter @Setter private static com.android.volley.toolbox.ImageLoader mImageLoader;
 
     public ViewBinder(Context ctx, IScheduler notificationScheduler, IAndroidLogger logger) {
         this(ctx, notificationScheduler, logger, null);
     }
     
-    public ViewBinder(Context ctx, IScheduler notificationScheduler, IAndroidLogger logger, com.android.volley.toolbox.ImageLoader imageLoader) {
-    	setImageLoader(imageLoader);
+    public ViewBinder(Context ctx, IScheduler notificationScheduler, IAndroidLogger logger, ImageLoaderConfiguration imageLoaderConfiguration) {
     	setLogger(logger);
     	setContext(ctx);
         mConverterService = new ValueConverterService(getLogger());
@@ -82,15 +83,23 @@ public class ViewBinder implements IViewBinder {
 
         CommonSettings.Images.isAnimated = true;
 
-        /**
-         * Universal Image Loader configuration and instantiation
-         */
-//        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder().cacheInMemory(true).bitmapConfig(Bitmap.Config.RGB_565)
-//                .cacheOnDisc(true).build();
-//        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext()).defaultDisplayImageOptions(defaultOptions).build();
-//        CommonSettings.UniversalImageLoader.sImageLoader = ImageLoader.getInstance();
-//        CommonSettings.UniversalImageLoader.sImageLoader.init(config);
+        if (imageLoaderConfiguration==null) {
+            ImageLoader.getInstance().init(getDefaultImageLoaderConfig(ctx));
+        } else {
+            ImageLoader.getInstance().init(imageLoaderConfiguration);
+        }
 
+    }
+
+    private ImageLoaderConfiguration getDefaultImageLoaderConfig (Context ctx) {
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisc(true)
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(ctx)
+                .defaultDisplayImageOptions(defaultOptions)
+                .build();
+        return config;
     }
     
     private void registerDefaultConverters() {

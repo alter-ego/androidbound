@@ -27,6 +27,7 @@ import com.alterego.androidbound.zzzztoremove.reactive.IObservable;
 import com.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import com.alterego.androidbound.zzzztoremove.reactive.Subject;
 import com.alterego.androidbound.zzzztoremove.reactive.ThreadPoolScheduler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class BindableImageView extends ImageView implements OnClickListener, INotifyPropertyChanged {
 
@@ -52,7 +53,8 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 	public void setSource(String value) {
 		mImageView = this;
 		source = value;
-		loadImage();
+		//loadImage();
+        ImageLoader.getInstance().displayImage(source, mImageView);
 	}
 
 	private void loadImage() {

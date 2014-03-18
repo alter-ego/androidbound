@@ -13,6 +13,7 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.alterego.androidbound.BindingResources;
 import com.alterego.androidbound.ViewBinder;
 import com.alterego.androidbound.interfaces.INotifyPropertyChanged;
 import com.alterego.androidbound.zzzztoremove.reactive.IObservable;
@@ -26,6 +27,7 @@ public class BindableTextView extends View implements INotifyPropertyChanged {
 
     private boolean disposed;
     private Typeface mTypeface;
+    private int mTextColor;
 
     public BindableTextView(Context context) {
         super(context);
@@ -36,15 +38,54 @@ public class BindableTextView extends View implements INotifyPropertyChanged {
     public BindableTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
+        readStyleable(mContext, attrs);
         initCustomTextView();
     }
 
     public BindableTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContext = context;
+        readStyleable(mContext, attrs);
         initCustomTextView();
     }
 
+    private void readStyleable(Context context, AttributeSet attrs) {
+
+//        setTextColor(a.getColor(R.styleable.CustomTextView_textColor, 0xFF000000));
+
+//        int textSize = a.getDimensionPixelOffset(R.styleable.CustomTextView_textSize, 0);
+//        if (textSize > 0) {
+//            mTextSize = textSize;
+//            setTextSize(textSize);
+//        }
+
+        mTextSize = getTextSize(attrs);
+        //int color = getTextColor(attrs);
+        mTextColor = getTextColor(attrs);
+    }
+
+    private static int getTextSize(AttributeSet attrs) {
+        int value = attrs.getAttributeIntValue("", BindingResources.attr.BindableTextView.textSize, 0);
+        ViewBinder.getLogger().debug("value = " + value);
+//        float value2 = attrs.getAttributeFloatValue(null, BindingResources.attr.BindableTextView.textSize, 0f);
+//        ViewBinder.getLogger().debug("value2 = " + value2);
+
+        return value;
+    }
+
+    private static int getTextColor(AttributeSet attrs) {
+        int value = 0;
+        ViewBinder.getLogger().debug("");
+        try {
+            value = attrs.getAttributeResourceValue(null, BindingResources.attr.BindableTextView.textColor, 0xFF000000);
+            ViewBinder.getLogger().debug("value = " + value);
+            int value2 = attrs.getAttributeIntValue(null, BindingResources.attr.BindableTextView.textColor, 0xFF000000);
+            ViewBinder.getLogger().debug("value2 = " + value2);
+        } catch (Exception e) {
+            ViewBinder.getLogger().warning("exception = " + e);
+        }
+        return value;
+    }
 
 //    public Typeface getTypeface() {
 //        return super.getTypeface();
@@ -135,8 +176,8 @@ public class BindableTextView extends View implements INotifyPropertyChanged {
             mTextPaint.setTextSize(16 * mContext.getResources().getDisplayMetrics().density);
         }
 
-        mPaint.setColor(0xFF000000);
-        mTextPaint.setColor(0xFF000000);
+        mPaint.setColor(mTextColor);
+        mTextPaint.setColor(mTextColor);
         //setPadding (mPaddingLeft, mPaddingTop, mPaddingRight, mPaddingBottom);
     }
 
@@ -170,10 +211,17 @@ public class BindableTextView extends View implements INotifyPropertyChanged {
         // This text size has been pre-scaled by the getDimensionPixelOffset method
         ViewBinder.getLogger().debug("text size = " + size);
         mTextSize = size;
-        mPaint.setTextSize(size);
-        mTextPaint.setTextSize(size);
+        ViewBinder.getLogger().debug("");
+        if (mPaint != null)
+            mPaint.setTextSize(size);
+        ViewBinder.getLogger().debug("");
+        if (mTextPaint != null)
+            mTextPaint.setTextSize(size);
+        ViewBinder.getLogger().debug("");
         requestLayout();
+        ViewBinder.getLogger().debug("");
         invalidate();
+        ViewBinder.getLogger().debug("");
     }
 
     /**
@@ -189,8 +237,10 @@ public class BindableTextView extends View implements INotifyPropertyChanged {
             return;
         }
         // This text size has been pre-scaled by the getDimensionPixelOffset method
-        mPaint.setTypeface(font);
-        mTextPaint.setTypeface(font);
+        if (mPaint != null)
+            mPaint.setTypeface(font);
+        if (mTextPaint != null)
+            mTextPaint.setTypeface(font);
         this.propertyChanged.onNext("Typeface");
         requestLayout();
         invalidate(); //TODO do we need this along with propertyChanged?
@@ -208,8 +258,12 @@ public class BindableTextView extends View implements INotifyPropertyChanged {
     public void setTextColor(int color) {
         //super.setTextColor(color);
         ViewBinder.getLogger().debug("text color = " + color);
-        mPaint.setColor(color);
-        mTextPaint.setColor(color);
+        if (mPaint != null)
+            mPaint.setColor(color);
+        ViewBinder.getLogger().debug("");
+        if (mTextPaint != null)
+            mTextPaint.setColor(color);
+        ViewBinder.getLogger().debug("");
         invalidate();
     }
 
@@ -217,15 +271,15 @@ public class BindableTextView extends View implements INotifyPropertyChanged {
         return mPaint.getColor();
     }
 
-    public void setTextColor(String color) {
-        //super.setTextColor(color);
-        ViewBinder.getLogger().debug("text string color = " + color);
-        setTextColor(Integer.valueOf(color));
-    }
+//    public void setTextColor(String color) {
+//        //super.setTextColor(color);
+//        ViewBinder.getLogger().debug("text string color = " + color);
+//        setTextColor(Integer.valueOf(color));
+//    }
 
-   /**
-         * @see android.view.View#measure(int, int)
-         */
+    /**
+     * @see android.view.View#measure(int, int)
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (mText == null) mText = "";

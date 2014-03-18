@@ -1,6 +1,10 @@
 
 package com.alterego.androidbound;
 
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.View;
+
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.android.ui.BindableButton;
 import com.alterego.androidbound.android.ui.BindableGridView;
@@ -9,7 +13,6 @@ import com.alterego.androidbound.android.ui.BindableHorizontalScrollView;
 import com.alterego.androidbound.android.ui.BindableImageView;
 import com.alterego.androidbound.android.ui.BindableLinearLayout;
 import com.alterego.androidbound.android.ui.BindableListView;
-import com.alterego.androidbound.android.ui.BindableNetworkImageView;
 import com.alterego.androidbound.android.ui.BindableRelativeLayout;
 import com.alterego.androidbound.android.ui.BindableScrollView;
 import com.alterego.androidbound.android.ui.BindableSeekbar;
@@ -19,9 +22,6 @@ import com.alterego.androidbound.android.ui.BindableToggleButton;
 import com.alterego.androidbound.android.ui.BindableVideoView;
 import com.alterego.androidbound.helpers.Reflector;
 import com.alterego.androidbound.interfaces.IViewResolver;
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.View;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +53,6 @@ public class ViewResolver implements IViewResolver {
             if (android.os.Build.VERSION.SDK_INT > 13)
                 put("android.widget.Switch", BindableSwitch.class);
             put("android.widget.ToggleButton", BindableToggleButton.class);
-            put("com.android.volley.toolbox.NetworkImageView", BindableNetworkImageView.class);
         }
     };
 
