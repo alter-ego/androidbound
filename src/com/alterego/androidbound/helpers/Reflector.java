@@ -1,10 +1,14 @@
 
 package com.alterego.androidbound.helpers;
 
+import android.util.SparseArray;
+
+import com.alterego.androidbound.ViewBinder;
+import com.alterego.androidbound.helpers.reflector.ConstructorInfo;
+import com.alterego.androidbound.helpers.reflector.FieldInfo;
+import com.alterego.androidbound.helpers.reflector.MethodInfo;
 import com.alterego.androidbound.zzzztoremove.reactive.Iterables;
 import com.alterego.androidbound.zzzztoremove.reactive.Predicate;
-
-import android.util.SparseArray;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -18,50 +22,14 @@ import java.util.Map;
 
 public class Reflector {
 
-    public static class MethodInfo {
+    private static SparseArray<SparseArray<PropertyInfo>> mObjectProperties = new SparseArray<SparseArray<PropertyInfo>>();
+    private static SparseArray<SparseArray<CommandInfo>> mObjectCommands = new SparseArray<SparseArray<CommandInfo>>();
+    private static SparseArray<SparseArray<List<MethodInfo>>> mObjectMethods = new SparseArray<SparseArray<List<MethodInfo>>>();
+    private static SparseArray<List<ConstructorInfo>> mObjectConstructors = new SparseArray<List<ConstructorInfo>>();
+    private static SparseArray<SparseArray<FieldInfo>> mObjectFields = new SparseArray<SparseArray<FieldInfo>>();
+    private static Object mSynchronizedObject = new Object();
 
-        public MethodInfo(Method m) {
-            this.original = m;
-            this.name = m.getName();
-            this.parameterTypes = m.getParameterTypes();
-            this.parametersCount = this.parameterTypes.length;
-            this.returnType = m.getReturnType();
-        }
 
-        public final Method original;
-        public final String name;
-        public final int parametersCount;
-        public final Class<?>[] parameterTypes;
-        public final Class<?> returnType;
-    }
-
-    public static class ConstructorInfo {
-
-        public ConstructorInfo(Constructor<?> m) {
-            this.original = m;
-            this.name = m.getName();
-            this.parameterTypes = m.getParameterTypes();
-            this.parametersCount = this.parameterTypes.length;
-        }
-
-        public final Constructor<?> original;
-        public final String name;
-        public final int parametersCount;
-        public final Class<?>[] parameterTypes;
-    }
-
-    public static class FieldInfo {
-
-        public FieldInfo(Field f) {
-            this.original = f;
-            this.name = f.getName();
-            this.type = f.getType();
-        }
-
-        public final Field original;
-        public final String name;
-        public final Class<?> type;
-    }
 
     public static class PropertyInfo {
 
@@ -88,15 +56,15 @@ public class Reflector {
             Object result = null;
             if (getter != null || field != null) {
                 try {
-                    result = getter != null ? getter.original.invoke(obj) : (field != null ? field.original.get(obj) : null);
+                    result = getter != null ? getter.mOriginalMethod.invoke(obj) : (field != null ? field.getFieldOriginal().get(obj) : null);
                 } catch (Exception e) {
-                    //PedanticLogger.e("DELTATRE", e.getCause().toString());
+                    ViewBinder.getLogger().error("Reflector getValue exception = " + e.getCause().toString());
                 }
             } else if (obj != null && obj instanceof Map) {
                 result = ((Map) obj).get(this.name);
             }
             if (result == null) {
-                //PedanticLogger.e("DELTATRE", "Reflector.getValue() returns null");
+                ViewBinder.getLogger().warning("Reflector getValue returns null");
             }
             return result;
         }
@@ -105,9 +73,9 @@ public class Reflector {
             if (setter != null || field != null) {
                 try {
                     if (setter != null) {
-                        setter.original.invoke(obj, value);
+                        setter.mOriginalMethod.invoke(obj, value);
                     } else if (field != null) {
-                        field.original.set(obj, value);
+                        field.getFieldOriginal().set(obj, value);
                     }
                 } catch (Exception e) {
                 }
@@ -142,9 +110,9 @@ public class Reflector {
                 IllegalAccessException, InvocationTargetException {
             if (this.checker != null) {
                 if (this.checkerhasParameter) {
-                    return (Boolean) checker.original.invoke(subject, parameter);
+                    return (Boolean) checker.mOriginalMethod.invoke(subject, parameter);
                 } else {
-                    return (Boolean) checker.original.invoke(subject);
+                    return (Boolean) checker.mOriginalMethod.invoke(subject);
                 }
             }
             return true;
@@ -154,9 +122,9 @@ public class Reflector {
                 IllegalAccessException, InvocationTargetException {
             if (this.invoker != null) {
                 if (this.invokerHasParameter) {
-                    invoker.original.invoke(subject, parameter);
+                    invoker.mOriginalMethod.invoke(subject, parameter);
                 } else {
-                    invoker.original.invoke(subject);
+                    invoker.mOriginalMethod.invoke(subject);
                 }
             }
         }
@@ -166,7 +134,7 @@ public class Reflector {
         List<MethodInfo> invokers = getMethods(type, "do" + name);
         if (invokers != null) {
             for (MethodInfo mi : invokers) {
-                if (mi.parametersCount <= 1) {
+                if (mi.mMethodParameterCount <= 1) {
                     return true;
                 }
             }
@@ -179,7 +147,7 @@ public class Reflector {
         List<MethodInfo> getters = getMethods(type, "get" + name);
         if (getters != null) {
             for (MethodInfo mi : getters) {
-                if (mi.parametersCount == 0) {
+                if (mi.mMethodParameterCount == 0) {
                     return true;
                 }
             }
@@ -188,7 +156,7 @@ public class Reflector {
         getters = getMethods(type, "is" + name);
         if (getters != null) {
             for (MethodInfo mi : getters) {
-                if (mi.parametersCount == 0) {
+                if (mi.mMethodParameterCount == 0) {
                     return true;
                 }
             }
@@ -202,8 +170,8 @@ public class Reflector {
         int nameCode = name.hashCode();
 
         PropertyInfo retval = null;
-        synchronized (sync) {
-            SparseArray<PropertyInfo> sa = properties.get(typeCode);
+        synchronized (mSynchronizedObject) {
+            SparseArray<PropertyInfo> sa = mObjectProperties.get(typeCode);
             if (sa != null) {
                 retval = sa.get(nameCode);
             }
@@ -220,7 +188,7 @@ public class Reflector {
         List<MethodInfo> getters = getMethods(type, "get" + name);
         if (getters != null) {
             for (MethodInfo mi : getters) {
-                if (mi.parametersCount == 0) {
+                if (mi.mMethodParameterCount == 0) {
                     getter = mi;
                     break;
                 }
@@ -231,7 +199,7 @@ public class Reflector {
             getters = getMethods(type, "is" + name);
             if (getters != null) {
                 for (MethodInfo mi : getters) {
-                    if (mi.parametersCount == 0) {
+                    if (mi.mMethodParameterCount == 0) {
                         getter = mi;
                         break;
                     }
@@ -244,7 +212,7 @@ public class Reflector {
 
             if (setters != null) {
                 for (MethodInfo mi : setters) {
-                    if (mi.parametersCount == 1 && getter.returnType.equals(mi.parameterTypes[0])) {
+                    if (mi.mMethodParameterCount == 1 && getter.mMethodReturnType.equals(mi.mMethodParameterTypes[0])) {
                         setter = mi;
                         break;
                     }
@@ -261,13 +229,13 @@ public class Reflector {
         retval = new PropertyInfo(name,
                 getter != null || field != null || ismap,
                 setter != null || field != null || ismap,
-                getter != null ? getter.returnType : (field != null ? field.type : Object.class),
+                getter != null ? getter.mMethodReturnType : (field != null ? field.getFieldType() : Object.class),
                 getter,
                 setter,
                 field);
 
-        synchronized (sync) {
-            SparseArray<PropertyInfo> sa = properties.get(typeCode);
+        synchronized (mSynchronizedObject) {
+            SparseArray<PropertyInfo> sa = mObjectProperties.get(typeCode);
             if (sa != null) {
                 // replace instance to make this thread safe...because someone
                 // other may have a reference to this map
@@ -276,7 +244,7 @@ public class Reflector {
                 sa = new SparseArray<PropertyInfo>();
             }
             sa.put(nameCode, retval);
-            properties.put(typeCode, sa);
+            mObjectProperties.put(typeCode, sa);
         }
 
         return retval;
@@ -288,8 +256,8 @@ public class Reflector {
         int nameCode = name.hashCode();
 
         CommandInfo retval = null;
-        synchronized (sync) {
-            SparseArray<CommandInfo> sa = commands.get(typeCode);
+        synchronized (mSynchronizedObject) {
+            SparseArray<CommandInfo> sa = mObjectCommands.get(typeCode);
             if (sa != null) {
                 retval = sa.get(nameCode);
             }
@@ -307,10 +275,10 @@ public class Reflector {
         List<MethodInfo> invokers = getMethods(type, "do" + name);
         if (invokers != null) {
             for (MethodInfo mi : invokers) {
-                if (mi.parametersCount <= 1) {
+                if (mi.mMethodParameterCount <= 1) {
                     invoker = mi;
-                    if (mi.parametersCount > 0) {
-                        invokerParameterType = mi.parameterTypes[0];
+                    if (mi.mMethodParameterCount > 0) {
+                        invokerParameterType = mi.mMethodParameterTypes[0];
                     }
                     break;
                 }
@@ -321,10 +289,10 @@ public class Reflector {
             List<MethodInfo> checkers = getMethods(type, "can" + name);
             if (checkers != null) {
                 for (MethodInfo mi : checkers) {
-                    if (mi.parametersCount <= 1 && mi.returnType == boolean.class) {
+                    if (mi.mMethodParameterCount <= 1 && mi.mMethodReturnType == boolean.class) {
                         checker = mi;
-                        if (mi.parametersCount > 0) {
-                            checkerParameterType = mi.parameterTypes[0];
+                        if (mi.mMethodParameterCount > 0) {
+                            checkerParameterType = mi.mMethodParameterTypes[0];
                         }
                         break;
                     }
@@ -334,8 +302,8 @@ public class Reflector {
 
         retval = new CommandInfo(name, invokerParameterType, checkerParameterType, invoker, checker);
 
-        synchronized (sync) {
-            SparseArray<CommandInfo> sa = commands.get(typeCode);
+        synchronized (mSynchronizedObject) {
+            SparseArray<CommandInfo> sa = mObjectCommands.get(typeCode);
             if (sa != null) {
                 // replace instance to make this thread safe...because someone
                 // other may have a reference to this map
@@ -344,7 +312,7 @@ public class Reflector {
                 sa = new SparseArray<CommandInfo>();
             }
             sa.put(nameCode, retval);
-            commands.put(typeCode, sa);
+            mObjectCommands.put(typeCode, sa);
         }
 
         return retval;
@@ -354,8 +322,8 @@ public class Reflector {
         int typeCode = type.hashCode();
         SparseArray<FieldInfo> retval = null;
 
-        synchronized (sync) {
-            retval = fields.get(typeCode);
+        synchronized (mSynchronizedObject) {
+            retval = mObjectFields.get(typeCode);
         }
 
         if (retval != null) {
@@ -364,8 +332,8 @@ public class Reflector {
 
         retval = getFieldsForClass(type);
 
-        synchronized (sync) {
-            fields.put(typeCode, retval);
+        synchronized (mSynchronizedObject) {
+            mObjectFields.put(typeCode, retval);
         }
 
         return retval;
@@ -375,8 +343,8 @@ public class Reflector {
         int typecode = type.hashCode();
         SparseArray<List<MethodInfo>> retval = null;
 
-        synchronized (sync) {
-            retval = methods.get(typecode);
+        synchronized (mSynchronizedObject) {
+            retval = mObjectMethods.get(typecode);
         }
 
         if (retval != null) {
@@ -385,8 +353,8 @@ public class Reflector {
 
         retval = getMethodsForClass(type);
 
-        synchronized (sync) {
-            methods.put(typecode, retval);
+        synchronized (mSynchronizedObject) {
+            mObjectMethods.put(typecode, retval);
         }
 
         return retval;
@@ -396,8 +364,8 @@ public class Reflector {
         int typecode = type.hashCode();
         List<ConstructorInfo> retval = null;
 
-        synchronized (sync) {
-            retval = constructors.get(typecode);
+        synchronized (mSynchronizedObject) {
+            retval = mObjectConstructors.get(typecode);
         }
 
         if (retval != null) {
@@ -406,8 +374,8 @@ public class Reflector {
 
         retval = getConstructorsForClass(type);
 
-        synchronized (sync) {
-            constructors.put(typecode, retval);
+        synchronized (mSynchronizedObject) {
+            mObjectConstructors.put(typecode, retval);
         }
 
         return retval;
@@ -462,7 +430,7 @@ public class Reflector {
         if (parameterTypes != null
                 && (parameters == null || parameters.length != parameterTypes.length)) {
             throw new IllegalArgumentException(
-                    "parameterTypes and parameters must have the same size");
+                    "mMethodParameterTypes and parameters must have the same size");
         }
 
         ConstructorInfo constructor = getConstructor(type, parameterTypes);
@@ -470,7 +438,7 @@ public class Reflector {
             throw new InstantiationException("constructor does not exists");
         }
 
-        return (T) constructor.original.newInstance(parameters);
+        return (T) constructor.mConstructorOriginal.newInstance(parameters);
     }
 
     public static boolean canCreateInstance(Class<?> type, Class<?>[] parameterTypes) {
@@ -478,25 +446,35 @@ public class Reflector {
     }
 
     private static SparseArray<FieldInfo> getFieldsForClass(Class<?> type) {
-        Field[] fs = type.getFields();
+        //TODO to test
+//        Field[] fs = mFieldType.getFields();
+//
+//        SparseArray<FieldInfo> fields = new SparseArray<Reflector.FieldInfo>(fs.length);
+//        for (Field f : fs) {
+//            FieldInfo fi = new FieldInfo(f);
+//            fields.put(fi.mConstructorName.hashCode(), fi);
+//        }
 
-        SparseArray<FieldInfo> fields = new SparseArray<Reflector.FieldInfo>(fs.length);
-        for (Field f : fs) {
-            FieldInfo fi = new FieldInfo(f);
-            fields.put(fi.name.hashCode(), fi);
+        Field[] fields = type.getDeclaredFields();
+        SparseArray<FieldInfo> class_fields = new SparseArray<FieldInfo>(fields.length);
+        for (Field field : fields) {
+            field.setAccessible(true);
+            FieldInfo new_field = new FieldInfo(field);
+            class_fields.put(new_field.getFieldName().hashCode(), new_field);
         }
 
-        return fields;
+        return class_fields;
     }
 
     private static SparseArray<List<MethodInfo>> getMethodsForClass(Class<?> type) {
-
-        Method[] ms = type.getMethods();
+        //TODO to test
+        Method[] ms = type.getDeclaredMethods();
 
         SparseArray<List<MethodInfo>> methods = new SparseArray<List<MethodInfo>>(ms.length);
         for (Method m : ms) {
+            m.setAccessible(true);
             MethodInfo mi = new MethodInfo(m);
-            int methodCode = mi.name.hashCode();
+            int methodCode = mi.mMethodName.hashCode();
 
             List<MethodInfo> mlist = methods.get(methodCode);
             if (mlist == null) {
@@ -527,12 +505,12 @@ public class Reflector {
                 if (parameterTypes == null) {
                     return true;
                 }
-                if (obj.parametersCount != parameterTypes.length) {
+                if (obj.mMethodParameterCount != parameterTypes.length) {
                     return false;
                 }
 
                 for (int i = 0; i < parameterTypes.length; i++) {
-                    if (!obj.parameterTypes[i].equals(parameterTypes[i])) {
+                    if (!obj.mMethodParameterTypes[i].equals(parameterTypes[i])) {
                         return false;
                     }
                 }
@@ -551,12 +529,12 @@ public class Reflector {
                 if (pts == null) {
                     pts = new Class<?>[0];
                 }
-                if (obj.parametersCount != pts.length) {
+                if (obj.mConstructorParameterCount != pts.length) {
                     return false;
                 }
 
                 for (int i = 0; i < pts.length; i++) {
-                    if (!obj.parameterTypes[i].equals(pts[i])) {
+                    if (!obj.mConstructorParameterTypes[i].equals(pts[i])) {
                         return false;
                     }
                 }
@@ -579,10 +557,5 @@ public class Reflector {
         return clone;
     }
 
-    private static SparseArray<SparseArray<PropertyInfo>> properties = new SparseArray<SparseArray<PropertyInfo>>();
-    private static SparseArray<SparseArray<CommandInfo>> commands = new SparseArray<SparseArray<CommandInfo>>();
-    private static SparseArray<SparseArray<List<MethodInfo>>> methods = new SparseArray<SparseArray<List<MethodInfo>>>();
-    private static SparseArray<List<ConstructorInfo>> constructors = new SparseArray<List<ConstructorInfo>>();
-    private static SparseArray<SparseArray<FieldInfo>> fields = new SparseArray<SparseArray<FieldInfo>>();
-    private static Object sync = new Object();
+
 }
