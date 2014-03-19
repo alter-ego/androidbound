@@ -124,6 +124,8 @@ public class BindableListAdapter extends BaseAdapter {
             return null;
         }
 
+        //View currentView = null;
+
         View currentView = this.findView(position);
 
         //we already have the view
@@ -164,18 +166,21 @@ public class BindableListAdapter extends BaseAdapter {
             Object source = itemsSource.get(position);
 
             //we have the same view instance, we need to clear the bindings, remove the view, and rebind it
-            if (convertView!=null && convertView instanceof BindableListItemView) {
-//                ViewBinder.getLogger().debug("BindableListAdapter getView convertView != null, unbinding");
-//                ((BindableListItemView) convertView).unbind();
-//                ViewBinder.getLogger().debug("BindableListAdapter getView convertView != null, removing views");
-//                ((BindableListItemView) convertView).removeAllViews();
-                ViewBinder.getLogger().debug("BindableListAdapter getView convertView != null, binding with source again");
-                ((BindableListItemView) convertView).bindTo(source);
-            } else { //create the view ex-novo
+            //if (convertView!=null && convertView instanceof BindableListItemView) {
+////                ViewBinder.getLogger().debug("BindableListAdapter getView convertView != null, unbinding");
+////                ((BindableListItemView) convertView).unbind();
+////                ViewBinder.getLogger().debug("BindableListAdapter getView convertView != null, removing views");
+////                ((BindableListItemView) convertView).removeAllViews();
+//                ViewBinder.getLogger().debug("BindableListAdapter getView convertView != null, binding with source again");
+//                ((BindableListItemView) convertView).bindTo(source);
+
+//                bindViewTo(convertView, source);
+//                currentView = convertView;
+//            } else { //create the view ex-novo
                 ViewBinder.getLogger().debug("BindableListAdapter getView inflate view from zero");
                 currentView = new BindableListItemView(context, viewBinder, itemTemplate, source);
                 this.insertView(position, currentView);
-            }
+//            }
 
 
             //if (recycleView != null) {
@@ -244,7 +249,10 @@ public class BindableListAdapter extends BaseAdapter {
         	View v = this.itemViews.get(i);
         	if(v != null) {
         		this.bindViewTo(v, this.itemsSource.get(i));
-        	}
+        	} else {
+                v = new BindableListItemView(context, viewBinder, itemTemplate, this.itemsSource.get(i));
+                this.insertView(i, v);
+            }
         }
     }
 
