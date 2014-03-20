@@ -6,16 +6,16 @@ import com.alterego.androidbound.interfaces.IBinding;
 import com.alterego.androidbound.zzzztoremove.reactive.IScheduler;
 
 public class TargetBindingFactory extends SourceBindingFactory {
-	private IScheduler scheduler;
-	
-	public TargetBindingFactory(IScheduler scheduler, IAndroidLogger logger) {
-		super(logger);
-		this.scheduler = scheduler;
-	}
 
-	@Override
-	protected IBinding createLeaf(Object source, String property, boolean needChangesIfPossible) {
-		IBinding result = new TargetPropertyBinding(source, property, needChangesIfPossible, scheduler, logger);
-		return result;
-	}
+    private IScheduler mScheduler;
+
+    public TargetBindingFactory(IScheduler scheduler, IAndroidLogger logger) {
+        super(logger);
+        mScheduler = scheduler;
+    }
+
+    @Override
+    protected IBinding createLeaf(Object source, String property, boolean needChangesIfPossible) {
+        return new TargetPropertyBinding(source, property, needChangesIfPossible, mScheduler, mLogger);
+    }
 }
