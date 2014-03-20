@@ -1,9 +1,4 @@
-
 package com.alterego.androidbound.binds;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import com.alterego.androidbound.interfaces.INotifyPropertyChanged;
 import com.alterego.androidbound.zzzztoremove.reactive.IObservable;
@@ -11,10 +6,16 @@ import com.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import com.alterego.androidbound.zzzztoremove.reactive.Iterables;
 import com.alterego.androidbound.zzzztoremove.reactive.Subject;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyChanged {
+
     private static final long serialVersionUID = 1L;
 
     public static interface IValidator<K, V> {
+
         public abstract boolean isValid(Map<K, V> map, K key, V value);
 
         public abstract boolean canMakeValid(Map<K, V> map, K key, V value);
@@ -22,9 +23,11 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
         public abstract V makeValid(Map<K, V> map, K key, V value);
     }
 
-    protected ISubject<String> propertySubject;
-    protected IValidator<K, V> propertyValidator;
-    protected V defaultValue;
+    protected ISubject<String> mPropertySubject;
+
+    protected IValidator<K, V> mPropertyValidator;
+
+    protected V mDefaultValue;
 
     public BindableMap() {
         this(null, null);
@@ -35,20 +38,20 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
     }
 
     public BindableMap(IValidator<K, V> validator, V defaultValue) {
-        this.propertyValidator = validator;
-        this.propertySubject = new Subject<String>();
-        this.defaultValue = defaultValue;
+        mPropertyValidator = validator;
+        mPropertySubject = new Subject<String>();
+        mDefaultValue = defaultValue;
     }
 
     @Override
     public V put(K key, V value) {
-        if (this.propertyValidator != null) {
-            if (!this.propertyValidator.isValid(this, key, value)) {
-                if (!this.propertyValidator.canMakeValid(this, key, value)) {
+        if (mPropertyValidator != null) {
+            if (!mPropertyValidator.isValid(this, key, value)) {
+                if (!mPropertyValidator.canMakeValid(this, key, value)) {
                     return this.get(key);
                 }
 
-                value = this.propertyValidator.makeValid(this, key, value);
+                value = mPropertyValidator.makeValid(this, key, value);
             }
         }
 
@@ -63,7 +66,7 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
         }
 
         if (key != null) {
-            this.raisePropertyChanged(key.toString());
+            raisePropertyChanged(key.toString());
         }
 
         return oldValue;
@@ -76,7 +79,7 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
         }
 
         for (Map.Entry<? extends K, ? extends V> ent : map.entrySet()) {
-            this.put(ent.getKey(), ent.getValue());
+            put(ent.getKey(), ent.getValue());
         }
     }
 
@@ -108,18 +111,18 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
     @Override
     public V get(Object key) {
         if (!super.containsKey(key)) {
-            return this.defaultValue;
+            return mDefaultValue;
         }
         return super.get(key);
     }
 
     @Override
     public IObservable<String> onPropertyChanged() {
-        return this.propertySubject;
+        return mPropertySubject;
     }
 
     public void forceValidation() {
-        if (this.propertyValidator == null) {
+        if (mPropertyValidator == null) {
             return;
         }
 
@@ -131,15 +134,15 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
 
     @Override
     public void dispose() {
-        if (this.propertySubject != null) {
-            this.propertySubject.dispose();
-            this.propertySubject = null;
+        if (mPropertySubject != null) {
+            mPropertySubject.dispose();
+            mPropertySubject = null;
         }
 
         super.clear();
     }
 
     protected void raisePropertyChanged(String property) {
-        this.propertySubject.onNext(property);
+        mPropertySubject.onNext(property);
     }
 }
