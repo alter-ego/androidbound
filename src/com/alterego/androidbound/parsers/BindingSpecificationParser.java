@@ -1,7 +1,4 @@
-
 package com.alterego.androidbound.parsers;
-
-import java.util.Map;
 
 import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
@@ -13,9 +10,14 @@ import com.alterego.androidbound.interfaces.IParser;
 import com.alterego.androidbound.interfaces.IResourceProvider;
 import com.alterego.androidbound.interfaces.IValueConverterProvider;
 
+import java.util.Map;
+
 public class BindingSpecificationParser implements IParser<BindingSpecification> {
+
     private IAndroidLogger logger = NullAndroidLogger.instance;
+
     private IValueConverterProvider converterProvider;
+
     private IResourceProvider resourceProvider;
 
     public BindingSpecificationParser(IValueConverterProvider converterProvider, IResourceProvider resourceProvider, IAndroidLogger logger) {
@@ -24,7 +26,7 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
         setLogger(logger);
     }
 
-     private final static Pattern pattern = Pattern
+    private final static Pattern pattern = Pattern
             .compile("\\s*(?<target>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z]" +
                     "[a-zA-Z0-9]*)*)*)\\s*(?<mode><=>|<-|->|=>|=|<=)\\s*(" +
                     "?:(?<converter>[a-zA-Z][a-zA-Z0-9]*)\\s*\\()?\\s*(?<" +
@@ -45,37 +47,41 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
         Map<String, String> groups = matcher.namedGroups();
 
         BindingSpecification result = new BindingSpecification();
-        result.Target = groups.get("target");
-        result.Path = groups.get("path");
-        result.Mode = parseMode(groups.get("mode"));
-        result.Converter = converterProvider.find(groups.get("converter"));
-        result.ConverterParameter = resolveResource(groups.get("parameterString"), groups.get("parameterName"));
-        result.FallbackValue = resolveResource(groups.get("fallbackString"), groups.get("fallbackName"));
+        result.setTarget(groups.get("target"));
+        result.setPath(groups.get("path"));
+        result.setMode(parseMode(groups.get("mode")));
+        result.setValueConverter(converterProvider.find(groups.get("converter")));
+        result.setConverterParameter(resolveResource(groups.get("parameterString"), groups.get("parameterName")));
+        result.setFallbackValue(resolveResource(groups.get("fallbackString"), groups.get("fallbackName")));
         return result;
     }
 
     private Object resolveResource(String constValue, String namedValue) {
-        if (namedValue != null)
+        if (namedValue != null) {
             return resourceProvider.find(namedValue);
+        }
         return unescape(constValue);
     }
 
     final static String unescape(String value) {
-        if (value == null)
+        if (value == null) {
             return null;
+        }
         StringBuffer result = new StringBuffer(value.length());
         boolean appendBackSlash = false;
 
         for (int i = 0; i < value.length(); i++) {
             int code = value.codePointAt(i);
-            if (value.codePointAt(i) > Character.MAX_VALUE)
+            if (value.codePointAt(i) > Character.MAX_VALUE) {
                 i++;
+            }
 
             if (!appendBackSlash) {
-                if (code == '\\')
+                if (code == '\\') {
                     appendBackSlash = true;
-                else
+                } else {
                     result.append(Character.toChars(code));
+                }
                 continue;
             }
 
@@ -105,24 +111,31 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
             }
             appendBackSlash = false;
         }
-        if (appendBackSlash)
+        if (appendBackSlash) {
             result.append('\\');
+        }
         return result.toString();
     }
 
     private BindingMode parseMode(String value) {
-        if (value.equals("="))
+        if (value.equals("=")) {
             return BindingMode.Default;
-        if (value.equals("->"))
+        }
+        if (value.equals("->")) {
             return BindingMode.OneWayToSourceOneTime;
-        if (value.equals("=>"))
+        }
+        if (value.equals("=>")) {
             return BindingMode.OneWayToSource;
-        if (value.equals("<-"))
+        }
+        if (value.equals("<-")) {
             return BindingMode.OneWayOneTime;
-        if (value.equals("<="))
+        }
+        if (value.equals("<=")) {
             return BindingMode.OneWay;
-        if (value.equals("<=>"))
+        }
+        if (value.equals("<=>")) {
             return BindingMode.TwoWay;
+        }
 
         logger.warning("Invalid value '" + value + "' found for BindingMode. Switching to Default.");
         return BindingMode.Default;

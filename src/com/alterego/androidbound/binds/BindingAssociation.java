@@ -1,4 +1,3 @@
-
 package com.alterego.androidbound.binds;
 
 import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
@@ -10,104 +9,110 @@ import com.alterego.androidbound.zzzztoremove.reactive.Action;
 import com.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import com.alterego.androidbound.zzzztoremove.reactive.Observers;
 
-
 import java.util.Locale;
 
 public class BindingAssociation implements IBindingAssociation {
-    private BindingMode mode;
-    private Object dataContext;
-    private BindingSpecification specification;
-    private IBinding sourceBinding;
-    private IBinding targetBinding;
-    private IDisposable sourceSubscription;
-    private IDisposable targetSubscription;
-    private IAndroidLogger logger = NullAndroidLogger.instance;
-    private IBindingFactory sourceFactory;
 
-    private IBindingFactory targetFactory;
+    private BindingMode mMode;
+
+    private Object mDataContext;
+
+    private BindingSpecification mBindingSpecification;
+
+    private IBinding mSourceBinding;
+
+    private IBinding mTargetBinding;
+
+    private IDisposable mSourceSubscription;
+
+    private IDisposable mTargetSubscription;
+
+    private IAndroidLogger mLogger = NullAndroidLogger.instance;
+
+    private IBindingFactory mSourceFactory;
+
+    private IBindingFactory mTargetFactory;
 
     public BindingAssociation(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, IAndroidLogger logger) {
-        this.mode = request.getSpecification().Mode;
-        this.sourceFactory = sourceFactory;
-        this.targetFactory = targetFactory;
-        this.specification = request.getSpecification();
+        mMode = request.getSpecification().getMode();
+        mSourceFactory = sourceFactory;
+        mTargetFactory = targetFactory;
+        mBindingSpecification = request.getSpecification();
 
         setLogger(logger);
         createTargetBinding(request.getTarget());
         createSourceBinding(request.getSource());
 
-        if (needsTargetUpdate())
-            updateSourceFromTarget(targetBinding.getValue());
+        if (needsTargetUpdate()) {
+            updateSourceFromTarget(mTargetBinding.getValue());
+        }
 
-        if (needsSourceUpdate())
-            updateTargetFromSource(sourceBinding.getValue());
+        if (needsSourceUpdate()) {
+            updateTargetFromSource(mSourceBinding.getValue());
+        }
     }
 
     public Object getDataContext() {
-        return dataContext;
+        return mDataContext;
     }
 
     public void setDataContext(Object value) {
-        if (dataContext == value)
+        if (mDataContext == value) {
             return;
-        dataContext = value;
-        if (sourceBinding != null)
-            sourceBinding.dispose();
-        if (sourceSubscription != null)
-            sourceSubscription.dispose();
+        }
+        mDataContext = value;
+
+        if (mSourceBinding != null) {
+            mSourceBinding.dispose();
+        }
+        if (mSourceSubscription != null) {
+            mSourceSubscription.dispose();
+        }
+
         createSourceBinding(value);
-        if (needsSourceUpdate())
-            updateTargetFromSource(sourceBinding.getValue());
+        if (needsSourceUpdate()) {
+            updateTargetFromSource(mSourceBinding.getValue());
+        }
     }
 
     private void createSourceBinding(Object source) {
         boolean needsSubs = needsSourceSubscription();
 
-        sourceBinding = sourceFactory.create(source, specification.Path, needsSubs);
+        mSourceBinding = mSourceFactory.create(source, mBindingSpecification.getPath(), needsSubs);
 
-        if (needsSubs)
-            if (sourceBinding.hasChanges()) {
-                //logger.debug("Binding " + specification.Path + " needs subscription.");
-                sourceSubscription = sourceBinding.getChanges().subscribe(Observers.fromAction(new Action<Object>() {
+        if (needsSubs) {
+            if (mSourceBinding.hasChanges()) {
+                mSourceSubscription = mSourceBinding.getChanges().subscribe(Observers.fromAction(new Action<Object>() {
                     public void invoke(Object obj) {
                         updateTargetFromSource(obj);
                     }
                 }));
             } else {
-                logger.warning("Binding " + specification.Path + " needs subscription, but changes were not available");
+                mLogger.warning("Binding " + mBindingSpecification.getPath() + " needs subscription, but changes were not available");
             }
-
-        /* commented out because in contstructor, if createsource is called before createtarget, target binding used by updateTargetFromSource is always null
-        if (needsSourceUpdate())
-        	updateTargetFromSource(sourceBinding.getValue());
-        */
+        }
     }
 
     private void createTargetBinding(Object target) {
         boolean needsSubs = needsTargetSubscription();
 
-        targetBinding = (IBinding) targetFactory.create(target, specification.Target, needsSubs);
+        mTargetBinding = mTargetFactory.create(target, mBindingSpecification.getTarget(), needsSubs);
 
         if (needsSubs) {
-            if (targetBinding.hasChanges()) {
-                //logger.debug("Binding " + specification.Target + " needs subscription.");
-                targetSubscription = targetBinding.getChanges().subscribe(Observers.fromAction(new Action<Object>() {
+            if (mTargetBinding.hasChanges()) {
+                mTargetSubscription = mTargetBinding.getChanges().subscribe(Observers.fromAction(new Action<Object>() {
                     public void invoke(Object obj) {
                         updateSourceFromTarget(obj);
                     }
                 }));
             } else {
-                logger.warning("Binding " + specification.Target + " needs subscription, but changes were not available.");
+                mLogger.warning("Binding " + mBindingSpecification.getTarget() + " needs subscription, but changes were not available.");
             }
         }
-        /* commented out because in contstructor, if createtarget is called before createsource, source binding used by updateSourceFromTarget is always null
-        if (needsTargetUpdate())
-        	updateSourceFromTarget(targetBinding.getValue());
-        */
     }
 
     private boolean needsSourceSubscription() {
-        switch (this.mode) {
+        switch (mMode) {
             case Default:
             case OneWay:
             case TwoWay:
@@ -118,7 +123,7 @@ public class BindingAssociation implements IBindingAssociation {
     }
 
     private boolean needsTargetSubscription() {
-        switch (this.mode) {
+        switch (mMode) {
             case Default:
             case OneWayToSource:
             case TwoWay:
@@ -129,7 +134,7 @@ public class BindingAssociation implements IBindingAssociation {
     }
 
     private boolean needsSourceUpdate() {
-        switch (this.mode) {
+        switch (mMode) {
             case Default:
             case OneWayOneTime:
             case OneWay:
@@ -141,7 +146,7 @@ public class BindingAssociation implements IBindingAssociation {
     }
 
     private boolean needsTargetUpdate() {
-        switch (this.mode) {
+        switch (mMode) {
             case TwoWay:
             case OneWayToSource:
             case OneWayToSourceOneTime:
@@ -152,48 +157,52 @@ public class BindingAssociation implements IBindingAssociation {
     }
 
     protected void updateTargetFromSource(Object obj) {
-        Object result = null;
+        Object result;
         try {
             if (obj != IBinding.noValue) {
-                //				logger.verbose("Updating binding from source " + specification.Path + " to target "
-                //						+ specification.Target);
-                result = specification.Converter.convert(obj, targetBinding.getType(),
-                        specification.ConverterParameter, Locale.getDefault());
+                result = mBindingSpecification
+                        .getValueConverter()
+                        .convert(obj, mTargetBinding.getType(), mBindingSpecification.getConverterParameter(), Locale.getDefault());
 
             } else {
-                logger.warning("Switching to fallback value for " + specification.Path);
-                result = specification.FallbackValue;
+                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getPath());
+                result = mBindingSpecification.getFallbackValue();
             }
-            targetBinding.setValue(result);
+            mTargetBinding.setValue(result);
         } catch (Exception e) {
-            logger.error("Error occurred while binding " + specification.Path + " to target " + specification.Target
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getPath() + " to target " + mBindingSpecification.getTarget()
                     + ": " + e.getMessage());
         }
     }
 
     protected void updateSourceFromTarget(Object obj) {
         try {
-            Object result = specification.Converter.convertBack(obj, sourceBinding.getType(),
-                    specification.ConverterParameter, Locale.getDefault());
-            sourceBinding.setValue(result);
+            Object result = mBindingSpecification
+                    .getValueConverter()
+                    .convertBack(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(), Locale.getDefault());
+            mSourceBinding.setValue(result);
         } catch (Exception e) {
-            logger.error("Error occurred while binding " + specification.Target + " to source " + specification.Path
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getTarget() + " to source " + mBindingSpecification.getPath()
                     + ": " + e.getMessage());
         }
     }
 
     public void setLogger(IAndroidLogger logger) {
-        this.logger = logger.getLogger(this);
+        mLogger = logger.getLogger(this);
     }
 
     public void dispose() {
-        if (sourceSubscription != null)
-            sourceSubscription.dispose();
-        if (targetSubscription != null)
-            targetSubscription.dispose();
-        if (sourceBinding != null)
-            sourceBinding.dispose();
-        if (targetBinding != null)
-            targetBinding.dispose();
+        if (mSourceSubscription != null) {
+            mSourceSubscription.dispose();
+        }
+        if (mTargetSubscription != null) {
+            mTargetSubscription.dispose();
+        }
+        if (mSourceBinding != null) {
+            mSourceBinding.dispose();
+        }
+        if (mTargetBinding != null) {
+            mTargetBinding.dispose();
+        }
     }
 }
