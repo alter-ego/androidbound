@@ -1,4 +1,3 @@
-
 package com.alterego.androidbound.binds;
 
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
@@ -13,15 +12,17 @@ import com.alterego.androidbound.zzzztoremove.reactive.Observers;
 import com.alterego.androidbound.zzzztoremove.reactive.Predicate;
 
 public class PropertyBinding extends BindingBase {
-    private IDisposable memberSubscription;
-    private PropertyInfo info;
+
+    private IDisposable mMemberSubscription;
+
+    private PropertyInfo mInfo;
 
     public PropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, IAndroidLogger logger) {
         super(subject, logger);
 
-        this.info = Reflector.getProperty(subject.getClass(), propertyName); //new PropertyInfo(subject.getClass(), propertyName);
+        mInfo = Reflector.getProperty(subject.getClass(), propertyName);
 
-        setupBinding(subject, this.info.name, needChangesIfPossible);
+        setupBinding(subject, mInfo.name, needChangesIfPossible);
     }
 
     private void setupBinding(Object subject, final String propertyName, boolean needChangesIfPossible) {
@@ -30,7 +31,7 @@ public class PropertyBinding extends BindingBase {
         }
 
         if (needChangesIfPossible && (getSubject() instanceof INotifyPropertyChanged)) {
-            this.setupChanges(true);
+            setupChanges(true);
             getLogger().debug(propertyName + " implements INotifyPropertyChanged. Subscribing...");
 
             Predicate<String> isMember = new Predicate<String>() {
@@ -39,21 +40,20 @@ public class PropertyBinding extends BindingBase {
                 }
             };
 
-            memberSubscription = Observables.from((INotifyPropertyChanged) subject)
+            mMemberSubscription = Observables.from((INotifyPropertyChanged) subject)
                     .where(isMember)
                     .subscribe(Observers.fromAction(new Action<String>() {
                         public void invoke(String name) {
                             onBoundPropertyChanged();
                         }
                     }));
-        }
-        else {
-            this.setupChanges(false);
+        } else {
+            setupChanges(false);
         }
     }
 
     protected PropertyInfo getInfo() {
-        return info;
+        return mInfo;
     }
 
     protected void onBoundPropertyChanged() {
@@ -62,36 +62,37 @@ public class PropertyBinding extends BindingBase {
 
     @Override
     public Class<?> getType() {
-        return info.type;
+        return mInfo.type;
     }
 
     @Override
     public Object getValue() {
-        if (info.canRead)
-            return info.getValue(getSubject());
+        if (mInfo.canRead) {
+            return mInfo.getValue(getSubject());
+        }
 
-        getLogger().warning("Cannot get value for property " + this.info.name + ": property is non-existent");
+        getLogger().warning("Cannot get value for property " + this.mInfo.name + ": property is non-existent");
         return IBinding.noValue;
     }
 
     @Override
     public void setValue(Object value) {
-        if (info.canWrite) {
-            info.setValue(getSubject(), value);
+        if (mInfo.canWrite) {
+            mInfo.setValue(getSubject(), value);
         } else {
-            if (info.canRead) {
-                getLogger().warning("Cannot set value for property " + this.info.name + ": propery is read-only");
+            if (mInfo.canRead) {
+                getLogger().warning("Cannot set value for property " + this.mInfo.name + ": propery is read-only");
             } else {
-                getLogger().warning("Cannot set value for property " + this.info.name + ": propery is non-existent");
+                getLogger().warning("Cannot set value for property " + this.mInfo.name + ": propery is non-existent");
             }
         }
     }
 
     @Override
     public void dispose() {
-        if (memberSubscription != null) {
-            memberSubscription.dispose();
-            memberSubscription = null;
+        if (mMemberSubscription != null) {
+            mMemberSubscription.dispose();
+            mMemberSubscription = null;
         }
         super.dispose();
     }

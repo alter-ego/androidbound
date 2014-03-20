@@ -1,7 +1,5 @@
 package com.alterego.androidbound.binds;
 
-import java.util.List;
-
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.interfaces.IBinding;
 import com.alterego.androidbound.interfaces.IBindingFactory;
@@ -9,75 +7,87 @@ import com.alterego.androidbound.zzzztoremove.reactive.Action;
 import com.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import com.alterego.androidbound.zzzztoremove.reactive.Observers;
 
+import java.util.List;
+
 public class ChainedBinding extends PropertyBinding {
-	private boolean needChangesIfPossible;
-	private IBindingFactory factory;
-	private List<String> tokens;
-	private IBinding currentBinding;
-	private IDisposable currentBindingChanged;
-	private String memberName;
 
-	public ChainedBinding(Object source, String propertyName, List<String> tokens, boolean needChangesIfPossible, IBindingFactory factory, IAndroidLogger logger) {
-		super(source, propertyName, needChangesIfPossible, logger);
-		this.needChangesIfPossible = needChangesIfPossible;
-		this.memberName = propertyName;
-		this.tokens = tokens;
-		this.factory = factory;
-		updateChildBinding();
-	}
+    private boolean mNeedChangesIfPossible;
 
-	protected void updateChildBinding() {
-		if (currentBinding != null) {
-			currentBindingChanged.dispose();
-			currentBinding.dispose();
-			currentBindingChanged = null;
-		}
-		
-		Object currentValue = getInfo().getValue(getSubject());
-		if (currentValue == null)
-			return;
-		currentBinding = factory.create(currentValue, tokens, this.needChangesIfPossible);
-		currentBindingChanged = currentBinding.getChanges().subscribe(Observers.fromAction(new Action<Object>() {
-			public void invoke(Object obj) {
-				notifyChange(obj);
-			}
-		}));
-	}
+    private IBindingFactory mBindingFactory;
 
-	@Override
-	public Class<?> getType() {
-		return currentBinding == null ? Object.class : currentBinding.getType();
-	}
+    private List<String> mTokens;
 
-	@Override
-	protected void onBoundPropertyChanged() {
-		updateChildBinding();
-		notifyChange(getValue());
-	}
+    private IBinding mCurrentBinding;
 
-	@Override
-	public Object getValue() {
-		return currentBinding == null ? IBinding.noValue : currentBinding.getValue();
-	}
+    private IDisposable mCurrentBindingChanged;
 
-	@Override
-	public void setValue(Object value) {
-		if (currentBinding == null)
-			getLogger().warning("Target property path is missing. Couldn't set value for " + memberName);
-		else
-			currentBinding.setValue(value);
-	}
+    private String mMemberName;
 
-	@Override
-	public void dispose() {
-		super.dispose();
-		if(currentBindingChanged != null) {
-			currentBindingChanged.dispose();
-			currentBindingChanged = null;
-		}
-		if (currentBinding != null) {
-			currentBinding.dispose();
-			currentBinding = null;
-		}
-	}
+    public ChainedBinding(Object source, String propertyName, List<String> tokens, boolean needChangesIfPossible, IBindingFactory factory,
+            IAndroidLogger logger) {
+        super(source, propertyName, needChangesIfPossible, logger);
+        mNeedChangesIfPossible = needChangesIfPossible;
+        mMemberName = propertyName;
+        mTokens = tokens;
+        mBindingFactory = factory;
+        updateChildBinding();
+    }
+
+    protected void updateChildBinding() {
+        if (mCurrentBinding != null) {
+            mCurrentBindingChanged.dispose();
+            mCurrentBinding.dispose();
+            mCurrentBindingChanged = null;
+        }
+
+        Object currentValue = getInfo().getValue(getSubject());
+        if (currentValue == null) {
+            return;
+        }
+
+        mCurrentBinding = mBindingFactory.create(currentValue, mTokens, this.mNeedChangesIfPossible);
+        mCurrentBindingChanged = mCurrentBinding.getChanges().subscribe(Observers.fromAction(new Action<Object>() {
+            public void invoke(Object obj) {
+                notifyChange(obj);
+            }
+        }));
+    }
+
+    @Override
+    public Class<?> getType() {
+        return mCurrentBinding == null ? Object.class : mCurrentBinding.getType();
+    }
+
+    @Override
+    protected void onBoundPropertyChanged() {
+        updateChildBinding();
+        notifyChange(getValue());
+    }
+
+    @Override
+    public Object getValue() {
+        return mCurrentBinding == null ? IBinding.noValue : mCurrentBinding.getValue();
+    }
+
+    @Override
+    public void setValue(Object value) {
+        if (mCurrentBinding == null) {
+            getLogger().warning("Target property path is missing. Couldn't set value for " + mMemberName);
+        } else {
+            mCurrentBinding.setValue(value);
+        }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (mCurrentBindingChanged != null) {
+            mCurrentBindingChanged.dispose();
+            mCurrentBindingChanged = null;
+        }
+        if (mCurrentBinding != null) {
+            mCurrentBinding.dispose();
+            mCurrentBinding = null;
+        }
+    }
 }

@@ -6,69 +6,70 @@ import com.alterego.androidbound.helpers.Reflector.CommandInfo;
 import com.alterego.androidbound.interfaces.ICommand;
 
 public class CommandBinding extends BindingBase {
-	private ICommand command = ICommand.empty;
-	private CommandInfo info;
-	
-	public static boolean isCommand(Object subject, String commandName) {
-		if (subject == null) {
-			return false;
-		}
-		
-		return Reflector.isCommand(subject.getClass(), commandName);
-	}
 
-	public CommandBinding(Object subject, String commandName, IAndroidLogger logger) {
-		super(subject, logger);
-		
-		this.info = Reflector.getCommand(subject.getClass(), commandName);
+    private ICommand mCommand = ICommand.empty;
 
-		setupBinding();
-	}
+    private CommandInfo mInfo;
 
-	private void setupBinding() {
-		this.setupChanges(false);
+    public static boolean isCommand(Object subject, String commandName) {
+        if (subject == null) {
+            return false;
+        }
+        return Reflector.isCommand(subject.getClass(), commandName);
+    }
 
-		if(this.info.invoker != null) {
-			this.command = new ICommand() {
-				@Override
-				public boolean canExecute(Object parameter) {
-					try {
-						info.check(getSubject(), parameter);
-					} catch(Exception ex) {
-						getLogger().error("Error while checking command " + info.name + ": " + ex.getMessage());
-					}
-					return true;
-				}
+    public CommandBinding(Object subject, String commandName, IAndroidLogger logger) {
+        super(subject, logger);
 
-				@Override
-				public void execute(Object parameter) {
-					try {
-						info.invoke(getSubject(), parameter);
-					} catch(Exception ex) {
-						getLogger().error("Error while raising command " + info.name + ": " + ex.getMessage());
-					}
-				}
-			};
-		}
-	}
+        mInfo = Reflector.getCommand(subject.getClass(), commandName);
 
-	@Override
-	public Class<?> getType() {
-		return ICommand.class;
-	}
+        setupBinding();
+    }
 
-	@Override
-	public Object getValue() {
-		return command;
-	}
+    private void setupBinding() {
+        setupChanges(false);
 
-	@Override
-	public void setValue(Object value) {
-		getLogger().warning("Cannot set value for command " + info.name);
-	}
+        if (mInfo.invoker != null) {
+            mCommand = new ICommand() {
+                @Override
+                public boolean canExecute(Object parameter) {
+                    try {
+                        mInfo.check(getSubject(), parameter);
+                    } catch (Exception ex) {
+                        getLogger().error("Error while checking command " + mInfo.name + ": " + ex.getMessage());
+                    }
+                    return true;
+                }
 
-	@Override
-	public void dispose() {
-		super.dispose();
-	}
+                @Override
+                public void execute(Object parameter) {
+                    try {
+                        mInfo.invoke(getSubject(), parameter);
+                    } catch (Exception ex) {
+                        getLogger().error("Error while raising command " + mInfo.name + ": " + ex.getMessage());
+                    }
+                }
+            };
+        }
+    }
+
+    @Override
+    public Class<?> getType() {
+        return ICommand.class;
+    }
+
+    @Override
+    public Object getValue() {
+        return mCommand;
+    }
+
+    @Override
+    public void setValue(Object value) {
+        getLogger().warning("Cannot set value for command " + mInfo.name);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+    }
 }
