@@ -1,19 +1,17 @@
 package com.alterego.androidbound.helpers;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
+@Accessors(prefix = "m")
 public class GroupInfo {
-    private int position;
-    private int index;
+
+    @Getter private int mPosition;
+
+    @Getter private int mIndex;
 
     public GroupInfo(int index, int position) {
-        this.index = index;
-        this.position = position;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public int getIndex() {
-        return index;
+        mIndex = index;
+        mPosition = position;
     }
 }

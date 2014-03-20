@@ -1,93 +1,95 @@
 package com.alterego.androidbound.helpers;
 
+import com.alterego.androidbound.zzzztoremove.DefaultValueMap;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.alterego.androidbound.zzzztoremove.DefaultValueMap;
-
 public class Matcher implements MatchResult {
 
-    private java.util.regex.Matcher matcher;
-    private Pattern parentPattern;
+    private java.util.regex.Matcher mMatcher;
+
+    private Pattern mParentPattern;
 
     protected Matcher() {}
 
     Matcher(Pattern parentPattern, java.util.regex.MatchResult matcher) {
-        this.parentPattern = parentPattern;
-        this.matcher = (java.util.regex.Matcher) matcher;
+        mParentPattern = parentPattern;
+        mMatcher = (java.util.regex.Matcher) matcher;
     }
 
     Matcher(Pattern parentPattern, CharSequence input) {
-        this.parentPattern = parentPattern;
-        this.matcher = parentPattern.pattern().matcher(input);
+        mParentPattern = parentPattern;
+        mMatcher = parentPattern.pattern().matcher(input);
     }
 
     public java.util.regex.Pattern standardPattern() {
-        return matcher.pattern();
+        return mMatcher.pattern();
     }
 
     public Pattern namedPattern() {
-        return parentPattern;
+        return mParentPattern;
     }
 
     public Matcher usePattern(Pattern newPattern) {
-        if (newPattern == null)
+        if (newPattern == null) {
             throw new IllegalArgumentException("newPattern cannot be null");
-        this.parentPattern = newPattern;
-        matcher.usePattern(newPattern.pattern());
+        }
+        mParentPattern = newPattern;
+        mMatcher.usePattern(newPattern.pattern());
         return this;
     }
 
     public Matcher reset() {
-        matcher.reset();
+        mMatcher.reset();
         return this;
     }
 
     public Matcher reset(CharSequence input) {
-        matcher.reset(input);
+        mMatcher.reset(input);
         return this;
     }
 
     public boolean matches() {
-        return matcher.matches();
+        return mMatcher.matches();
     }
 
     public MatchResult toMatchResult() {
-        return new Matcher(this.parentPattern, matcher.toMatchResult());
+        return new Matcher(this.mParentPattern, mMatcher.toMatchResult());
     }
 
     public boolean find() {
-        return matcher.find();
+        return mMatcher.find();
     }
 
     public boolean find(int start) {
-        return matcher.find(start);
+        return mMatcher.find(start);
     }
 
     public boolean lookingAt() {
-        return matcher.lookingAt();
+        return mMatcher.lookingAt();
     }
 
     public Matcher appendReplacement(StringBuffer sb, String replacement) {
-        matcher.appendReplacement(sb, parentPattern.replaceProperties(replacement));
+        mMatcher.appendReplacement(sb, mParentPattern.replaceProperties(replacement));
         return this;
     }
 
     public StringBuffer appendTail(StringBuffer sb) {
-        return matcher.appendTail(sb);
+        return mMatcher.appendTail(sb);
     }
 
     public String group() {
-        return matcher.group();
+        return mMatcher.group();
     }
 
     public String group(int group) {
-        return matcher.group(group);
+        return mMatcher.group(group);
     }
 
     public int groupCount() {
-        return matcher.groupCount();
+        return mMatcher.groupCount();
     }
 
     public List<String> orderedGroups() {
@@ -106,9 +108,9 @@ public class Matcher implements MatchResult {
     public Map<String, String> namedGroups() {
         Map<String, String> result = new DefaultValueMap<String, String>(null);
 
-        if (matcher.find(0)) {
-            for (String groupName : parentPattern.groupNames()) {
-                String groupValue = matcher.group(groupIndex(groupName));
+        if (mMatcher.find(0)) {
+            for (String groupName : mParentPattern.groupNames()) {
+                String groupValue = mMatcher.group(groupIndex(groupName));
                 result.put(groupName, groupValue);
             }
         }
@@ -116,16 +118,16 @@ public class Matcher implements MatchResult {
     }
 
     private int groupIndex(String groupName) {
-        int idx = parentPattern.indexOf(groupName);
+        int idx = mParentPattern.indexOf(groupName);
         return idx > -1 ? idx + 1 : -1;
     }
 
     public int start() {
-        return matcher.start();
+        return mMatcher.start();
     }
 
     public int start(int group) {
-        return matcher.start(group);
+        return mMatcher.start(group);
     }
 
     public int start(String groupName) {
@@ -133,11 +135,11 @@ public class Matcher implements MatchResult {
     }
 
     public int end() {
-        return matcher.end();
+        return mMatcher.end();
     }
 
     public int end(int group) {
-        return matcher.end(group);
+        return mMatcher.end(group);
     }
 
     public int end(String groupName) {
@@ -145,74 +147,78 @@ public class Matcher implements MatchResult {
     }
 
     public Matcher region(int start, int end) {
-        matcher.region(start, end);
+        mMatcher.region(start, end);
         return this;
     }
 
     public int regionEnd() {
-        return matcher.regionEnd();
+        return mMatcher.regionEnd();
     }
 
     public int regionStart() {
-        return matcher.regionStart();
+        return mMatcher.regionStart();
     }
 
     public boolean hitEnd() {
-        return matcher.hitEnd();
+        return mMatcher.hitEnd();
     }
 
     public boolean requireEnd() {
-        return matcher.requireEnd();
+        return mMatcher.requireEnd();
     }
 
     public boolean hasAnchoringBounds() {
-        return matcher.hasAnchoringBounds();
+        return mMatcher.hasAnchoringBounds();
     }
 
     public boolean hasTransparentBounds() {
-        return matcher.hasTransparentBounds();
+        return mMatcher.hasTransparentBounds();
     }
 
     public String replaceAll(String replacement) {
-        String r = parentPattern.replaceProperties(replacement);
-        return matcher.replaceAll(r);
+        String r = mParentPattern.replaceProperties(replacement);
+        return mMatcher.replaceAll(r);
     }
 
     public String replaceFirst(String replacement) {
-        return matcher.replaceFirst(parentPattern.replaceProperties(replacement));
+        return mMatcher.replaceFirst(mParentPattern.replaceProperties(replacement));
     }
 
     public Matcher useAnchoringBounds(boolean b) {
-        matcher.useAnchoringBounds(b);
+        mMatcher.useAnchoringBounds(b);
         return this;
     }
 
     public Matcher useTransparentBounds(boolean b) {
-        matcher.useTransparentBounds(b);
+        mMatcher.useTransparentBounds(b);
         return this;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
-        if (obj == null) 
+        }
+        if (obj == null) {
             return false;
-        if (!(obj instanceof Matcher)) 
+        }
+        if (!(obj instanceof Matcher)) {
             return false;
-        Matcher other = (Matcher)obj;
-        if (!parentPattern.equals(other.parentPattern)) 
+        }
+        Matcher other = (Matcher) obj;
+        if (!mParentPattern.equals(other.mParentPattern)) {
             return false;
-        return matcher.equals(other.matcher);
+        }
+        return mMatcher.equals(other.mMatcher);
     }
 
     @Override
     public int hashCode() {
-        return parentPattern.hashCode() ^ matcher.hashCode();
+        return mParentPattern.hashCode() ^ mMatcher.hashCode();
     }
 
     @Override
     public String toString() {
-        return matcher.toString();
+        return mMatcher.toString();
     }
 }
