@@ -14,19 +14,19 @@ import java.util.Map;
 
 public class BindingSpecificationParser implements IParser<BindingSpecification> {
 
-    private IAndroidLogger logger = NullAndroidLogger.instance;
+    private IAndroidLogger mLogger = NullAndroidLogger.instance;
 
-    private IValueConverterProvider converterProvider;
+    private IValueConverterProvider mValueConverterProvider;
 
-    private IResourceProvider resourceProvider;
+    private IResourceProvider mResourceProvider;
 
     public BindingSpecificationParser(IValueConverterProvider converterProvider, IResourceProvider resourceProvider, IAndroidLogger logger) {
-        this.converterProvider = converterProvider;
-        this.resourceProvider = resourceProvider;
+        mValueConverterProvider = converterProvider;
+        mResourceProvider = resourceProvider;
         setLogger(logger);
     }
 
-    private final static Pattern pattern = Pattern
+    private final static Pattern PATTERN = Pattern
             .compile("\\s*(?<target>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z]" +
                     "[a-zA-Z0-9]*)*)*)\\s*(?<mode><=>|<-|->|=>|=|<=)\\s*(" +
                     "?:(?<converter>[a-zA-Z][a-zA-Z0-9]*)\\s*\\()?\\s*(?<" +
@@ -38,19 +38,19 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
                     ":[^'\\\\]|\\\\.)*)')+?))?)?");
 
     public void setLogger(IAndroidLogger logger) {
-        this.logger = logger.getLogger(this);
+        mLogger = logger.getLogger(this);
     }
 
     public BindingSpecification parse(String content) {
-        logger.verbose("Parse content for BindingSpecification");
-        Matcher matcher = pattern.matcher(content);
+        mLogger.verbose("Parse content for BindingSpecification");
+        Matcher matcher = PATTERN.matcher(content);
         Map<String, String> groups = matcher.namedGroups();
 
         BindingSpecification result = new BindingSpecification();
         result.setTarget(groups.get("target"));
         result.setPath(groups.get("path"));
         result.setMode(parseMode(groups.get("mode")));
-        result.setValueConverter(converterProvider.find(groups.get("converter")));
+        result.setValueConverter(mValueConverterProvider.find(groups.get("converter")));
         result.setConverterParameter(resolveResource(groups.get("parameterString"), groups.get("parameterName")));
         result.setFallbackValue(resolveResource(groups.get("fallbackString"), groups.get("fallbackName")));
         return result;
@@ -58,7 +58,7 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
 
     private Object resolveResource(String constValue, String namedValue) {
         if (namedValue != null) {
-            return resourceProvider.find(namedValue);
+            return mResourceProvider.find(namedValue);
         }
         return unescape(constValue);
     }
@@ -121,23 +121,23 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
         if (value.equals("=")) {
             return BindingMode.Default;
         }
-        if (value.equals("->")) {
+        if (value.equals("-*")) {
             return BindingMode.OneWayToSourceOneTime;
         }
-        if (value.equals("=>")) {
+        if (value.equals("=**")) {
             return BindingMode.OneWayToSource;
         }
-        if (value.equals("<-")) {
+        if (value.equals("*-")) {
             return BindingMode.OneWayOneTime;
         }
-        if (value.equals("<=")) {
+        if (value.equals("**=")) {
             return BindingMode.OneWay;
         }
-        if (value.equals("<=>")) {
+        if (value.equals("*=*")) {
             return BindingMode.TwoWay;
         }
 
-        logger.warning("Invalid value '" + value + "' found for BindingMode. Switching to Default.");
+        mLogger.warning("Invalid value '" + value + "' found for BindingMode. Switching to Default.");
         return BindingMode.Default;
     }
 }
