@@ -10,72 +10,73 @@ import com.alterego.androidbound.zzzztoremove.reactive.Observables;
 import com.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public abstract class BindingBase implements IBinding, INeedsLogger {
-	private static final IObservable<Object> noChanges = Observables.<Object>empty();
-	private ISubject<Object> changes;
-	private Object subject;
-	private IAndroidLogger logger = NullAndroidLogger.instance;
-	
-	public BindingBase(Object subject, IAndroidLogger logger) {
-		this.subject = subject;
-		setLogger(logger);
-	}
-	
-	public abstract Class<?> getType();
 
-	public abstract Object getValue();
+    private static final IObservable<Object> NO_CHANGES = Observables.<Object>empty();
 
-	public abstract void setValue(Object value);
+    private ISubject<Object> mChanges;
 
-	public IObservable<Object> getChanges() {
-		if(this.changes == null) {
-			return noChanges;
-		}
-		
-		return this.changes;
-	}
-	
-	public boolean hasChanges() {
-		return this.changes != null;
-	}
-	
-	protected void notifyChange(Object value) {
-		if(this.changes == null) {
-			return;
-		}
-		
-		this.changes.onNext(value);
-	}
-	
-	protected void setupChanges(boolean hasChanges) {
-		if(hasChanges) {
-			if(this.changes == null) {
-				this.changes = new Subject<Object>();
-			}
-		} else {
-			if(this.changes != null) {
-				this.changes.dispose();
-				this.changes = null;
-			}
-		}
-	}
-	
-	protected Object getSubject() {
-		return subject;
-	}
-	
-	protected IAndroidLogger getLogger() {
-		return logger;
-	}
-	
-	public void setLogger(IAndroidLogger logger) {
-		this.logger = logger.getLogger(this);
-	}
+    private Object mSubject;
 
-	public void dispose() {
-		if(this.changes != null) {
-			this.changes.dispose();
-		}
-		
-		this.changes = null;
-	}
+    private IAndroidLogger mLogger = NullAndroidLogger.instance;
+
+    public BindingBase(Object subject, IAndroidLogger logger) {
+        mSubject = subject;
+        setLogger(logger);
+    }
+
+    public abstract Class<?> getType();
+
+    public abstract Object getValue();
+
+    public abstract void setValue(Object value);
+
+    public IObservable<Object> getChanges() {
+        if (mChanges == null) {
+            return NO_CHANGES;
+        }
+        return mChanges;
+    }
+
+    public boolean hasChanges() {
+        return mChanges != null;
+    }
+
+    protected void notifyChange(Object value) {
+        if (mChanges == null) {
+            return;
+        }
+        mChanges.onNext(value);
+    }
+
+    protected void setupChanges(boolean hasChanges) {
+        if (hasChanges) {
+            if (mChanges == null) {
+                mChanges = new Subject<Object>();
+            }
+        } else {
+            if (mChanges != null) {
+                mChanges.dispose();
+                mChanges = null;
+            }
+        }
+    }
+
+    protected Object getSubject() {
+        return mSubject;
+    }
+
+    protected IAndroidLogger getLogger() {
+        return mLogger;
+    }
+
+    public void setLogger(IAndroidLogger logger) {
+        mLogger = logger.getLogger(this);
+    }
+
+    public void dispose() {
+        if (mChanges != null) {
+            mChanges.dispose();
+        }
+        mChanges = null;
+    }
 }
