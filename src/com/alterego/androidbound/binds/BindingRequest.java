@@ -1,7 +1,10 @@
 package com.alterego.androidbound.binds;
 
+import lombok.Data;
+
+@Data
 public class BindingRequest {
-	public Object Source;
-	public Object Target;
-	public BindingSpecification Specification;
+	private Object Source;
+	private Object Target;
+	private BindingSpecification Specification;
 }

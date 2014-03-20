@@ -1,8 +1,5 @@
 package com.alterego.androidbound.binders;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.binds.BindingAssociation;
 import com.alterego.androidbound.binds.BindingRequest;
@@ -12,35 +9,50 @@ import com.alterego.androidbound.interfaces.IBindingAssociation;
 import com.alterego.androidbound.interfaces.IBindingFactory;
 import com.alterego.androidbound.interfaces.IParser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TextSpecificationBinder implements IBinder {
-	private IParser<List<BindingSpecification>> parser;
-	private IAndroidLogger logger;
-	private IBindingFactory sourceFactory;
-	private IBindingFactory targetFactory;
 
-	public TextSpecificationBinder(IParser<List<BindingSpecification>> parser, IBindingFactory sourceFactory, IBindingFactory targetFactory, IAndroidLogger logger) {
-		this.parser = parser;
-		this.sourceFactory = sourceFactory;
-		this.targetFactory = targetFactory;
-		setLogger(logger);		
-	}
-	
-	public List<IBindingAssociation> bind(Object source, Object target, String bindingSpecifications) {
-		final List<IBindingAssociation> bindings = new ArrayList<IBindingAssociation>();
-		for(BindingSpecification specification : parser.parse(bindingSpecifications)) {
-			BindingRequest request = new BindingRequest();
-			request.Source = source;
-			request.Target = target;
-			request.Specification = specification;
-			logger.debug("Creating full binding for " + source + " " + target);
-			BindingAssociation full = new BindingAssociation(request, sourceFactory, targetFactory, logger);
-			bindings.add(full);
-			//logger.verbose("Binding added");
-		}
-		return bindings;
-	}
+    private final IParser<List<BindingSpecification>> mParser;
 
-	public void setLogger(IAndroidLogger logger) {
-		this.logger = logger.getLogger(this);
-	}
+    private IAndroidLogger mLogger;
+
+    private final IBindingFactory mSourceFactory;
+
+    private final IBindingFactory mTargetFactory;
+
+    public TextSpecificationBinder(
+            IParser<List<BindingSpecification>> parser,
+            IBindingFactory sourceFactory,
+            IBindingFactory targetFactory,
+            IAndroidLogger logger) {
+
+        mParser = parser;
+        mSourceFactory = sourceFactory;
+        mTargetFactory = targetFactory;
+        setLogger(logger);
+    }
+
+    public List<IBindingAssociation> bind(Object source, Object target, String bindingSpecifications) {
+        final List<IBindingAssociation> bindings = new ArrayList<IBindingAssociation>();
+
+        for (BindingSpecification specification : mParser.parse(bindingSpecifications)) {
+
+            BindingRequest request = new BindingRequest();
+            request.setSource(source);
+            request.setTarget(target);
+            request.setSpecification(specification);
+
+            mLogger.debug("Creating full binding for " + source + " " + target);
+
+            BindingAssociation bindingAssociation = new BindingAssociation(request, mSourceFactory, mTargetFactory, mLogger);
+            bindings.add(bindingAssociation);
+        }
+        return bindings;
+    }
+
+    public void setLogger(IAndroidLogger logger) {
+        mLogger = logger.getLogger(this);
+    }
 }

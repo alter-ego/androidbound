@@ -27,14 +27,14 @@ public class BindingAssociation implements IBindingAssociation {
     private IBindingFactory targetFactory;
 
     public BindingAssociation(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, IAndroidLogger logger) {
-        this.mode = request.Specification.Mode;
+        this.mode = request.getSpecification().Mode;
         this.sourceFactory = sourceFactory;
         this.targetFactory = targetFactory;
-        this.specification = request.Specification;
+        this.specification = request.getSpecification();
 
         setLogger(logger);
-        createTargetBinding(request.Target);
-        createSourceBinding(request.Source);
+        createTargetBinding(request.getTarget());
+        createSourceBinding(request.getSource());
 
         if (needsTargetUpdate())
             updateSourceFromTarget(targetBinding.getValue());
