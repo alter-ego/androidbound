@@ -1,14 +1,14 @@
 
 package com.alterego.androidbound.helpers;
 
-import android.util.SparseArray;
-
 import com.alterego.androidbound.ViewBinder;
 import com.alterego.androidbound.helpers.reflector.ConstructorInfo;
 import com.alterego.androidbound.helpers.reflector.FieldInfo;
 import com.alterego.androidbound.helpers.reflector.MethodInfo;
 import com.alterego.androidbound.zzzztoremove.reactive.Iterables;
 import com.alterego.androidbound.zzzztoremove.reactive.Predicate;
+
+import android.util.SparseArray;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -56,7 +56,7 @@ public class Reflector {
             Object result = null;
             if (getter != null || field != null) {
                 try {
-                    result = getter != null ? getter.mOriginalMethod.invoke(obj) : (field != null ? field.getFieldOriginal().get(obj) : null);
+                    result = getter != null ? getter.getOriginalMethod().invoke(obj) : (field != null ? field.getFieldOriginal().get(obj) : null);
                 } catch (Exception e) {
                     ViewBinder.getLogger().error("Reflector getValue exception = " + e.getCause().toString());
                 }
@@ -73,7 +73,7 @@ public class Reflector {
             if (setter != null || field != null) {
                 try {
                     if (setter != null) {
-                        setter.mOriginalMethod.invoke(obj, value);
+                        setter.getOriginalMethod().invoke(obj, value);
                     } else if (field != null) {
                         field.getFieldOriginal().set(obj, value);
                     }
@@ -110,9 +110,9 @@ public class Reflector {
                 IllegalAccessException, InvocationTargetException {
             if (this.checker != null) {
                 if (this.checkerhasParameter) {
-                    return (Boolean) checker.mOriginalMethod.invoke(subject, parameter);
+                    return (Boolean) checker.getOriginalMethod().invoke(subject, parameter);
                 } else {
-                    return (Boolean) checker.mOriginalMethod.invoke(subject);
+                    return (Boolean) checker.getOriginalMethod().invoke(subject);
                 }
             }
             return true;
@@ -122,9 +122,9 @@ public class Reflector {
                 IllegalAccessException, InvocationTargetException {
             if (this.invoker != null) {
                 if (this.invokerHasParameter) {
-                    invoker.mOriginalMethod.invoke(subject, parameter);
+                    invoker.getOriginalMethod().invoke(subject, parameter);
                 } else {
-                    invoker.mOriginalMethod.invoke(subject);
+                    invoker.getOriginalMethod().invoke(subject);
                 }
             }
         }
@@ -134,7 +134,7 @@ public class Reflector {
         List<MethodInfo> invokers = getMethods(type, "do" + name);
         if (invokers != null) {
             for (MethodInfo mi : invokers) {
-                if (mi.mMethodParameterCount <= 1) {
+                if (mi.getMethodParameterCount() <= 1) {
                     return true;
                 }
             }
@@ -147,7 +147,7 @@ public class Reflector {
         List<MethodInfo> getters = getMethods(type, "get" + name);
         if (getters != null) {
             for (MethodInfo mi : getters) {
-                if (mi.mMethodParameterCount == 0) {
+                if (mi.getMethodParameterCount() == 0) {
                     return true;
                 }
             }
@@ -156,7 +156,7 @@ public class Reflector {
         getters = getMethods(type, "is" + name);
         if (getters != null) {
             for (MethodInfo mi : getters) {
-                if (mi.mMethodParameterCount == 0) {
+                if (mi.getMethodParameterCount() == 0) {
                     return true;
                 }
             }
@@ -188,7 +188,7 @@ public class Reflector {
         List<MethodInfo> getters = getMethods(type, "get" + name);
         if (getters != null) {
             for (MethodInfo mi : getters) {
-                if (mi.mMethodParameterCount == 0) {
+                if (mi.getMethodParameterCount() == 0) {
                     getter = mi;
                     break;
                 }
@@ -199,7 +199,7 @@ public class Reflector {
             getters = getMethods(type, "is" + name);
             if (getters != null) {
                 for (MethodInfo mi : getters) {
-                    if (mi.mMethodParameterCount == 0) {
+                    if (mi.getMethodParameterCount() == 0) {
                         getter = mi;
                         break;
                     }
@@ -212,7 +212,7 @@ public class Reflector {
 
             if (setters != null) {
                 for (MethodInfo mi : setters) {
-                    if (mi.mMethodParameterCount == 1 && getter.mMethodReturnType.equals(mi.mMethodParameterTypes[0])) {
+                    if (mi.getMethodParameterCount() == 1 && getter.getMethodReturnType().equals(mi.getMethodParameterTypes()[0])) {
                         setter = mi;
                         break;
                     }
@@ -229,7 +229,7 @@ public class Reflector {
         retval = new PropertyInfo(name,
                 getter != null || field != null || ismap,
                 setter != null || field != null || ismap,
-                getter != null ? getter.mMethodReturnType : (field != null ? field.getFieldType() : Object.class),
+                getter != null ? getter.getMethodReturnType() : (field != null ? field.getFieldType() : Object.class),
                 getter,
                 setter,
                 field);
@@ -275,10 +275,10 @@ public class Reflector {
         List<MethodInfo> invokers = getMethods(type, "do" + name);
         if (invokers != null) {
             for (MethodInfo mi : invokers) {
-                if (mi.mMethodParameterCount <= 1) {
+                if (mi.getMethodParameterCount() <= 1) {
                     invoker = mi;
-                    if (mi.mMethodParameterCount > 0) {
-                        invokerParameterType = mi.mMethodParameterTypes[0];
+                    if (mi.getMethodParameterCount() > 0) {
+                        invokerParameterType = mi.getMethodParameterTypes()[0];
                     }
                     break;
                 }
@@ -289,10 +289,10 @@ public class Reflector {
             List<MethodInfo> checkers = getMethods(type, "can" + name);
             if (checkers != null) {
                 for (MethodInfo mi : checkers) {
-                    if (mi.mMethodParameterCount <= 1 && mi.mMethodReturnType == boolean.class) {
+                    if (mi.getMethodParameterCount() <= 1 && mi.getMethodReturnType() == boolean.class) {
                         checker = mi;
-                        if (mi.mMethodParameterCount > 0) {
-                            checkerParameterType = mi.mMethodParameterTypes[0];
+                        if (mi.getMethodParameterCount() > 0) {
+                            checkerParameterType = mi.getMethodParameterTypes()[0];
                         }
                         break;
                     }
@@ -438,7 +438,7 @@ public class Reflector {
             throw new InstantiationException("constructor does not exists");
         }
 
-        return (T) constructor.mConstructorOriginal.newInstance(parameters);
+        return (T) constructor.getConstructorOriginal().newInstance(parameters);
     }
 
     public static boolean canCreateInstance(Class<?> type, Class<?>[] parameterTypes) {
@@ -474,7 +474,7 @@ public class Reflector {
         for (Method m : ms) {
             m.setAccessible(true);
             MethodInfo mi = new MethodInfo(m);
-            int methodCode = mi.mMethodName.hashCode();
+            int methodCode = mi.getMethodName().hashCode();
 
             List<MethodInfo> mlist = methods.get(methodCode);
             if (mlist == null) {
@@ -505,12 +505,12 @@ public class Reflector {
                 if (parameterTypes == null) {
                     return true;
                 }
-                if (obj.mMethodParameterCount != parameterTypes.length) {
+                if (obj.getMethodParameterCount() != parameterTypes.length) {
                     return false;
                 }
 
                 for (int i = 0; i < parameterTypes.length; i++) {
-                    if (!obj.mMethodParameterTypes[i].equals(parameterTypes[i])) {
+                    if (!obj.getMethodParameterTypes()[i].equals(parameterTypes[i])) {
                         return false;
                     }
                 }
@@ -529,12 +529,12 @@ public class Reflector {
                 if (pts == null) {
                     pts = new Class<?>[0];
                 }
-                if (obj.mConstructorParameterCount != pts.length) {
+                if (obj.getConstructorParameterCount() != pts.length) {
                     return false;
                 }
 
                 for (int i = 0; i < pts.length; i++) {
-                    if (!obj.mConstructorParameterTypes[i].equals(pts[i])) {
+                    if (!obj.getConstructorParameterTypes()[i].equals(pts[i])) {
                         return false;
                     }
                 }

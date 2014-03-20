@@ -2,12 +2,20 @@ package com.alterego.androidbound.helpers.reflector;
 
 import java.lang.reflect.Constructor;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+@Data
+@Accessors(prefix = "m")
 public class ConstructorInfo {
 
-    public final Constructor<?> mConstructorOriginal;
-    public final String mConstructorName;
-    public final int mConstructorParameterCount;
-    public final Class<?>[] mConstructorParameterTypes;
+    private final Constructor<?> mConstructorOriginal;
+
+    private final String mConstructorName;
+
+    private final int mConstructorParameterCount;
+
+    private final Class<?>[] mConstructorParameterTypes;
 
     public ConstructorInfo(Constructor<?> constructor) {
         mConstructorOriginal = constructor;
@@ -15,6 +23,4 @@ public class ConstructorInfo {
         mConstructorParameterTypes = constructor.getParameterTypes();
         mConstructorParameterCount = constructor.getParameterTypes().length;
     }
-
-
 }

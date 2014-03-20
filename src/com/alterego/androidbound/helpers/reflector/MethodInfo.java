@@ -2,13 +2,22 @@ package com.alterego.androidbound.helpers.reflector;
 
 import java.lang.reflect.Method;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+@Data
+@Accessors(prefix = "m")
 public class MethodInfo {
 
-    public final Method mOriginalMethod;
-    public final String mMethodName;
-    public final int mMethodParameterCount;
-    public final Class<?>[] mMethodParameterTypes;
-    public final Class<?> mMethodReturnType;
+    private final Method mOriginalMethod;
+
+    private final String mMethodName;
+
+    private final int mMethodParameterCount;
+
+    private final Class<?>[] mMethodParameterTypes;
+
+    private final Class<?> mMethodReturnType;
 
     public MethodInfo(Method method) {
         mOriginalMethod = method;
@@ -17,5 +26,4 @@ public class MethodInfo {
         mMethodParameterCount = method.getParameterTypes().length;
         mMethodReturnType = method.getReturnType();
     }
-
 }
