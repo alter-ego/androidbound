@@ -70,6 +70,63 @@ public class Reflector {
         return false;
     }
 
+    public static PropertyInfo getProperty(Class<?> type, String name) {
+        MethodInfo propertyGetter = null;
+        MethodInfo propertySetter = null;
+        FieldInfo propertyField = null;
+
+        int typeCode = type.hashCode();
+        int nameCode = name.hashCode();
+
+        PropertyInfo propertyInfo = null;
+        synchronized (mSynchronizedObject) {
+            SparseArray<PropertyInfo> objectProperties = mObjectProperties.get(typeCode);
+            if (objectProperties != null) {
+                propertyInfo = objectProperties.get(nameCode);
+            }
+        }
+
+        if (propertyInfo != null) {
+            return propertyInfo;
+        }
+
+        //first we look for getters with prefix "get", if null then with prefix "is"
+        propertyGetter = findGetterWithGetPrefix (type, name);
+        if (propertyGetter==null)
+            propertyGetter = findGetterWithIsPrefix(type, name);
+
+        //if the getter is not null, then we look for the setter; if it is null, we bind directly to the variable
+        if (propertyGetter != null) {
+            propertySetter = findSetter (type, name, propertyGetter);
+        } else {
+            propertyField = Reflector.getField(type, name);
+        }
+
+        boolean isMap = Map.class.isAssignableFrom(type);
+
+        propertyInfo = new PropertyInfo(name,
+                propertyGetter != null || propertyField != null || isMap,
+                propertySetter != null || propertyField != null || isMap,
+                propertyGetter != null ? propertyGetter.getMethodReturnType() : (propertyField != null ? propertyField.getFieldType() : Object.class),
+                propertyGetter,
+                propertySetter,
+                propertyField);
+
+        synchronized (mSynchronizedObject) {
+            SparseArray<PropertyInfo> sa = mObjectProperties.get(typeCode);
+            if (sa != null) {
+                sa = cloneSparseArray(sa);
+            } else {
+                sa = new SparseArray<PropertyInfo>();
+            }
+            sa.put(nameCode, propertyInfo);
+            mObjectProperties.put(typeCode, sa);
+        }
+
+        return propertyInfo;
+
+    }
+
     private static MethodInfo findGetterWithGetPrefix(Class<?> type, String name) {
 
         MethodInfo found_getter = null;
@@ -121,108 +178,6 @@ public class Reflector {
         return found_setter;
     }
 
-    public static PropertyInfo getProperty(Class<?> type, String name) {
-        MethodInfo propertyGetter = null;
-        MethodInfo propertySetter = null;
-        FieldInfo propertyField = null;
-
-        int typeCode = type.hashCode();
-        int nameCode = name.hashCode();
-
-        PropertyInfo propertyInfo = null;
-        synchronized (mSynchronizedObject) {
-            SparseArray<PropertyInfo> objectProperties = mObjectProperties.get(typeCode);
-            if (objectProperties != null) {
-                propertyInfo = objectProperties.get(nameCode);
-            }
-        }
-
-        if (propertyInfo != null) {
-            return propertyInfo;
-        }
-
-
-
-//        List<MethodInfo> getters = getMethods(type, PROPERTY_PREFIX_GET + name);
-//        if (getters != null) {
-//            for (MethodInfo getter : getters) {
-//                if (getter.getMethodParameterCount() == 0) {
-//                    propertyGetter = getter;
-//                    break;
-//                }
-//            }
-//        }
-
-//        if (propertyGetter == null) {
-//            getters = getMethods(type, PROPERTY_PREFIX_IS + name);
-//            if (getters != null) {
-//                for (MethodInfo getter : getters) {
-//                    if (getter.getMethodParameterCount() == 0) {
-//                        propertyGetter = getter;
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-
-        //first we look for getters with prefix "get", if null then with prefix "is"
-        propertyGetter = findGetterWithGetPrefix (type, name);
-        if (propertyGetter==null)
-            propertyGetter = findGetterWithIsPrefix(type, name);
-
-
-
-
-//        if (propertyGetter != null) {
-//            List<MethodInfo> setters = getMethods(type, PROPERTY_PREFIX_SET + name);
-//
-//            if (setters != null) {
-//                for (MethodInfo setter : setters) {
-//                    if (setter.getMethodParameterCount() == 1 && propertyGetter.getMethodReturnType().equals(setter.getMethodParameterTypes()[0])) {
-//                        propertySetter = setter;
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-
-
-
-//        if (propertyGetter == null) {
-//            propertyField = Reflector.getField(type, name);
-//        }
-
-        //if the getter is not null, then we look for the setter; if it is null, we bind directly to the variable
-        if (propertyGetter != null) {
-            propertySetter = findSetter (type, name, propertyGetter);
-        } else {
-            propertyField = Reflector.getField(type, name);
-        }
-
-        boolean isMap = Map.class.isAssignableFrom(type);
-
-        propertyInfo = new PropertyInfo(name,
-                propertyGetter != null || propertyField != null || isMap,
-                propertySetter != null || propertyField != null || isMap,
-                propertyGetter != null ? propertyGetter.getMethodReturnType() : (propertyField != null ? propertyField.getFieldType() : Object.class),
-                propertyGetter,
-                propertySetter,
-                propertyField);
-
-        synchronized (mSynchronizedObject) {
-            SparseArray<PropertyInfo> sa = mObjectProperties.get(typeCode);
-            if (sa != null) {
-                sa = cloneSparseArray(sa);
-            } else {
-                sa = new SparseArray<PropertyInfo>();
-            }
-            sa.put(nameCode, propertyInfo);
-            mObjectProperties.put(typeCode, sa);
-        }
-
-        return propertyInfo;
-
-    }
 
     public static CommandInfo getCommand(Class<?> type, String name) {
         int typeCode = type.hashCode();
