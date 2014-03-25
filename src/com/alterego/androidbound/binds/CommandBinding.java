@@ -2,13 +2,12 @@ package com.alterego.androidbound.binds;
 
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.helpers.Reflector;
-import com.alterego.androidbound.helpers.Reflector.CommandInfo;
+import com.alterego.androidbound.helpers.reflector.CommandInfo;
 import com.alterego.androidbound.interfaces.ICommand;
 
 public class CommandBinding extends BindingBase {
 
     private ICommand mCommand = ICommand.empty;
-
     private CommandInfo mInfo;
 
     public static boolean isCommand(Object subject, String commandName) {
@@ -29,14 +28,14 @@ public class CommandBinding extends BindingBase {
     private void setupBinding() {
         setupChanges(false);
 
-        if (mInfo.invoker != null) {
+        if (mInfo.getInvokerMethod() != null) {
             mCommand = new ICommand() {
                 @Override
                 public boolean canExecute(Object parameter) {
                     try {
                         mInfo.check(getSubject(), parameter);
                     } catch (Exception ex) {
-                        getLogger().error("Error while checking command " + mInfo.name + ": " + ex.getMessage());
+                        getLogger().error("Error while checking command " + mInfo.getCommandName() + ": " + ex.getMessage());
                     }
                     return true;
                 }
@@ -46,7 +45,7 @@ public class CommandBinding extends BindingBase {
                     try {
                         mInfo.invoke(getSubject(), parameter);
                     } catch (Exception ex) {
-                        getLogger().error("Error while raising command " + mInfo.name + ": " + ex.getMessage());
+                        getLogger().error("Error while raising command " + mInfo.getCommandName() + ": " + ex.getMessage());
                     }
                 }
             };
@@ -65,7 +64,7 @@ public class CommandBinding extends BindingBase {
 
     @Override
     public void setValue(Object value) {
-        getLogger().warning("Cannot set value for command " + mInfo.name);
+        getLogger().warning("Cannot set value for command " + mInfo.getCommandName());
     }
 
     @Override

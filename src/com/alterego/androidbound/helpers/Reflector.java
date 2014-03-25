@@ -1,14 +1,15 @@
 
 package com.alterego.androidbound.helpers;
 
-import com.alterego.androidbound.ViewBinder;
+import android.util.SparseArray;
+
+import com.alterego.androidbound.helpers.reflector.CommandInfo;
 import com.alterego.androidbound.helpers.reflector.ConstructorInfo;
 import com.alterego.androidbound.helpers.reflector.FieldInfo;
 import com.alterego.androidbound.helpers.reflector.MethodInfo;
+import com.alterego.androidbound.helpers.reflector.PropertyInfo;
 import com.alterego.androidbound.zzzztoremove.reactive.Iterables;
 import com.alterego.androidbound.zzzztoremove.reactive.Predicate;
-
-import android.util.SparseArray;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -18,9 +19,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-// TODO limit maps sizes
-
 public class Reflector {
+
+    private static final String COMMAND_PREFIX_DO = "do";
+    private static final String COMMAND_PREFIX_CAN = "can";
+    private static final String PROPERTY_PREFIX_GET = "get";
+    private static final String PROPERTY_PREFIX_SET = "set";
+    private static final String METHOD_PREFIX_IS = "is";
 
     private static SparseArray<SparseArray<PropertyInfo>> mObjectProperties = new SparseArray<SparseArray<PropertyInfo>>();
     private static SparseArray<SparseArray<CommandInfo>> mObjectCommands = new SparseArray<SparseArray<CommandInfo>>();
@@ -30,111 +35,11 @@ public class Reflector {
     private static Object mSynchronizedObject = new Object();
 
 
-
-    public static class PropertyInfo {
-
-        private final FieldInfo field;
-        private final MethodInfo getter;
-        private final MethodInfo setter;
-        public final Class<?> type;
-        public final String name;
-        public final boolean canRead;
-        public final boolean canWrite;
-
-        public PropertyInfo(String name, boolean canRead, boolean canWrite, Class<?> type,
-                MethodInfo getter, MethodInfo setter, FieldInfo field) {
-            this.type = type;
-            this.name = name;
-            this.canRead = canRead;
-            this.canWrite = canWrite;
-            this.getter = getter;
-            this.setter = setter;
-            this.field = field;
-        }
-
-        public Object getValue(Object obj) {
-            Object result = null;
-            if (getter != null || field != null) {
-                try {
-                    result = getter != null ? getter.getOriginalMethod().invoke(obj) : (field != null ? field.getFieldOriginal().get(obj) : null);
-                } catch (Exception e) {
-                    ViewBinder.getLogger().error("Reflector getValue exception = " + e.getCause().toString());
-                }
-            } else if (obj != null && obj instanceof Map) {
-                result = ((Map) obj).get(this.name);
-            }
-            if (result == null) {
-                ViewBinder.getLogger().warning("Reflector getValue returns null");
-            }
-            return result;
-        }
-
-        public void setValue(Object obj, Object value) {
-            if (setter != null || field != null) {
-                try {
-                    if (setter != null) {
-                        setter.getOriginalMethod().invoke(obj, value);
-                    } else if (field != null) {
-                        field.getFieldOriginal().set(obj, value);
-                    }
-                } catch (Exception e) {
-                }
-            } else if (obj != null && obj instanceof Map) {
-                ((Map) obj).put(this.name, value);
-            }
-        }
-    }
-
-    public static class CommandInfo {
-
-        public final String name;
-        public final boolean invokerHasParameter;
-        public final Class<?> invokerParameterType;
-        public final boolean checkerhasParameter;
-        public final Class<?> checkerParameterType;
-        public final MethodInfo invoker;
-        public final MethodInfo checker;
-
-        public CommandInfo(String name, Class<?> invokerParameterType,
-                Class<?> checkerParameterType, MethodInfo invoker, MethodInfo checker) {
-            this.name = name;
-            this.invokerParameterType = invokerParameterType;
-            this.checkerParameterType = checkerParameterType;
-            this.invokerHasParameter = this.invokerParameterType != null;
-            this.checkerhasParameter = this.checkerParameterType != null;
-            this.invoker = invoker;
-            this.checker = checker;
-        }
-
-        public boolean check(Object subject, Object parameter) throws IllegalArgumentException,
-                IllegalAccessException, InvocationTargetException {
-            if (this.checker != null) {
-                if (this.checkerhasParameter) {
-                    return (Boolean) checker.getOriginalMethod().invoke(subject, parameter);
-                } else {
-                    return (Boolean) checker.getOriginalMethod().invoke(subject);
-                }
-            }
-            return true;
-        }
-
-        public void invoke(Object subject, Object parameter) throws IllegalArgumentException,
-                IllegalAccessException, InvocationTargetException {
-            if (this.invoker != null) {
-                if (this.invokerHasParameter) {
-                    invoker.getOriginalMethod().invoke(subject, parameter);
-                } else {
-                    invoker.getOriginalMethod().invoke(subject);
-                }
-            }
-        }
-    }
-
     public static boolean isCommand(Class<?> type, String name) {
-        List<MethodInfo> invokers = getMethods(type, "do" + name);
+        List<MethodInfo> invokers = getMethods(type, COMMAND_PREFIX_DO + name);
         if (invokers != null) {
-            for (MethodInfo mi : invokers) {
-                if (mi.getMethodParameterCount() <= 1) {
+            for (MethodInfo invoker : invokers) {
+                if (invoker.getMethodParameterCount() <= 1) {
                     return true;
                 }
             }
@@ -144,16 +49,16 @@ public class Reflector {
     }
 
     public static boolean isProperty(Class<?> type, String name) {
-        List<MethodInfo> getters = getMethods(type, "get" + name);
+        List<MethodInfo> getters = getMethods(type, PROPERTY_PREFIX_GET + name);
         if (getters != null) {
-            for (MethodInfo mi : getters) {
-                if (mi.getMethodParameterCount() == 0) {
+            for (MethodInfo getter : getters) {
+                if (getter.getMethodParameterCount() == 0) {
                     return true;
                 }
             }
         }
 
-        getters = getMethods(type, "is" + name);
+        getters = getMethods(type, METHOD_PREFIX_IS + name);
         if (getters != null) {
             for (MethodInfo mi : getters) {
                 if (mi.getMethodParameterCount() == 0) {
@@ -185,7 +90,7 @@ public class Reflector {
         MethodInfo setter = null;
         FieldInfo field = null;
 
-        List<MethodInfo> getters = getMethods(type, "get" + name);
+        List<MethodInfo> getters = getMethods(type, PROPERTY_PREFIX_GET + name);
         if (getters != null) {
             for (MethodInfo mi : getters) {
                 if (mi.getMethodParameterCount() == 0) {
@@ -196,7 +101,7 @@ public class Reflector {
         }
 
         if (getter == null) {
-            getters = getMethods(type, "is" + name);
+            getters = getMethods(type, METHOD_PREFIX_IS + name);
             if (getters != null) {
                 for (MethodInfo mi : getters) {
                     if (mi.getMethodParameterCount() == 0) {
@@ -208,7 +113,7 @@ public class Reflector {
         }
 
         if (getter != null) {
-            List<MethodInfo> setters = getMethods(type, "set" + name);
+            List<MethodInfo> setters = getMethods(type, PROPERTY_PREFIX_SET + name);
 
             if (setters != null) {
                 for (MethodInfo mi : setters) {
@@ -272,7 +177,7 @@ public class Reflector {
         Class<?> invokerParameterType = null;
         Class<?> checkerParameterType = null;
 
-        List<MethodInfo> invokers = getMethods(type, "do" + name);
+        List<MethodInfo> invokers = getMethods(type, COMMAND_PREFIX_DO + name);
         if (invokers != null) {
             for (MethodInfo mi : invokers) {
                 if (mi.getMethodParameterCount() <= 1) {
@@ -286,7 +191,7 @@ public class Reflector {
         }
 
         if (invoker != null) {
-            List<MethodInfo> checkers = getMethods(type, "can" + name);
+            List<MethodInfo> checkers = getMethods(type, COMMAND_PREFIX_CAN + name);
             if (checkers != null) {
                 for (MethodInfo mi : checkers) {
                     if (mi.getMethodParameterCount() <= 1 && mi.getMethodReturnType() == boolean.class) {

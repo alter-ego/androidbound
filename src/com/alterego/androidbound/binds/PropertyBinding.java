@@ -2,7 +2,7 @@ package com.alterego.androidbound.binds;
 
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.helpers.Reflector;
-import com.alterego.androidbound.helpers.Reflector.PropertyInfo;
+import com.alterego.androidbound.helpers.reflector.PropertyInfo;
 import com.alterego.androidbound.interfaces.IBinding;
 import com.alterego.androidbound.interfaces.INotifyPropertyChanged;
 import com.alterego.androidbound.zzzztoremove.reactive.Action;
@@ -14,15 +14,13 @@ import com.alterego.androidbound.zzzztoremove.reactive.Predicate;
 public class PropertyBinding extends BindingBase {
 
     private IDisposable mMemberSubscription;
-
-    private PropertyInfo mInfo;
+    private PropertyInfo mPropertyInfo;
 
     public PropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, IAndroidLogger logger) {
         super(subject, logger);
 
-        mInfo = Reflector.getProperty(subject.getClass(), propertyName);
-
-        setupBinding(subject, mInfo.name, needChangesIfPossible);
+        mPropertyInfo = Reflector.getProperty(subject.getClass(), propertyName);
+        setupBinding(subject, mPropertyInfo.getPropertyName(), needChangesIfPossible);
     }
 
     private void setupBinding(Object subject, final String propertyName, boolean needChangesIfPossible) {
@@ -53,7 +51,7 @@ public class PropertyBinding extends BindingBase {
     }
 
     protected PropertyInfo getInfo() {
-        return mInfo;
+        return mPropertyInfo;
     }
 
     protected void onBoundPropertyChanged() {
@@ -62,28 +60,28 @@ public class PropertyBinding extends BindingBase {
 
     @Override
     public Class<?> getType() {
-        return mInfo.type;
+        return mPropertyInfo.getPropertyType();
     }
 
     @Override
     public Object getValue() {
-        if (mInfo.canRead) {
-            return mInfo.getValue(getSubject());
+        if (mPropertyInfo.isCanRead()) {
+            return mPropertyInfo.getValue(getSubject());
         }
 
-        getLogger().warning("Cannot get value for property " + this.mInfo.name + ": property is non-existent");
+        getLogger().warning("Cannot get value for property " + mPropertyInfo.getPropertyName() + ": property is non-existent");
         return IBinding.noValue;
     }
 
     @Override
     public void setValue(Object value) {
-        if (mInfo.canWrite) {
-            mInfo.setValue(getSubject(), value);
+        if (mPropertyInfo.isCanWrite()) {
+            mPropertyInfo.setValue(getSubject(), value);
         } else {
-            if (mInfo.canRead) {
-                getLogger().warning("Cannot set value for property " + this.mInfo.name + ": propery is read-only");
+            if (mPropertyInfo.isCanRead()) {
+                getLogger().warning("Cannot set value for property " + mPropertyInfo.getPropertyName() + ": propery is read-only");
             } else {
-                getLogger().warning("Cannot set value for property " + this.mInfo.name + ": propery is non-existent");
+                getLogger().warning("Cannot set value for property " + mPropertyInfo.getPropertyName() + ": propery is non-existent");
             }
         }
     }
