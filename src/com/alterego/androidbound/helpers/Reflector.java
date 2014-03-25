@@ -25,7 +25,7 @@ public class Reflector {
     private static final String COMMAND_PREFIX_CAN = "can";
     private static final String PROPERTY_PREFIX_GET = "get";
     private static final String PROPERTY_PREFIX_SET = "set";
-    private static final String METHOD_PREFIX_IS = "is";
+    private static final String PROPERTY_PREFIX_IS = "is";
 
     private static SparseArray<SparseArray<PropertyInfo>> mObjectProperties = new SparseArray<SparseArray<PropertyInfo>>();
     private static SparseArray<SparseArray<CommandInfo>> mObjectCommands = new SparseArray<SparseArray<CommandInfo>>();
@@ -58,7 +58,7 @@ public class Reflector {
             }
         }
 
-        getters = getMethods(type, METHOD_PREFIX_IS + name);
+        getters = getMethods(type, PROPERTY_PREFIX_IS + name);
         if (getters != null) {
             for (MethodInfo mi : getters) {
                 if (mi.getMethodParameterCount() == 0) {
@@ -70,89 +70,157 @@ public class Reflector {
         return false;
     }
 
-    public static PropertyInfo getProperty(Class<?> type, String name) {
-        int typeCode = type.hashCode();
-        int nameCode = name.hashCode();
+    private static MethodInfo findGetterWithGetPrefix(Class<?> type, String name) {
 
-        PropertyInfo retval = null;
-        synchronized (mSynchronizedObject) {
-            SparseArray<PropertyInfo> sa = mObjectProperties.get(typeCode);
-            if (sa != null) {
-                retval = sa.get(nameCode);
-            }
-        }
-
-        if (retval != null) {
-            return retval;
-        }
-
-        MethodInfo getter = null;
-        MethodInfo setter = null;
-        FieldInfo field = null;
-
+        MethodInfo found_getter = null;
         List<MethodInfo> getters = getMethods(type, PROPERTY_PREFIX_GET + name);
+
         if (getters != null) {
-            for (MethodInfo mi : getters) {
-                if (mi.getMethodParameterCount() == 0) {
-                    getter = mi;
+            for (MethodInfo getter : getters) {
+                if (getter.getMethodParameterCount() == 0) {
+                    found_getter = getter;
                     break;
                 }
             }
         }
 
-        if (getter == null) {
-            getters = getMethods(type, METHOD_PREFIX_IS + name);
-            if (getters != null) {
-                for (MethodInfo mi : getters) {
-                    if (mi.getMethodParameterCount() == 0) {
-                        getter = mi;
-                        break;
-                    }
+        return found_getter;
+    }
+
+    private static MethodInfo findGetterWithIsPrefix(Class<?> type, String name) {
+
+        MethodInfo found_getter = null;
+        List<MethodInfo> getters = getMethods(type, PROPERTY_PREFIX_IS + name);
+
+        if (getters != null) {
+            for (MethodInfo getter : getters) {
+                if (getter.getMethodParameterCount() == 0) {
+                    found_getter = getter;
+                    break;
                 }
             }
         }
 
-        if (getter != null) {
-            List<MethodInfo> setters = getMethods(type, PROPERTY_PREFIX_SET + name);
+        return found_getter;
+    }
 
-            if (setters != null) {
-                for (MethodInfo mi : setters) {
-                    if (mi.getMethodParameterCount() == 1 && getter.getMethodReturnType().equals(mi.getMethodParameterTypes()[0])) {
-                        setter = mi;
-                        break;
-                    }
+    private static MethodInfo findSetter(Class<?> type, String name, MethodInfo getter) {
+
+        MethodInfo found_setter = null;
+        List<MethodInfo> setters = getMethods(type, PROPERTY_PREFIX_SET + name);
+
+        if (setters != null) {
+            for (MethodInfo setter : setters) {
+                if (setter.getMethodParameterCount() == 1 && getter.getMethodReturnType().equals(setter.getMethodParameterTypes()[0])) {
+                    found_setter = setter;
+                    break;
                 }
             }
         }
 
-        if (getter == null) {
-            field = Reflector.getField(type, name);
+        return found_setter;
+    }
+
+    public static PropertyInfo getProperty(Class<?> type, String name) {
+        MethodInfo propertyGetter = null;
+        MethodInfo propertySetter = null;
+        FieldInfo propertyField = null;
+
+        int typeCode = type.hashCode();
+        int nameCode = name.hashCode();
+
+        PropertyInfo propertyInfo = null;
+        synchronized (mSynchronizedObject) {
+            SparseArray<PropertyInfo> objectProperties = mObjectProperties.get(typeCode);
+            if (objectProperties != null) {
+                propertyInfo = objectProperties.get(nameCode);
+            }
         }
 
-        boolean ismap = Map.class.isAssignableFrom(type);
+        if (propertyInfo != null) {
+            return propertyInfo;
+        }
 
-        retval = new PropertyInfo(name,
-                getter != null || field != null || ismap,
-                setter != null || field != null || ismap,
-                getter != null ? getter.getMethodReturnType() : (field != null ? field.getFieldType() : Object.class),
-                getter,
-                setter,
-                field);
+
+
+//        List<MethodInfo> getters = getMethods(type, PROPERTY_PREFIX_GET + name);
+//        if (getters != null) {
+//            for (MethodInfo getter : getters) {
+//                if (getter.getMethodParameterCount() == 0) {
+//                    propertyGetter = getter;
+//                    break;
+//                }
+//            }
+//        }
+
+//        if (propertyGetter == null) {
+//            getters = getMethods(type, PROPERTY_PREFIX_IS + name);
+//            if (getters != null) {
+//                for (MethodInfo getter : getters) {
+//                    if (getter.getMethodParameterCount() == 0) {
+//                        propertyGetter = getter;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+
+        //first we look for getters with prefix "get", if null then with prefix "is"
+        propertyGetter = findGetterWithGetPrefix (type, name);
+        if (propertyGetter==null)
+            propertyGetter = findGetterWithIsPrefix(type, name);
+
+
+
+
+//        if (propertyGetter != null) {
+//            List<MethodInfo> setters = getMethods(type, PROPERTY_PREFIX_SET + name);
+//
+//            if (setters != null) {
+//                for (MethodInfo setter : setters) {
+//                    if (setter.getMethodParameterCount() == 1 && propertyGetter.getMethodReturnType().equals(setter.getMethodParameterTypes()[0])) {
+//                        propertySetter = setter;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+
+
+
+//        if (propertyGetter == null) {
+//            propertyField = Reflector.getField(type, name);
+//        }
+
+        //if the getter is not null, then we look for the setter; if it is null, we bind directly to the variable
+        if (propertyGetter != null) {
+            propertySetter = findSetter (type, name, propertyGetter);
+        } else {
+            propertyField = Reflector.getField(type, name);
+        }
+
+        boolean isMap = Map.class.isAssignableFrom(type);
+
+        propertyInfo = new PropertyInfo(name,
+                propertyGetter != null || propertyField != null || isMap,
+                propertySetter != null || propertyField != null || isMap,
+                propertyGetter != null ? propertyGetter.getMethodReturnType() : (propertyField != null ? propertyField.getFieldType() : Object.class),
+                propertyGetter,
+                propertySetter,
+                propertyField);
 
         synchronized (mSynchronizedObject) {
             SparseArray<PropertyInfo> sa = mObjectProperties.get(typeCode);
             if (sa != null) {
-                // replace instance to make this thread safe...because someone
-                // other may have a reference to this map
                 sa = cloneSparseArray(sa);
             } else {
                 sa = new SparseArray<PropertyInfo>();
             }
-            sa.put(nameCode, retval);
+            sa.put(nameCode, propertyInfo);
             mObjectProperties.put(typeCode, sa);
         }
 
-        return retval;
+        return propertyInfo;
 
     }
 
@@ -351,16 +419,8 @@ public class Reflector {
     }
 
     private static SparseArray<FieldInfo> getFieldsForClass(Class<?> type) {
-        //TODO to test
-//        Field[] fs = mFieldType.getFields();
-//
-//        SparseArray<FieldInfo> fields = new SparseArray<Reflector.FieldInfo>(fs.length);
-//        for (Field f : fs) {
-//            FieldInfo fi = new FieldInfo(f);
-//            fields.put(fi.mConstructorName.hashCode(), fi);
-//        }
+        Field[] fields = type.getFields();
 
-        Field[] fields = type.getDeclaredFields();
         SparseArray<FieldInfo> class_fields = new SparseArray<FieldInfo>(fields.length);
         for (Field field : fields) {
             field.setAccessible(true);
@@ -372,21 +432,22 @@ public class Reflector {
     }
 
     private static SparseArray<List<MethodInfo>> getMethodsForClass(Class<?> type) {
-        //TODO to test
-        Method[] ms = type.getDeclaredMethods();
+        //TODO test for problems with getting "can" method when binding
+        //Method[] ms = type.getDeclaredMethods();
+        Method[] typeMethods = type.getMethods();
 
-        SparseArray<List<MethodInfo>> methods = new SparseArray<List<MethodInfo>>(ms.length);
-        for (Method m : ms) {
-            m.setAccessible(true);
-            MethodInfo mi = new MethodInfo(m);
-            int methodCode = mi.getMethodName().hashCode();
+        SparseArray<List<MethodInfo>> methods = new SparseArray<List<MethodInfo>>(typeMethods.length);
+        for (Method method : typeMethods) {
+            method.setAccessible(true);
+            MethodInfo methodInfo = new MethodInfo(method);
+            int methodCode = methodInfo.getMethodName().hashCode();
 
-            List<MethodInfo> mlist = methods.get(methodCode);
-            if (mlist == null) {
-                mlist = new LinkedList<MethodInfo>();
-                methods.put(methodCode, mlist);
+            List<MethodInfo> methodInfoList = methods.get(methodCode);
+            if (methodInfoList == null) {
+                methodInfoList = new LinkedList<MethodInfo>();
+                methods.put(methodCode, methodInfoList);
             }
-            mlist.add(mi);
+            methodInfoList.add(methodInfo);
         }
 
         return methods;
