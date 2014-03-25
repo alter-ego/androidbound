@@ -121,19 +121,19 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
         if (value.equals("=")) {
             return BindingMode.Default;
         }
-        if (value.equals("-*")) {
+        if (value.equals("->")) {
             return BindingMode.OneWayToSourceOneTime;
         }
-        if (value.equals("=**")) {
+        if (value.equals("=>")) {
             return BindingMode.OneWayToSource;
         }
-        if (value.equals("*-")) {
+        if (value.equals("<-")) {
             return BindingMode.OneWayOneTime;
         }
-        if (value.equals("**=")) {
+        if (value.equals("<=")) {
             return BindingMode.OneWay;
         }
-        if (value.equals("*=*")) {
+        if (value.equals("<=>")) {
             return BindingMode.TwoWay;
         }
 
