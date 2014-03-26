@@ -36,39 +36,60 @@ public class Reflector {
 
 
     public static boolean isCommand(Class<?> type, String name) {
-        List<MethodInfo> invokers = getMethods(type, COMMAND_PREFIX_DO + name);
-        if (invokers != null) {
-            for (MethodInfo invoker : invokers) {
-                if (invoker.getMethodParameterCount() <= 1) {
-                    return true;
-                }
-            }
-        }
-
+//        List<MethodInfo> invokers = getMethods(type, COMMAND_PREFIX_DO + name);
+//        if (invokers != null) {
+//            for (MethodInfo invoker : invokers) {
+//                if (invoker.getMethodParameterCount() <= 1) {
+//                    return true;
+//                }
+//            }
+//        }
+        if (Iterables.from(getMethods(type, COMMAND_PREFIX_DO + name)).where(methodHasAtMostOneParameter).iterator().hasNext())
+            return true;
         return false;
     }
 
     public static boolean isProperty(Class<?> type, String name) {
-        List<MethodInfo> getters = getMethods(type, PROPERTY_PREFIX_GET + name);
-        if (getters != null) {
-            for (MethodInfo getter : getters) {
-                if (getter.getMethodParameterCount() == 0) {
-                    return true;
-                }
-            }
-        }
+//        List<MethodInfo> getters = getMethods(type, PROPERTY_PREFIX_GET + name);
+//        if (getters != null) {
+//            for (MethodInfo getter : getters) {
+//                if (getter.getMethodParameterCount() == 0) {
+//                    return true;
+//                }
+//            }
+//        }
+//
+//        getters = getMethods(type, PROPERTY_PREFIX_IS + name);
+//        if (getters != null) {
+//            for (MethodInfo mi : getters) {
+//                if (mi.getMethodParameterCount() == 0) {
+//                    return true;
+//                }
+//            }
+//        }
 
-        getters = getMethods(type, PROPERTY_PREFIX_IS + name);
-        if (getters != null) {
-            for (MethodInfo mi : getters) {
-                if (mi.getMethodParameterCount() == 0) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        if (Iterables.from(getMethods(type, PROPERTY_PREFIX_GET + name)).where(methodHasNoParameters).iterator().hasNext())
+            return true;
+        else if (Iterables.from(getMethods(type, PROPERTY_PREFIX_IS + name)).where(methodHasNoParameters).iterator().hasNext())
+            return true;
+        else
+            return false;
     }
+
+    static Predicate<MethodInfo> methodHasNoParameters = new Predicate<MethodInfo>() {
+        @Override
+        public Boolean invoke(MethodInfo obj) {
+            return obj.getMethodParameterCount() == 0;
+        }
+    };
+
+    static Predicate<MethodInfo> methodHasAtMostOneParameter = new Predicate<MethodInfo>() {
+        @Override
+        public Boolean invoke(MethodInfo obj) {
+            return obj.getMethodParameterCount() <= 1;
+        }
+    };
+
 
     public static PropertyInfo getProperty(Class<?> type, String name) {
         MethodInfo propertyGetter = null;
@@ -91,13 +112,13 @@ public class Reflector {
         }
 
         //first we look for getters with prefix "get", if null then with prefix "is"
-        propertyGetter = findGetterWithGetPrefix (type, name);
-        if (propertyGetter==null)
+        propertyGetter = findGetterWithGetPrefix(type, name);
+        if (propertyGetter == null)
             propertyGetter = findGetterWithIsPrefix(type, name);
 
         //if the getter is not null, then we look for the setter; if it is null, we bind directly to the variable
         if (propertyGetter != null) {
-            propertySetter = findSetter (type, name, propertyGetter);
+            propertySetter = findSetter(type, name, propertyGetter);
         } else {
             propertyField = Reflector.getField(type, name);
         }
@@ -314,7 +335,7 @@ public class Reflector {
     }
 
     public static MethodInfo getMethod(Class<?> type, final String name,
-            final Class<?>... parameterTypes) {
+                                       final Class<?>... parameterTypes) {
         List<MethodInfo> methods = getAllMethods(type).get(name.hashCode());
         if (methods == null) {
             return null;
