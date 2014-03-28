@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
@@ -29,7 +30,7 @@ import com.alterego.androidbound.zzzztoremove.reactive.Subject;
 import com.alterego.androidbound.zzzztoremove.reactive.ThreadPoolScheduler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class BindableImageView extends ImageView implements OnClickListener, INotifyPropertyChanged {
+public class BindableImageView extends ImageView implements OnClickListener, INotifyPropertyChanged, OnLongClickListener {
 
 	ImageView mImageView = null;
 	static Context context;
@@ -94,7 +95,32 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 			onClick.execute(null);
 		}
 	}
+	
+	public ICommand getLongClick() {
+		return onLongClick;
+	}
 
+	public void setLongClick(ICommand value) {
+		if (value == null) {
+			setClickable(false);
+			setOnLongClickListener(null);
+			onLongClick = ICommand.empty;
+			return;
+		}
+		setClickable(true);
+		setOnLongClickListener(this);
+		onLongClick = value;
+	}
+
+	@Override
+	public boolean onLongClick(View arg0) {
+		
+		if (onLongClick.canExecute(null)) {
+			onLongClick.execute(null);
+			return true;
+		} else return false;
+	}
+	
 	@Override
 	public void dispose() {
 		if (this.disposed) {
@@ -108,6 +134,7 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 
 		this.propertyChanged = null;
 		this.onClick = null;
+		onLongClick = null;
 	}
 
 	@Override
@@ -192,6 +219,7 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 	private Drawable currentDrawable;
 	private ISubject<String> propertyChanged;
 	private ICommand onClick = ICommand.empty;
+	private ICommand onLongClick = ICommand.empty;
 	private String source;
 
 	private void setImage(final ImageView view, Bitmap remoteImage) {
@@ -217,4 +245,6 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 		}
 		view.setImageBitmap(remoteImage);
 	}
+
+	
 }
