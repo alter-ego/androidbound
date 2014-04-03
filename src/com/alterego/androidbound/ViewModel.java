@@ -11,10 +11,14 @@ import com.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposable {
 	private ISubject<String> propertyChanges = new Subject<String>();
-	protected IAndroidLogger logger = NullAndroidLogger.instance;
+	protected IAndroidLogger mLogger = NullAndroidLogger.instance;
 
 	protected void raisePropertyChanged(String property) {
-		propertyChanges.onNext(property);
+		try {
+			propertyChanges.onNext(property);
+		} catch (Exception e) {
+			mLogger.error("exception when raising property changes = " + e.getMessage());
+		}
 	}
 	
 	public IObservable<String> onPropertyChanged() {
@@ -26,6 +30,6 @@ public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposa
 	}
 
 	public void setLogger(IAndroidLogger logger) {
-		this.logger = logger.getLogger(this);
+		mLogger = logger.getLogger(this);
 	}
 }
