@@ -1,4 +1,4 @@
-package com.alterego.androidbound.android.cache;
+package com.alterego.androidbound.android.interfaces;
 
 public interface ICache {
 

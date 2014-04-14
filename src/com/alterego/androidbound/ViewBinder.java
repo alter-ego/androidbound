@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.android.BindableLayoutInflaterFactory;
-import com.alterego.androidbound.android.cache.CacheImage;
-import com.alterego.androidbound.android.cache.ICache;
 import com.alterego.androidbound.android.converters.BooleanToVisibilityConverter;
 import com.alterego.androidbound.android.converters.FontConverter;
 import com.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
@@ -76,12 +74,6 @@ public class ViewBinder implements IViewBinder {
         setFontManager(new FontManager(getLogger()));
 
         registerDefaultConverters();
-        
-        ICache cacheImage = new CacheImage(getContext(), getLogger());
-        if (((CacheImage)cacheImage).getDiskLruCache() != null)
-            CommonSettings.CacheImage.cache = cacheImage;
-
-        CommonSettings.Images.isAnimated = true;
 
         if (imageLoaderConfiguration==null) {
             ImageLoader.getInstance().init(getDefaultImageLoaderConfig(ctx));

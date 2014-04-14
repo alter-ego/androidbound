@@ -10,8 +10,8 @@ import com.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import com.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposable {
-	private ISubject<String> propertyChanges = new Subject<String>();
-	protected IAndroidLogger mLogger = NullAndroidLogger.instance;
+	private transient ISubject<String> propertyChanges = new Subject<String>();
+	protected transient IAndroidLogger mLogger = NullAndroidLogger.instance;
 
 	protected void raisePropertyChanged(String property) {
 		try {

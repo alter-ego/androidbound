@@ -9,32 +9,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
-import com.alterego.androidbound.CommonSettings;
-import com.alterego.androidbound.android.cache.CacheSystem;
 import com.alterego.androidbound.interfaces.ICommand;
 import com.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import com.alterego.androidbound.zzzztoremove.Exceptional;
-import com.alterego.androidbound.zzzztoremove.HttpBitmapProvider;
-import com.alterego.androidbound.zzzztoremove.IContentProvider;
-import com.alterego.androidbound.zzzztoremove.UiThreadScheduler;
 import com.alterego.androidbound.zzzztoremove.reactive.IObservable;
 import com.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import com.alterego.androidbound.zzzztoremove.reactive.Subject;
-import com.alterego.androidbound.zzzztoremove.reactive.ThreadPoolScheduler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class BindableImageView extends ImageView implements OnClickListener, INotifyPropertyChanged, OnLongClickListener {
 
 	ImageView mImageView = null;
 	static Context context;
-	private final static IContentProvider<Bitmap> provider = new CacheSystem<Bitmap>(new HttpBitmapProvider(), CommonSettings.CacheImage.cache);
+	//private final static IContentProvider<Bitmap> provider = new CacheSystem<Bitmap>(new HttpBitmapProvider(), CommonSettings.CacheImage.cache);
 
 
 	public BindableImageView(Context context, AttributeSet attrs) {
@@ -56,21 +44,6 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 		source = value;
 		//loadImage();
         ImageLoader.getInstance().displayImage(source, mImageView);
-	}
-
-	private void loadImage() {
-		ThreadPoolScheduler.instance.schedule(new Runnable() {
-			public void run() {
-				final Exceptional<Bitmap> result = provider.getContent(source);
-				if (result.hasValue()) {
-					UiThreadScheduler.instance.schedule(new Runnable() {
-						public void run() {
-							setImage(mImageView, result.value());
-						}
-					});
-				}
-			}
-		});
 	}
 
 	public ICommand getClick() {
@@ -222,7 +195,7 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 	private ICommand onLongClick = ICommand.empty;
 	private String source;
 
-	private void setImage(final ImageView view, Bitmap remoteImage) {
+	/*private void setImage(final ImageView view, Bitmap remoteImage) {
 		int fadeInDuration = 2000;
 		int fadeOutDuration = 1500;
 
@@ -244,7 +217,7 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 			view.setAnimation(animation);
 		}
 		view.setImageBitmap(remoteImage);
-	}
+	}*/
 
 	
 }
