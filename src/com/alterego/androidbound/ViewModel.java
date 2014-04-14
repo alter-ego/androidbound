@@ -13,6 +13,8 @@ public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposa
 	private transient ISubject<String> propertyChanges = new Subject<String>();
 	protected transient IAndroidLogger mLogger = NullAndroidLogger.instance;
 
+	
+	
 	protected void raisePropertyChanged(String property) {
 		try {
 			propertyChanges.onNext(property);
