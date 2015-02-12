@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -17,7 +18,7 @@ import com.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import com.alterego.androidbound.zzzztoremove.reactive.Subject;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class BindableImageView extends ImageView implements OnClickListener, INotifyPropertyChanged {
+public class BindableImageView extends ImageView implements OnClickListener, INotifyPropertyChanged, OnLongClickListener {
 
 	ImageView mImageView = null;
 	static Context context;
@@ -26,9 +27,10 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
     private Bitmap currentBitmap;
     private Drawable currentDrawable;
     private ISubject<String> propertyChanged;
+    //private final static IContentProvider<Bitmap> provider = new CacheSystem<Bitmap>(new HttpBitmapProvider(), CommonSettings.CacheImage.cache);
+    private ICommand onLongClick = ICommand.empty;
     private ICommand onClick = ICommand.empty;
     private String source;
-
 
 	public BindableImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -49,8 +51,6 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 		source = value;
         ImageLoader.getInstance().displayImage(source, mImageView);
 	}
-
-
 
 	public ICommand getClick() {
 		return onClick;
@@ -74,7 +74,32 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 			onClick.execute(null);
 		}
 	}
+	
+	public ICommand getLongClick() {
+		return onLongClick;
+	}
 
+	public void setLongClick(ICommand value) {
+		if (value == null) {
+			setClickable(false);
+			setOnLongClickListener(null);
+			onLongClick = ICommand.empty;
+			return;
+		}
+		setClickable(true);
+		setOnLongClickListener(this);
+		onLongClick = value;
+	}
+
+	@Override
+	public boolean onLongClick(View arg0) {
+		
+		if (onLongClick.canExecute(null)) {
+			onLongClick.execute(null);
+			return true;
+		} else return false;
+	}
+	
 	@Override
 	public void dispose() {
 		if (this.disposed) {
@@ -88,6 +113,7 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 
 		this.propertyChanged = null;
 		this.onClick = null;
+		onLongClick = null;
 	}
 
 	@Override
@@ -166,4 +192,29 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 		this.setLayoutParams(p);
 	}
 
+	/*private void setImage(final ImageView view, Bitmap remoteImage) {
+		int fadeInDuration = 2000;
+		int fadeOutDuration = 1500;
+
+		view.setVisibility(View.VISIBLE);
+
+		if (CommonSettings.Images.isAnimated) {
+			Animation fadeIn = new AlphaAnimation(0, 1);
+			fadeIn.setInterpolator(new DecelerateInterpolator());
+			fadeIn.setDuration(fadeInDuration);
+
+			Animation fadeOut = new AlphaAnimation(1, 0);
+			fadeOut.setInterpolator(new AccelerateInterpolator());
+			fadeOut.setStartOffset(fadeInDuration);
+			fadeOut.setDuration(fadeOutDuration);
+
+			AnimationSet animation = new AnimationSet(false);
+			animation.addAnimation(fadeIn);
+			animation.setRepeatCount(0);
+			view.setAnimation(animation);
+		}
+		view.setImageBitmap(remoteImage);
+	}*/
+
+	
 }

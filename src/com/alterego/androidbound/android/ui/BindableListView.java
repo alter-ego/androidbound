@@ -18,6 +18,10 @@ import android.widget.ListView;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
+@Accessors(prefix="m")
 public class BindableListView extends ListView implements OnItemClickListener, OnItemLongClickListener, IBindableView {
 
     private int listHeaderTemplate;
@@ -27,7 +31,7 @@ public class BindableListView extends ListView implements OnItemClickListener, O
 
     private ICommand onClick = ICommand.empty;
     private ICommand onLongClick = ICommand.empty;
-    private BindableListAdapter adapter;
+    @Getter private BindableListAdapter mAdapter;
     private IViewBinder viewBinder;
     public Map<String, Object> Extensions = null;
     private View mHeader;
@@ -77,19 +81,19 @@ public class BindableListView extends ListView implements OnItemClickListener, O
 
     public void setItemsSource(List<?> value) {
 
-        if (adapter == null) {
-            adapter = new BindableListAdapter(getContext(), getViewBinder());
-            adapter.setItemTemplate(itemTemplate);
-            adapter.setItemsSource(value);
-            setAdapter(adapter);
+        if (mAdapter == null) {
+            mAdapter = new BindableListAdapter(getContext(), getViewBinder());
+            mAdapter.setItemTemplate(itemTemplate);
+            mAdapter.setItemsSource(value);
+            setAdapter(mAdapter);
         } else {
-            adapter.setItemsSource(value);
+            mAdapter.setItemsSource(value);
         }
     }
 
     public List<?> getItemsSource() {
-        if (adapter != null) {
-            return adapter.getItemsSource();
+        if (mAdapter != null) {
+            return mAdapter.getItemsSource();
         }
         return null;
     }
