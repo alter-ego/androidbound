@@ -72,14 +72,6 @@ public class BindableTextView extends TextView implements INotifyPropertyChanged
         return this.propertyChanged;
     }
 
-    //    public Typeface getFont() {
-    //        return getTypeface();
-    //    }
-    //
-    //    public void setFont(Typeface font) {
-    //        setTypeface(font);
-    //    }
-
     public void setTextColor(int color) {
         super.setTextColor(color);
     }
