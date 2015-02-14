@@ -15,15 +15,17 @@ import android.view.View;
 
 import com.alterego.androidbound.BindingResources;
 import com.alterego.androidbound.ViewBinder;
+import com.alterego.androidbound.interfaces.ICommand;
 import com.alterego.androidbound.interfaces.INotifyPropertyChanged;
 import com.alterego.androidbound.zzzztoremove.reactive.IObservable;
 import com.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import com.alterego.androidbound.zzzztoremove.reactive.Subject;
 
-public class BindableExtendedTextView extends View implements INotifyPropertyChanged {
+public class BindableExtendedTextView extends View implements INotifyPropertyChanged, View.OnClickListener {
 
     private Context mContext;
     private ISubject<String> propertyChanged;
+    private ICommand onClick = ICommand.empty;
 
     private boolean disposed;
     private Typeface mTypeface;
@@ -32,12 +34,14 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
     public BindableExtendedTextView(Context context) {
         super(context);
         mContext = context;
+        setOnClickListener(this);
         initCustomTextView();
     }
 
     public BindableExtendedTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
+        setOnClickListener(this);
         readStyleable(mContext, attrs);
         initCustomTextView();
     }
@@ -45,6 +49,7 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
     public BindableExtendedTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContext = context;
+        setOnClickListener(this);
         readStyleable(mContext, attrs);
         initCustomTextView();
     }
@@ -380,5 +385,22 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
         canvas.restore();
     }
 
+    public ICommand getClick() {
+        return onClick;
+    }
+
+    public void setClick(ICommand value) {
+        if(value == null) {
+            onClick = ICommand.empty;
+            return;
+        }
+        onClick = value;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(onClick.canExecute(null))
+            onClick.execute(null);
+    }
 
 }
