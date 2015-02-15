@@ -15,6 +15,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class Reflector {
     private static SparseArray<SparseArray<List<MethodInfo>>> mObjectMethods = new SparseArray<SparseArray<List<MethodInfo>>>();
     private static SparseArray<List<ConstructorInfo>> mObjectConstructors = new SparseArray<List<ConstructorInfo>>();
     private static SparseArray<SparseArray<FieldInfo>> mObjectFields = new SparseArray<SparseArray<FieldInfo>>();
-    private static Object mSynchronizedObject = new Object();
+    private static final Object mSynchronizedObject = new Object();
 
 
     public static boolean isCommand(Class<?> type, String name) {
@@ -331,7 +332,10 @@ public class Reflector {
     }
 
     public static List<MethodInfo> getMethods(Class<?> type, String name) {
-        return getAllMethods(type).get(name.hashCode());
+        List<MethodInfo> methodList = getAllMethods(type).get(name.hashCode());
+        if (methodList == null)
+            methodList = new ArrayList<MethodInfo>();
+        return methodList;
     }
 
     public static MethodInfo getMethod(Class<?> type, final String name,
