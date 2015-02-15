@@ -7,6 +7,12 @@ buildscript {
     }
 }
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+ext {
+    buildVersionName = "0.3.3"
+    buildVersionCode = 17
+}
 
 repositories {
     mavenCentral()
@@ -37,8 +43,8 @@ android {
     defaultConfig {
         minSdkVersion 18
         targetSdkVersion 21
-        versionCode 16
-        versionName "0.3.2"
+        versionCode buildVersionCode
+        versionName buildVersionName
     }
 
     sourceSets {
@@ -71,10 +77,22 @@ task clearJar(type: Delete) {
 }
 
 task makeJar(type: Copy) {
-    from('build/bundles/release/')
-    into('build/libs/')
+    from('build/intermediates/bundles/release/')
+    into('releases/')
     include('classes.jar')
     rename ('classes.jar', 'androidbound.jar')
 }
 
 makeJar.dependsOn(clearJar, build)
+
+uploadArchives {
+    repositories.mavenDeployer {
+        def deployPath = file(getProperty('aar.deployPath'))
+        repository(url: "file://${deployPath.absolutePath}")
+        pom.project {
+            groupId 'com.alterego'
+            artifactId 'androidbound'
+            version buildVersionName
+        }
+    }
+}
