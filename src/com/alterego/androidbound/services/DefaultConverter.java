@@ -8,6 +8,8 @@ import java.util.Map;
 
 import com.alterego.androidbound.interfaces.IValueConverter;
 
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.util.Log;
 
 public class DefaultConverter implements IValueConverter {
@@ -167,6 +169,14 @@ public class DefaultConverter implements IValueConverter {
 	public static Double stringToDouble(String value) {
 		return Double.valueOf(value);
 	}
+
+    public static String spannableToString(Spannable value) {
+        return value.toString();
+    }
+
+    public static Spannable stringToSpannable(String value) {
+        return new SpannableString(value);
+    }
 	
 	public Object convert(Object value, Class<?> targetType, Object parameter, Locale culture) {
 		return convert(value, targetType);
