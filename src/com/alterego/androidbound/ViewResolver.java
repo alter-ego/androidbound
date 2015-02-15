@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.alterego.androidbound.android.ui.BindableButton;
+import com.alterego.androidbound.android.ui.BindableEditText;
 import com.alterego.androidbound.android.ui.BindableGridView;
 import com.alterego.androidbound.android.ui.BindableHorizontalListView;
 import com.alterego.androidbound.android.ui.BindableHorizontalScrollView;
@@ -53,6 +54,7 @@ public class ViewResolver implements IViewResolver {
             if (android.os.Build.VERSION.SDK_INT > 13)
                 put("android.widget.Switch", BindableSwitch.class);
             put("android.widget.ToggleButton", BindableToggleButton.class);
+            put("android.widget.EditText", BindableEditText.class);
         }
     };
 
