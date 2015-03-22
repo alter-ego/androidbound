@@ -46,8 +46,6 @@ public final class Observables {
 
                     private Object lock = new Object();
 
-                    private IDisposable currentDisposable = scheduler.schedule(runnable, initialDelay, unit);
-
                     private Runnable runnable = new Runnable() {
                         long count = 0;
 
@@ -62,6 +60,8 @@ public final class Observables {
                             }
                         }
                     };
+
+                    private IDisposable currentDisposable = scheduler.schedule(runnable, initialDelay, unit);
 
                     @Override
                     public void dispose() {
