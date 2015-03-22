@@ -1,26 +1,38 @@
 package solutions.alterego.androidbound.helpers.reflector;
 
 
-import solutions.alterego.androidbound.ViewBinder;
-
 import java.util.Map;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import solutions.alterego.androidbound.ViewBinder;
 
-@Accessors(prefix="m")
+@Accessors(prefix = "m")
 public class PropertyInfo {
 
-    @Getter private final FieldInfo mField;
-    @Getter private final MethodInfo mGetterMethod;
-    @Getter private final MethodInfo mSetterMethod;
-    @Getter public final Class<?> mPropertyType;
-    @Getter public final String mPropertyName;
-    @Getter public final boolean mCanRead;
-    @Getter public final boolean mCanWrite;
+    @Getter
+    public final Class<?> mPropertyType;
+
+    @Getter
+    public final String mPropertyName;
+
+    @Getter
+    public final boolean mCanRead;
+
+    @Getter
+    public final boolean mCanWrite;
+
+    @Getter
+    private final FieldInfo mField;
+
+    @Getter
+    private final MethodInfo mGetterMethod;
+
+    @Getter
+    private final MethodInfo mSetterMethod;
 
     public PropertyInfo(String name, boolean canRead, boolean canWrite, Class<?> type,
-                        MethodInfo getter, MethodInfo setter, FieldInfo field) {
+            MethodInfo getter, MethodInfo setter, FieldInfo field) {
         mPropertyType = type;
         mPropertyName = name;
         mCanRead = canRead;
@@ -34,7 +46,8 @@ public class PropertyInfo {
         Object result = null;
         if (mGetterMethod != null || mField != null) {
             try {
-                result = mGetterMethod != null ? mGetterMethod.getOriginalMethod().invoke(obj) : (mField != null ? mField.getFieldOriginal().get(obj) : null);
+                result = mGetterMethod != null ? mGetterMethod.getOriginalMethod().invoke(obj)
+                        : (mField != null ? mField.getFieldOriginal().get(obj) : null);
             } catch (Exception e) {
                 ViewBinder.getLogger().error("Reflector getValue exception = " + e.getCause().toString());
             }

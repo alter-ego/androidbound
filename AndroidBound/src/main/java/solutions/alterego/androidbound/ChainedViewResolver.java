@@ -1,57 +1,60 @@
 package solutions.alterego.androidbound;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+import java.util.ArrayList;
+import java.util.List;
+
 import solutions.alterego.androidbound.interfaces.IViewResolver;
 
 public class ChainedViewResolver implements IViewResolver {
-	private List<IViewResolver> mBaseViewResolvers;
 
-	public ChainedViewResolver() {
-		mBaseViewResolvers = new ArrayList<IViewResolver>();
-	}
-	public ChainedViewResolver(IViewResolver...initialViewResolvers) {
-		this();
-		if(initialViewResolvers == null) {
-			return;
-		}
+    private List<IViewResolver> mBaseViewResolvers;
 
-		for(IViewResolver r: initialViewResolvers) {
-			mBaseViewResolvers.add(r);
-		}
-	}
+    public ChainedViewResolver() {
+        mBaseViewResolvers = new ArrayList<IViewResolver>();
+    }
 
-	@Override
-	public void setLogger(IAndroidLogger logger) {
-	}
+    public ChainedViewResolver(IViewResolver... initialViewResolvers) {
+        this();
+        if (initialViewResolvers == null) {
+            return;
+        }
 
-	@Override
-	public View createView(String name, Context context, AttributeSet attrs) {
-		for(IViewResolver resolver: mBaseViewResolvers) {
-			View view = resolver.createView(name, context, attrs);
-			if(view != null) {
-				return view;
-			}
-		}
+        for (IViewResolver r : initialViewResolvers) {
+            mBaseViewResolvers.add(r);
+        }
+    }
 
-		return null;
-	}
+    @Override
+    public void setLogger(IAndroidLogger logger) {
+    }
 
-	public void addResolverToFront(IViewResolver resolver) {
-		mBaseViewResolvers.add(0, resolver);
-	}
+    @Override
+    public View createView(String name, Context context, AttributeSet attrs) {
+        for (IViewResolver resolver : mBaseViewResolvers) {
+            View view = resolver.createView(name, context, attrs);
+            if (view != null) {
+                return view;
+            }
+        }
 
-	public void addResolverToBack(IViewResolver resolver) {
-		mBaseViewResolvers.add(resolver);
-	}
+        return null;
+    }
 
-	public void removeResolver(IViewResolver resolver) {
-		mBaseViewResolvers.remove(resolver);
-	}
+    public void addResolverToFront(IViewResolver resolver) {
+        mBaseViewResolvers.add(0, resolver);
+    }
+
+    public void addResolverToBack(IViewResolver resolver) {
+        mBaseViewResolvers.add(resolver);
+    }
+
+    public void removeResolver(IViewResolver resolver) {
+        mBaseViewResolvers.remove(resolver);
+    }
 }

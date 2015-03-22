@@ -1,16 +1,22 @@
-
 package solutions.alterego.androidbound.zzzztoremove;
-
-import java.util.concurrent.TimeUnit;
 
 import android.os.Handler;
 import android.os.Looper;
 
+import java.util.concurrent.TimeUnit;
+
 import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 
 public class UiThreadScheduler extends HandlerScheduler {
-	public static final UiThreadScheduler instance = new UiThreadScheduler();
-	
+
+    public static final UiThreadScheduler instance = new UiThreadScheduler();
+
+    private static IDisposable nullDisposable = new IDisposable() {
+        @Override
+        public void dispose() {
+        }
+    };
+
     public UiThreadScheduler() {
         super(new Handler(Looper.getMainLooper()));
     }
@@ -24,10 +30,4 @@ public class UiThreadScheduler extends HandlerScheduler {
             return super.schedule(runnable, delay, unit);
         }
     }
-
-    private static IDisposable nullDisposable = new IDisposable() {
-        @Override
-        public void dispose() {
-        }
-    };
 }

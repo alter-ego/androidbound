@@ -1,16 +1,17 @@
-
 package solutions.alterego.androidbound.services;
+
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.IValueConverter;
 import solutions.alterego.androidbound.interfaces.IValueConverterProvider;
 import solutions.alterego.androidbound.interfaces.IValueConverterRegistry;
 
 public class ValueConverterService implements IValueConverterRegistry, IValueConverterProvider, INeedsLogger {
+
     Map<String, IValueConverter> converters = new HashMap<String, IValueConverter>();
 
     private IAndroidLogger logger;
@@ -26,8 +27,9 @@ public class ValueConverterService implements IValueConverterRegistry, IValueCon
 
     public IValueConverter find(String name) {
         //logger.info("Requested converter " + name);
-        if (converters.containsKey(name))
+        if (converters.containsKey(name)) {
             return converters.get(name);
+        }
         logger.warning("mValueConverter " + name + " not found. Returning default.");
         return DefaultConverter.instance;
     }

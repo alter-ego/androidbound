@@ -1,13 +1,15 @@
 package solutions.alterego.androidbound.zzzztoremove.reactive;
 
-import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-
 import java.util.concurrent.TimeUnit;
 
+import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
+
 public final class Observables {
+
     public final static <T> Observable<T> from(final IObservable<T> source) {
-        if (source instanceof Observable<?>)
+        if (source instanceof Observable<?>) {
             return (Observable<T>) source;
+        }
 
         return asObservable(source);
     }
@@ -41,7 +43,11 @@ public final class Observables {
             public IDisposable invoke(final IObserver<Long> observer) {
                 return new IDisposable() {
                     private boolean disposed = false;
+
                     private Object lock = new Object();
+
+                    private IDisposable currentDisposable = scheduler.schedule(runnable, initialDelay, unit);
+
                     private Runnable runnable = new Runnable() {
                         long count = 0;
 
@@ -56,7 +62,6 @@ public final class Observables {
                             }
                         }
                     };
-                    private IDisposable currentDisposable = scheduler.schedule(runnable, initialDelay, unit);
 
                     @Override
                     public void dispose() {
@@ -91,6 +96,7 @@ public final class Observables {
             public IDisposable invoke(final IObserver<TResult> observer) {
                 return scheduler.schedule(new Runnable() {
                     T state = initialState;
+
                     boolean first = true;
 
                     @SuppressWarnings("unchecked")
@@ -98,29 +104,29 @@ public final class Observables {
                         boolean canInvoke;
                         TResult local = null;
                         try {
-                            if (first)
+                            if (first) {
                                 first = false;
-                            else {
-                                if (iterate != null)
+                            } else {
+                                if (iterate != null) {
                                     state = iterate.invoke(state);
-                                else
+                                } else {
                                     canInvoke = false;
+                                }
                             }
                             canInvoke = condition.invoke(state);
-                            if (canInvoke)
+                            if (canInvoke) {
                                 local = (TResult) (selector == null ? state : selector.invoke(state));
-                        }
-                        catch (Exception e) {
+                            }
+                        } catch (Exception e) {
                             observer.onError(e);
                             return;
                         }
-                        if (canInvoke)
-                        {
+                        if (canInvoke) {
                             observer.onNext(local);
                             run();
-                        }
-                        else
+                        } else {
                             observer.onCompleted();
+                        }
                     }
                 });
             }

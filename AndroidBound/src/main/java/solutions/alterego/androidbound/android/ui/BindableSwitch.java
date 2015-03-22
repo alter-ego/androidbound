@@ -1,4 +1,3 @@
-
 package solutions.alterego.androidbound.android.ui;
 
 import android.annotation.SuppressLint;
@@ -12,6 +11,7 @@ import solutions.alterego.androidbound.interfaces.ICommand;
 
 @SuppressLint("NewApi")
 public class BindableSwitch extends Switch implements OnClickListener {
+
     private ICommand onClick = ICommand.empty;
 
     public BindableSwitch(Context context, AttributeSet attrs) {
@@ -38,7 +38,8 @@ public class BindableSwitch extends Switch implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (onClick.canExecute(null))
+        if (onClick.canExecute(null)) {
             onClick.execute(null);
+        }
     }
 }

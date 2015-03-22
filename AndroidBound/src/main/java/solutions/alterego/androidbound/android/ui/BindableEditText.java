@@ -8,7 +8,6 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
-import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
 import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
@@ -19,6 +18,23 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
     private ISubject<String> propertyChanged;
 
     private boolean disposed;
+
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            propertyChanged.onNext("TextString");
+        }
+    };
 
     public BindableEditText(Context context) {
         super(context);
@@ -71,10 +87,6 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
         return this.propertyChanged;
     }
 
-    public void setTextColor(int color) {
-        super.setTextColor(color);
-    }
-
     public void setTextColorState(ColorStateList colors) {
         super.setTextColor(colors);
     }
@@ -83,12 +95,16 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
         return super.getTextColors();
     }
 
-    public void setBackgroundColor(int color) {
-        super.setBackgroundColor(color);
+    public void setTextColor(int color) {
+        super.setTextColor(color);
     }
 
     public int getBackgroundColor() {
         return 0;
+    }
+
+    public void setBackgroundColor(int color) {
+        super.setBackgroundColor(color);
     }
 
     public String getTextString() {
@@ -98,21 +114,4 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
     public void setTextString(String text) {
         this.setText(text);
     }
-
-    private TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            propertyChanged.onNext("TextString");
-        }
-    };
 }

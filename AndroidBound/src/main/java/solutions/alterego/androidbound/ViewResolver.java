@@ -1,11 +1,14 @@
-
 package solutions.alterego.androidbound;
+
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+import java.util.HashMap;
+import java.util.Map;
+
 import solutions.alterego.androidbound.android.ui.BindableButton;
 import solutions.alterego.androidbound.android.ui.BindableEditText;
 import solutions.alterego.androidbound.android.ui.BindableGridView;
@@ -24,15 +27,13 @@ import solutions.alterego.androidbound.android.ui.BindableVideoView;
 import solutions.alterego.androidbound.helpers.Reflector;
 import solutions.alterego.androidbound.interfaces.IViewResolver;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ViewResolver implements IViewResolver {
-    private static final Class<?>[] oneArg = new Class<?>[] {
-        Context.class
+
+    private static final Class<?>[] oneArg = new Class<?>[]{
+            Context.class
     };
 
-    private static final Class<?>[] twoArgs = new Class<?>[] {
+    private static final Class<?>[] twoArgs = new Class<?>[]{
             Context.class, AttributeSet.class
     };
 
@@ -51,8 +52,9 @@ public class ViewResolver implements IViewResolver {
             put("android.widget.RelativeLayout", BindableRelativeLayout.class);
             put("android.widget.LinearLayout", BindableLinearLayout.class);
             put("android.widget.GridView", BindableGridView.class);
-            if (android.os.Build.VERSION.SDK_INT > 13)
+            if (android.os.Build.VERSION.SDK_INT > 13) {
                 put("android.widget.Switch", BindableSwitch.class);
+            }
             put("android.widget.ToggleButton", BindableToggleButton.class);
             put("android.widget.EditText", BindableEditText.class);
         }
@@ -73,14 +75,14 @@ public class ViewResolver implements IViewResolver {
         }
         try {
             if (Reflector.canCreateInstance(resolvedClass, twoArgs)) {
-                return Reflector.createInstance(resolvedClass, twoArgs, new Object[] {
+                return Reflector.createInstance(resolvedClass, twoArgs, new Object[]{
                         context, attrs
                 });
             }
 
             if (Reflector.canCreateInstance(resolvedClass, oneArg)) {
-                return Reflector.createInstance(resolvedClass, oneArg, new Object[] {
-                    context
+                return Reflector.createInstance(resolvedClass, oneArg, new Object[]{
+                        context
                 });
             }
 

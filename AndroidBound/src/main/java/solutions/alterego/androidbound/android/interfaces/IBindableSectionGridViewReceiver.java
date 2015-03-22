@@ -1,4 +1,3 @@
-
 package solutions.alterego.androidbound.android.interfaces;
 
 

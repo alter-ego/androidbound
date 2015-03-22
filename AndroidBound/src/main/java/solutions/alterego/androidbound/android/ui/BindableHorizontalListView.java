@@ -1,7 +1,4 @@
-
 package solutions.alterego.androidbound.android.ui;
-
-import java.util.List;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -9,6 +6,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+
+import java.util.List;
 
 import solutions.alterego.androidbound.BindingResources;
 import solutions.alterego.androidbound.android.adapters.BindableListAdapter;
@@ -18,10 +17,15 @@ import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 public class BindableHorizontalListView extends HorizontalListView implements OnItemClickListener,
         OnItemLongClickListener, IBindableView {
+
     private int itemTemplate;
+
     private ICommand onClick = ICommand.empty;
+
     private ICommand onLongClick = ICommand.empty;
+
     private BindableListAdapter adapter;
+
     private IViewBinder viewBinder;
 
     public BindableHorizontalListView(Context context, AttributeSet attrs) {
@@ -33,6 +37,11 @@ public class BindableHorizontalListView extends HorizontalListView implements On
 
     public BindableHorizontalListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    private static int getItemTemplate(Context context, AttributeSet attrs) {
+        return attrs.getAttributeResourceValue(null,
+                BindingResources.attr.BindableListView.itemTemplate, 0);
     }
 
     @Override
@@ -61,6 +70,13 @@ public class BindableHorizontalListView extends HorizontalListView implements On
         onLongClick = value;
     }
 
+    public List<?> getItemsSource() {
+        if (adapter != null) {
+            return adapter.getItemsSource();
+        }
+        return null;
+    }
+
     public void setItemsSource(List<?> value) {
         if (adapter == null) {
             adapter = new BindableListAdapter(getContext(), this.getViewBinder());
@@ -70,17 +86,6 @@ public class BindableHorizontalListView extends HorizontalListView implements On
         } else {
             adapter.setItemsSource(value);
         }
-    }
-
-    public List<?> getItemsSource() {
-        if (adapter != null)
-            return adapter.getItemsSource();
-        return null;
-    }
-
-    private static int getItemTemplate(Context context, AttributeSet attrs) {
-        return attrs.getAttributeResourceValue(null,
-                BindingResources.attr.BindableListView.itemTemplate, 0);
     }
 
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -94,7 +99,8 @@ public class BindableHorizontalListView extends HorizontalListView implements On
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Object parameter = getItemsSource().get(position);
-        if (onClick.canExecute(parameter))
+        if (onClick.canExecute(parameter)) {
             onClick.execute(parameter);
+        }
     }
 }

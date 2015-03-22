@@ -1,9 +1,8 @@
 package solutions.alterego.androidbound.binds;
 
-import solutions.alterego.androidbound.interfaces.IValueConverter;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
+import solutions.alterego.androidbound.interfaces.IValueConverter;
 
 @Data
 @Accessors(prefix = "m")

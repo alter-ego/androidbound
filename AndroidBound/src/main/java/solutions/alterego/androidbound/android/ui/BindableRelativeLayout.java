@@ -1,4 +1,3 @@
-
 package solutions.alterego.androidbound.android.ui;
 
 import android.annotation.SuppressLint;
@@ -17,6 +16,13 @@ import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class BindableRelativeLayout extends RelativeLayout implements INotifyPropertyChanged, OnClickListener {
+
+    private boolean disposed;
+
+    private ISubject<String> propertyChanged;
+
+    private ICommand onClick = ICommand.empty;
+
     public BindableRelativeLayout(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
@@ -92,12 +98,6 @@ public class BindableRelativeLayout extends RelativeLayout implements INotifyPro
         this.setLayoutParams(p);
     }
 
-    private boolean disposed;
-
-    private ISubject<String> propertyChanged;
-
-    private ICommand onClick = ICommand.empty;
-
     public ICommand getClick() {
         return onClick;
     }
@@ -116,16 +116,17 @@ public class BindableRelativeLayout extends RelativeLayout implements INotifyPro
 
     @Override
     public void onClick(View v) {
-        if (onClick.canExecute(null))
+        if (onClick.canExecute(null)) {
             onClick.execute(null);
-    }
-
-    public void setBackgroundColor(int color) {
-        super.setBackgroundColor(color);
+        }
     }
 
     public int getBackgroundColor() {
         return 0;
+    }
+
+    public void setBackgroundColor(int color) {
+        super.setBackgroundColor(color);
     }
 
     @SuppressLint("NewApi")
@@ -139,11 +140,15 @@ public class BindableRelativeLayout extends RelativeLayout implements INotifyPro
         }
     }
 
+    public int getBackgroundResource() {
+        return 0;
+    }
+
     public void setBackgroundResource(int res) {
         super.setBackgroundResource(res);
     }
 
-    public int getBackgroundResource() {
+    public int getBackgroundDrawable() {
         return 0;
     }
 
@@ -156,9 +161,5 @@ public class BindableRelativeLayout extends RelativeLayout implements INotifyPro
         //        else
         super.setBackgroundDrawable(res);
 
-    }
-
-    public int getBackgroundDrawable() {
-        return 0;
     }
 }

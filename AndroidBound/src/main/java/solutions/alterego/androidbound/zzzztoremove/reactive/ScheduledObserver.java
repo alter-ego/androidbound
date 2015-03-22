@@ -1,21 +1,26 @@
-
 package solutions.alterego.androidbound.zzzztoremove.reactive;
-
-import java.util.concurrent.LinkedBlockingQueue;
 
 import android.util.Log;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 class ScheduledObserver<T> implements IObserver<T>, IDisposable {
+
     private LinkedBlockingQueue<Runnable> queue;
+
     private IScheduler scheduler;
+
     private IDisposable disposable;
+
     private IObserver<T> observer;
+
     private boolean isStopped;
+
     private boolean hasFaulted;
+
     private boolean isAcquired;
 
-    public ScheduledObserver(IScheduler scheduler, IObserver<T> observer)
-    {
+    public ScheduledObserver(IScheduler scheduler, IObserver<T> observer) {
         queue = new LinkedBlockingQueue<Runnable>();
         this.scheduler = scheduler;
         this.observer = observer;
@@ -31,8 +36,9 @@ class ScheduledObserver<T> implements IObserver<T>, IDisposable {
     }
 
     public void onError(final Exception exc) {
-        if (isStopped)
+        if (isStopped) {
             return;
+        }
 
         queue.offer(new Runnable() {
             public void run() {
@@ -43,8 +49,9 @@ class ScheduledObserver<T> implements IObserver<T>, IDisposable {
     }
 
     public void onCompleted() {
-        if (isStopped)
+        if (isStopped) {
             return;
+        }
 
         queue.offer(new Runnable() {
             public void run() {
@@ -90,8 +97,7 @@ class ScheduledObserver<T> implements IObserver<T>, IDisposable {
                         Runnable inner = queue.poll();
                         try {
                             inner.run();
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             Log.e("ScheduledObserver",
                                     "Caught exception in scheduled item: " + e + ", position in stack: "
                                             + e.getStackTrace()[0]);
@@ -110,7 +116,8 @@ class ScheduledObserver<T> implements IObserver<T>, IDisposable {
 
     public void dispose() {
         isStopped = true;
-        if (disposable != null)
+        if (disposable != null) {
             disposable.dispose();
+        }
     }
 }

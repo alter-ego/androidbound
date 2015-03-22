@@ -1,9 +1,4 @@
-
 package solutions.alterego.androidbound.android.adapters;
-
-import solutions.alterego.androidbound.android.ui.BindableListItemView;
-import solutions.alterego.androidbound.interfaces.IBindableView;
-import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 import android.content.Context;
 import android.util.Log;
@@ -16,21 +11,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import solutions.alterego.androidbound.android.ui.BindableListItemView;
+import solutions.alterego.androidbound.interfaces.IBindableView;
+import solutions.alterego.androidbound.interfaces.IViewBinder;
+
 public class BindableExtendedListAdapter extends BaseAdapter {
 
     private static final int defaultCacheSize = 100;
-
-    private List<? extends Object> itemsSource;
-
-    private int mCacheSize;
 
     private final SparseArray<BindableListItemView> itemViews;
 
     private final ArrayList<Integer> itemViewsPriorityIndex;
 
+    private List<? extends Object> itemsSource;
+
+    private int mCacheSize;
+
     private IViewBinder viewBinder;
 
     private Context context;
+
     private HashMap<Class<?>, Integer> mTemplatesForObjects;
 
     public BindableExtendedListAdapter(Context context) {

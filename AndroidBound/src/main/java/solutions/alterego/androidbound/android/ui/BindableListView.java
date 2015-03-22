@@ -1,11 +1,4 @@
-
 package solutions.alterego.androidbound.android.ui;
-
-import solutions.alterego.androidbound.BindingResources;
-import solutions.alterego.androidbound.android.adapters.BindableListAdapter;
-import solutions.alterego.androidbound.interfaces.IBindableView;
-import solutions.alterego.androidbound.interfaces.ICommand;
-import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -20,20 +13,34 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import solutions.alterego.androidbound.BindingResources;
+import solutions.alterego.androidbound.android.adapters.BindableListAdapter;
+import solutions.alterego.androidbound.interfaces.IBindableView;
+import solutions.alterego.androidbound.interfaces.ICommand;
+import solutions.alterego.androidbound.interfaces.IViewBinder;
 
-@Accessors(prefix="m")
+@Accessors(prefix = "m")
 public class BindableListView extends ListView implements OnItemClickListener, OnItemLongClickListener, IBindableView {
 
+    public Map<String, Object> Extensions = null;
+
     private int listHeaderTemplate;
+
     private AttributeSet mAttributes;
+
     private Context mContext;
+
     private int itemTemplate;
 
     private ICommand onClick = ICommand.empty;
+
     private ICommand onLongClick = ICommand.empty;
-    @Getter private BindableListAdapter mAdapter;
+
+    @Getter
+    private BindableListAdapter mAdapter;
+
     private IViewBinder viewBinder;
-    public Map<String, Object> Extensions = null;
+
     private View mHeader;
 
     public BindableListView(Context context, AttributeSet attrs) {
@@ -51,6 +58,18 @@ public class BindableListView extends ListView implements OnItemClickListener, O
 
     public BindableListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    private static int getItemTemplate(Context context, AttributeSet attrs) {
+        return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableListView.itemTemplate, 0);
+    }
+
+    private static int getListHeaderTemplate(Context context, AttributeSet attrs) {
+        return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableListView.listHeaderTemplate, 0);
+    }
+
+    private static int getListFooterTemplate(Context context, AttributeSet attrs) {
+        return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableListView.listFooterTemplate, 0);
     }
 
     @Override
@@ -79,6 +98,13 @@ public class BindableListView extends ListView implements OnItemClickListener, O
         onLongClick = value;
     }
 
+    public List<?> getItemsSource() {
+        if (mAdapter != null) {
+            return mAdapter.getItemsSource();
+        }
+        return null;
+    }
+
     public void setItemsSource(List<?> value) {
 
         if (mAdapter == null) {
@@ -89,25 +115,6 @@ public class BindableListView extends ListView implements OnItemClickListener, O
         } else {
             mAdapter.setItemsSource(value);
         }
-    }
-
-    public List<?> getItemsSource() {
-        if (mAdapter != null) {
-            return mAdapter.getItemsSource();
-        }
-        return null;
-    }
-
-    private static int getItemTemplate(Context context, AttributeSet attrs) {
-        return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableListView.itemTemplate, 0);
-    }
-
-    private static int getListHeaderTemplate(Context context, AttributeSet attrs) {
-        return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableListView.listHeaderTemplate, 0);
-    }
-
-    private static int getListFooterTemplate(Context context, AttributeSet attrs) {
-        return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableListView.listFooterTemplate, 0);
     }
 
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {

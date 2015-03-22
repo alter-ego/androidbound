@@ -1,14 +1,15 @@
 package solutions.alterego.androidbound.binds;
 
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+
+import java.security.InvalidParameterException;
+
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Action;
 import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Observables;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Observers;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Predicate;
-
-import java.security.InvalidParameterException;
 
 public class SelfBinding extends BindingBase {
 

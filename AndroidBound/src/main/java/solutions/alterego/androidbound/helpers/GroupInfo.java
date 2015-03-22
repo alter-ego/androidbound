@@ -6,9 +6,11 @@ import lombok.experimental.Accessors;
 @Accessors(prefix = "m")
 public class GroupInfo {
 
-    @Getter private int mPosition;
+    @Getter
+    private int mPosition;
 
-    @Getter private int mIndex;
+    @Getter
+    private int mIndex;
 
     public GroupInfo(int index, int position) {
         mIndex = index;

@@ -1,15 +1,16 @@
 package solutions.alterego.androidbound.factories;
 
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+
+import java.util.Arrays;
+import java.util.List;
+
 import solutions.alterego.androidbound.binds.ChainedBinding;
 import solutions.alterego.androidbound.binds.CommandBinding;
 import solutions.alterego.androidbound.binds.PropertyBinding;
 import solutions.alterego.androidbound.binds.SelfBinding;
 import solutions.alterego.androidbound.interfaces.IBinding;
 import solutions.alterego.androidbound.interfaces.IBindingFactory;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class SourceBindingFactory implements IBindingFactory {
 

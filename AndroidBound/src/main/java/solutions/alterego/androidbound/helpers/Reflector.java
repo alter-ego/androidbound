@@ -1,15 +1,6 @@
-
 package solutions.alterego.androidbound.helpers;
 
 import android.util.SparseArray;
-
-import solutions.alterego.androidbound.helpers.reflector.CommandInfo;
-import solutions.alterego.androidbound.helpers.reflector.ConstructorInfo;
-import solutions.alterego.androidbound.helpers.reflector.FieldInfo;
-import solutions.alterego.androidbound.helpers.reflector.MethodInfo;
-import solutions.alterego.androidbound.helpers.reflector.PropertyInfo;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Iterables;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Predicate;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -20,21 +11,51 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import solutions.alterego.androidbound.helpers.reflector.CommandInfo;
+import solutions.alterego.androidbound.helpers.reflector.ConstructorInfo;
+import solutions.alterego.androidbound.helpers.reflector.FieldInfo;
+import solutions.alterego.androidbound.helpers.reflector.MethodInfo;
+import solutions.alterego.androidbound.helpers.reflector.PropertyInfo;
+import solutions.alterego.androidbound.zzzztoremove.reactive.Iterables;
+import solutions.alterego.androidbound.zzzztoremove.reactive.Predicate;
+
 public class Reflector {
 
     private static final String COMMAND_PREFIX_DO = "do";
+
     private static final String COMMAND_PREFIX_CAN = "can";
+
     private static final String PROPERTY_PREFIX_GET = "get";
+
     private static final String PROPERTY_PREFIX_SET = "set";
+
     private static final String PROPERTY_PREFIX_IS = "is";
 
-    private static SparseArray<SparseArray<PropertyInfo>> mObjectProperties = new SparseArray<SparseArray<PropertyInfo>>();
-    private static SparseArray<SparseArray<CommandInfo>> mObjectCommands = new SparseArray<SparseArray<CommandInfo>>();
-    private static SparseArray<SparseArray<List<MethodInfo>>> mObjectMethods = new SparseArray<SparseArray<List<MethodInfo>>>();
-    private static SparseArray<List<ConstructorInfo>> mObjectConstructors = new SparseArray<List<ConstructorInfo>>();
-    private static SparseArray<SparseArray<FieldInfo>> mObjectFields = new SparseArray<SparseArray<FieldInfo>>();
     private static final Object mSynchronizedObject = new Object();
 
+    static Predicate<MethodInfo> methodHasNoParameters = new Predicate<MethodInfo>() {
+        @Override
+        public Boolean invoke(MethodInfo obj) {
+            return obj.getMethodParameterCount() == 0;
+        }
+    };
+
+    static Predicate<MethodInfo> methodHasAtMostOneParameter = new Predicate<MethodInfo>() {
+        @Override
+        public Boolean invoke(MethodInfo obj) {
+            return obj.getMethodParameterCount() <= 1;
+        }
+    };
+
+    private static SparseArray<SparseArray<PropertyInfo>> mObjectProperties = new SparseArray<SparseArray<PropertyInfo>>();
+
+    private static SparseArray<SparseArray<CommandInfo>> mObjectCommands = new SparseArray<SparseArray<CommandInfo>>();
+
+    private static SparseArray<SparseArray<List<MethodInfo>>> mObjectMethods = new SparseArray<SparseArray<List<MethodInfo>>>();
+
+    private static SparseArray<List<ConstructorInfo>> mObjectConstructors = new SparseArray<List<ConstructorInfo>>();
+
+    private static SparseArray<SparseArray<FieldInfo>> mObjectFields = new SparseArray<SparseArray<FieldInfo>>();
 
     public static boolean isCommand(Class<?> type, String name) {
 //        List<MethodInfo> invokers = getMethods(type, COMMAND_PREFIX_DO + name);
@@ -45,8 +66,9 @@ public class Reflector {
 //                }
 //            }
 //        }
-        if (Iterables.from(getMethods(type, COMMAND_PREFIX_DO + name)).where(methodHasAtMostOneParameter).iterator().hasNext())
+        if (Iterables.from(getMethods(type, COMMAND_PREFIX_DO + name)).where(methodHasAtMostOneParameter).iterator().hasNext()) {
             return true;
+        }
         return false;
     }
 
@@ -69,28 +91,14 @@ public class Reflector {
 //            }
 //        }
 
-        if (Iterables.from(getMethods(type, PROPERTY_PREFIX_GET + name)).where(methodHasNoParameters).iterator().hasNext())
+        if (Iterables.from(getMethods(type, PROPERTY_PREFIX_GET + name)).where(methodHasNoParameters).iterator().hasNext()) {
             return true;
-        else if (Iterables.from(getMethods(type, PROPERTY_PREFIX_IS + name)).where(methodHasNoParameters).iterator().hasNext())
+        } else if (Iterables.from(getMethods(type, PROPERTY_PREFIX_IS + name)).where(methodHasNoParameters).iterator().hasNext()) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
-
-    static Predicate<MethodInfo> methodHasNoParameters = new Predicate<MethodInfo>() {
-        @Override
-        public Boolean invoke(MethodInfo obj) {
-            return obj.getMethodParameterCount() == 0;
-        }
-    };
-
-    static Predicate<MethodInfo> methodHasAtMostOneParameter = new Predicate<MethodInfo>() {
-        @Override
-        public Boolean invoke(MethodInfo obj) {
-            return obj.getMethodParameterCount() <= 1;
-        }
-    };
-
 
     public static PropertyInfo getProperty(Class<?> type, String name) {
         MethodInfo propertyGetter = null;
@@ -114,8 +122,9 @@ public class Reflector {
 
         //first we look for getters with prefix "get", if null then with prefix "is"
         propertyGetter = findGetterWithGetPrefix(type, name);
-        if (propertyGetter == null)
+        if (propertyGetter == null) {
             propertyGetter = findGetterWithIsPrefix(type, name);
+        }
 
         //if the getter is not null, then we look for the setter; if it is null, we bind directly to the variable
         if (propertyGetter != null) {
@@ -333,13 +342,14 @@ public class Reflector {
 
     public static List<MethodInfo> getMethods(Class<?> type, String name) {
         List<MethodInfo> methodList = getAllMethods(type).get(name.hashCode());
-        if (methodList == null)
+        if (methodList == null) {
             methodList = new ArrayList<MethodInfo>();
+        }
         return methodList;
     }
 
     public static MethodInfo getMethod(Class<?> type, final String name,
-                                       final Class<?>... parameterTypes) {
+            final Class<?>... parameterTypes) {
         List<MethodInfo> methods = getAllMethods(type).get(name.hashCode());
         if (methods == null) {
             return null;

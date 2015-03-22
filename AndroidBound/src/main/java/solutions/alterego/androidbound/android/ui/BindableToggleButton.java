@@ -1,4 +1,3 @@
-
 package solutions.alterego.androidbound.android.ui;
 
 import android.content.Context;
@@ -10,6 +9,7 @@ import android.widget.ToggleButton;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
 public class BindableToggleButton extends ToggleButton implements OnClickListener {
+
     private ICommand onClick = ICommand.empty;
 
     public BindableToggleButton(Context context, AttributeSet attrs) {
@@ -36,7 +36,8 @@ public class BindableToggleButton extends ToggleButton implements OnClickListene
 
     @Override
     public void onClick(View v) {
-        if (onClick.canExecute(null))
+        if (onClick.canExecute(null)) {
             onClick.execute(null);
+        }
     }
 }

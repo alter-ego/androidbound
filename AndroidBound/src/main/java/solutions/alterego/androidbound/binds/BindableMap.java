@@ -1,27 +1,18 @@
 package solutions.alterego.androidbound.binds;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
 import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Iterables;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyChanged {
 
     private static final long serialVersionUID = 1L;
-
-    public static interface IValidator<K, V> {
-
-        public abstract boolean isValid(Map<K, V> map, K key, V value);
-
-        public abstract boolean canMakeValid(Map<K, V> map, K key, V value);
-
-        public abstract V makeValid(Map<K, V> map, K key, V value);
-    }
 
     protected ISubject<String> mPropertySubject;
 
@@ -144,5 +135,14 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
 
     protected void raisePropertyChanged(String property) {
         mPropertySubject.onNext(property);
+    }
+
+    public static interface IValidator<K, V> {
+
+        public abstract boolean isValid(Map<K, V> map, K key, V value);
+
+        public abstract boolean canMakeValid(Map<K, V> map, K key, V value);
+
+        public abstract V makeValid(Map<K, V> map, K key, V value);
     }
 }

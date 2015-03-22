@@ -9,26 +9,28 @@ import java.util.concurrent.TimeUnit;
 
 
 public class ThreadPoolScheduler implements IScheduler {
-	// Parallel implementation of scheduler
-	// not so efficient, overhead is added because it is using two thread pool, one for timing only purposes
-	// the other is the real worker thread pool
-	// could be improved!!
-	public static final ThreadPoolScheduler instance = new ThreadPoolScheduler();
-	
+
+    // Parallel implementation of scheduler
+    // not so efficient, overhead is added because it is using two thread pool, one for timing only purposes
+    // the other is the real worker thread pool
+    // could be improved!!
+    public static final ThreadPoolScheduler instance = new ThreadPoolScheduler();
+
     protected final ExecutorService pool;
+
     protected final ScheduledExecutorService timingPool;
-    
+
     public ThreadPoolScheduler() {
-    	timingPool = Executors.newSingleThreadScheduledExecutor();
+        timingPool = Executors.newSingleThreadScheduledExecutor();
         pool = Executors.newCachedThreadPool(); //Executors.newScheduledThreadPool(1);
     }
-    
+
     public IDisposable schedule(final Runnable runnable) {
         final Future<?> f = pool.submit(new Runnable() {
-        	@Override
-        	public void run() {
-        		runnable.run();
-        	}
+            @Override
+            public void run() {
+                runnable.run();
+            }
         });
         return new IDisposable() {
             public void dispose() {
@@ -38,17 +40,17 @@ public class ThreadPoolScheduler implements IScheduler {
     }
 
     public IDisposable schedule(final Runnable runnable, final long delay, final TimeUnit unit) {
-    	final ScheduledFuture<?> f = timingPool.schedule(new Runnable() {
-    		@Override
-    		public void run() {
-    			pool.submit(new Runnable() {
-    				@Override
-    				public void run() {
-    					runnable.run();
-    				}
-    			});
-    		}
-    	}, delay, unit);
+        final ScheduledFuture<?> f = timingPool.schedule(new Runnable() {
+            @Override
+            public void run() {
+                pool.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        runnable.run();
+                    }
+                });
+            }
+        }, delay, unit);
         return new IDisposable() {
             public void dispose() {
                 f.cancel(true);
@@ -57,25 +59,25 @@ public class ThreadPoolScheduler implements IScheduler {
     }
 
     public IDisposable schedule(final Runnable runnable, final long initialDelay, final long delay, final TimeUnit unit) {
-    	final ScheduledFuture<?> f = timingPool.scheduleWithFixedDelay(new Runnable() {
-    		@Override
-    		public void run() {
-    			pool.submit(new Runnable() {
-    				@Override
-    				public void run() {
-    					runnable.run();
-    				}
-    			});
-    		}
-    	}, initialDelay, delay, unit);
-    	return new IDisposable() { 
-    		public void dispose() {
-    			f.cancel(true);
-    		}
-    	};
+        final ScheduledFuture<?> f = timingPool.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                pool.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        runnable.run();
+                    }
+                });
+            }
+        }, initialDelay, delay, unit);
+        return new IDisposable() {
+            public void dispose() {
+                f.cancel(true);
+            }
+        };
     }
 
-	public long now() {
-		return System.currentTimeMillis();
-	}
+    public long now() {
+        return System.currentTimeMillis();
+    }
 }

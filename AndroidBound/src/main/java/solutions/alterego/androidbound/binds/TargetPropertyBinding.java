@@ -1,13 +1,10 @@
 package solutions.alterego.androidbound.binds;
 
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+
 import solutions.alterego.androidbound.zzzztoremove.reactive.IScheduler;
 
 public class TargetPropertyBinding extends PropertyBinding {
-
-    private enum UpdatingState {
-        None, UpdatingSource, UpdatingTarget
-    }
 
     private UpdatingState currentState = UpdatingState.None;
 
@@ -53,5 +50,9 @@ public class TargetPropertyBinding extends PropertyBinding {
         } finally {
             currentState = UpdatingState.None;
         }
+    }
+
+    private enum UpdatingState {
+        None, UpdatingSource, UpdatingTarget
     }
 }

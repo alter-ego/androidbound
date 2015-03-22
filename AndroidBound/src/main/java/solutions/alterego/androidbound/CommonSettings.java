@@ -1,4 +1,3 @@
-
 package solutions.alterego.androidbound;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -12,8 +11,9 @@ public class CommonSettings {
     public static class Images {
         public static boolean isAnimated = false;
     }*/
-    
+
     public static class UniversalImageLoader {
-    	public static ImageLoader sImageLoader = null;
+
+        public static ImageLoader sImageLoader = null;
     }
 }

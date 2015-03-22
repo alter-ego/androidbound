@@ -1,13 +1,14 @@
 package solutions.alterego.androidbound.binds;
 
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+
+import java.util.List;
+
 import solutions.alterego.androidbound.interfaces.IBinding;
 import solutions.alterego.androidbound.interfaces.IBindingFactory;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Action;
 import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Observers;
-
-import java.util.List;
 
 public class ChainedBinding extends PropertyBinding {
 

@@ -1,5 +1,6 @@
-
 package solutions.alterego.androidbound.android.ui;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,184 +17,194 @@ import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
 import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class BindableImageView extends ImageView implements OnClickListener, INotifyPropertyChanged, OnLongClickListener {
 
-	ImageView mImageView = null;
-	static Context context;
+    static Context context;
+
+    ImageView mImageView = null;
+
     private boolean disposed;
+
     private int currentResId;
+
     private Bitmap currentBitmap;
+
     private Drawable currentDrawable;
+
     private ISubject<String> propertyChanged;
+
     //private final static IContentProvider<Bitmap> provider = new CacheSystem<Bitmap>(new HttpBitmapProvider(), CommonSettings.CacheImage.cache);
     private ICommand onLongClick = ICommand.empty;
+
     private ICommand onClick = ICommand.empty;
+
     private String source;
 
-	public BindableImageView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		BindableImageView.context = context;
-	}
+    public BindableImageView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        BindableImageView.context = context;
+    }
 
-	public BindableImageView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		BindableImageView.context = context;
-	}
+    public BindableImageView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        BindableImageView.context = context;
+    }
 
-	public String getSource() {
-		return source;
-	}
+    public String getSource() {
+        return source;
+    }
 
-	public void setSource(String value) {
-		mImageView = this;
-		source = value;
+    public void setSource(String value) {
+        mImageView = this;
+        source = value;
         ImageLoader.getInstance().displayImage(source, mImageView);
-	}
+    }
 
-	public ICommand getClick() {
-		return onClick;
-	}
+    public ICommand getClick() {
+        return onClick;
+    }
 
-	public void setClick(ICommand value) {
-		if (value == null) {
-			setClickable(false);
-			setOnClickListener(null);
-			onClick = ICommand.empty;
-			return;
-		}
-		setClickable(true);
-		setOnClickListener(this);
-		onClick = value;
-	}
+    public void setClick(ICommand value) {
+        if (value == null) {
+            setClickable(false);
+            setOnClickListener(null);
+            onClick = ICommand.empty;
+            return;
+        }
+        setClickable(true);
+        setOnClickListener(this);
+        onClick = value;
+    }
 
-	@Override
-	public void onClick(View v) {
-		if (onClick.canExecute(null)) {
-			onClick.execute(null);
-		}
-	}
-	
-	public ICommand getLongClick() {
-		return onLongClick;
-	}
+    @Override
+    public void onClick(View v) {
+        if (onClick.canExecute(null)) {
+            onClick.execute(null);
+        }
+    }
 
-	public void setLongClick(ICommand value) {
-		if (value == null) {
-			setClickable(false);
-			setOnLongClickListener(null);
-			onLongClick = ICommand.empty;
-			return;
-		}
-		setClickable(true);
-		setOnLongClickListener(this);
-		onLongClick = value;
-	}
+    public ICommand getLongClick() {
+        return onLongClick;
+    }
 
-	@Override
-	public boolean onLongClick(View arg0) {
-		
-		if (onLongClick.canExecute(null)) {
-			onLongClick.execute(null);
-			return true;
-		} else return false;
-	}
-	
-	@Override
-	public void dispose() {
-		if (this.disposed) {
-			return;
-		}
+    public void setLongClick(ICommand value) {
+        if (value == null) {
+            setClickable(false);
+            setOnLongClickListener(null);
+            onLongClick = ICommand.empty;
+            return;
+        }
+        setClickable(true);
+        setOnLongClickListener(this);
+        onLongClick = value;
+    }
 
-		this.disposed = true;
-		if (this.propertyChanged != null) {
-			this.propertyChanged.dispose();
-		}
+    @Override
+    public boolean onLongClick(View arg0) {
 
-		this.propertyChanged = null;
-		this.onClick = null;
-		onLongClick = null;
-	}
+        if (onLongClick.canExecute(null)) {
+            onLongClick.execute(null);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	@Override
-	public IObservable<String> onPropertyChanged() {
-		if (this.propertyChanged == null) {
-			this.propertyChanged = new Subject<String>();
-		}
+    @Override
+    public void dispose() {
+        if (this.disposed) {
+            return;
+        }
 
-		return this.propertyChanged;
-	}
+        this.disposed = true;
+        if (this.propertyChanged != null) {
+            this.propertyChanged.dispose();
+        }
 
-	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		super.onSizeChanged(w, h, oldw, oldh);
+        this.propertyChanged = null;
+        this.onClick = null;
+        onLongClick = null;
+    }
 
-		if (this.disposed || this.propertyChanged == null) {
-			return;
-		}
+    @Override
+    public IObservable<String> onPropertyChanged() {
+        if (this.propertyChanged == null) {
+            this.propertyChanged = new Subject<String>();
+        }
 
-		if (w != oldw) {
-			this.propertyChanged.onNext("Width");
-		}
+        return this.propertyChanged;
+    }
 
-		if (h != oldh) {
-			this.propertyChanged.onNext("Height");
-		}
-	}
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
 
-	public void setBitmap(Bitmap bmp) {
-		this.currentBitmap = bmp;
-		this.setImageBitmap(bmp);
-		this.invalidate();
-	}
+        if (this.disposed || this.propertyChanged == null) {
+            return;
+        }
 
-	public Bitmap getBitmap() {
-		return this.currentBitmap;
-	}
+        if (w != oldw) {
+            this.propertyChanged.onNext("Width");
+        }
 
-	public void setDrawable(Drawable drawable) {
-		this.currentDrawable = drawable;
-		this.setImageDrawable(drawable);
-		this.invalidate();
-	}
+        if (h != oldh) {
+            this.propertyChanged.onNext("Height");
+        }
+    }
 
-	public Drawable getDrawable() {
-		return this.currentDrawable;
-	}
+    public Bitmap getBitmap() {
+        return this.currentBitmap;
+    }
 
-	public void setResource(Integer resId) {
-		this.currentResId = resId;
-		this.setImageResource(this.currentResId);
-		this.invalidate();
-	}
+    public void setBitmap(Bitmap bmp) {
+        this.currentBitmap = bmp;
+        this.setImageBitmap(bmp);
+        this.invalidate();
+    }
 
-	public Integer getResource() {
-		return this.currentResId;
-	}
+    public Drawable getDrawable() {
+        return this.currentDrawable;
+    }
 
-	public void setWidth(int width) {
-		if (width == this.getWidth()) {
-			return;
-		}
+    public void setDrawable(Drawable drawable) {
+        this.currentDrawable = drawable;
+        this.setImageDrawable(drawable);
+        this.invalidate();
+    }
 
-		ViewGroup.LayoutParams p = this.getLayoutParams();
-		p.width = width;
-		this.setLayoutParams(p);
-	}
+    public Integer getResource() {
+        return this.currentResId;
+    }
 
-	public void setHeight(int height) {
-		if (height == this.getHeight()) {
-			return;
-		}
+    public void setResource(Integer resId) {
+        this.currentResId = resId;
+        this.setImageResource(this.currentResId);
+        this.invalidate();
+    }
 
-		ViewGroup.LayoutParams p = this.getLayoutParams();
-		p.height = height;
-		this.setLayoutParams(p);
-	}
+    public void setWidth(int width) {
+        if (width == this.getWidth()) {
+            return;
+        }
+
+        ViewGroup.LayoutParams p = this.getLayoutParams();
+        p.width = width;
+        this.setLayoutParams(p);
+    }
+
+    public void setHeight(int height) {
+        if (height == this.getHeight()) {
+            return;
+        }
+
+        ViewGroup.LayoutParams p = this.getLayoutParams();
+        p.height = height;
+        this.setLayoutParams(p);
+    }
 
 	/*private void setImage(final ImageView view, Bitmap remoteImage) {
-		int fadeInDuration = 2000;
+                int fadeInDuration = 2000;
 		int fadeOutDuration = 1500;
 
 		view.setVisibility(View.VISIBLE);
@@ -216,5 +227,5 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 		view.setImageBitmap(remoteImage);
 	}*/
 
-	
+
 }

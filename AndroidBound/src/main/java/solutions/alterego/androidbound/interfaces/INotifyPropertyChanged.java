@@ -4,5 +4,6 @@ import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
 
 public interface INotifyPropertyChanged extends IDisposable {
-	IObservable<String> onPropertyChanged();
+
+    IObservable<String> onPropertyChanged();
 }

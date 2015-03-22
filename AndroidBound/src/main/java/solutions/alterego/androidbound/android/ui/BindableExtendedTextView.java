@@ -1,4 +1,3 @@
-
 package solutions.alterego.androidbound.android.ui;
 
 import android.content.Context;
@@ -23,13 +22,71 @@ import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class BindableExtendedTextView extends View implements INotifyPropertyChanged, View.OnClickListener {
 
+    private static final float mSpacingMult = 1.0f;
+
+    private static final float mSpacingAdd = 0.0f;
+
     private Context mContext;
+
     private ISubject<String> propertyChanged;
+
     private ICommand onClick = ICommand.empty;
 
     private boolean disposed;
+
     private Typeface mTypeface;
+
     private int mTextColor;
+
+    /**
+     * ************************ from CUSTOM TEXT VIEW **************************
+     */
+
+    private Paint mPaint;
+
+    private TextPaint mTextPaint;
+
+    private String mText;
+
+    private int mAscent;
+
+//    public Typeface getTypeface() {
+//        return super.getTypeface();
+//    }
+
+//    public void setTypeface(Typeface font) {
+//        super.setTypeface(font);
+//        if (this.disposed || this.propertyChanged == null) {
+//            return;
+//        }
+//        this.propertyChanged.onNext("Typeface");
+//    }
+
+    private Rect mRect;
+
+    private int mWidth = 0;
+
+//    public void setTextColor(int color) {
+//        super.setTextColor(color);
+//    }
+
+//    public void setTextColor(ColorStateList colors) {
+//        super.setTextColor(colors);
+//    }
+//
+//    public ColorStateList getTextColor() {
+//        return super.getTextColors();
+//    }
+
+    private int mHeight = 0;
+
+    private int mTextSize = 0;
+
+    private StaticLayout text_to_print = null;
+
+    private Bitmap mBackgroundDrawable = null;
+
+    private Layout.Alignment mAlignmentHorizontal = Layout.Alignment.ALIGN_NORMAL;
 
     public BindableExtendedTextView(Context context) {
         super(context);
@@ -52,21 +109,6 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
         setOnClickListener(this);
         readStyleable(mContext, attrs);
         initCustomTextView();
-    }
-
-    private void readStyleable(Context context, AttributeSet attrs) {
-
-//        setTextColor(a.getColor(R.styleable.CustomTextView_textColor, 0xFF000000));
-
-//        int textSize = a.getDimensionPixelOffset(R.styleable.CustomTextView_textSize, 0);
-//        if (textSize > 0) {
-//            mTextSize = textSize;
-//            setTextSize(textSize);
-//        }
-
-        mTextSize = getTextSize(attrs);
-        //int color = getTextColor(attrs);
-        mTextColor = getTextColor(attrs);
     }
 
     private static int getTextSize(AttributeSet attrs) {
@@ -92,17 +134,20 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
         return value;
     }
 
-//    public Typeface getTypeface() {
-//        return super.getTypeface();
-//    }
+    private void readStyleable(Context context, AttributeSet attrs) {
 
-//    public void setTypeface(Typeface font) {
-//        super.setTypeface(font);
-//        if (this.disposed || this.propertyChanged == null) {
-//            return;
+//        setTextColor(a.getColor(R.styleable.CustomTextView_textColor, 0xFF000000));
+
+//        int textSize = a.getDimensionPixelOffset(R.styleable.CustomTextView_textSize, 0);
+//        if (textSize > 0) {
+//            mTextSize = textSize;
+//            setTextSize(textSize);
 //        }
-//        this.propertyChanged.onNext("Typeface");
-//    }
+
+        mTextSize = getTextSize(attrs);
+        //int color = getTextColor(attrs);
+        mTextColor = getTextColor(attrs);
+    }
 
     @Override
     public void dispose() {
@@ -128,46 +173,13 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
         return this.propertyChanged;
     }
 
-//    public void setTextColor(int color) {
-//        super.setTextColor(color);
-//    }
-
-//    public void setTextColor(ColorStateList colors) {
-//        super.setTextColor(colors);
-//    }
-//
-//    public ColorStateList getTextColor() {
-//        return super.getTextColors();
-//    }
-
-    public void setBackgroundColor(int color) {
-        super.setBackgroundColor(color);
-    }
-
     public int getBackgroundColor() {
         return 0;
     }
 
-
-    /**
-     * ************************ from CUSTOM TEXT VIEW **************************
-     */
-
-    private Paint mPaint;
-    private TextPaint mTextPaint;
-    private String mText;
-    private int mAscent;
-    private Rect mRect;
-    private int mWidth = 0;
-    private int mHeight = 0;
-    private int mTextSize = 0;
-    private StaticLayout text_to_print = null;
-    private Bitmap mBackgroundDrawable = null;
-    private Layout.Alignment mAlignmentHorizontal = Layout.Alignment.ALIGN_NORMAL;
-
-
-    private static final float mSpacingMult = 1.0f;
-    private static final float mSpacingAdd = 0.0f;
+    public void setBackgroundColor(int color) {
+        super.setBackgroundColor(color);
+    }
 
     private final void initCustomTextView() {
         mPaint = new Paint();
@@ -217,16 +229,22 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
         ViewBinder.getLogger().debug("text size = " + size);
         mTextSize = size;
         ViewBinder.getLogger().debug("");
-        if (mPaint != null)
+        if (mPaint != null) {
             mPaint.setTextSize(size);
+        }
         ViewBinder.getLogger().debug("");
-        if (mTextPaint != null)
+        if (mTextPaint != null) {
             mTextPaint.setTextSize(size);
+        }
         ViewBinder.getLogger().debug("");
         requestLayout();
         ViewBinder.getLogger().debug("");
         invalidate();
         ViewBinder.getLogger().debug("");
+    }
+
+    public Typeface getTypeface() {
+        return mTypeface;
     }
 
     /**
@@ -242,17 +260,19 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
             return;
         }
         // This text size has been pre-scaled by the getDimensionPixelOffset method
-        if (mPaint != null)
+        if (mPaint != null) {
             mPaint.setTypeface(font);
-        if (mTextPaint != null)
+        }
+        if (mTextPaint != null) {
             mTextPaint.setTypeface(font);
+        }
         this.propertyChanged.onNext("Typeface");
         requestLayout();
         invalidate(); //TODO do we need this along with propertyChanged?
     }
 
-    public Typeface getTypeface() {
-        return mTypeface;
+    public int getTextColor() {
+        return mPaint.getColor();
     }
 
     /**
@@ -263,17 +283,15 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
     public void setTextColor(int color) {
         //super.setTextColor(color);
         ViewBinder.getLogger().debug("text color = " + color);
-        if (mPaint != null)
+        if (mPaint != null) {
             mPaint.setColor(color);
+        }
         ViewBinder.getLogger().debug("");
-        if (mTextPaint != null)
+        if (mTextPaint != null) {
             mTextPaint.setColor(color);
+        }
         ViewBinder.getLogger().debug("");
         invalidate();
-    }
-
-    public int getTextColor() {
-        return mPaint.getColor();
     }
 
 //    public void setTextColor(String color) {
@@ -287,9 +305,13 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mText == null) mText = "";
+        if (mText == null) {
+            mText = "";
+        }
         mPaint.getTextBounds(mText, 0, mText.length(), mRect);
-        ViewBinder.getLogger().debug("onMeasure mRect of mPaint.getTextBounds, mText = " + mText + ", mRect.width() = " + mRect.width() + ", mRect.height() = " + mRect.height());
+        ViewBinder.getLogger()
+                .debug("onMeasure mRect of mPaint.getTextBounds, mText = " + mText + ", mRect.width() = " + mRect.width() + ", mRect.height() = "
+                        + mRect.height());
         mWidth = measureWidth(widthMeasureSpec);
         mHeight = measureHeight(heightMeasureSpec);
         //if (Preferences.isDebug) { Log.d(CLASS,"onMeasure dopo la misurazione, mWidth = " + mWidth + ", mHeight = " + mHeight); }
@@ -338,11 +360,16 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
         int specSize = MeasureSpec.getSize(measureSpec);
 
         //if (Preferences.isDebug) { Log.d(CLASS,"measureHeight, specSize = " + specSize); }
-        if (mText == null) mText = ""; //linea vuota
+        if (mText == null) {
+            mText = ""; //linea vuota
+        }
         //if (mWidth < 0) mWidth = 0;
-        if (mWidth > 10000) mWidth = 0;
+        if (mWidth > 10000) {
+            mWidth = 0;
+        }
         //if (Preferences.isDebug) { Log.d(CLASS,"measureHeight, mWidth = " + mWidth); }
-        text_to_print = new StaticLayout(mText, mTextPaint, Math.abs((mWidth - getPaddingLeft() - getPaddingRight())), mAlignmentHorizontal, mSpacingMult, mSpacingAdd, false);
+        text_to_print = new StaticLayout(mText, mTextPaint, Math.abs((mWidth - getPaddingLeft() - getPaddingRight())), mAlignmentHorizontal,
+                mSpacingMult, mSpacingAdd, false);
         ViewBinder.getLogger().debug("measureHeight, height of static layout = " + text_to_print.getHeight());
 
         mAscent = (int) mPaint.ascent();
@@ -379,7 +406,9 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.save();
-        if (mBackgroundDrawable != null) canvas.drawBitmap(mBackgroundDrawable, 0.0f, 0.0f, null);
+        if (mBackgroundDrawable != null) {
+            canvas.drawBitmap(mBackgroundDrawable, 0.0f, 0.0f, null);
+        }
         canvas.translate(getPaddingLeft(), getPaddingTop());
         text_to_print.draw(canvas);
         canvas.restore();
@@ -390,7 +419,7 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
     }
 
     public void setClick(ICommand value) {
-        if(value == null) {
+        if (value == null) {
             onClick = ICommand.empty;
             return;
         }
@@ -399,8 +428,9 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
 
     @Override
     public void onClick(View v) {
-        if(onClick.canExecute(null))
+        if (onClick.canExecute(null)) {
             onClick.execute(null);
+        }
     }
 
 }

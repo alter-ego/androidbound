@@ -1,8 +1,16 @@
-
 package solutions.alterego.androidbound.zzzztoremove;
 
 public abstract class Exceptional<T> {
+
     private Exceptional() {
+    }
+
+    public static <T> Exceptional<T> right(T value) {
+        return new Right<T>(value);
+    }
+
+    public static <T> Exceptional<T> wrong(Exception exception) {
+        return new Wrong<T>(exception);
     }
 
     public abstract boolean hasValue();
@@ -12,6 +20,13 @@ public abstract class Exceptional<T> {
     public abstract Exception exception();
 
     private static final class Right<T> extends Exceptional<T> {
+
+        private final T value;
+
+        Right(final T value) {
+            this.value = value;
+        }
+
         @Override
         public int hashCode() {
             final int prime = 31;
@@ -22,25 +37,24 @@ public abstract class Exceptional<T> {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
             Right other = (Right) obj;
             if (value == null) {
-                if (other.value != null)
+                if (other.value != null) {
                     return false;
-            } else if (!value.equals(other.value))
+                }
+            } else if (!value.equals(other.value)) {
                 return false;
+            }
             return true;
-        }
-
-        private final T value;
-
-        Right(final T value) {
-            this.value = value;
         }
 
         public boolean hasValue() {
@@ -57,6 +71,13 @@ public abstract class Exceptional<T> {
     }
 
     private static final class Wrong<T> extends Exceptional<T> {
+
+        private final Exception exception;
+
+        Wrong(final Exception exception) {
+            this.exception = exception;
+        }
+
         @Override
         public int hashCode() {
             final int prime = 31;
@@ -67,25 +88,24 @@ public abstract class Exceptional<T> {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
             Wrong other = (Wrong) obj;
             if (exception == null) {
-                if (other.exception != null)
+                if (other.exception != null) {
                     return false;
-            } else if (!exception.equals(other.exception))
+                }
+            } else if (!exception.equals(other.exception)) {
                 return false;
+            }
             return true;
-        }
-
-        private final Exception exception;
-
-        Wrong(final Exception exception) {
-            this.exception = exception;
         }
 
         public boolean hasValue() {
@@ -99,14 +119,6 @@ public abstract class Exceptional<T> {
         public Exception exception() {
             return exception;
         }
-    }
-
-    public static <T> Exceptional<T> right(T value) {
-        return new Right<T>(value);
-    }
-
-    public static <T> Exceptional<T> wrong(Exception exception) {
-        return new Wrong<T>(exception);
     }
 
 }

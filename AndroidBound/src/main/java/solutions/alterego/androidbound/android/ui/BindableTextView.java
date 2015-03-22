@@ -72,10 +72,6 @@ public class BindableTextView extends TextView implements INotifyPropertyChanged
         return this.propertyChanged;
     }
 
-    public void setTextColor(int color) {
-        super.setTextColor(color);
-    }
-
     public void setTextColorState(ColorStateList colors) {
         super.setTextColor(colors);
     }
@@ -84,12 +80,16 @@ public class BindableTextView extends TextView implements INotifyPropertyChanged
         return super.getTextColors();
     }
 
-    public void setBackgroundColor(int color) {
-        super.setBackgroundColor(color);
+    public void setTextColor(int color) {
+        super.setTextColor(color);
     }
 
     public int getBackgroundColor() {
         return 0;
+    }
+
+    public void setBackgroundColor(int color) {
+        super.setBackgroundColor(color);
     }
 
     public ICommand getClick() {
@@ -97,7 +97,7 @@ public class BindableTextView extends TextView implements INotifyPropertyChanged
     }
 
     public void setClick(ICommand value) {
-        if(value == null) {
+        if (value == null) {
             onClick = ICommand.empty;
             return;
         }
@@ -106,8 +106,9 @@ public class BindableTextView extends TextView implements INotifyPropertyChanged
 
     @Override
     public void onClick(View v) {
-        if(onClick.canExecute(null))
+        if (onClick.canExecute(null)) {
             onClick.execute(null);
+        }
     }
 
 }

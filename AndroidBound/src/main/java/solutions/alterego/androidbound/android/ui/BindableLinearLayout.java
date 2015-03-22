@@ -1,7 +1,4 @@
-
 package solutions.alterego.androidbound.android.ui;
-
-import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -14,6 +11,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import java.util.List;
+
 import solutions.alterego.androidbound.interfaces.IBindingAssociation;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
@@ -23,11 +22,17 @@ import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class BindableLinearLayout extends LinearLayout implements INotifyPropertyChanged, OnClickListener {
+
     private boolean disposed;
+
     private IViewBinder mViewBinder;
+
     private View content;
+
     private int itemTemplate;
+
     private ISubject<String> propertyChanged;
+
     private ICommand onClick = ICommand.empty;
 
     public BindableLinearLayout(Context context) {
@@ -48,8 +53,9 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
         this.mViewBinder = viewbinder;
         this.itemTemplate = itemTemplate;
 
-        if (this.mViewBinder != null)
+        if (this.mViewBinder != null) {
             content = mViewBinder.inflate(context, source, itemTemplate, this);
+        }
     }
 
     public int getItemTemplate() {
@@ -98,8 +104,9 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
 
     @Override
     public void onClick(View v) {
-        if (onClick.canExecute(null))
+        if (onClick.canExecute(null)) {
             onClick.execute(null);
+        }
     }
 
     public ICommand getClick() {
@@ -148,11 +155,15 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
         }
     }
 
+    public int getBackgroundColor() {
+        return 0;
+    }
+
     public void setBackgroundColor(int color) {
         super.setBackgroundColor(color);
     }
 
-    public int getBackgroundColor() {
+    public int getBackgroundResource() {
         return 0;
     }
 
@@ -160,7 +171,7 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
         super.setBackgroundResource(res);
     }
 
-    public int getBackgroundResource() {
+    public int getBackgroundDrawable() {
         return 0;
     }
 
@@ -173,10 +184,6 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
         //        else
         super.setBackgroundDrawable(res);
 
-    }
-
-    public int getBackgroundDrawable() {
-        return 0;
     }
 
     public void bindTo(Object source) {

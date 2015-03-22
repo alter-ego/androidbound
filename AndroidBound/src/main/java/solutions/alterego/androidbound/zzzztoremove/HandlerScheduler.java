@@ -1,14 +1,14 @@
-
 package solutions.alterego.androidbound.zzzztoremove;
 
-import java.util.concurrent.TimeUnit;
-
 import android.os.Handler;
+
+import java.util.concurrent.TimeUnit;
 
 import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import solutions.alterego.androidbound.zzzztoremove.reactive.IScheduler;
 
 public class HandlerScheduler implements IScheduler {
+
     protected Handler handler;
 
     public HandlerScheduler(Handler handler) {

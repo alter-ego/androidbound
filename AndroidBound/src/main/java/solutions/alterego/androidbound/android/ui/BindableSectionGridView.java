@@ -1,7 +1,4 @@
-
 package solutions.alterego.androidbound.android.ui;
-
-import java.util.List;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -10,6 +7,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
+
+import java.util.List;
 
 import solutions.alterego.androidbound.BindingResources;
 import solutions.alterego.androidbound.android.adapters.BindableSectionGridAdapter;
@@ -20,12 +19,17 @@ import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 @SuppressWarnings("rawtypes")
 public class BindableSectionGridView extends GridView implements OnItemClickListener, OnItemLongClickListener, IBindableView {
+
     private int itemTemplate;
+
     private int gridTemplate;
+
     private int headerTemplate;
 
     private Class mHeaderObjectClass;
+
     private Class mItemObjectClass;
+
     private int numberOfItemsInRow = 0;
 
     private ICommand onClick = ICommand.empty;
@@ -48,6 +52,22 @@ public class BindableSectionGridView extends GridView implements OnItemClickList
 
     public BindableSectionGridView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    private static int getHeaderTemplate(Context context, AttributeSet attrs) {
+        return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableSectionListView.headerTemplate, 0);
+    }
+
+    private static int getItemTemplate(Context context, AttributeSet attrs) {
+        return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableSectionGridView.itemTemplate, 0);
+    }
+
+    private static int getGridTemplate(Context context, AttributeSet attrs) {
+        return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableSectionGridView.gridTemplate, 0);
+    }
+
+    private static int getNumberOfItemsInRow(Context context, AttributeSet attrs) {
+        return attrs.getAttributeIntValue(null, BindingResources.attr.BindableSectionGridView.numberOfItemsInRow, 2);
     }
 
     @Override
@@ -76,6 +96,13 @@ public class BindableSectionGridView extends GridView implements OnItemClickList
         onLongClick = value;
     }
 
+    public List<? extends Object> getItemsSource() {
+        if (adapter != null) {
+            return adapter.getItemsSource();
+        }
+        return null;
+    }
+
     public void setItemsSource(List<?> value) {
         if (adapter == null) {
             adapter = new BindableSectionGridAdapter(getContext(), getViewBinder());
@@ -92,28 +119,6 @@ public class BindableSectionGridView extends GridView implements OnItemClickList
         }
     }
 
-    public List<? extends Object> getItemsSource() {
-        if (adapter != null)
-            return adapter.getItemsSource();
-        return null;
-    }
-
-    private static int getHeaderTemplate(Context context, AttributeSet attrs) {
-        return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableSectionListView.headerTemplate, 0);
-    }
-
-    private static int getItemTemplate(Context context, AttributeSet attrs) {
-        return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableSectionGridView.itemTemplate, 0);
-    }
-
-    private static int getGridTemplate(Context context, AttributeSet attrs) {
-        return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableSectionGridView.gridTemplate, 0);
-    }
-
-    private static int getNumberOfItemsInRow(Context context, AttributeSet attrs) {
-        return attrs.getAttributeIntValue(null, BindingResources.attr.BindableSectionGridView.numberOfItemsInRow, 2);
-    }
-
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         Object parameter = getItemsSource().get(position);
         if (onLongClick.canExecute(parameter)) {
@@ -125,8 +130,9 @@ public class BindableSectionGridView extends GridView implements OnItemClickList
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Object parameter = getItemsSource().get(position);
-        if (onClick.canExecute(parameter))
+        if (onClick.canExecute(parameter)) {
             onClick.execute(parameter);
+        }
     }
 
     public Class getHeaderObjectClass() {
@@ -135,8 +141,9 @@ public class BindableSectionGridView extends GridView implements OnItemClickList
 
     public void setHeaderObjectClass(Class classname) {
         mHeaderObjectClass = classname;
-        if (adapter != null)
+        if (adapter != null) {
             adapter.setHeaderObjectClass(mHeaderObjectClass);
+        }
     }
 
     public Class getItemObjectClass() {
@@ -145,8 +152,9 @@ public class BindableSectionGridView extends GridView implements OnItemClickList
 
     public void setItemObjectClass(Class classname) {
         mItemObjectClass = classname;
-        if (adapter != null)
+        if (adapter != null) {
             adapter.setItemObjectClass(mItemObjectClass);
+        }
     }
 
     public int getNumberOfItemsInRow() {
@@ -158,13 +166,15 @@ public class BindableSectionGridView extends GridView implements OnItemClickList
     }
 
     public void registerBindableSectionGridViewReceiver(IBindableSectionGridViewReceiver receiver) {
-        if (receiver != null && adapter != null)
+        if (receiver != null && adapter != null) {
             adapter.registerBindableSectionGridViewReceiver(receiver);
+        }
     }
 
     public void deregisterBindableSectionGridViewReceiver(IBindableSectionGridViewReceiver receiver) {
-        if (receiver != null && adapter != null)
+        if (receiver != null && adapter != null) {
             adapter.deregisterBindableSectionGridViewReceiver(receiver);
+        }
     }
 
 }

@@ -1,5 +1,11 @@
 package solutions.alterego.androidbound;
 
+import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.LayoutInflater.Factory;
@@ -7,8 +13,14 @@ import android.view.LayoutInflater.Factory2;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.BindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.converters.BooleanToVisibilityConverter;
 import solutions.alterego.androidbound.android.converters.FontConverter;
@@ -27,38 +39,39 @@ import solutions.alterego.androidbound.parsers.BindingSpecificationParser;
 import solutions.alterego.androidbound.services.ResourceService;
 import solutions.alterego.androidbound.services.ValueConverterService;
 import solutions.alterego.androidbound.zzzztoremove.reactive.IScheduler;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
-@Accessors(prefix="m")
+@Accessors(prefix = "m")
 public class ViewBinder implements IViewBinder {
 
-	@Getter @Setter Context mContext;
-	@Getter @Setter private static IAndroidLogger mLogger = NullAndroidLogger.instance;
+    @Getter
+    @Setter
+    private static IAndroidLogger mLogger = NullAndroidLogger.instance;
+
+    @Getter
+    @Setter
+    Context mContext;
+
     private ValueConverterService mConverterService;
+
     private ResourceService mResourceService;
+
     private IBindableLayoutInflaterFactory mInflaterFactory;
+
     private ChainedViewResolver mViewResolver;
+
     private Map<View, List<IBindingAssociation>> mBoundViews = new HashMap<View, List<IBindingAssociation>>();
-    @Getter @Setter private IFontManager mFontManager;
+
+    @Getter
+    @Setter
+    private IFontManager mFontManager;
 
     public ViewBinder(Context ctx, IScheduler notificationScheduler, IAndroidLogger logger) {
         this(ctx, notificationScheduler, logger, null);
     }
-    
+
     public ViewBinder(Context ctx, IScheduler notificationScheduler, IAndroidLogger logger, ImageLoaderConfiguration imageLoaderConfiguration) {
-    	setLogger(logger);
-    	setContext(ctx);
+        setLogger(logger);
+        setContext(ctx);
         mConverterService = new ValueConverterService(getLogger());
         mResourceService = new ResourceService(getLogger());
 
@@ -66,7 +79,7 @@ public class ViewBinder implements IViewBinder {
         TargetBindingFactory targetFactory = new TargetBindingFactory(notificationScheduler, getLogger());
         BindingSpecificationParser bindingParser = new BindingSpecificationParser(mConverterService, mResourceService, getLogger());
         BindingSpecificationListParser listParser = new BindingSpecificationListParser(bindingParser, getLogger());
-        
+
         IBinder binder = new TextSpecificationBinder(listParser, sourceFactory, targetFactory, getLogger());
 
         mViewResolver = new ChainedViewResolver(new ViewResolver(getLogger()));
@@ -75,7 +88,7 @@ public class ViewBinder implements IViewBinder {
 
         registerDefaultConverters();
 
-        if (imageLoaderConfiguration==null) {
+        if (imageLoaderConfiguration == null) {
             ImageLoader.getInstance().init(getDefaultImageLoaderConfig(ctx));
         } else {
             ImageLoader.getInstance().init(imageLoaderConfiguration);
@@ -83,7 +96,7 @@ public class ViewBinder implements IViewBinder {
 
     }
 
-    private ImageLoaderConfiguration getDefaultImageLoaderConfig (Context ctx) {
+    private ImageLoaderConfiguration getDefaultImageLoaderConfig(Context ctx) {
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
                 .cacheOnDisc(true)
@@ -93,10 +106,10 @@ public class ViewBinder implements IViewBinder {
                 .build();
         return config;
     }
-    
+
     private void registerDefaultConverters() {
-    	registerConverter(BooleanToVisibilityConverter.getConverterName(), new BooleanToVisibilityConverter());
-    	registerConverter(FontConverter.getConverterName(), new FontConverter(getFontManager(), getLogger()));
+        registerConverter(BooleanToVisibilityConverter.getConverterName(), new BooleanToVisibilityConverter());
+        registerConverter(FontConverter.getConverterName(), new FontConverter(getFontManager(), getLogger()));
     }
 
     @Override
@@ -111,12 +124,12 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public void registerViewResolver(IViewResolver resolver) {
-    	mViewResolver.addResolverToFront(resolver);
+        mViewResolver.addResolverToFront(resolver);
     }
 
     @Override
     public void unregisterViewResolver(IViewResolver resolver) {
-    	mViewResolver.removeResolver(resolver);
+        mViewResolver.removeResolver(resolver);
     }
 
     @Override
@@ -168,7 +181,7 @@ public class ViewBinder implements IViewBinder {
         }
 
         LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(context);
-      //TODO remove double casts???
+        //TODO remove double casts???
         if (((Object) context) instanceof Factory) {
             inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) (Object) context));
         } else if (((Object) context) instanceof Factory2) {
@@ -180,12 +193,12 @@ public class ViewBinder implements IViewBinder {
         return inflater.inflate(layoutResID, viewGroup);
     }
 
-	@Override
-	public View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup, IViewResolver resolver) {
-		LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(context);
+    @Override
+    public View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup, IViewResolver resolver) {
+        LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(context);
 
-		mViewResolver.addResolverToFront(resolver);
-		//TODO remove double casts???
+        mViewResolver.addResolverToFront(resolver);
+        //TODO remove double casts???
         if (((Object) context) instanceof Factory) {
             inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) (Object) context));
         } else if (((Object) context) instanceof Factory2) {
@@ -198,7 +211,7 @@ public class ViewBinder implements IViewBinder {
         mViewResolver.removeResolver(resolver);
 
         return view;
-	}
+    }
 
 
     @Override
@@ -220,7 +233,7 @@ public class ViewBinder implements IViewBinder {
             return mBoundViews.get(view);
         }
 
-        return new ArrayList<IBindingAssociation> ();
+        return new ArrayList<IBindingAssociation>();
     }
 
     @Override

@@ -1,10 +1,4 @@
-
 package solutions.alterego.androidbound.android.ui;
-
-import solutions.alterego.androidbound.android.adapters.BindableExtendedListAdapter;
-import solutions.alterego.androidbound.interfaces.IBindableView;
-import solutions.alterego.androidbound.interfaces.ICommand;
-import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -17,15 +11,25 @@ import android.widget.ListView;
 import java.util.HashMap;
 import java.util.List;
 
+import solutions.alterego.androidbound.android.adapters.BindableExtendedListAdapter;
+import solutions.alterego.androidbound.interfaces.IBindableView;
+import solutions.alterego.androidbound.interfaces.ICommand;
+import solutions.alterego.androidbound.interfaces.IViewBinder;
+
 public class BindableExtendedListView extends ListView implements OnItemClickListener, OnItemLongClickListener, IBindableView {
 
     private AttributeSet mAttributes;
+
     private Context mContext;
 
     private ICommand onClick = ICommand.empty;
+
     private ICommand onLongClick = ICommand.empty;
+
     private BindableExtendedListAdapter adapter;
+
     private IViewBinder viewBinder;
+
     private HashMap<Class<?>, Integer> mTemplatesForObjects;
 
     public BindableExtendedListView(Context context, AttributeSet attrs) {
@@ -70,6 +74,13 @@ public class BindableExtendedListView extends ListView implements OnItemClickLis
         onLongClick = value;
     }
 
+    public List<?> getItemsSource() {
+        if (adapter != null) {
+            return adapter.getItemsSource();
+        }
+        return null;
+    }
+
     public void setItemsSource(List<?> value) {
 
         if (adapter == null) {
@@ -80,13 +91,6 @@ public class BindableExtendedListView extends ListView implements OnItemClickLis
         } else {
             adapter.setItemsSource(value);
         }
-    }
-
-    public List<?> getItemsSource() {
-        if (adapter != null) {
-            return adapter.getItemsSource();
-        }
-        return null;
     }
 
     public HashMap<Class<?>, Integer> getTemplatesForObjects() {

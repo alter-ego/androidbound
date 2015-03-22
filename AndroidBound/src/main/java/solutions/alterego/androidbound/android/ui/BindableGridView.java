@@ -1,11 +1,4 @@
-
 package solutions.alterego.androidbound.android.ui;
-
-import solutions.alterego.androidbound.BindingResources;
-import solutions.alterego.androidbound.android.adapters.BindableListAdapter;
-import solutions.alterego.androidbound.interfaces.IBindableView;
-import solutions.alterego.androidbound.interfaces.ICommand;
-import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -16,6 +9,12 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
 
 import java.util.List;
+
+import solutions.alterego.androidbound.BindingResources;
+import solutions.alterego.androidbound.android.adapters.BindableListAdapter;
+import solutions.alterego.androidbound.interfaces.IBindableView;
+import solutions.alterego.androidbound.interfaces.ICommand;
+import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 public class BindableGridView extends GridView implements OnItemClickListener, OnItemLongClickListener, IBindableView {
 
@@ -38,6 +37,10 @@ public class BindableGridView extends GridView implements OnItemClickListener, O
 
     public BindableGridView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    private static int getItemTemplate(Context context, AttributeSet attrs) {
+        return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableListView.itemTemplate, 0);
     }
 
     @Override
@@ -66,6 +69,13 @@ public class BindableGridView extends GridView implements OnItemClickListener, O
         onLongClick = value;
     }
 
+    public List<?> getItemsSource() {
+        if (adapter != null) {
+            return adapter.getItemsSource();
+        }
+        return null;
+    }
+
     public void setItemsSource(List<?> value) {
         if (adapter == null) {
             adapter = new BindableListAdapter(getContext(), getViewBinder());
@@ -75,17 +85,6 @@ public class BindableGridView extends GridView implements OnItemClickListener, O
         } else {
             adapter.setItemsSource(value);
         }
-    }
-
-    public List<?> getItemsSource() {
-        if (adapter != null) {
-            return adapter.getItemsSource();
-        }
-        return null;
-    }
-
-    private static int getItemTemplate(Context context, AttributeSet attrs) {
-        return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableListView.itemTemplate, 0);
     }
 
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {

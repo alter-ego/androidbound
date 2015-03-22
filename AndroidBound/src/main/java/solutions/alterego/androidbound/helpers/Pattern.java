@@ -43,66 +43,6 @@ public class Pattern {
         return new Pattern(regex, flags);
     }
 
-    public int indexOf(String groupName) {
-        return indexOf(groupName, 0);
-    }
-
-    public int indexOf(String groupName, int index) {
-        int idx = -1;
-        if (mGroupInfo.containsKey(groupName)) {
-            List<GroupInfo> list = mGroupInfo.get(groupName);
-            idx = list.get(index).getIndex();
-        }
-        return idx;
-    }
-
-    public int flags() {
-        return mPattern.flags();
-    }
-
-    public Matcher matcher(CharSequence input) {
-        return new Matcher(this, input);
-    }
-
-    public java.util.regex.Pattern pattern() {
-        return mPattern;
-    }
-
-    public String standardPattern() {
-        return mPattern.pattern();
-    }
-
-    public String namedPattern() {
-        return mNamedPattern;
-    }
-
-    public List<String> groupNames() {
-        if (mGroupNames == null) {
-            mGroupNames = new ArrayList<String>(mGroupInfo.keySet());
-        }
-        return mGroupNames;
-    }
-
-    public Map<String, List<GroupInfo>> groupInfo() {
-        return mGroupInfo;
-    }
-
-    public String replaceProperties(String replacementPattern) {
-        return replaceGroupNameWithIndex(new StringBuilder(replacementPattern), PROPERTY_PATTERN, "$").toString();
-    }
-
-    public String[] split(CharSequence input, int limit) {
-        return mPattern.split(input, limit);
-    }
-
-    public String[] split(CharSequence input) {
-        return mPattern.split(input);
-    }
-
-    public String toString() {
-        return mNamedPattern;
-    }
-
     static private boolean isEscapedChar(String s, int pos) {
         int numSlashes = 0;
         while (pos > 0 && (s.charAt(pos - 1) == '\\')) {
@@ -170,6 +110,66 @@ public class Pattern {
             matcher.reset(input);
         }
         return input;
+    }
+
+    public int indexOf(String groupName) {
+        return indexOf(groupName, 0);
+    }
+
+    public int indexOf(String groupName, int index) {
+        int idx = -1;
+        if (mGroupInfo.containsKey(groupName)) {
+            List<GroupInfo> list = mGroupInfo.get(groupName);
+            idx = list.get(index).getIndex();
+        }
+        return idx;
+    }
+
+    public int flags() {
+        return mPattern.flags();
+    }
+
+    public Matcher matcher(CharSequence input) {
+        return new Matcher(this, input);
+    }
+
+    public java.util.regex.Pattern pattern() {
+        return mPattern;
+    }
+
+    public String standardPattern() {
+        return mPattern.pattern();
+    }
+
+    public String namedPattern() {
+        return mNamedPattern;
+    }
+
+    public List<String> groupNames() {
+        if (mGroupNames == null) {
+            mGroupNames = new ArrayList<String>(mGroupInfo.keySet());
+        }
+        return mGroupNames;
+    }
+
+    public Map<String, List<GroupInfo>> groupInfo() {
+        return mGroupInfo;
+    }
+
+    public String replaceProperties(String replacementPattern) {
+        return replaceGroupNameWithIndex(new StringBuilder(replacementPattern), PROPERTY_PATTERN, "$").toString();
+    }
+
+    public String[] split(CharSequence input, int limit) {
+        return mPattern.split(input, limit);
+    }
+
+    public String[] split(CharSequence input) {
+        return mPattern.split(input);
+    }
+
+    public String toString() {
+        return mNamedPattern;
     }
 
     private StringBuilder replaceGroupNameWithIndex(StringBuilder input, java.util.regex.Pattern pattern, String prefix) {

@@ -1,10 +1,4 @@
-
 package solutions.alterego.androidbound.android.ui;
-
-import solutions.alterego.androidbound.android.adapters.BindableExtendedListAdapter;
-import solutions.alterego.androidbound.interfaces.IBindableView;
-import solutions.alterego.androidbound.interfaces.ICommand;
-import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -16,8 +10,14 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import java.util.HashMap;
 import java.util.List;
 
+import solutions.alterego.androidbound.android.adapters.BindableExtendedListAdapter;
+import solutions.alterego.androidbound.interfaces.IBindableView;
+import solutions.alterego.androidbound.interfaces.ICommand;
+import solutions.alterego.androidbound.interfaces.IViewBinder;
+
 public class IAAFBindableExtendedHorizontalListView extends IAAFHorizontalListView implements OnItemClickListener, OnItemLongClickListener,
         IBindableView {
+
     private int selectedItemPosition = 0;
 
     private ICommand onClick = ICommand.empty;
@@ -27,6 +27,7 @@ public class IAAFBindableExtendedHorizontalListView extends IAAFHorizontalListVi
     private BindableExtendedListAdapter adapter;
 
     private IViewBinder viewBinder;
+
     private HashMap<Class<?>, Integer> mTemplatesForObjects;
 
     public IAAFBindableExtendedHorizontalListView(Context context, AttributeSet attrs) {
@@ -67,6 +68,13 @@ public class IAAFBindableExtendedHorizontalListView extends IAAFHorizontalListVi
         onLongClick = value;
     }
 
+    public List<?> getItemsSource() {
+        if (adapter != null) {
+            return adapter.getItemsSource();
+        }
+        return null;
+    }
+
     public void setItemsSource(List<?> value) {
         if (adapter == null) {
             adapter = new BindableExtendedListAdapter(getContext(), this.getViewBinder());
@@ -76,12 +84,6 @@ public class IAAFBindableExtendedHorizontalListView extends IAAFHorizontalListVi
         } else {
             adapter.setItemsSource(value);
         }
-    }
-
-    public List<?> getItemsSource() {
-        if (adapter != null)
-            return adapter.getItemsSource();
-        return null;
     }
 
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -95,8 +97,13 @@ public class IAAFBindableExtendedHorizontalListView extends IAAFHorizontalListVi
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Object parameter = getItemsSource().get(position);
-        if (onClick != null && onClick.canExecute(parameter))
+        if (onClick != null && onClick.canExecute(parameter)) {
             onClick.execute(parameter);
+        }
+    }
+
+    public Object getSelectedItem() {
+        return adapter.getItem(selectedItemPosition);
     }
 
     public void setSelectedItem(Object item) {
@@ -118,10 +125,6 @@ public class IAAFBindableExtendedHorizontalListView extends IAAFHorizontalListVi
             }
         }
 
-    }
-
-    public Object getSelectedItem() {
-        return adapter.getItem(selectedItemPosition);
     }
 
     public HashMap<Class<?>, Integer> getTemplatesForObjects() {

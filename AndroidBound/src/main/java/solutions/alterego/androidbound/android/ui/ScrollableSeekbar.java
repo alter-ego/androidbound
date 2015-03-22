@@ -1,12 +1,4 @@
-
 package solutions.alterego.androidbound.android.ui;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -29,6 +21,13 @@ import android.view.ViewGroup.OnHierarchyChangeListener;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 import solutions.alterego.androidbound.binds.BindableMap;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
@@ -44,301 +43,8 @@ import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeListener,
         INotifyPropertyChanged, IDisposable {
 
-    private static class GestureRecognizer {
-        public static final int GESTURE_NONE = 0;
-        //public static final int GESTURE_DRAG = 1;
-        public static final int GESTURE_PAN = 2;
-        public static final int GESTURE_SCALE = 4;
-        public static final int GESTURE_TAP = 8;
-        public static final int GESTURE_ALL = 65535;
-        private static final int motionDetachTolerance = 10;
-
-        //private RectF draggableRect;
-        private int registeredGestures;
-        private int currentGesture;
-        private PointF downLocation;
-        private PointF upLocation;
-        private PointF panStartLocation;
-        private PointF scaleStartSize;
-        private PointF panLocation;
-        private PointF scaleSize;
-        private PointF tapLocation;
-
-        public GestureRecognizer() {
-            this(GESTURE_ALL);
-        }
-
-        public GestureRecognizer(int registeredGestures) {
-            this(registeredGestures, null);
-        }
-
-        public GestureRecognizer(int registeredGestures, RectF draggableRect) {
-            this.registeredGestures = registeredGestures;
-        }
-
-        public void handleEvent(MotionEvent ev) {
-            int newGesture = GESTURE_NONE;
-
-            if (ev.getPointerCount() > 0) {
-                if ((this.currentGesture & (GESTURE_PAN & this.registeredGestures)) == 0) {
-                    newGesture |= GESTURE_PAN;
-                } else {
-                    newGesture = this.currentGesture;
-                }
-            }
-
-            if (ev.getPointerCount() > 1) {
-                newGesture |= GESTURE_SCALE;
-            }
-
-            switch (ev.getActionMasked()) {
-                case MotionEvent.ACTION_MOVE:
-                    break;
-                case MotionEvent.ACTION_DOWN:
-                    this.downLocation = getPoint(ev);
-                    this.reset();
-                    return;
-                case MotionEvent.ACTION_POINTER_DOWN:
-                    return;
-                case MotionEvent.ACTION_POINTER_UP:
-                    return;
-                case MotionEvent.ACTION_UP:
-                    this.upLocation = getPoint(ev);
-                    if (this.currentGesture != GESTURE_NONE) {
-                        this.reset();
-                        return;
-                    }
-                    newGesture = GESTURE_TAP;
-                    break;
-                case MotionEvent.ACTION_CANCEL:
-                    this.reset();
-                    return;
-                default:
-                    return;
-            }
-
-            newGesture = newGesture & this.registeredGestures;
-
-            if ((newGesture & GESTURE_SCALE) != 0) {
-                if (this.currentGesture != GESTURE_SCALE) {
-                    this.reset();
-                }
-
-                PointF sz = getSize(ev);
-
-                this.scaleStartSize = this.scaleSize;
-                if (this.scaleStartSize == null) {
-                    this.scaleStartSize = sz;
-                }
-                this.scaleSize = sz;
-
-                newGesture = GESTURE_SCALE;
-                this.currentGesture = GESTURE_SCALE;
-            }
-
-            if ((newGesture & GESTURE_PAN) != 0) {
-                if (this.currentGesture != GESTURE_PAN) {
-                    this.reset();
-                }
-
-                PointF pt = getPoint(ev);
-
-                int pdelta = 0;
-                if (this.downLocation != null) {
-                    pdelta = (int) Math.sqrt((this.downLocation.x - pt.x) * (this.downLocation.x - pt.x) + (this.downLocation.y - pt.y)
-                            * (this.downLocation.y - pt.y));
-                }
-
-                if (pdelta > motionDetachTolerance) {
-                    this.panStartLocation = this.panLocation;
-                    if (this.panStartLocation == null) {
-                        this.panStartLocation = pt;
-                    }
-                    this.panLocation = pt;
-
-                    newGesture = GESTURE_PAN;
-                    this.currentGesture = GESTURE_PAN;
-                }
-            }
-
-            if ((newGesture & GESTURE_TAP) != 0) {
-                if (this.currentGesture != GESTURE_TAP) {
-                    this.reset();
-                }
-
-                PointF pt = getPoint(ev);
-
-                this.tapLocation = pt;
-
-                newGesture = GESTURE_TAP;
-                this.currentGesture = GESTURE_TAP;
-            }
-        }
-
-        public int getCurrentGesture() {
-            return this.currentGesture;
-        }
-
-        public PointF getPanLocation() {
-            return this.panLocation;
-        }
-
-        public PointF getPanStartLocation() {
-            return this.panStartLocation;
-        }
-
-        public PointF getTapLocation() {
-            return this.tapLocation;
-        }
-
-        public PointF getPanDelta() {
-            if (this.panLocation == null || this.panStartLocation == null) {
-                return new PointF();
-            }
-
-            return new PointF(this.panLocation.x - this.panStartLocation.x, this.panLocation.y
-                    - this.panStartLocation.y);
-        }
-
-        public PointF getScaleSize() {
-            return this.scaleSize;
-        }
-
-        public PointF getScaleStartSize() {
-            return this.scaleStartSize;
-        }
-
-        public PointF getScaleDelta() {
-            if (this.scaleSize == null || this.scaleStartSize == null) {
-                return new PointF(1f, 1f);
-            }
-
-            return new PointF(this.scaleStartSize.x != 0f ? this.scaleSize.x
-                    / this.scaleStartSize.x : 1f, this.scaleStartSize.y != 0f ? this.scaleSize.y
-                    / this.scaleStartSize.y : 1f);
-        }
-
-        public void reset() {
-            this.currentGesture = GESTURE_NONE;
-            this.panStartLocation = this.panLocation = this.scaleStartSize = this.scaleSize = this.tapLocation = null;
-        }
-
-        private static PointF getPoint(MotionEvent ev) {
-            int cnt = ev.getPointerCount();
-            if (cnt < 1) {
-                return new PointF();
-            }
-
-            float x = 0;
-            float y = 0;
-
-            PointerCoords c = new PointerCoords();
-
-            for (int ptrId = 0; ptrId < cnt; ptrId++) {
-                ev.getPointerCoords(ptrId, c);
-
-                x += c.x;
-                y += c.y;
-
-                c.x = 0f;
-                c.y = 0f;
-            }
-
-            return new PointF(x / cnt, y / cnt);
-        }
-
-        private static PointF getSize(MotionEvent ev) {
-            int cnt = ev.getPointerCount();
-            if (cnt < 2) {
-                return new PointF(0f, 0f);
-            }
-
-            float minX = Float.MAX_VALUE;
-            float minY = Float.MAX_VALUE;
-            float maxX = Float.MIN_VALUE;
-            float maxY = Float.MIN_VALUE;
-
-            PointerCoords c = new PointerCoords();
-
-            for (int ptrId = 0; ptrId < cnt; ptrId++) {
-                ev.getPointerCoords(ptrId, c);
-
-                if (c.x < minX) {
-                    minX = c.x;
-                }
-                if (c.x > maxX) {
-                    maxX = c.x;
-                }
-                if (c.y < minY) {
-                    minY = c.y;
-                }
-                if (c.y > maxY) {
-                    maxY = c.y;
-                }
-            }
-
-            return new PointF(maxX - minX, maxY - minY);
-        }
-    }
-
-    private static class DefaultThumb extends Drawable {
-        private int width;
-        private int height;
-        private int alpha;
-        private Paint fill;
-
-        public DefaultThumb(int w, int h) {
-            this.width = w;
-            this.height = h;
-            this.alpha = 255;
-            this.fill = new Paint();
-            this.fill.setColor(Color.WHITE);
-        }
-
-        @Override
-        public void draw(Canvas canvas) {
-            Rect r = this.getBounds();
-            canvas.drawCircle(r.centerX(), r.centerY(), r.width() / 2, this.fill);
-        }
-
-        @Override
-        public void setAlpha(int alpha) {
-            this.alpha = alpha;
-        }
-
-        @Override
-        public void setColorFilter(ColorFilter cf) {
-        }
-
-        @Override
-        public int getOpacity() {
-            return PixelFormat.TRANSPARENT;
-        }
-
-        @Override
-        public int getIntrinsicWidth() {
-            return this.width;
-        }
-
-        @Override
-        public int getIntrinsicHeight() {
-            return this.height;
-        }
-    }
-
-    public static interface OnScrollableSeekBarChangeListener {
-        void onTrackValueChanged(ScrollableSeekbar seekBar, String key, Float[] valueRange);
-
-        void onStartTrackingTouch(ScrollableSeekbar seekBar, String key);
-
-        void onStopTrackingTouch(ScrollableSeekbar seekBar, String key);
-    }
-
-    public static interface OnScrollableSeekbarTapListener {
-        void onTap(ScrollableSeekbar seekBar, Float[] valueRange);
-    }
-
     private static final int interceptW2 = 20; // dp?
+
     private static final int interceptH2 = 20; // dp?
 
     private boolean disposed;
@@ -346,7 +52,9 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
     private ISubject<String> propertyChanged;
 
     private Map<String, ICommand> progressTrackBegin;
+
     private Map<String, ICommand> progressTrackEnd;
+
     private Map<String, ICommand> progressTrackChanged;
 
     private ICommand tapTrack = ICommand.empty;
@@ -355,40 +63,55 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
 
     // width of the tap area. it affects the value range of the tap
     private int tapWidth;
+
     private Float[] tapInterval;
+
     private float minValue;
+
     private float maxValue;
 
     private BindableMap<String, Float[]> values;
+
     private IDisposable valuesSubscription;
 
     private BindableMap<String, Boolean> thumbEnablings;
+
     private IDisposable thumbEnablingsSubscription;
 
     private float zoom;
+
     private float minZoom;
+
     private float maxZoom;
 
     private float contentWidth;
+
     private float contentHeight;
 
     private View content;
+
     private boolean attached;
 
     private boolean isDragging;
+
     private String isDraggingKey;
+
     private GestureRecognizer gestureRecognizer;
 
     private Scroller scroller;
+
     private VelocityTracker velocityTracker;
+
     private int velocityMax;
 
     private ThumbDrawable thumbDrawable;
 
     private Set<String> centerZoom;
+
     private Set<String> seekOnTaps;
 
     private OnScrollableSeekBarChangeListener listener;
+
     private OnScrollableSeekbarTapListener tapListener;
 
     public ScrollableSeekbar(Context context, AttributeSet attrs) {
@@ -448,7 +171,7 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
             @Override
             public Float[] makeValid(Map<String, Float[]> map, String key, Float[] value) {
                 if (value == null || value.length != 3) {
-                    return new Float[] {
+                    return new Float[]{
                             minValue, minValue, minValue
                     };
                 }
@@ -456,19 +179,21 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
                 Float[] newValue = value.clone();
                 for (int i = 0; i < newValue.length; i++) {
                     float v = newValue[i];
-                    if (v < minValue)
+                    if (v < minValue) {
                         v = minValue;
-                    if (v > maxValue)
+                    }
+                    if (v > maxValue) {
                         v = maxValue;
+                    }
                     newValue[i] = v;
                 }
                 return newValue;
             }
-        }, new Float[] {
+        }, new Float[]{
                 0f, 0f, 0f
         });
 
-        this.tapInterval = new Float[] {
+        this.tapInterval = new Float[]{
                 0f, 0f, 0f
         };
 
@@ -624,6 +349,10 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
         return this.centerZoom.contains(key);
     }
 
+    public synchronized float getMinValue() {
+        return this.minValue;
+    }
+
     public synchronized void setMinValue(float newvalue) {
         this.minValue = newvalue;
         if (this.minValue > this.maxValue) {
@@ -645,8 +374,8 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
         this.refreshThumbPositions();
     }
 
-    public synchronized float getMinValue() {
-        return this.minValue;
+    public synchronized float getMaxValue() {
+        return this.maxValue;
     }
 
     public synchronized void setMaxValue(float newvalue) {
@@ -670,12 +399,12 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
         this.refreshThumbPositions();
     }
 
-    public synchronized float getMaxValue() {
-        return this.maxValue;
-    }
-
     public synchronized Map<String, Float[]> getValues() {
         return this.values;
+    }
+
+    public synchronized Float[] getTapInterval() {
+        return this.tapInterval;
     }
 
     public synchronized void setTapInterval(Float[] interval) {
@@ -688,8 +417,8 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
         this.raisePropertyChanged("TapInterval");
     }
 
-    public synchronized Float[] getTapInterval() {
-        return this.tapInterval;
+    public synchronized int getTapWidth() {
+        return this.tapWidth;
     }
 
     public synchronized void setTapWidth(int width) {
@@ -701,8 +430,8 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
         this.raisePropertyChanged("TapWidth");
     }
 
-    public synchronized int getTapWidth() {
-        return this.tapWidth;
+    public synchronized float getMinZoomPercent() {
+        return this.minZoom * 100f;
     }
 
     public synchronized void setMinZoomPercent(float zoom) {
@@ -724,8 +453,8 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
         this.refreshThumbPositions();
     }
 
-    public synchronized float getMinZoomPercent() {
-        return this.minZoom * 100f;
+    public synchronized float getMaxZoomPercent() {
+        return this.maxZoom * 100f;
     }
 
     public synchronized void setMaxZoomPercent(float zoom) {
@@ -747,8 +476,8 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
         this.refreshThumbPositions();
     }
 
-    public synchronized float getMaxZoomPercent() {
-        return this.maxZoom * 100f;
+    public synchronized float getZoomPercent() {
+        return this.zoom * 100f;
     }
 
     public synchronized void setZoomPercent(float newzoom) {
@@ -814,10 +543,6 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
         this.raisePropertyChanged("ZoomPercent");
 
         this.refreshScroll();
-    }
-
-    public synchronized float getZoomPercent() {
-        return this.zoom * 100f;
     }
 
     @Override
@@ -964,31 +689,31 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
                 break;
         }
 
-        if(newGesture == GestureRecognizer.GESTURE_PAN) {
-            if(this.velocityTracker == null) {
+        if (newGesture == GestureRecognizer.GESTURE_PAN) {
+            if (this.velocityTracker == null) {
                 this.velocityTracker = VelocityTracker.obtain();
             }
             this.velocityTracker.addMovement(event);
         } else {
             boolean hasVelocity = false;
             int velocityX = 0;
-            if(this.velocityTracker != null) {
+            if (this.velocityTracker != null) {
                 hasVelocity = true;
                 this.velocityTracker.computeCurrentVelocity(1000, velocityMax);
-                velocityX = (int)this.velocityTracker.getXVelocity();
+                velocityX = (int) this.velocityTracker.getXVelocity();
                 this.velocityTracker.recycle();
                 this.velocityTracker = null;
             }
 
-            if(oldGesture == GestureRecognizer.GESTURE_PAN && hasVelocity) {
-                int smax = (int)this.contentWidth - (this.getWidth() - this.getPaddingLeft() - this.getPaddingRight());
-                if(smax > 0) {
+            if (oldGesture == GestureRecognizer.GESTURE_PAN && hasVelocity) {
+                int smax = (int) this.contentWidth - (this.getWidth() - this.getPaddingLeft() - this.getPaddingRight());
+                if (smax > 0) {
                     this.scroller.fling(this.getScrollX(), 0, -velocityX, 0, 0, smax, 0, 0);
                     this.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             boolean finished = !scroller.computeScrollOffset();
-                            if(!finished) {
+                            if (!finished) {
                                 scrollTo(scroller.getCurrX(), 0);
                                 postDelayed(this, 15);
                             }
@@ -1291,7 +1016,7 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
     }
 
     private Float[] valuesFromPosition(Float centerPosition) {
-        return new Float[] {
+        return new Float[]{
                 this.valueFromPosition(centerPosition - this.tapWidth / 2f),
                 this.valueFromPosition(centerPosition),
                 this.valueFromPosition(centerPosition + this.tapWidth / 2f)
@@ -1316,7 +1041,322 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
         this.getParent().requestDisallowInterceptTouchEvent(true);
     }
 
+    public static interface OnScrollableSeekBarChangeListener {
+
+        void onTrackValueChanged(ScrollableSeekbar seekBar, String key, Float[] valueRange);
+
+        void onStartTrackingTouch(ScrollableSeekbar seekBar, String key);
+
+        void onStopTrackingTouch(ScrollableSeekbar seekBar, String key);
+    }
+
+    public static interface OnScrollableSeekbarTapListener {
+
+        void onTap(ScrollableSeekbar seekBar, Float[] valueRange);
+    }
+
+    private static class GestureRecognizer {
+
+        public static final int GESTURE_NONE = 0;
+
+        //public static final int GESTURE_DRAG = 1;
+        public static final int GESTURE_PAN = 2;
+
+        public static final int GESTURE_SCALE = 4;
+
+        public static final int GESTURE_TAP = 8;
+
+        public static final int GESTURE_ALL = 65535;
+
+        private static final int motionDetachTolerance = 10;
+
+        //private RectF draggableRect;
+        private int registeredGestures;
+
+        private int currentGesture;
+
+        private PointF downLocation;
+
+        private PointF upLocation;
+
+        private PointF panStartLocation;
+
+        private PointF scaleStartSize;
+
+        private PointF panLocation;
+
+        private PointF scaleSize;
+
+        private PointF tapLocation;
+
+        public GestureRecognizer() {
+            this(GESTURE_ALL);
+        }
+
+        public GestureRecognizer(int registeredGestures) {
+            this(registeredGestures, null);
+        }
+
+        public GestureRecognizer(int registeredGestures, RectF draggableRect) {
+            this.registeredGestures = registeredGestures;
+        }
+
+        private static PointF getPoint(MotionEvent ev) {
+            int cnt = ev.getPointerCount();
+            if (cnt < 1) {
+                return new PointF();
+            }
+
+            float x = 0;
+            float y = 0;
+
+            PointerCoords c = new PointerCoords();
+
+            for (int ptrId = 0; ptrId < cnt; ptrId++) {
+                ev.getPointerCoords(ptrId, c);
+
+                x += c.x;
+                y += c.y;
+
+                c.x = 0f;
+                c.y = 0f;
+            }
+
+            return new PointF(x / cnt, y / cnt);
+        }
+
+        private static PointF getSize(MotionEvent ev) {
+            int cnt = ev.getPointerCount();
+            if (cnt < 2) {
+                return new PointF(0f, 0f);
+            }
+
+            float minX = Float.MAX_VALUE;
+            float minY = Float.MAX_VALUE;
+            float maxX = Float.MIN_VALUE;
+            float maxY = Float.MIN_VALUE;
+
+            PointerCoords c = new PointerCoords();
+
+            for (int ptrId = 0; ptrId < cnt; ptrId++) {
+                ev.getPointerCoords(ptrId, c);
+
+                if (c.x < minX) {
+                    minX = c.x;
+                }
+                if (c.x > maxX) {
+                    maxX = c.x;
+                }
+                if (c.y < minY) {
+                    minY = c.y;
+                }
+                if (c.y > maxY) {
+                    maxY = c.y;
+                }
+            }
+
+            return new PointF(maxX - minX, maxY - minY);
+        }
+
+        public void handleEvent(MotionEvent ev) {
+            int newGesture = GESTURE_NONE;
+
+            if (ev.getPointerCount() > 0) {
+                if ((this.currentGesture & (GESTURE_PAN & this.registeredGestures)) == 0) {
+                    newGesture |= GESTURE_PAN;
+                } else {
+                    newGesture = this.currentGesture;
+                }
+            }
+
+            if (ev.getPointerCount() > 1) {
+                newGesture |= GESTURE_SCALE;
+            }
+
+            switch (ev.getActionMasked()) {
+                case MotionEvent.ACTION_MOVE:
+                    break;
+                case MotionEvent.ACTION_DOWN:
+                    this.downLocation = getPoint(ev);
+                    this.reset();
+                    return;
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    return;
+                case MotionEvent.ACTION_POINTER_UP:
+                    return;
+                case MotionEvent.ACTION_UP:
+                    this.upLocation = getPoint(ev);
+                    if (this.currentGesture != GESTURE_NONE) {
+                        this.reset();
+                        return;
+                    }
+                    newGesture = GESTURE_TAP;
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                    this.reset();
+                    return;
+                default:
+                    return;
+            }
+
+            newGesture = newGesture & this.registeredGestures;
+
+            if ((newGesture & GESTURE_SCALE) != 0) {
+                if (this.currentGesture != GESTURE_SCALE) {
+                    this.reset();
+                }
+
+                PointF sz = getSize(ev);
+
+                this.scaleStartSize = this.scaleSize;
+                if (this.scaleStartSize == null) {
+                    this.scaleStartSize = sz;
+                }
+                this.scaleSize = sz;
+
+                newGesture = GESTURE_SCALE;
+                this.currentGesture = GESTURE_SCALE;
+            }
+
+            if ((newGesture & GESTURE_PAN) != 0) {
+                if (this.currentGesture != GESTURE_PAN) {
+                    this.reset();
+                }
+
+                PointF pt = getPoint(ev);
+
+                int pdelta = 0;
+                if (this.downLocation != null) {
+                    pdelta = (int) Math.sqrt((this.downLocation.x - pt.x) * (this.downLocation.x - pt.x) + (this.downLocation.y - pt.y)
+                            * (this.downLocation.y - pt.y));
+                }
+
+                if (pdelta > motionDetachTolerance) {
+                    this.panStartLocation = this.panLocation;
+                    if (this.panStartLocation == null) {
+                        this.panStartLocation = pt;
+                    }
+                    this.panLocation = pt;
+
+                    newGesture = GESTURE_PAN;
+                    this.currentGesture = GESTURE_PAN;
+                }
+            }
+
+            if ((newGesture & GESTURE_TAP) != 0) {
+                if (this.currentGesture != GESTURE_TAP) {
+                    this.reset();
+                }
+
+                PointF pt = getPoint(ev);
+
+                this.tapLocation = pt;
+
+                newGesture = GESTURE_TAP;
+                this.currentGesture = GESTURE_TAP;
+            }
+        }
+
+        public int getCurrentGesture() {
+            return this.currentGesture;
+        }
+
+        public PointF getPanLocation() {
+            return this.panLocation;
+        }
+
+        public PointF getPanStartLocation() {
+            return this.panStartLocation;
+        }
+
+        public PointF getTapLocation() {
+            return this.tapLocation;
+        }
+
+        public PointF getPanDelta() {
+            if (this.panLocation == null || this.panStartLocation == null) {
+                return new PointF();
+            }
+
+            return new PointF(this.panLocation.x - this.panStartLocation.x, this.panLocation.y
+                    - this.panStartLocation.y);
+        }
+
+        public PointF getScaleSize() {
+            return this.scaleSize;
+        }
+
+        public PointF getScaleStartSize() {
+            return this.scaleStartSize;
+        }
+
+        public PointF getScaleDelta() {
+            if (this.scaleSize == null || this.scaleStartSize == null) {
+                return new PointF(1f, 1f);
+            }
+
+            return new PointF(this.scaleStartSize.x != 0f ? this.scaleSize.x
+                    / this.scaleStartSize.x : 1f, this.scaleStartSize.y != 0f ? this.scaleSize.y
+                    / this.scaleStartSize.y : 1f);
+        }
+
+        public void reset() {
+            this.currentGesture = GESTURE_NONE;
+            this.panStartLocation = this.panLocation = this.scaleStartSize = this.scaleSize = this.tapLocation = null;
+        }
+    }
+
+    private static class DefaultThumb extends Drawable {
+
+        private int width;
+
+        private int height;
+
+        private int alpha;
+
+        private Paint fill;
+
+        public DefaultThumb(int w, int h) {
+            this.width = w;
+            this.height = h;
+            this.alpha = 255;
+            this.fill = new Paint();
+            this.fill.setColor(Color.WHITE);
+        }
+
+        @Override
+        public void draw(Canvas canvas) {
+            Rect r = this.getBounds();
+            canvas.drawCircle(r.centerX(), r.centerY(), r.width() / 2, this.fill);
+        }
+
+        @Override
+        public void setAlpha(int alpha) {
+            this.alpha = alpha;
+        }
+
+        @Override
+        public void setColorFilter(ColorFilter cf) {
+        }
+
+        @Override
+        public int getOpacity() {
+            return PixelFormat.TRANSPARENT;
+        }
+
+        @Override
+        public int getIntrinsicWidth() {
+            return this.width;
+        }
+
+        @Override
+        public int getIntrinsicHeight() {
+            return this.height;
+        }
+    }
+
     private static class ThumbDrawable extends Drawable {
+
         private static BindableMap.IValidator<String, Boolean> enablingsValidator = new BindableMap.IValidator<String, Boolean>() {
             @Override
             public boolean isValid(Map<String, Boolean> map, String key, Boolean value) {
@@ -1339,8 +1379,11 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
         };
 
         private int scrollX;
+
         private int scrollY;
+
         private int alpha = 255;
+
         private Drawable.Callback callback = new Callback() {
             @Override
             public void unscheduleDrawable(Drawable who, Runnable what) {
@@ -1360,6 +1403,7 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
 
         // TODO can be grouped into a single map of classes...
         private Map<String, Drawable> thumbs;
+
         private Map<String, RectF> thumbRects;
 
         public ThumbDrawable() {
@@ -1460,10 +1504,15 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
     }
 
     private static class VisibilityAnimatedDrawable extends Drawable {
+
         private long animationDuration = 800;
+
         private long animationRate = 25;
+
         private Drawable toAnimate;
+
         private IDisposable animationSubscription;
+
         private boolean isAnimating;
 
         public VisibilityAnimatedDrawable(Drawable toAnimate, boolean initialVisibility) {

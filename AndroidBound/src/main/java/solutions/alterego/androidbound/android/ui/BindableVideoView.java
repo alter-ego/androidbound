@@ -6,23 +6,24 @@ import android.util.AttributeSet;
 import android.widget.VideoView;
 
 public class BindableVideoView extends VideoView {
-	private String source;
 
-	public BindableVideoView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    private String source;
 
-	public BindableVideoView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public BindableVideoView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public String getSource() {
-		return source;
-	}
+    public BindableVideoView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	public void setSource(String value) {
-		source = value;
-		setVideoURI(Uri.parse(source));
-		start();
-	}
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String value) {
+        source = value;
+        setVideoURI(Uri.parse(source));
+        start();
+    }
 }

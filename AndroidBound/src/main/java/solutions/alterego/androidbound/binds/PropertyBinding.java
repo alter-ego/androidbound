@@ -1,6 +1,7 @@
 package solutions.alterego.androidbound.binds;
 
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+
 import solutions.alterego.androidbound.helpers.Reflector;
 import solutions.alterego.androidbound.helpers.reflector.PropertyInfo;
 import solutions.alterego.androidbound.interfaces.IBinding;
@@ -14,6 +15,7 @@ import solutions.alterego.androidbound.zzzztoremove.reactive.Predicate;
 public class PropertyBinding extends BindingBase {
 
     private IDisposable mMemberSubscription;
+
     private PropertyInfo mPropertyInfo;
 
     public PropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, IAndroidLogger logger) {

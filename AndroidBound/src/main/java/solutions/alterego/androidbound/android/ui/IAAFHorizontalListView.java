@@ -29,9 +29,6 @@ package solutions.alterego.androidbound.android.ui;
  *
  */
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
@@ -40,7 +37,6 @@ import android.database.DataSetObserver;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
-
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,29 +44,51 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.Scroller;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 
 public class IAAFHorizontalListView extends AdapterView<ListAdapter> {
 
     public boolean mAlwaysOverrideTouch = true;
+
     protected ListAdapter mAdapter;
+
     private int mLeftViewIndex = -1;
+
     private int mRightViewIndex = 0;
+
     protected int mCurrentX;
+
     protected int mNextX;
+
     private int mMaxX = Integer.MAX_VALUE;
+
     private int mDisplayOffset = 0;
+
     protected Scroller mScroller;
+
     private GestureDetector mGesture;
+
     private Queue<View> mRemovedViewQueue = new LinkedList<View>();
+
     private OnItemSelectedListener mOnItemSelected;
+
     private OnItemClickListener mOnItemClicked;
+
     private OnItemLongClickListener mOnItemLongClicked;
+
     private boolean mDataChanged = false;
+
     private boolean mShouldSelectItem = false;
+
     private int mShouldSelectItemPosition = 0;
+
     //private int mRightViewsWidth;
     private int mCurrentViewsWidth;
+
     IAndroidLogger mLogger = NullAndroidLogger.instance;
+
     int mChildWith = 0;
 
     public IAAFHorizontalListView(Context context, AttributeSet attrs) {
@@ -446,8 +464,9 @@ public class IAAFHorizontalListView extends AdapterView<ListAdapter> {
         //      int half_screen_items = (((mRightViewIndex * mChildWith) - (mLeftViewIndex * mChildWith)) / 2);
 
         scroll_x = position * mChildWith;
-        if (scroll_x > max_scroll_x)
+        if (scroll_x > max_scroll_x) {
             scroll_x = max_scroll_x;
+        }
         mScroller.startScroll(0, 0, scroll_x, 0, 50);
         requestLayout();
     }
@@ -456,14 +475,35 @@ public class IAAFHorizontalListView extends AdapterView<ListAdapter> {
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN || ev.getAction() == MotionEvent.ACTION_HOVER_ENTER) {
             int index = indexForView((int) ev.getX(), (int) ev.getY());
-            if (index > -1)
+            if (index > -1) {
                 getChildAt(index).setPressed(true);
+            }
         } else if (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_CANCEL
                 || ev.getAction() == MotionEvent.ACTION_MOVE || ev.getAction() == MotionEvent.ACTION_SCROLL
                 || ev.getAction() == MotionEvent.ACTION_HOVER_EXIT) {
             int index = indexForView((int) ev.getX(), (int) ev.getY());
-            if (index > -1)
+            if (index > -1) {
                 getChildAt(index).setPressed(false);
+            }
+        }
+        boolean handled = mGesture.onTouchEvent(ev);
+        return handled;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN || ev.getAction() == MotionEvent.ACTION_HOVER_ENTER) {
+            int index = indexForView((int) ev.getX(), (int) ev.getY());
+            if (index > -1) {
+                getChildAt(index).setPressed(true);
+            }
+        } else if (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_CANCEL
+                || ev.getAction() == MotionEvent.ACTION_MOVE || ev.getAction() == MotionEvent.ACTION_SCROLL
+                || ev.getAction() == MotionEvent.ACTION_HOVER_EXIT) {
+            int index = indexForView((int) ev.getX(), (int) ev.getY());
+            if (index > -1) {
+                getChildAt(index).setPressed(false);
+            }
         }
         boolean handled = mGesture.onTouchEvent(ev);
         return handled;
@@ -497,9 +537,7 @@ public class IAAFHorizontalListView extends AdapterView<ListAdapter> {
             }
         }
         return -1;
-    }
-
-    private GestureDetector.OnGestureListener mOnGesture = new GestureDetector.SimpleOnGestureListener() {
+    }    private GestureDetector.OnGestureListener mOnGesture = new GestureDetector.SimpleOnGestureListener() {
 
         @Override
         public boolean onDown(MotionEvent e) {

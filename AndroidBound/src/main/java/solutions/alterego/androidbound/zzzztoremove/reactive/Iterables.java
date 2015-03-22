@@ -11,7 +11,25 @@ import solutions.alterego.androidbound.zzzztoremove.GroupedList;
 import solutions.alterego.androidbound.zzzztoremove.GroupingList;
 
 public class Iterables {
+
+    public static <T> IterableBuilder<T> from(Iterable<T> source) {
+        return new IterableBuilder<T>(source);
+    }
+
+    public static <T> IterableBuilder<T> from(T[] source) {
+        return new IterableBuilder<T>(Arrays.asList(source));
+    }
+
+    public static <T> MonoidIterableBuilder<T> monoFrom(Iterable<T> source) {
+        return new MonoidIterableBuilder<T>(source);
+    }
+
+    public static <T> MonoidIterableBuilder<T> monoFrom(T[] source) {
+        return new MonoidIterableBuilder<T>(Arrays.asList(source));
+    }
+
     public static interface ToLongResolver<T, S> {
+
         public abstract long convertPositionToLong(T position);
 
         public abstract long convertDeltaToLong(S delta);
@@ -20,6 +38,7 @@ public class Iterables {
     }
 
     public static class NullIterator<T> implements Iterator<T> {
+
         @Override
         public boolean hasNext() {
             return false;
@@ -36,6 +55,7 @@ public class Iterables {
     }
 
     public static class NullIterable<T> implements Iterable<T> {
+
         @Override
         public Iterator<T> iterator() {
             return new NullIterator<T>();
@@ -43,6 +63,17 @@ public class Iterables {
     }
 
     public static class SequenceIterator<T, S> implements Iterator<T> {
+
+        private long startMsec;
+
+        private long endMsec;
+
+        private long stepMsec;
+
+        private long currentMsec;
+
+        private ToLongResolver<T, S> resolver;
+
         public SequenceIterator(T start, int count, S step, ToLongResolver<T, S> resolver) {
             this.startMsec = resolver.convertPositionToLong(start);
             this.stepMsec = resolver.convertDeltaToLong(step);
@@ -82,23 +113,34 @@ public class Iterables {
                 this.currentMsec -= this.stepMsec;
             }
         }
-
-        private long startMsec;
-        private long endMsec;
-        private long stepMsec;
-        private long currentMsec;
-        private ToLongResolver<T, S> resolver;
     }
 
     public static class SkipIterator<T> implements Iterator<T> {
+
         private boolean skipped;
+
         private int skipCount;
+
         private Iterator<T> baseIterator;
 
         public SkipIterator(Iterator<T> baseIterator, int skipCount) {
             this.baseIterator = baseIterator;
             this.skipCount = skipCount;
             this.skipped = false;
+        }
+
+        private static <T> Iterator<T> skip(Iterator<T> it, int cnt) {
+            if (cnt <= 0) {
+                return it;
+            }
+
+            int i = 0;
+            while (i < cnt && it.hasNext()) {
+                it.next();
+                i++;
+            }
+
+            return it;
         }
 
         @Override
@@ -129,25 +171,14 @@ public class Iterables {
 
             this.baseIterator.remove();
         }
-
-        private static <T> Iterator<T> skip(Iterator<T> it, int cnt) {
-            if (cnt <= 0) {
-                return it;
-            }
-
-            int i = 0;
-            while (i < cnt && it.hasNext()) {
-                it.next();
-                i++;
-            }
-
-            return it;
-        }
     }
 
     public static class TakeIterator<T> implements Iterator<T> {
-        private int takeCount;
+
         Iterator<T> baseIterator;
+
+        private int takeCount;
+
         private int curCount;
 
         public TakeIterator(Iterator<T> baseIterator, int takeCount) {
@@ -193,9 +224,13 @@ public class Iterables {
     }
 
     public static class WhereIterator<T> implements Iterator<T> {
+
         private Iterator<T> baseIterator;
+
         private Predicate<T> filter;
+
         private T lastValue;
+
         private boolean lastValueAdvanced;
 
         public WhereIterator(Iterator<T> baseIterator, Predicate<T> filter) {
@@ -247,10 +282,15 @@ public class Iterables {
     }
 
     public static class WhileIterator<T> implements Iterator<T> {
+
         private Iterator<T> baseIterator;
+
         private Predicate<T> filter;
+
         private T lastValue;
+
         private boolean lastValueAdvanced;
+
         private boolean ended;
 
         public WhileIterator(Iterator<T> baseIterator, Predicate<T> filter) {
@@ -308,7 +348,9 @@ public class Iterables {
     }
 
     public static class SampleIterator<T> implements Iterator<T> {
+
         private int sampleFactor;
+
         private Iterator<T> baseIterator;
 
         public SampleIterator(Iterator<T> baseIterator, int sampleFactor) {
@@ -317,6 +359,20 @@ public class Iterables {
             if (this.sampleFactor < 1) {
                 this.sampleFactor = 1;
             }
+        }
+
+        private static <T> Iterator<T> skip(Iterator<T> it, int cnt) {
+            if (cnt <= 0) {
+                return it;
+            }
+
+            int i = 0;
+            while (i < cnt && it.hasNext()) {
+                it.next();
+                i++;
+            }
+
+            return it;
         }
 
         @Override
@@ -337,24 +393,12 @@ public class Iterables {
         public void remove() {
             this.baseIterator.remove();
         }
-
-        private static <T> Iterator<T> skip(Iterator<T> it, int cnt) {
-            if (cnt <= 0) {
-                return it;
-            }
-
-            int i = 0;
-            while (i < cnt && it.hasNext()) {
-                it.next();
-                i++;
-            }
-
-            return it;
-        }
     }
 
     private static class IteratorStore<T> {
+
         private T value;
+
         private boolean hasValue = false;
 
         public void set(T value) {
@@ -378,10 +422,12 @@ public class Iterables {
     }
 
     public abstract static class AnonymousIterable<T> implements Iterable<T> {
+
         public List<T> toList() {
             List<T> result = new ArrayList<T>();
-            for (T item : this)
+            for (T item : this) {
                 result.add(item);
+            }
             return result;
         }
 
@@ -394,6 +440,7 @@ public class Iterables {
     }
 
     public static class IterableBuilder<T> {
+
         private final Iterable<T> source;
 
         public IterableBuilder(Iterable<T> source) {
@@ -409,11 +456,13 @@ public class Iterables {
                 public Iterator<T> iterator() {
                     return new Iterator<T>() {
                         final Iterator<T> iterator = source.iterator();
+
                         IteratorStore<T> store = new IteratorStore<T>();
 
                         public boolean hasNext() {
-                            if (store.hasValue())
+                            if (store.hasValue()) {
                                 return true;
+                            }
                             while (iterator.hasNext()) {
                                 T value = iterator.next();
                                 if (predicate.invoke(value)) {
@@ -425,8 +474,9 @@ public class Iterables {
                         }
 
                         public T next() {
-                            if (hasNext())
+                            if (hasNext()) {
                                 return store.remove();
+                            }
                             throw new NoSuchElementException();
                         }
 
@@ -443,24 +493,17 @@ public class Iterables {
             GroupingList<TKey, T> result = new GroupingList<TKey, T>();
             for (T item : source) {
                 TKey key = keyFunction.invoke(item);
-                if (result.get(key) == null)
+                if (result.get(key) == null) {
                     result.add(new GroupedList<TKey, T>(key));
+                }
                 result.get(key).add(item);
             }
             return result;
         }
     }
 
-    public static <T> IterableBuilder<T> from(Iterable<T> source) {
-        return new IterableBuilder<T>(source);
-    }
-
-    public static <T> IterableBuilder<T> from(T[] source) {
-        return new IterableBuilder<T>(Arrays.asList(source));
-    }
-
-
     public static class MonoidIterableBuilder<T> implements Iterable<T> {
+
         private final Iterable<T> source;
 
         public MonoidIterableBuilder(Iterable<T> source) {
@@ -579,8 +622,9 @@ public class Iterables {
             while (iter.hasNext()) {
                 T item = iter.next();
                 TKey key = keyFunction.invoke(item);
-                if (result.get(key) == null)
+                if (result.get(key) == null) {
                     result.add(new GroupedList<TKey, T>(key));
+                }
                 result.get(key).add(item);
             }
 
@@ -591,13 +635,5 @@ public class Iterables {
         public Iterator<T> iterator() {
             return this.source.iterator();
         }
-    }
-
-    public static <T> MonoidIterableBuilder<T> monoFrom(Iterable<T> source) {
-        return new MonoidIterableBuilder<T>(source);
-    }
-
-    public static <T> MonoidIterableBuilder<T> monoFrom(T[] source) {
-        return new MonoidIterableBuilder<T>(Arrays.asList(source));
     }
 }

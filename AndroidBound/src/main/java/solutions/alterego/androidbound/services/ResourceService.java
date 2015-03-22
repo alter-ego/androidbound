@@ -1,35 +1,39 @@
 package solutions.alterego.androidbound.services;
 
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.IResourceProvider;
 import solutions.alterego.androidbound.interfaces.IResourceRegistry;
 
 public class ResourceService implements IResourceProvider, IResourceRegistry, INeedsLogger {
-	Map<String, Object> resources = new HashMap<String, Object>();
-	private IAndroidLogger logger;
-	
-	public ResourceService(IAndroidLogger logger) {
-		setLogger(logger);
-	}
-	
-	public void registerResource(String name, Object resource) {
-		logger.verbose("Registering resource " + name);
-		resources.put(name, resource);
-	}
 
-	public Object find(String name) {
-		logger.verbose("Requested resource " + name);
-		if(resources.containsKey(name))
-			return resources.get(name);
-		logger.debug("Resource " + name + " not found. Returning default.");
-		return null;
-	}
+    Map<String, Object> resources = new HashMap<String, Object>();
 
-	public void setLogger(IAndroidLogger logger) {
-		this.logger = logger.getLogger(this);
-	}
+    private IAndroidLogger logger;
+
+    public ResourceService(IAndroidLogger logger) {
+        setLogger(logger);
+    }
+
+    public void registerResource(String name, Object resource) {
+        logger.verbose("Registering resource " + name);
+        resources.put(name, resource);
+    }
+
+    public Object find(String name) {
+        logger.verbose("Requested resource " + name);
+        if (resources.containsKey(name)) {
+            return resources.get(name);
+        }
+        logger.debug("Resource " + name + " not found. Returning default.");
+        return null;
+    }
+
+    public void setLogger(IAndroidLogger logger) {
+        this.logger = logger.getLogger(this);
+    }
 }

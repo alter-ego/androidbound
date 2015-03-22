@@ -1,10 +1,10 @@
 package solutions.alterego.androidbound.helpers;
 
-import solutions.alterego.androidbound.zzzztoremove.DefaultValueMap;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import solutions.alterego.androidbound.zzzztoremove.DefaultValueMap;
 
 public class Matcher implements MatchResult {
 
@@ -12,7 +12,8 @@ public class Matcher implements MatchResult {
 
     private Pattern mParentPattern;
 
-    protected Matcher() {}
+    protected Matcher() {
+    }
 
     Matcher(Pattern parentPattern, java.util.regex.MatchResult matcher) {
         mParentPattern = parentPattern;

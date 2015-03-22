@@ -1,10 +1,4 @@
-
 package solutions.alterego.androidbound.android.adapters;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 import android.content.Context;
 import android.util.Pair;
@@ -15,6 +9,11 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import solutions.alterego.androidbound.android.interfaces.IBindableSectionGridViewReceiver;
 import solutions.alterego.androidbound.android.ui.BindableLinearLayout;
@@ -30,17 +29,25 @@ public class BindableSectionGridAdapter extends BaseAdapter implements OnClickLi
     private static final int defaultCacheSize = 100;
 
     private int itemTemplate;
+
     private int headerTemplate;
+
     private int gridTemplate;
 
     private Class mHeaderObjectClass;
+
     private Class mItemObjectClass;
+
     private int mNumberOfItemsInRow = 0;
+
     private ArrayList<IBindableSectionGridViewReceiver> itemReceivers;
 
     private List<? extends Object> itemsSource;
+
     private LinkedHashMap<Object, ArrayList<Object>> categoryAndItemsHashmap;
+
     private ArrayList<Object> categoryList;
+
     private HashMap<BindableListItemView, Object> objectsForViews;
 
     private int mCacheSize;
@@ -70,8 +77,8 @@ public class BindableSectionGridAdapter extends BaseAdapter implements OnClickLi
         itemReceivers = new ArrayList<IBindableSectionGridViewReceiver>();
 
         if (viewBinder == null) {
-            if ((Object)context instanceof IBindableView) {
-                viewBinder = ((IBindableView)(Object)context).getViewBinder();
+            if ((Object) context instanceof IBindableView) {
+                viewBinder = ((IBindableView) (Object) context).getViewBinder();
             }
         }
 
@@ -150,7 +157,7 @@ public class BindableSectionGridAdapter extends BaseAdapter implements OnClickLi
                 }
                 currentCategoryItems = new ArrayList<Object>();
                 category = item;
-                categoryList.add((Object)category);
+                categoryList.add((Object) category);
             } else if (item.getClass() == getItemObjectClass()) {
                 currentCategoryItems.add(item);
             }
@@ -365,15 +372,17 @@ public class BindableSectionGridAdapter extends BaseAdapter implements OnClickLi
     }
 
     private Object findItemForClickedView(View view) {
-        if (objectsForViews.containsKey(view))
+        if (objectsForViews.containsKey(view)) {
             return objectsForViews.get(view);
-        else
+        } else {
             return null;
+        }
     }
 
     public void registerBindableSectionGridViewReceiver(IBindableSectionGridViewReceiver receiver) {
-        if (receiver != null)
+        if (receiver != null) {
             itemReceivers.add(receiver);
+        }
     }
 
     private void notifyReceivers(Object obj) {
@@ -383,8 +392,9 @@ public class BindableSectionGridAdapter extends BaseAdapter implements OnClickLi
     }
 
     public void deregisterBindableSectionGridViewReceiver(IBindableSectionGridViewReceiver receiver) {
-        if (receiver != null && itemReceivers.contains(receiver))
+        if (receiver != null && itemReceivers.contains(receiver)) {
             itemReceivers.remove(receiver);
+        }
     }
 
     @Override

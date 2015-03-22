@@ -1,20 +1,21 @@
-
 package solutions.alterego.androidbound.android.ui;
 
 import android.content.Context;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import java.util.List;
+
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.interfaces.IBindingAssociation;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
-import java.util.List;
-
 public class BindableListItemView extends FrameLayout {
 
     private IViewBinder mViewBinder;
+
     private View mView;
+
     private int mItemTemplate;
 
     private BindableListItemView(Context context) {
@@ -26,8 +27,9 @@ public class BindableListItemView extends FrameLayout {
         mViewBinder = viewBinder;
         mItemTemplate = itemTemplate;
 
-        if (mViewBinder != null)
+        if (mViewBinder != null) {
             mView = viewBinder.inflate(context, source, itemTemplate, this);
+        }
     }
 
     public int getItemTemplate() {

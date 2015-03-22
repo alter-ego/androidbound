@@ -2,14 +2,15 @@ package solutions.alterego.androidbound.binds;
 
 import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+
+import java.util.Locale;
+
 import solutions.alterego.androidbound.interfaces.IBinding;
 import solutions.alterego.androidbound.interfaces.IBindingAssociation;
 import solutions.alterego.androidbound.interfaces.IBindingFactory;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Action;
 import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Observers;
-
-import java.util.Locale;
 
 public class BindingAssociation implements IBindingAssociation {
 
