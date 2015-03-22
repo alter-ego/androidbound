@@ -1,0 +1,67 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.1.1'
+    }
+}
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven() { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url "https://github.com/alter-ego/advanced-android-logger/raw/develop/releases/" }
+}
+
+ext {
+    buildVersionName = "0.3.3"
+    buildVersionCode = 17
+}
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.0"
+
+    defaultConfig {
+        minSdkVersion 18
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile 'com.alterego:advancedandroidlogger:1.0.4@aar'
+
+    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:support-v4:22.0.0'
+
+    compile 'joda-time:joda-time:2.7'
+    compile 'io.reactivex:rxandroid:0.24.0'
+
+    provided 'javax.annotation:jsr250-api:1.0'
+    compile 'org.projectlombok:lombok:1.16.2'
+
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
+}
+
