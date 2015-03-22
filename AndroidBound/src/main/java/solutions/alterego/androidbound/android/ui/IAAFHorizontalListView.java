@@ -490,25 +490,6 @@ public class IAAFHorizontalListView extends AdapterView<ListAdapter> {
         return handled;
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN || ev.getAction() == MotionEvent.ACTION_HOVER_ENTER) {
-            int index = indexForView((int) ev.getX(), (int) ev.getY());
-            if (index > -1) {
-                getChildAt(index).setPressed(true);
-            }
-        } else if (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_CANCEL
-                || ev.getAction() == MotionEvent.ACTION_MOVE || ev.getAction() == MotionEvent.ACTION_SCROLL
-                || ev.getAction() == MotionEvent.ACTION_HOVER_EXIT) {
-            int index = indexForView((int) ev.getX(), (int) ev.getY());
-            if (index > -1) {
-                getChildAt(index).setPressed(false);
-            }
-        }
-        boolean handled = mGesture.onTouchEvent(ev);
-        return handled;
-    }
-
     protected boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         synchronized (IAAFHorizontalListView.this) {
             mScroller.fling(mNextX, 0, (int) -velocityX, 0, 0, mMaxX, 0, 0);
