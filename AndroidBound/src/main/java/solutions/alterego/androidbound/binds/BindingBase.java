@@ -3,18 +3,17 @@ package solutions.alterego.androidbound.binds;
 import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.IBinding;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Observables;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public abstract class BindingBase implements IBinding, INeedsLogger {
 
-    private static final IObservable<Object> NO_CHANGES = Observables.<Object>empty();
+    private static final Observable<Object> NO_CHANGES = Observables.empty();
 
-    private ISubject<Object> mChanges;
+    private PublishSubject<Object> mChanges = PublishSubject.create();
 
     private Object mSubject;
 
@@ -31,11 +30,11 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
 
     public abstract void setValue(Object value);
 
-    public IObservable<Object> getChanges() {
+    public Observable<Object> getChanges() {
         if (mChanges == null) {
             return NO_CHANGES;
         }
-        return mChanges;
+        return mChanges.asObservable();
     }
 
     public boolean hasChanges() {
@@ -52,11 +51,11 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
     protected void setupChanges(boolean hasChanges) {
         if (hasChanges) {
             if (mChanges == null) {
-                mChanges = new Subject<Object>();
+                mChanges = PublishSubject.create();
             }
         } else {
             if (mChanges != null) {
-                mChanges.dispose();
+                mChanges.onCompleted();
                 mChanges = null;
             }
         }
@@ -76,7 +75,7 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
 
     public void dispose() {
         if (mChanges != null) {
-            mChanges.dispose();
+            mChanges.onCompleted();
         }
         mChanges = null;
     }

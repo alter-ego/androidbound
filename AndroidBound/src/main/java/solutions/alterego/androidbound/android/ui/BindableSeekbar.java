@@ -4,11 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.SeekBar;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class BindableSeekbar extends SeekBar implements INotifyPropertyChanged {
 
@@ -20,7 +19,7 @@ public class BindableSeekbar extends SeekBar implements INotifyPropertyChanged {
 
     private boolean disposed;
 
-    private ISubject<String> propertyChanged;
+    private PublishSubject<String> propertyChanged = PublishSubject.create();
 
     public BindableSeekbar(Context context) {
         super(context);
@@ -70,9 +69,9 @@ public class BindableSeekbar extends SeekBar implements INotifyPropertyChanged {
     }
 
     @Override
-    public IObservable<String> onPropertyChanged() {
+    public Observable<String> onPropertyChanged() {
         if (this.propertyChanged == null || this.disposed) {
-            this.propertyChanged = new Subject<String>();
+            this.propertyChanged = PublishSubject.create();
             this.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
                 @Override
@@ -125,7 +124,7 @@ public class BindableSeekbar extends SeekBar implements INotifyPropertyChanged {
 
         this.disposed = true;
         if (this.propertyChanged != null) {
-            this.propertyChanged.dispose();
+            this.propertyChanged.onCompleted();
         }
 
         this.propertyChanged = null;

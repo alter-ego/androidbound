@@ -7,15 +7,14 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class BindableTextView extends TextView implements INotifyPropertyChanged, View.OnClickListener {
 
-    private ISubject<String> propertyChanged;
+    private PublishSubject<String> propertyChanged = PublishSubject.create();
 
     private boolean disposed;
 
@@ -56,7 +55,7 @@ public class BindableTextView extends TextView implements INotifyPropertyChanged
 
         this.disposed = true;
         if (this.propertyChanged != null) {
-            this.propertyChanged.dispose();
+            this.propertyChanged.onCompleted();
         }
 
         this.propertyChanged = null;
@@ -64,9 +63,9 @@ public class BindableTextView extends TextView implements INotifyPropertyChanged
     }
 
     @Override
-    public IObservable<String> onPropertyChanged() {
+    public Observable<String> onPropertyChanged() {
         if (this.propertyChanged == null) {
-            this.propertyChanged = new Subject<String>();
+            this.propertyChanged = PublishSubject.create();
         }
 
         return this.propertyChanged;

@@ -4,16 +4,16 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import java.security.InvalidParameterException;
 
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Action;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Observables;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Observers;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Predicate;
 
 public class SelfBinding extends BindingBase {
 
-    private IDisposable mSubscription;
+    private Subscription mSubscription;
 
     public SelfBinding(Object subject, IAndroidLogger logger) {
         super(subject, logger);
@@ -34,13 +34,20 @@ public class SelfBinding extends BindingBase {
                 }
             };
 
-            mSubscription = Observables.from((INotifyPropertyChanged) subject)
-                    .where(isMember)
-                    .subscribe(Observers.fromAction(new Action<String>() {
-                        public void invoke(String name) {
+            mSubscription = Observables
+                    .from((INotifyPropertyChanged) subject)
+                    .filter(new Func1<String, Boolean>() {
+                        @Override
+                        public Boolean call(String member) {
+                            return member.equals("this");
+                        }
+                    })
+                    .subscribe(new Action1<String>() {
+                        @Override
+                        public void call(String s) {
                             onBoundPropertyChanged();
                         }
-                    }));
+                    });
         } else {
             this.setupChanges(false);
         }
@@ -68,7 +75,7 @@ public class SelfBinding extends BindingBase {
     @Override
     public void dispose() {
         if (mSubscription != null) {
-            mSubscription.dispose();
+            mSubscription.unsubscribe();
             mSubscription = null;
         }
         super.dispose();

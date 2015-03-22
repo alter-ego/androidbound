@@ -5,16 +5,15 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class BindableScrollView extends ScrollView implements INotifyPropertyChanged {
 
     private boolean disposed;
 
-    private ISubject<String> propertyChanged;
+    private PublishSubject<String> propertyChanged = PublishSubject.create();
 
     public BindableScrollView(Context context) {
         super(context);
@@ -32,9 +31,9 @@ public class BindableScrollView extends ScrollView implements INotifyPropertyCha
     }
 
     @Override
-    public IObservable<String> onPropertyChanged() {
+    public Observable<String> onPropertyChanged() {
         if (this.propertyChanged == null) {
-            this.propertyChanged = new Subject<String>();
+            this.propertyChanged = PublishSubject.create();
         }
 
         return this.propertyChanged;
@@ -48,7 +47,7 @@ public class BindableScrollView extends ScrollView implements INotifyPropertyCha
 
         this.disposed = true;
         if (this.propertyChanged != null) {
-            this.propertyChanged.dispose();
+            this.propertyChanged.onCompleted();
         }
 
         this.propertyChanged = null;

@@ -5,16 +5,15 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class BindableHorizontalScrollView extends HorizontalScrollView implements INotifyPropertyChanged {
 
     private boolean disposed;
 
-    private ISubject<String> propertyChanged;
+    private PublishSubject<String> propertyChanged = PublishSubject.create();
 
     public BindableHorizontalScrollView(Context context) {
         super(context);
@@ -33,9 +32,9 @@ public class BindableHorizontalScrollView extends HorizontalScrollView implement
     }
 
     @Override
-    public IObservable<String> onPropertyChanged() {
+    public Observable<String> onPropertyChanged() {
         if (this.propertyChanged == null) {
-            this.propertyChanged = new Subject<String>();
+            this.propertyChanged = PublishSubject.create();
         }
 
         return this.propertyChanged;
@@ -49,7 +48,8 @@ public class BindableHorizontalScrollView extends HorizontalScrollView implement
 
         this.disposed = true;
         if (this.propertyChanged != null) {
-            this.propertyChanged.dispose();
+            this.propertyChanged.onCompleted();
+            propertyChanged = null;
         }
 
         this.propertyChanged = null;

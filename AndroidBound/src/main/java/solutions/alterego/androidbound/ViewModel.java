@@ -3,18 +3,17 @@ package solutions.alterego.androidbound;
 import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposable {
 
     protected transient IAndroidLogger mLogger = NullAndroidLogger.instance;
 
-    private transient ISubject<String> propertyChanges = new Subject<String>();
+    private transient PublishSubject<String> propertyChanges = PublishSubject.create();
 
     protected void raisePropertyChanged(String property) {
         try {
@@ -24,12 +23,13 @@ public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposa
         }
     }
 
-    public IObservable<String> onPropertyChanged() {
+    public Observable<String> onPropertyChanged() {
         return propertyChanges;
     }
 
     public void dispose() {
-        propertyChanges.dispose();
+        propertyChanges.onCompleted();
+        propertyChanges = null;
     }
 
     public void setLogger(IAndroidLogger logger) {

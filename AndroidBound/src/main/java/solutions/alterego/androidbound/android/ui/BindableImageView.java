@@ -12,11 +12,10 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class BindableImageView extends ImageView implements OnClickListener, INotifyPropertyChanged, OnLongClickListener {
 
@@ -32,7 +31,7 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 
     private Drawable currentDrawable;
 
-    private ISubject<String> propertyChanged;
+    private PublishSubject<String> propertyChanged = PublishSubject.create();
 
     //private final static IContentProvider<Bitmap> provider = new CacheSystem<Bitmap>(new HttpBitmapProvider(), CommonSettings.CacheImage.cache);
     private ICommand onLongClick = ICommand.empty;
@@ -119,7 +118,8 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 
         this.disposed = true;
         if (this.propertyChanged != null) {
-            this.propertyChanged.dispose();
+            this.propertyChanged.onCompleted();
+            propertyChanged = null;
         }
 
         this.propertyChanged = null;
@@ -128,9 +128,9 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
     }
 
     @Override
-    public IObservable<String> onPropertyChanged() {
+    public Observable<String> onPropertyChanged() {
         if (this.propertyChanged == null) {
-            this.propertyChanged = new Subject<String>();
+            this.propertyChanged = PublishSubject.create();
         }
 
         return this.propertyChanged;

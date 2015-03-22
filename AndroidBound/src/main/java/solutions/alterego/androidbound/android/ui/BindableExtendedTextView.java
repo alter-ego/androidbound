@@ -12,13 +12,12 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.BindingResources;
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class BindableExtendedTextView extends View implements INotifyPropertyChanged, View.OnClickListener {
 
@@ -28,7 +27,7 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
 
     private Context mContext;
 
-    private ISubject<String> propertyChanged;
+    private PublishSubject<String> propertyChanged = PublishSubject.create();
 
     private ICommand onClick = ICommand.empty;
 
@@ -157,7 +156,8 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
 
         this.disposed = true;
         if (this.propertyChanged != null) {
-            this.propertyChanged.dispose();
+            this.propertyChanged.onCompleted();
+            propertyChanged = null;
         }
 
         this.propertyChanged = null;
@@ -165,9 +165,9 @@ public class BindableExtendedTextView extends View implements INotifyPropertyCha
     }
 
     @Override
-    public IObservable<String> onPropertyChanged() {
+    public Observable<String> onPropertyChanged() {
         if (this.propertyChanged == null) {
-            this.propertyChanged = new Subject<String>();
+            this.propertyChanged = PublishSubject.create();
         }
 
         return this.propertyChanged;

@@ -5,12 +5,11 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import java.util.Locale;
 
+import rx.Subscription;
+import rx.functions.Action1;
 import solutions.alterego.androidbound.interfaces.IBinding;
 import solutions.alterego.androidbound.interfaces.IBindingAssociation;
 import solutions.alterego.androidbound.interfaces.IBindingFactory;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Action;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Observers;
 
 public class BindingAssociation implements IBindingAssociation {
 
@@ -24,9 +23,9 @@ public class BindingAssociation implements IBindingAssociation {
 
     private IBinding mTargetBinding;
 
-    private IDisposable mSourceSubscription;
+    private Subscription mSourceSubscription;
 
-    private IDisposable mTargetSubscription;
+    private Subscription mTargetSubscription;
 
     private IAndroidLogger mLogger = NullAndroidLogger.instance;
 
@@ -67,7 +66,7 @@ public class BindingAssociation implements IBindingAssociation {
             mSourceBinding.dispose();
         }
         if (mSourceSubscription != null) {
-            mSourceSubscription.dispose();
+            mSourceSubscription.unsubscribe();
         }
 
         createSourceBinding(value);
@@ -83,11 +82,12 @@ public class BindingAssociation implements IBindingAssociation {
 
         if (needsSubs) {
             if (mSourceBinding.hasChanges()) {
-                mSourceSubscription = mSourceBinding.getChanges().subscribe(Observers.fromAction(new Action<Object>() {
-                    public void invoke(Object obj) {
+                mSourceSubscription = mSourceBinding.getChanges().subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object obj) {
                         updateTargetFromSource(obj);
                     }
-                }));
+                });
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getPath() + " needs subscription, but changes were not available");
             }
@@ -101,11 +101,12 @@ public class BindingAssociation implements IBindingAssociation {
 
         if (needsSubs) {
             if (mTargetBinding.hasChanges()) {
-                mTargetSubscription = mTargetBinding.getChanges().subscribe(Observers.fromAction(new Action<Object>() {
-                    public void invoke(Object obj) {
+                mTargetSubscription = mTargetBinding.getChanges().subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object obj) {
                         updateSourceFromTarget(obj);
                     }
-                }));
+                });
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getTarget() + " needs subscription, but changes were not available.");
             }
@@ -194,10 +195,10 @@ public class BindingAssociation implements IBindingAssociation {
 
     public void dispose() {
         if (mSourceSubscription != null) {
-            mSourceSubscription.dispose();
+            mSourceSubscription.unsubscribe();
         }
         if (mTargetSubscription != null) {
-            mTargetSubscription.dispose();
+            mTargetSubscription.unsubscribe();
         }
         if (mSourceBinding != null) {
             mSourceBinding.dispose();

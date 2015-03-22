@@ -9,17 +9,16 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class BindableRelativeLayout extends RelativeLayout implements INotifyPropertyChanged, OnClickListener {
 
     private boolean disposed;
 
-    private ISubject<String> propertyChanged;
+    private PublishSubject<String> propertyChanged = PublishSubject.create();
 
     private ICommand onClick = ICommand.empty;
 
@@ -39,9 +38,9 @@ public class BindableRelativeLayout extends RelativeLayout implements INotifyPro
     }
 
     @Override
-    public IObservable<String> onPropertyChanged() {
+    public Observable<String> onPropertyChanged() {
         if (this.propertyChanged == null) {
-            this.propertyChanged = new Subject<String>();
+            this.propertyChanged = PublishSubject.create();
         }
 
         return this.propertyChanged;
@@ -55,7 +54,8 @@ public class BindableRelativeLayout extends RelativeLayout implements INotifyPro
 
         this.disposed = true;
         if (this.propertyChanged != null) {
-            this.propertyChanged.dispose();
+            this.propertyChanged.onCompleted();
+            propertyChanged = null;
         }
 
         this.propertyChanged = null;

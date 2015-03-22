@@ -4,17 +4,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Iterables;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyChanged {
 
     private static final long serialVersionUID = 1L;
 
-    protected ISubject<String> mPropertySubject;
+    protected PublishSubject<String> mPropertySubject = PublishSubject.create();
 
     protected IValidator<K, V> mPropertyValidator;
 
@@ -30,7 +29,7 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
 
     public BindableMap(IValidator<K, V> validator, V defaultValue) {
         mPropertyValidator = validator;
-        mPropertySubject = new Subject<String>();
+        mPropertySubject = PublishSubject.create();
         mDefaultValue = defaultValue;
     }
 
@@ -108,7 +107,7 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
     }
 
     @Override
-    public IObservable<String> onPropertyChanged() {
+    public Observable<String> onPropertyChanged() {
         return mPropertySubject;
     }
 
@@ -126,7 +125,7 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
     @Override
     public void dispose() {
         if (mPropertySubject != null) {
-            mPropertySubject.dispose();
+            mPropertySubject.onCompleted();
             mPropertySubject = null;
         }
 

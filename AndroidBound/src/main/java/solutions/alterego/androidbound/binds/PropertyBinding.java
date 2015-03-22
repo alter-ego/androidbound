@@ -2,19 +2,18 @@ package solutions.alterego.androidbound.binds;
 
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import solutions.alterego.androidbound.helpers.Reflector;
 import solutions.alterego.androidbound.helpers.reflector.PropertyInfo;
 import solutions.alterego.androidbound.interfaces.IBinding;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Action;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Observables;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Observers;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Predicate;
 
 public class PropertyBinding extends BindingBase {
 
-    private IDisposable mMemberSubscription;
+    private Subscription mMemberSubscription;
 
     private PropertyInfo mPropertyInfo;
 
@@ -34,19 +33,19 @@ public class PropertyBinding extends BindingBase {
             setupChanges(true);
             getLogger().debug(propertyName + " implements INotifyPropertyChanged. Subscribing...");
 
-            Predicate<String> isMember = new Predicate<String>() {
-                public Boolean invoke(String member) {
-                    return member.equals(propertyName);
-                }
-            };
-
             mMemberSubscription = Observables.from((INotifyPropertyChanged) subject)
-                    .where(isMember)
-                    .subscribe(Observers.fromAction(new Action<String>() {
-                        public void invoke(String name) {
+                    .filter(new Func1<String, Boolean>() {
+                        @Override
+                        public Boolean call(String member) {
+                            return member.equals(propertyName);
+                        }
+                    })
+                    .subscribe(new Action1<String>() {
+                        @Override
+                        public void call(String s) {
                             onBoundPropertyChanged();
                         }
-                    }));
+                    });
         } else {
             setupChanges(false);
         }
@@ -91,7 +90,7 @@ public class PropertyBinding extends BindingBase {
     @Override
     public void dispose() {
         if (mMemberSubscription != null) {
-            mMemberSubscription.dispose();
+            mMemberSubscription.unsubscribe();
             mMemberSubscription = null;
         }
         super.dispose();

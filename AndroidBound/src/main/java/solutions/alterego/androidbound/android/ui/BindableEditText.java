@@ -8,14 +8,13 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class BindableEditText extends EditText implements INotifyPropertyChanged {
 
-    private ISubject<String> propertyChanged;
+    private PublishSubject<String> propertyChanged = PublishSubject.create();
 
     private boolean disposed;
 
@@ -71,7 +70,8 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
 
         this.disposed = true;
         if (this.propertyChanged != null) {
-            this.propertyChanged.dispose();
+            this.propertyChanged.onCompleted();
+            propertyChanged = null;
         }
 
         this.propertyChanged = null;
@@ -79,9 +79,9 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
     }
 
     @Override
-    public IObservable<String> onPropertyChanged() {
+    public Observable<String> onPropertyChanged() {
         if (this.propertyChanged == null) {
-            this.propertyChanged = new Subject<String>();
+            this.propertyChanged = PublishSubject.create();
         }
 
         return this.propertyChanged;

@@ -1,7 +1,7 @@
 package solutions.alterego.androidbound.interfaces;
 
+import rx.Observable;
 import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
 
 public interface IBinding extends IDisposable, INeedsLogger {
 
@@ -15,5 +15,5 @@ public interface IBinding extends IDisposable, INeedsLogger {
 
     public abstract boolean hasChanges();
 
-    public abstract IObservable<Object> getChanges();
+    public abstract Observable<Object> getChanges();
 }

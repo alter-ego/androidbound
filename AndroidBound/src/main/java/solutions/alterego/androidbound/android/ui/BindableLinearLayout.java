@@ -13,13 +13,12 @@ import android.widget.LinearLayout;
 
 import java.util.List;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.IBindingAssociation;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class BindableLinearLayout extends LinearLayout implements INotifyPropertyChanged, OnClickListener {
 
@@ -31,7 +30,7 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
 
     private int itemTemplate;
 
-    private ISubject<String> propertyChanged;
+    private PublishSubject<String> propertyChanged = PublishSubject.create();
 
     private ICommand onClick = ICommand.empty;
 
@@ -63,9 +62,9 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
     }
 
     @Override
-    public IObservable<String> onPropertyChanged() {
+    public Observable<String> onPropertyChanged() {
         if (this.propertyChanged == null) {
-            this.propertyChanged = new Subject<String>();
+            this.propertyChanged = PublishSubject.create();
         }
 
         return this.propertyChanged;
@@ -79,7 +78,8 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
 
         this.disposed = true;
         if (this.propertyChanged != null) {
-            this.propertyChanged.dispose();
+            this.propertyChanged.onCompleted();
+            propertyChanged = null;
         }
 
         this.propertyChanged = null;

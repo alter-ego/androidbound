@@ -4,11 +4,10 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import java.util.List;
 
+import rx.Subscription;
+import rx.functions.Action1;
 import solutions.alterego.androidbound.interfaces.IBinding;
 import solutions.alterego.androidbound.interfaces.IBindingFactory;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Action;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Observers;
 
 public class ChainedBinding extends PropertyBinding {
 
@@ -20,7 +19,7 @@ public class ChainedBinding extends PropertyBinding {
 
     private IBinding mCurrentBinding;
 
-    private IDisposable mCurrentBindingChanged;
+    private Subscription mCurrentBindingChanged;
 
     private String mMemberName;
 
@@ -36,7 +35,7 @@ public class ChainedBinding extends PropertyBinding {
 
     protected void updateChildBinding() {
         if (mCurrentBinding != null) {
-            mCurrentBindingChanged.dispose();
+            mCurrentBindingChanged.unsubscribe();
             mCurrentBinding.dispose();
             mCurrentBindingChanged = null;
         }
@@ -47,11 +46,12 @@ public class ChainedBinding extends PropertyBinding {
         }
 
         mCurrentBinding = mBindingFactory.create(currentValue, mTokens, this.mNeedChangesIfPossible);
-        mCurrentBindingChanged = mCurrentBinding.getChanges().subscribe(Observers.fromAction(new Action<Object>() {
-            public void invoke(Object obj) {
+        mCurrentBindingChanged = mCurrentBinding.getChanges().subscribe(new Action1<Object>() {
+            @Override
+            public void call(Object obj) {
                 notifyChange(obj);
             }
-        }));
+        });
     }
 
     @Override
@@ -83,7 +83,7 @@ public class ChainedBinding extends PropertyBinding {
     public void dispose() {
         super.dispose();
         if (mCurrentBindingChanged != null) {
-            mCurrentBindingChanged.dispose();
+            mCurrentBindingChanged.unsubscribe();
             mCurrentBindingChanged = null;
         }
         if (mCurrentBinding != null) {

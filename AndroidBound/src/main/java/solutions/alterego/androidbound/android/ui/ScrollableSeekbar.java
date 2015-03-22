@@ -28,17 +28,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.binds.BindableMap;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.UiThreadScheduler;
 import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IObservable;
-import solutions.alterego.androidbound.zzzztoremove.reactive.ISubject;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Iterables;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Observables;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Observer;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Subject;
 
 public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeListener,
         INotifyPropertyChanged, IDisposable {
@@ -49,7 +49,7 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
 
     private boolean disposed;
 
-    private ISubject<String> propertyChanged;
+    private PublishSubject<String> propertyChanged = PublishSubject.create();
 
     private Map<String, ICommand> progressTrackBegin;
 
@@ -72,11 +72,11 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
 
     private BindableMap<String, Float[]> values;
 
-    private IDisposable valuesSubscription;
+    private Subscription valuesSubscription;
 
     private BindableMap<String, Boolean> thumbEnablings;
 
-    private IDisposable thumbEnablingsSubscription;
+    private Subscription thumbEnablingsSubscription;
 
     private float zoom;
 
@@ -222,14 +222,35 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
 
         super.setForeground(this.thumbDrawable);
 
-        this.valuesSubscription = this.values.onPropertyChanged().subscribe(new Observer<String>() {
-            @Override
-            public void onNext(String obj) {
-                refreshThumbPositions(obj);
-            }
-        });
+        this.valuesSubscription = this.values.onPropertyChanged()
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String obj) {
+                        refreshThumbPositions(obj);
+                    }
+                });
 
         this.thumbEnablingsSubscription = this.thumbEnablings.onPropertyChanged().subscribe(new Observer<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
             @Override
             public void onNext(String obj) {
                 refreshThumbEnablings(obj);
@@ -237,9 +258,9 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
         });
     }
 
-    public IObservable<String> onPropertyChanged() {
+    public Observable<String> onPropertyChanged() {
         if (this.propertyChanged == null) {
-            this.propertyChanged = new Subject<String>();
+            this.propertyChanged = PublishSubject.create();
         }
 
         return this.propertyChanged;
@@ -588,16 +609,16 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
 
         this.disposed = true;
         if (this.propertyChanged != null) {
-            this.propertyChanged.dispose();
+            this.propertyChanged.onCompleted();
         }
 
         if (this.thumbEnablingsSubscription != null) {
-            this.thumbEnablingsSubscription.dispose();
+            this.thumbEnablingsSubscription.unsubscribe();
             this.thumbEnablingsSubscription = null;
         }
 
         if (this.valuesSubscription != null) {
-            this.valuesSubscription.dispose();
+            this.valuesSubscription.unsubscribe();
             this.valuesSubscription = null;
         }
 
@@ -1511,7 +1532,7 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
 
         private Drawable toAnimate;
 
-        private IDisposable animationSubscription;
+        private Subscription animationSubscription;
 
         private boolean isAnimating;
 
@@ -1571,7 +1592,7 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
 
             this.isAnimating = false;
             if (this.animationSubscription != null) {
-                this.animationSubscription.dispose();
+                this.animationSubscription.unsubscribe();
                 this.animationSubscription = null;
             }
 
@@ -1586,16 +1607,9 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
 
             this.isAnimating = true;
             this.animationSubscription =
-                    Observables.linear(start, end, animationDuration, animationRate, TimeUnit.MILLISECONDS, UiThreadScheduler.instance)
-                            .subscribe(new Observer<Float>() {
-                                public void onNext(Float obj) {
-                                    if (!isAnimating) {
-                                        return;
-                                    }
-                                    toAnimate.setAlpha((int) (float) obj);
-                                    invalidateSelf();
-                                }
-
+                    Observables.
+                            linear(start, end, animationDuration, animationRate, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                            .subscribe(new rx.Observer<Float>() {
                                 @Override
                                 public void onCompleted() {
                                     isAnimating = false;
@@ -1603,9 +1617,18 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
                                 }
 
                                 @Override
-                                public void onError(Exception exc) {
+                                public void onError(Throwable e) {
                                     isAnimating = false;
                                     animationSubscription = null;
+                                }
+
+                                @Override
+                                public void onNext(Float aFloat) {
+                                    if (!isAnimating) {
+                                        return;
+                                    }
+                                    toAnimate.setAlpha((int) (float) aFloat);
+                                    invalidateSelf();
                                 }
                             });
 
