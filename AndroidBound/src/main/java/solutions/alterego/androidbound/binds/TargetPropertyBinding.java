@@ -2,7 +2,8 @@ package solutions.alterego.androidbound.binds;
 
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
-import solutions.alterego.androidbound.zzzztoremove.reactive.IScheduler;
+import rx.Scheduler;
+import rx.functions.Action0;
 
 public class TargetPropertyBinding extends PropertyBinding {
 
@@ -10,9 +11,9 @@ public class TargetPropertyBinding extends PropertyBinding {
 
     private String propertyName;
 
-    private IScheduler scheduler;
+    private Scheduler scheduler;
 
-    public TargetPropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, IScheduler scheduler, IAndroidLogger logger) {
+    public TargetPropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, Scheduler scheduler, IAndroidLogger logger) {
         super(subject, propertyName, needChangesIfPossible, logger);
         this.propertyName = propertyName;
         this.scheduler = scheduler;
@@ -27,8 +28,9 @@ public class TargetPropertyBinding extends PropertyBinding {
         getLogger().verbose("Receiving set state for type" + (value != null ? value.getClass() : "<null>"));
         try {
             currentState = UpdatingState.UpdatingTarget;
-            scheduler.schedule(new Runnable() {
-                public void run() {
+            scheduler.createWorker().schedule(new Action0() {
+                @Override
+                public void call() {
                     TargetPropertyBinding.super.setValue(value);
                 }
             });

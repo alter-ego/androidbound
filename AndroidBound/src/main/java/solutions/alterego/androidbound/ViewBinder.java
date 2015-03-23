@@ -21,6 +21,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import rx.Scheduler;
 import solutions.alterego.androidbound.android.BindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.converters.BooleanToVisibilityConverter;
 import solutions.alterego.androidbound.android.converters.FontConverter;
@@ -38,7 +39,6 @@ import solutions.alterego.androidbound.parsers.BindingSpecificationListParser;
 import solutions.alterego.androidbound.parsers.BindingSpecificationParser;
 import solutions.alterego.androidbound.services.ResourceService;
 import solutions.alterego.androidbound.services.ValueConverterService;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IScheduler;
 
 @Accessors(prefix = "m")
 public class ViewBinder implements IViewBinder {
@@ -65,11 +65,11 @@ public class ViewBinder implements IViewBinder {
     @Setter
     private IFontManager mFontManager;
 
-    public ViewBinder(Context ctx, IScheduler notificationScheduler, IAndroidLogger logger) {
+    public ViewBinder(Context ctx, Scheduler notificationScheduler, IAndroidLogger logger) {
         this(ctx, notificationScheduler, logger, null);
     }
 
-    public ViewBinder(Context ctx, IScheduler notificationScheduler, IAndroidLogger logger, ImageLoaderConfiguration imageLoaderConfiguration) {
+    public ViewBinder(Context ctx, Scheduler notificationScheduler, IAndroidLogger logger, ImageLoaderConfiguration imageLoaderConfiguration) {
         setLogger(logger);
         setContext(ctx);
         mConverterService = new ValueConverterService(getLogger());

@@ -4,11 +4,13 @@ import android.util.Log;
 
 import java.lang.reflect.Method;
 
+import rx.functions.Action1;
+
 public class Actions {
 
-    public final static <T> Action<T> doNothing() {
-        return new Action<T>() {
-            public void invoke(T obj) {
+    public final static <T> Action1<T> doNothing() {
+        return new Action1<T>() {
+            public void call(T obj) {
             }
         };
     }
@@ -33,11 +35,11 @@ public class Actions {
         return null;
     }
 
-    public final static <T> Action<T> fromMethod(final Object instance, final String methodName) {
+    public final static <T> Action1<T> fromMethod(final Object instance, final String methodName) {
         final Method toCall = getMethod(instance, methodName);
         if (toCall != null) {
-            return new Action<T>() {
-                public void invoke(T obj) {
+            return new Action1<T>() {
+                public void call(T obj) {
                     try {
                         toCall.invoke(instance, obj);
                     } catch (Exception e) {

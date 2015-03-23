@@ -8,15 +8,14 @@ import android.app.Application;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Handler;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import rx.Scheduler;
+import rx.schedulers.Schedulers;
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
-import solutions.alterego.androidbound.zzzztoremove.HandlerScheduler;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IScheduler;
 
 @Accessors(prefix = "m")
 public class BindingApplication extends Application {
@@ -27,7 +26,7 @@ public class BindingApplication extends Application {
 
     @Getter
     @Setter
-    protected IScheduler mHandlerScheduler;
+    protected Scheduler mHandlerScheduler;
 
     @Getter
     @Setter
@@ -38,7 +37,7 @@ public class BindingApplication extends Application {
         super.onCreate();
 
         setLogger(new AndroidLogger(getApplicationName()));
-        setHandlerScheduler(new HandlerScheduler(new Handler()));
+        setHandlerScheduler(Schedulers.newThread());
         setViewBinder(new ViewBinder(this, mHandlerScheduler, mLogger));
     }
 
@@ -54,5 +53,4 @@ public class BindingApplication extends Application {
         }
         return app_name;
     }
-
 }

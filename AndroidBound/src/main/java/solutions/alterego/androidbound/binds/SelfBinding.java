@@ -9,7 +9,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Observables;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Predicate;
 
 public class SelfBinding extends BindingBase {
 
@@ -28,11 +27,6 @@ public class SelfBinding extends BindingBase {
         if (getSubject() instanceof INotifyPropertyChanged) {
             this.setupChanges(true);
             getLogger().debug("Subject implements INotifyPropertyChanged. Subscribing...");
-            Predicate<String> isMember = new Predicate<String>() {
-                public Boolean invoke(String member) {
-                    return member.equals("this");
-                }
-            };
 
             mSubscription = Observables
                     .from((INotifyPropertyChanged) subject)

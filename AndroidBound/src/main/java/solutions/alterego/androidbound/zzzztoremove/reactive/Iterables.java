@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import rx.functions.Func1;
 import solutions.alterego.androidbound.zzzztoremove.GroupedList;
 import solutions.alterego.androidbound.zzzztoremove.GroupingList;
 
@@ -268,7 +269,7 @@ public class Iterables {
             boolean hasvalue = false;
             while (this.baseIterator.hasNext()) {
                 this.lastValue = this.baseIterator.next();
-                if (this.filter.invoke(lastValue)) {
+                if (this.filter.call(lastValue)) {
                     hasvalue = true;
                     break;
                 }
@@ -332,7 +333,7 @@ public class Iterables {
             if (this.baseIterator.hasNext()) {
                 this.lastValue = this.baseIterator.next();
                 this.lastValueAdvanced = this.lastValue != null ? this.lastValueAdvanced : false;
-                if (!this.filter.invoke(lastValue)) {
+                if (!this.filter.call(lastValue)) {
                     this.ended = true;
                     this.lastValue = null;
                     this.lastValueAdvanced = true;
@@ -465,7 +466,7 @@ public class Iterables {
                             }
                             while (iterator.hasNext()) {
                                 T value = iterator.next();
-                                if (predicate.invoke(value)) {
+                                if (predicate.call(value)) {
                                     store.set(value);
                                     return true;
                                 }
@@ -489,10 +490,10 @@ public class Iterables {
         }
 
 
-        public <TKey> GroupingList<TKey, T> groupBy(final Func<T, TKey> keyFunction) {
+        public <TKey> GroupingList<TKey, T> groupBy(final Func1<T, TKey> keyFunction) {
             GroupingList<TKey, T> result = new GroupingList<TKey, T>();
             for (T item : source) {
-                TKey key = keyFunction.invoke(item);
+                TKey key = keyFunction.call(item);
                 if (result.get(key) == null) {
                     result.add(new GroupedList<TKey, T>(key));
                 }
@@ -565,7 +566,7 @@ public class Iterables {
             });
         }
 
-        public <TResult> MonoidIterableBuilder<TResult> select(final Func<T, TResult> selector) {
+        public <TResult> MonoidIterableBuilder<TResult> select(final Func1<T, TResult> selector) {
             return new MonoidIterableBuilder<TResult>(
                     new Iterable<TResult>() {
                         @Override
@@ -586,7 +587,7 @@ public class Iterables {
                                 }
 
                                 public TResult next() {
-                                    return selector.invoke(this.sourceIterator().next());
+                                    return selector.call(this.sourceIterator().next());
                                 }
 
                                 public void remove() {
@@ -616,12 +617,12 @@ public class Iterables {
             return null;
         }
 
-        public <TKey> GroupingList<TKey, T> groupBy(final Func<T, TKey> keyFunction) {
+        public <TKey> GroupingList<TKey, T> groupBy(final Func1<T, TKey> keyFunction) {
             GroupingList<TKey, T> result = new GroupingList<TKey, T>();
             Iterator<T> iter = source.iterator();
             while (iter.hasNext()) {
                 T item = iter.next();
-                TKey key = keyFunction.invoke(item);
+                TKey key = keyFunction.call(item);
                 if (result.get(key) == null) {
                     result.add(new GroupedList<TKey, T>(key));
                 }

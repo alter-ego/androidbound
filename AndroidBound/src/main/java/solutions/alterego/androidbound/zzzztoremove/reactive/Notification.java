@@ -2,6 +2,10 @@ package solutions.alterego.androidbound.zzzztoremove.reactive;
 
 import java.util.concurrent.TimeUnit;
 
+import rx.Observer;
+import rx.Scheduler;
+import rx.Subscription;
+import rx.functions.Action0;
 
 public class Notification<T> {
 
@@ -50,11 +54,7 @@ public class Notification<T> {
         return result;
     }
 
-    public IDisposable scheduleFor(final IObserver<T> observer) {
-        return scheduleFor(observer, ThreadPoolScheduler.instance);
-    }
-
-    public void accept(IObserver<T> observer) {
+    public void accept(Observer<T> observer) {
         switch (kind) {
             case NEXT:
                 observer.onNext(value);
@@ -68,9 +68,10 @@ public class Notification<T> {
         }
     }
 
-    public IDisposable scheduleFor(final IObserver<T> observer, IScheduler scheduler) {
-        return scheduler.schedule(new Runnable() {
-            public void run() {
+    public Subscription scheduleFor(final Observer<T> observer, Scheduler scheduler) {
+        return scheduler.createWorker().schedule(new Action0() {
+            @Override
+            public void call() {
                 accept(observer);
             }
         }, delay, unit);

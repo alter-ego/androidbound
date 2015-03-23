@@ -35,14 +35,14 @@ public class Reflector {
 
     static Predicate<MethodInfo> methodHasNoParameters = new Predicate<MethodInfo>() {
         @Override
-        public Boolean invoke(MethodInfo obj) {
+        public Boolean call(MethodInfo obj) {
             return obj.getMethodParameterCount() == 0;
         }
     };
 
     static Predicate<MethodInfo> methodHasAtMostOneParameter = new Predicate<MethodInfo>() {
         @Override
-        public Boolean invoke(MethodInfo obj) {
+        public Boolean call(MethodInfo obj) {
             return obj.getMethodParameterCount() <= 1;
         }
     };
@@ -457,7 +457,7 @@ public class Reflector {
     private static Predicate<MethodInfo> matchMethodParameter(final Class<?>[] parameterTypes) {
         return new Predicate<MethodInfo>() {
             @Override
-            public Boolean invoke(MethodInfo obj) {
+            public Boolean call(MethodInfo obj) {
                 if (parameterTypes == null) {
                     return true;
                 }
@@ -480,7 +480,7 @@ public class Reflector {
             final Class<?>[] parameterTypes) {
         return new Predicate<ConstructorInfo>() {
             @Override
-            public Boolean invoke(ConstructorInfo obj) {
+            public Boolean call(ConstructorInfo obj) {
                 Class<?>[] pts = parameterTypes;
                 if (pts == null) {
                     pts = new Class<?>[0];

@@ -1,6 +1,5 @@
 package solutions.alterego.androidbound.zzzztoremove.reactive;
 
-
 public class Disposable implements IDisposable {
 
     boolean disposeCalled;
