@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import solutions.alterego.androidbound.zzzztoremove.DefaultValueMap;
+import solutions.alterego.androidbound.utils.DefaultValueMap;
 
 public class Matcher implements MatchResult {
 

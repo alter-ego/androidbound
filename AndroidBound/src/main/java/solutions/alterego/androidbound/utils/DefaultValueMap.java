@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.zzzztoremove;
+package solutions.alterego.androidbound.utils;
 
 import java.util.HashMap;
 

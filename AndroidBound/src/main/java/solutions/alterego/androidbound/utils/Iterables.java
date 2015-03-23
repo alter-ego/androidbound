@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import rx.functions.Func1;
-import solutions.alterego.androidbound.zzzztoremove.GroupedList;
-import solutions.alterego.androidbound.zzzztoremove.GroupingList;
 
 public class Iterables {
 
