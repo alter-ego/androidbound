@@ -9,9 +9,7 @@ import rx.functions.Action1;
 public class Actions {
 
     public final static <T> Action1<T> doNothing() {
-        return new Action1<T>() {
-            public void call(T obj) {
-            }
+        return obj -> {
         };
     }
 

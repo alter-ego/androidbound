@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.zzzztoremove.reactive;
+package solutions.alterego.androidbound.utils;
 
 import java.util.ArrayList;
 import java.util.List;

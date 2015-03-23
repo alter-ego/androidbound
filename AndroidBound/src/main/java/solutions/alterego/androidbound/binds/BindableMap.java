@@ -7,7 +7,7 @@ import java.util.Map;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Iterables;
+import solutions.alterego.androidbound.utils.Iterables;
 
 public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyChanged {
 
