@@ -7,7 +7,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
+import solutions.alterego.androidbound.interfaces.IDisposable;
 
 public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposable {
 

@@ -37,7 +37,7 @@ import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.binds.BindableMap;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
+import solutions.alterego.androidbound.interfaces.IDisposable;
 import solutions.alterego.androidbound.utils.Iterables;
 
 public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeListener,
