@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Observer;
+import rx.Scheduler;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
@@ -38,7 +39,6 @@ import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.zzzztoremove.reactive.IDisposable;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Iterables;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Observables;
 
 public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeListener,
         INotifyPropertyChanged, IDisposable {
@@ -256,6 +256,34 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
                 refreshThumbEnablings(obj);
             }
         });
+    }
+
+    public static Observable<Float> linear(final Float start, final Float end, final long duration, final long rate, TimeUnit unit,
+            Scheduler scheduler) {
+        long durationMsec = TimeUnit.MILLISECONDS.convert(duration, unit);
+        long rateMsec = TimeUnit.MILLISECONDS.convert(rate, unit);
+
+        if (rateMsec <= 0 || durationMsec <= rateMsec) {
+            throw new IllegalArgumentException("duration and rate must be valid");
+        }
+
+        final long startTimestamp = System.currentTimeMillis();
+        final Float scaleFactor = (end - start) / (float) durationMsec;
+        final boolean ascending = end >= start;
+
+        return Observable
+                .interval(rate, TimeUnit.MILLISECONDS, scheduler)
+                .map(aLong -> {
+                    long currentTimestamp = System.currentTimeMillis();
+
+                    Float retval = start + (currentTimestamp - startTimestamp) * scaleFactor;
+                    if ((ascending && retval > end) || (!ascending && retval < end)) {
+                        retval = end;
+                    }
+
+                    return retval;
+                })
+                .takeUntil(Observable.just(end));
     }
 
     public Observable<String> onPropertyChanged() {
@@ -1606,34 +1634,32 @@ public class ScrollableSeekbar extends FrameLayout implements OnHierarchyChangeL
             this.toAnimate.setAlpha((int) (float) start);
 
             this.isAnimating = true;
-            this.animationSubscription =
-                    Observables.
-                            linear(start, end, animationDuration, animationRate, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                            .subscribe(new rx.Observer<Float>() {
-                                @Override
-                                public void onCompleted() {
-                                    isAnimating = false;
-                                    animationSubscription = null;
-                                }
+            this.animationSubscription = linear(start, end, animationDuration, animationRate, TimeUnit.MILLISECONDS,
+                    AndroidSchedulers.mainThread())
+                    .subscribe(new rx.Observer<Float>() {
+                        @Override
+                        public void onCompleted() {
+                            isAnimating = false;
+                            animationSubscription = null;
+                        }
 
-                                @Override
-                                public void onError(Throwable e) {
-                                    isAnimating = false;
-                                    animationSubscription = null;
-                                }
+                        @Override
+                        public void onError(Throwable e) {
+                            isAnimating = false;
+                            animationSubscription = null;
+                        }
 
-                                @Override
-                                public void onNext(Float aFloat) {
-                                    if (!isAnimating) {
-                                        return;
-                                    }
-                                    toAnimate.setAlpha((int) (float) aFloat);
-                                    invalidateSelf();
-                                }
-                            });
+                        @Override
+                        public void onNext(Float aFloat) {
+                            if (!isAnimating) {
+                                return;
+                            }
+                            toAnimate.setAlpha((int) (float) aFloat);
+                            invalidateSelf();
+                        }
+                    });
 
             return super.setVisible(visible, restart);
         }
     }
-
 }

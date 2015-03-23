@@ -54,19 +54,23 @@ public class IAAFHorizontalListView extends AdapterView<ListAdapter> {
 
     protected ListAdapter mAdapter;
 
-    private int mLeftViewIndex = -1;
-
-    private int mRightViewIndex = 0;
-
     protected int mCurrentX;
 
     protected int mNextX;
 
+    protected Scroller mScroller;
+
+    IAndroidLogger mLogger = NullAndroidLogger.instance;
+
+    int mChildWith = 0;
+
+    private int mLeftViewIndex = -1;
+
+    private int mRightViewIndex = 0;
+
     private int mMaxX = Integer.MAX_VALUE;
 
     private int mDisplayOffset = 0;
-
-    protected Scroller mScroller;
 
     private GestureDetector mGesture;
 
@@ -87,9 +91,100 @@ public class IAAFHorizontalListView extends AdapterView<ListAdapter> {
     //private int mRightViewsWidth;
     private int mCurrentViewsWidth;
 
-    IAndroidLogger mLogger = NullAndroidLogger.instance;
+    private GestureDetector.OnGestureListener mOnGesture = new GestureDetector.SimpleOnGestureListener() {
 
-    int mChildWith = 0;
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return IAAFHorizontalListView.this.onDown(e);
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            return IAAFHorizontalListView.this.onFling(e1, e2, velocityX, velocityY);
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+
+            getParent().requestDisallowInterceptTouchEvent(true);
+
+            synchronized (IAAFHorizontalListView.this) {
+                mNextX += (int) distanceX;
+            }
+            requestLayout();
+
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            for (int i = 0; i < getChildCount(); i++) {
+                View child = getChildAt(i);
+                if (isEventWithinView(e, child)) {
+                    if (mOnItemClicked != null) {
+                        mOnItemClicked
+                                .onItemClick(IAAFHorizontalListView.this, child, mLeftViewIndex + 1 + i, mAdapter.getItemId(mLeftViewIndex + 1 + i));
+                    }
+                    if (mOnItemSelected != null) {
+                        mOnItemSelected.onItemSelected(IAAFHorizontalListView.this, child, mLeftViewIndex + 1 + i,
+                                mAdapter.getItemId(mLeftViewIndex + 1 + i));
+                    }
+                    break;
+                }
+
+            }
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            int childCount = getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                View child = getChildAt(i);
+                if (isEventWithinView(e, child)) {
+                    if (mOnItemLongClicked != null) {
+                        mOnItemLongClicked.onItemLongClick(IAAFHorizontalListView.this, child, mLeftViewIndex + 1 + i,
+                                mAdapter.getItemId(mLeftViewIndex + 1 + i));
+                    }
+                    break;
+                }
+
+            }
+        }
+
+        private boolean isEventWithinView(MotionEvent e, View child) {
+            Rect viewRect = new Rect();
+            int[] childPosition = new int[2];
+            child.getLocationOnScreen(childPosition);
+            int left = childPosition[0];
+            int right = left + child.getWidth();
+            int top = childPosition[1];
+            int bottom = top + child.getHeight();
+            viewRect.set(left, top, right, bottom);
+            return viewRect.contains((int) e.getRawX(), (int) e.getRawY());
+        }
+    };
+
+    private DataSetObserver mDataObserver = new DataSetObserver() {
+
+        @Override
+        public void onChanged() {
+            synchronized (IAAFHorizontalListView.this) {
+                mDataChanged = true;
+            }
+            setEmptyView(getEmptyView());
+            invalidate();
+            requestLayout();
+        }
+
+        @Override
+        public void onInvalidated() {
+            reset();
+            invalidate();
+            requestLayout();
+        }
+
+    };
 
     public IAAFHorizontalListView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -129,44 +224,17 @@ public class IAAFHorizontalListView extends AdapterView<ListAdapter> {
         mOnItemLongClicked = listener;
     }
 
-    private DataSetObserver mDataObserver = new DataSetObserver() {
-
-        @Override
-        public void onChanged() {
-            synchronized (IAAFHorizontalListView.this) {
-                mDataChanged = true;
-            }
-            setEmptyView(getEmptyView());
-            invalidate();
-            requestLayout();
-        }
-
-        @Override
-        public void onInvalidated() {
-            reset();
-            invalidate();
-            requestLayout();
-        }
-
-    };
+    public IAndroidLogger getLogger() {
+        return mLogger;
+    }
 
     public void setLogger(IAndroidLogger logger) {
         mLogger = logger;
     }
 
-    public IAndroidLogger getLogger() {
-        return mLogger;
-    }
-
     @Override
     public ListAdapter getAdapter() {
         return mAdapter;
-    }
-
-    @Override
-    public View getSelectedView() {
-        //TODO: implement
-        return null;
     }
 
     @Override
@@ -177,6 +245,12 @@ public class IAAFHorizontalListView extends AdapterView<ListAdapter> {
         mAdapter = adapter;
         mAdapter.registerDataSetObserver(mDataObserver);
         reset();
+    }
+
+    @Override
+    public View getSelectedView() {
+        //TODO: implement
+        return null;
     }
 
     private synchronized void reset() {
@@ -518,77 +592,5 @@ public class IAAFHorizontalListView extends AdapterView<ListAdapter> {
             }
         }
         return -1;
-    }    private GestureDetector.OnGestureListener mOnGesture = new GestureDetector.SimpleOnGestureListener() {
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return IAAFHorizontalListView.this.onDown(e);
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            return IAAFHorizontalListView.this.onFling(e1, e2, velocityX, velocityY);
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-
-            getParent().requestDisallowInterceptTouchEvent(true);
-
-            synchronized (IAAFHorizontalListView.this) {
-                mNextX += (int) distanceX;
-            }
-            requestLayout();
-
-            return true;
-        }
-
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            for (int i = 0; i < getChildCount(); i++) {
-                View child = getChildAt(i);
-                if (isEventWithinView(e, child)) {
-                    if (mOnItemClicked != null) {
-                        mOnItemClicked
-                                .onItemClick(IAAFHorizontalListView.this, child, mLeftViewIndex + 1 + i, mAdapter.getItemId(mLeftViewIndex + 1 + i));
-                    }
-                    if (mOnItemSelected != null) {
-                        mOnItemSelected.onItemSelected(IAAFHorizontalListView.this, child, mLeftViewIndex + 1 + i,
-                                mAdapter.getItemId(mLeftViewIndex + 1 + i));
-                    }
-                    break;
-                }
-
-            }
-            return true;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-            int childCount = getChildCount();
-            for (int i = 0; i < childCount; i++) {
-                View child = getChildAt(i);
-                if (isEventWithinView(e, child)) {
-                    if (mOnItemLongClicked != null) {
-                        mOnItemLongClicked.onItemLongClick(IAAFHorizontalListView.this, child, mLeftViewIndex + 1 + i,
-                                mAdapter.getItemId(mLeftViewIndex + 1 + i));
-                    }
-                    break;
-                }
-
-            }
-        }
-
-        private boolean isEventWithinView(MotionEvent e, View child) {
-            Rect viewRect = new Rect();
-            int[] childPosition = new int[2];
-            child.getLocationOnScreen(childPosition);
-            int left = childPosition[0];
-            int right = left + child.getWidth();
-            int top = childPosition[1];
-            int bottom = top + child.getHeight();
-            viewRect.set(left, top, right, bottom);
-            return viewRect.contains((int) e.getRawX(), (int) e.getRawY());
-        }
-    };
+    }
 }

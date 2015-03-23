@@ -3,13 +3,10 @@ package solutions.alterego.androidbound.binds;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import rx.Subscription;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import solutions.alterego.androidbound.helpers.Reflector;
 import solutions.alterego.androidbound.helpers.reflector.PropertyInfo;
 import solutions.alterego.androidbound.interfaces.IBinding;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Observables;
 
 public class PropertyBinding extends BindingBase {
 
@@ -33,18 +30,10 @@ public class PropertyBinding extends BindingBase {
             setupChanges(true);
             getLogger().debug(propertyName + " implements INotifyPropertyChanged. Subscribing...");
 
-            mMemberSubscription = Observables.from((INotifyPropertyChanged) subject)
-                    .filter(new Func1<String, Boolean>() {
-                        @Override
-                        public Boolean call(String member) {
-                            return member.equals(propertyName);
-                        }
-                    })
-                    .subscribe(new Action1<String>() {
-                        @Override
-                        public void call(String s) {
-                            onBoundPropertyChanged();
-                        }
+            mMemberSubscription = ((INotifyPropertyChanged) subject).onPropertyChanged()
+                    .filter(member -> member.equals(propertyName))
+                    .subscribe(s -> {
+                        onBoundPropertyChanged();
                     });
         } else {
             setupChanges(false);

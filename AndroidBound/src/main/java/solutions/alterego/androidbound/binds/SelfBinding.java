@@ -5,10 +5,7 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import java.security.InvalidParameterException;
 
 import rx.Subscription;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Observables;
 
 public class SelfBinding extends BindingBase {
 
@@ -28,19 +25,11 @@ public class SelfBinding extends BindingBase {
             this.setupChanges(true);
             getLogger().debug("Subject implements INotifyPropertyChanged. Subscribing...");
 
-            mSubscription = Observables
-                    .from((INotifyPropertyChanged) subject)
-                    .filter(new Func1<String, Boolean>() {
-                        @Override
-                        public Boolean call(String member) {
-                            return member.equals("this");
-                        }
-                    })
-                    .subscribe(new Action1<String>() {
-                        @Override
-                        public void call(String s) {
-                            onBoundPropertyChanged();
-                        }
+            mSubscription = ((INotifyPropertyChanged) subject)
+                    .onPropertyChanged()
+                    .filter(member -> member.equals("this"))
+                    .subscribe(s -> {
+                        onBoundPropertyChanged();
                     });
         } else {
             this.setupChanges(false);

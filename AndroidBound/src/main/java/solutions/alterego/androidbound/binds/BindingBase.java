@@ -7,11 +7,10 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.IBinding;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Observables;
 
 public abstract class BindingBase implements IBinding, INeedsLogger {
 
-    private static final Observable<Object> NO_CHANGES = Observables.empty();
+    private static final Observable<Object> NO_CHANGES = Observable.empty();
 
     private PublishSubject<Object> mChanges = PublishSubject.create();
 
