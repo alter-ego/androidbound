@@ -11,13 +11,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import rx.functions.Func1;
 import solutions.alterego.androidbound.helpers.reflector.CommandInfo;
 import solutions.alterego.androidbound.helpers.reflector.ConstructorInfo;
 import solutions.alterego.androidbound.helpers.reflector.FieldInfo;
 import solutions.alterego.androidbound.helpers.reflector.MethodInfo;
 import solutions.alterego.androidbound.helpers.reflector.PropertyInfo;
 import solutions.alterego.androidbound.zzzztoremove.reactive.Iterables;
-import solutions.alterego.androidbound.zzzztoremove.reactive.Predicate;
 
 public class Reflector {
 
@@ -32,20 +32,6 @@ public class Reflector {
     private static final String PROPERTY_PREFIX_IS = "is";
 
     private static final Object mSynchronizedObject = new Object();
-
-    static Predicate<MethodInfo> methodHasNoParameters = new Predicate<MethodInfo>() {
-        @Override
-        public Boolean call(MethodInfo obj) {
-            return obj.getMethodParameterCount() == 0;
-        }
-    };
-
-    static Predicate<MethodInfo> methodHasAtMostOneParameter = new Predicate<MethodInfo>() {
-        @Override
-        public Boolean call(MethodInfo obj) {
-            return obj.getMethodParameterCount() <= 1;
-        }
-    };
 
     private static SparseArray<SparseArray<PropertyInfo>> mObjectProperties = new SparseArray<SparseArray<PropertyInfo>>();
 
@@ -66,10 +52,9 @@ public class Reflector {
 //                }
 //            }
 //        }
-        if (Iterables.from(getMethods(type, COMMAND_PREFIX_DO + name)).where(methodHasAtMostOneParameter).iterator().hasNext()) {
-            return true;
-        }
-        return false;
+        return Iterables.from(getMethods(type, COMMAND_PREFIX_DO + name))
+                .where(methodInfo -> methodInfo.getMethodParameterCount() <= 1).iterator()
+                .hasNext();
     }
 
     public static boolean isProperty(Class<?> type, String name) {
@@ -91,9 +76,11 @@ public class Reflector {
 //            }
 //        }
 
-        if (Iterables.from(getMethods(type, PROPERTY_PREFIX_GET + name)).where(methodHasNoParameters).iterator().hasNext()) {
+        if (Iterables.from(getMethods(type, PROPERTY_PREFIX_GET + name)).where(methodInfo -> methodInfo.getMethodParameterCount() == 0).iterator()
+                .hasNext()) {
             return true;
-        } else if (Iterables.from(getMethods(type, PROPERTY_PREFIX_IS + name)).where(methodHasNoParameters).iterator().hasNext()) {
+        } else if (Iterables.from(getMethods(type, PROPERTY_PREFIX_IS + name)).where(
+                methodInfo -> methodInfo.getMethodParameterCount() == 0).iterator().hasNext()) {
             return true;
         } else {
             return false;
@@ -454,49 +441,42 @@ public class Reflector {
         return constructors;
     }
 
-    private static Predicate<MethodInfo> matchMethodParameter(final Class<?>[] parameterTypes) {
-        return new Predicate<MethodInfo>() {
-            @Override
-            public Boolean call(MethodInfo obj) {
-                if (parameterTypes == null) {
-                    return true;
-                }
-                if (obj.getMethodParameterCount() != parameterTypes.length) {
-                    return false;
-                }
-
-                for (int i = 0; i < parameterTypes.length; i++) {
-                    if (!obj.getMethodParameterTypes()[i].equals(parameterTypes[i])) {
-                        return false;
-                    }
-                }
-
+    private static Func1<MethodInfo, Boolean> matchMethodParameter(final Class<?>[] parameterTypes) {
+        return obj -> {
+            if (parameterTypes == null) {
                 return true;
             }
+            if (obj.getMethodParameterCount() != parameterTypes.length) {
+                return false;
+            }
+
+            for (int i = 0; i < parameterTypes.length; i++) {
+                if (!obj.getMethodParameterTypes()[i].equals(parameterTypes[i])) {
+                    return false;
+                }
+            }
+
+            return true;
         };
     }
 
-    private static Predicate<ConstructorInfo> matchConstructorParameter(
-            final Class<?>[] parameterTypes) {
-        return new Predicate<ConstructorInfo>() {
-            @Override
-            public Boolean call(ConstructorInfo obj) {
-                Class<?>[] pts = parameterTypes;
-                if (pts == null) {
-                    pts = new Class<?>[0];
-                }
-                if (obj.getConstructorParameterCount() != pts.length) {
+    private static Func1<ConstructorInfo, Boolean> matchConstructorParameter(final Class<?>[] parameterTypes) {
+        return obj -> {
+            Class<?>[] pts = parameterTypes;
+            if (pts == null) {
+                pts = new Class<?>[0];
+            }
+            if (obj.getConstructorParameterCount() != pts.length) {
+                return false;
+            }
+
+            for (int i = 0; i < pts.length; i++) {
+                if (!obj.getConstructorParameterTypes()[i].equals(pts[i])) {
                     return false;
                 }
-
-                for (int i = 0; i < pts.length; i++) {
-                    if (!obj.getConstructorParameterTypes()[i].equals(pts[i])) {
-                        return false;
-                    }
-                }
-
-                return true;
             }
+
+            return true;
         };
     }
 

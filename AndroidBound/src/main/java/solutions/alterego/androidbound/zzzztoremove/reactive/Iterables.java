@@ -228,13 +228,13 @@ public class Iterables {
 
         private Iterator<T> baseIterator;
 
-        private Predicate<T> filter;
+        private Func1<T, Boolean> filter;
 
         private T lastValue;
 
         private boolean lastValueAdvanced;
 
-        public WhereIterator(Iterator<T> baseIterator, Predicate<T> filter) {
+        public WhereIterator(Iterator<T> baseIterator, Func1<T, Boolean> filter) {
             this.baseIterator = baseIterator;
             this.filter = filter;
             this.lastValueAdvanced = true;
@@ -286,7 +286,7 @@ public class Iterables {
 
         private Iterator<T> baseIterator;
 
-        private Predicate<T> filter;
+        private Func1<T, Boolean> filter;
 
         private T lastValue;
 
@@ -294,7 +294,7 @@ public class Iterables {
 
         private boolean ended;
 
-        public WhileIterator(Iterator<T> baseIterator, Predicate<T> filter) {
+        public WhileIterator(Iterator<T> baseIterator, Func1<T, Boolean> filter) {
             this.baseIterator = baseIterator;
             this.filter = filter;
             this.lastValueAdvanced = true;
@@ -451,7 +451,7 @@ public class Iterables {
             this.source = source;
         }
 
-        public AnonymousIterable<T> where(final Predicate<T> predicate) {
+        public AnonymousIterable<T> where(final Func1<T, Boolean> predicate) {
             return new AnonymousIterable<T>() {
 
                 public Iterator<T> iterator() {
@@ -511,63 +511,38 @@ public class Iterables {
             this.source = source;
         }
 
-        public MonoidIterableBuilder<T> where(final Predicate<T> predicate) {
+        public MonoidIterableBuilder<T> where(final Func1<T, Boolean> predicate) {
             final Iterable<T> baseSource = this.source;
 
-            return new MonoidIterableBuilder<T>(new Iterable<T>() {
-                @Override
-                public Iterator<T> iterator() {
-                    return new WhereIterator<T>(baseSource.iterator(), predicate);
-                }
-            });
+            return new MonoidIterableBuilder<T>(() -> new WhereIterator<T>(baseSource.iterator(), predicate));
         }
 
         public MonoidIterableBuilder<T> skip(final int count) {
             final Iterable<T> baseSource = this.source;
 
-            return new MonoidIterableBuilder<T>(new Iterable<T>() {
-                @Override
-                public Iterator<T> iterator() {
-                    return new SkipIterator<T>(baseSource.iterator(), count);
-                }
-            });
+            return new MonoidIterableBuilder<T>(() -> new SkipIterator<T>(baseSource.iterator(), count));
         }
 
         public MonoidIterableBuilder<T> take(final int count) {
             final Iterable<T> baseSource = this.source;
 
-            return new MonoidIterableBuilder<T>(new Iterable<T>() {
-                @Override
-                public Iterator<T> iterator() {
-                    return new TakeIterator<T>(baseSource.iterator(), count);
-                }
-            });
+            return new MonoidIterableBuilder<T>(() -> new TakeIterator<T>(baseSource.iterator(), count));
         }
 
-        public MonoidIterableBuilder<T> takeWhile(final Predicate<T> predicate) {
+        public MonoidIterableBuilder<T> takeWhile(final Func1<T, Boolean> predicate) {
             final Iterable<T> baseSource = this.source;
 
-            return new MonoidIterableBuilder<T>(new Iterable<T>() {
-                @Override
-                public Iterator<T> iterator() {
-                    return new WhileIterator<T>(baseSource.iterator(), predicate);
-                }
-            });
+            return new MonoidIterableBuilder<T>(() -> new WhileIterator<T>(baseSource.iterator(), predicate));
         }
 
         public MonoidIterableBuilder<T> sample(final int samplingSize) {
             final Iterable<T> baseSource = this.source;
 
-            return new MonoidIterableBuilder<T>(new Iterable<T>() {
-                @Override
-                public Iterator<T> iterator() {
-                    return new SampleIterator<T>(baseSource.iterator(), samplingSize);
-                }
-            });
+            return new MonoidIterableBuilder<T>(() -> new SampleIterator<T>(baseSource.iterator(), samplingSize));
         }
 
         public <TResult> MonoidIterableBuilder<TResult> select(final Func1<T, TResult> selector) {
-            return new MonoidIterableBuilder<TResult>(
+            return new MonoidIterableBuilder<>(
                     new Iterable<TResult>() {
                         @Override
                         public Iterator<TResult> iterator() {
