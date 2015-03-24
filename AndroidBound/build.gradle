@@ -68,6 +68,19 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
 }
 
+task clearJar(type: Delete) {
+    delete 'build/outputs/androidbound.jar'
+}
+
+task makeJar(type: Copy) {
+    from('build/intermediates/bundles/debug/')
+    into('../releases/')
+    include('classes.jar')
+    rename ('classes.jar', 'androidbound.jar')
+}
+
+makeJar.dependsOn(clearJar, build)
+
 uploadArchives {
     repositories.mavenDeployer {
         def deployPath = file(getProperty('aar.deployPath'))
