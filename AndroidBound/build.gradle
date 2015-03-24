@@ -20,8 +20,8 @@ repositories {
 }
 
 ext {
-    buildVersionName = "0.3.3"
-    buildVersionCode = 17
+    buildVersionName = "0.3.4"
+    buildVersionCode = 18
 }
 
 android {
@@ -31,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 18
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode buildVersionCode
+        versionName buildVersionName
     }
 
     compileOptions {
@@ -66,5 +66,17 @@ dependencies {
     compile 'org.projectlombok:lombok:1.16.2'
 
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        def deployPath = file(getProperty('aar.deployPath'))
+        repository(url: "file://${deployPath.absolutePath}")
+        pom.project {
+            groupId 'com.alterego'
+            artifactId 'androidbound'
+            version buildVersionName
+        }
+    }
 }
 
