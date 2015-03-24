@@ -86,7 +86,7 @@ uploadArchives {
         def deployPath = file(getProperty('aar.deployPath'))
         repository(url: "file://${deployPath.absolutePath}")
         pom.project {
-            groupId 'com.alterego'
+            groupId 'solutions.alterego'
             artifactId 'androidbound'
             version buildVersionName
         }

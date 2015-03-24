@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-  <groupId>com.alterego</groupId>
+  <groupId>solutions.alterego</groupId>
   <artifactId>androidbound</artifactId>
-  <version>0.3.3</version>
+  <version>0.3.4</version>
   <versioning>
     <versions>
-      <version>0.3.3</version>
+      <version>0.3.4</version>
     </versions>
-    <lastUpdated>20150324093038</lastUpdated>
+    <lastUpdated>20150324101126</lastUpdated>
   </versioning>
 </metadata>
