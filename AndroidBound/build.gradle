@@ -25,8 +25,8 @@ repositories {
 }
 
 ext {
-    buildVersionName = "0.3.4"
-    buildVersionCode = 18
+    buildVersionName = "0.5.0"
+    buildVersionCode = 19
 }
 
 android {
