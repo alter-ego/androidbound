@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.1'
+        classpath 'com.android.tools.build:gradle:1.5.0'
     }
 }
 apply plugin: 'com.android.application'
@@ -14,13 +14,13 @@ repositories {
 }
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.0"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "solutions.alterego.androidbound.example"
-        minSdkVersion 18
-        targetSdkVersion 22
+        minSdkVersion 14
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }

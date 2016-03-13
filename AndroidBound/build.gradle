@@ -4,10 +4,15 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.1'
-        classpath 'me.tatarka:gradle-retrolambda:2.5.0'
+        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'me.tatarka:gradle-retrolambda:3.2.4'
     }
 }
+
+plugins {
+    id "me.tatarka.retrolambda" version '3.2.4'
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
 apply plugin: 'me.tatarka.retrolambda'
@@ -25,12 +30,12 @@ ext {
 }
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.0"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
-        minSdkVersion 18
-        targetSdkVersion 22
+        minSdkVersion 14
+        targetSdkVersion 23
         versionCode buildVersionCode
         versionName buildVersionName
     }
@@ -54,18 +59,19 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compile 'com.alterego:advancedandroidlogger:1.0.4@aar'
+    compile 'com.alterego:advancedandroidlogger:1.0.8@aar'
 
-    compile 'com.android.support:appcompat-v7:22.0.0'
-    compile 'com.android.support:support-v4:22.0.0'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:support-v4:23.2.1'
 
-    compile 'joda-time:joda-time:2.7'
-    compile 'io.reactivex:rxandroid:0.24.0'
+    compile 'net.danlew:android.joda:2.9.0'
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'io.reactivex:rxjava:1.1.0'
 
     provided 'javax.annotation:jsr250-api:1.0'
     compile 'org.projectlombok:lombok:1.16.2'
 
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 }
 
 task clearJar(type: Delete) {
