@@ -38,7 +38,11 @@ public class BindingApplication extends Application {
 
         setLogger(new AndroidLogger(getApplicationName()));
         setHandlerScheduler(Schedulers.newThread());
-        setViewBinder(new ViewBinder(this, mHandlerScheduler, mLogger));
+        setViewBinder(new ViewBinder(this, getViewBinderLogger()));
+    }
+
+    public IAndroidLogger getViewBinderLogger() {
+        return NullAndroidLogger.instance;
     }
 
     public String getApplicationName() {

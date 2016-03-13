@@ -65,18 +65,18 @@ public class ViewBinder implements IViewBinder {
     @Setter
     private IFontManager mFontManager;
 
-    public ViewBinder(Context ctx, Scheduler notificationScheduler, IAndroidLogger logger) {
-        this(ctx, notificationScheduler, logger, null);
+    public ViewBinder(Context ctx, IAndroidLogger logger) {
+        this(ctx, logger, null);
     }
 
-    public ViewBinder(Context ctx, Scheduler notificationScheduler, IAndroidLogger logger, ImageLoaderConfiguration imageLoaderConfiguration) {
+    public ViewBinder(Context ctx, IAndroidLogger logger, ImageLoaderConfiguration imageLoaderConfiguration) {
         setLogger(logger);
         setContext(ctx);
         mConverterService = new ValueConverterService(getLogger());
         mResourceService = new ResourceService(getLogger());
 
         SourceBindingFactory sourceFactory = new SourceBindingFactory(getLogger());
-        TargetBindingFactory targetFactory = new TargetBindingFactory(notificationScheduler, getLogger());
+        TargetBindingFactory targetFactory = new TargetBindingFactory(getLogger());
         BindingSpecificationParser bindingParser = new BindingSpecificationParser(mConverterService, mResourceService, getLogger());
         BindingSpecificationListParser listParser = new BindingSpecificationListParser(bindingParser, getLogger());
 
