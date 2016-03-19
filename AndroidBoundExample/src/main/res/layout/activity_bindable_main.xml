@@ -7,8 +7,7 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity"
         tools:ignore="MissingPrefix"
-        android:padding="16dp"
-        binding="{ BackgroundColor @= MainActivityBackgroundColor }">
+        android:padding="16dp">
 
     <TextView
             android:id="@+id/activity_title"
@@ -18,7 +17,7 @@
             android:layout_centerHorizontal="true"
             android:textSize="20sp"
             tools:text="title"
-            binding="{ Text @= MainActivityTitle }; { TextColor @= MainActivityTitleColor };{ Typeface @- ToFont(this, &apos;bold&apos;) }"/>
+            binding="{ Text @= MainActivityTitle }; { Typeface @- ToFont(this, &apos;bold&apos;) }"/>
 
     <Button
             android:id="@+id/open_bindable_activity_button"
@@ -29,6 +28,6 @@
             android:textSize="16sp"
             android:layout_margin="16dp"
             tools:text="open bindable activity"
-            binding="{ Click @- OpenBindableActivity }; {Text @= OpenBindableActivityText }; { Typeface @- ToFont(this, &apos;missing&apos;) }"             />
+            binding="{ Click @- OpenNormalActivity }; {Text @= OpenNormalActivityText }; { Typeface @- ToFont(this, &apos;italic&apos;) }"             />
 
 </RelativeLayout>
