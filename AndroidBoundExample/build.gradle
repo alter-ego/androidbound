@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "solutions.alterego.androidbound.example"
-        minSdkVersion 14
+        minSdkVersion 9
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -51,6 +51,5 @@ dependencies {
     compile 'com.android.support:support-v4:23.2.1'
     apt "org.projectlombok:lombok:1.16.2"
     provided "org.projectlombok:lombok:1.16.2"
-//    compile 'org.projectlombok:lombok:1.16.2'
     compile project(':AndroidBound')
 }
