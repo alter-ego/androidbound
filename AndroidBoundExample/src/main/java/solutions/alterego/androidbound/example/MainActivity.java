@@ -4,14 +4,14 @@ import com.alterego.advancedandroidlogger.implementations.DetailedAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.ViewModel;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends ActionBarActivity {
 
     public static final String LOGGING_TAG = "TEST_APP";
 
