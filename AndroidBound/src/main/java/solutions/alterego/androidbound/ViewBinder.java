@@ -101,7 +101,7 @@ public class ViewBinder implements IViewBinder {
     private ImageLoaderConfiguration getDefaultImageLoaderConfig(Context ctx) {
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
-                .cacheOnDisc(true)
+                .cacheOnDisk(true)
                 .build();
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(ctx)
                 .defaultDisplayImageOptions(defaultOptions)
