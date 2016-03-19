@@ -9,9 +9,9 @@ import android.widget.AdapterView.OnItemLongClickListener;
 
 import java.util.List;
 
-import solutions.alterego.androidbound.BindingResources;
+import solutions.alterego.androidbound.android.ui.resources.BindingResources;
 import solutions.alterego.androidbound.android.adapters.BindableListAdapter;
-import solutions.alterego.androidbound.interfaces.IBindableView;
+import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 

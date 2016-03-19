@@ -7,7 +7,7 @@ import android.widget.HorizontalScrollView;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
-import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 
 public class BindableHorizontalScrollView extends HorizontalScrollView implements INotifyPropertyChanged {
 

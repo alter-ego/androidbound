@@ -6,7 +6,7 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import java.util.Locale;
 
 import solutions.alterego.androidbound.android.interfaces.IFontManager;
-import solutions.alterego.androidbound.interfaces.IValueConverter;
+import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
 
 public class FontConverter implements IValueConverter {
 

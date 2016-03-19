@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.ICommand;
-import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 
 public class BindableRelativeLayout extends RelativeLayout implements INotifyPropertyChanged, OnClickListener {
 

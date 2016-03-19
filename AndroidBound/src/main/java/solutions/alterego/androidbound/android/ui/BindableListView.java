@@ -13,9 +13,9 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import solutions.alterego.androidbound.BindingResources;
+import solutions.alterego.androidbound.android.ui.resources.BindingResources;
 import solutions.alterego.androidbound.android.adapters.BindableListAdapter;
-import solutions.alterego.androidbound.interfaces.IBindableView;
+import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 

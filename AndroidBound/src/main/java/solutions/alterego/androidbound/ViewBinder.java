@@ -22,22 +22,25 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.BindableLayoutInflaterFactory;
+import solutions.alterego.androidbound.android.FontManager;
 import solutions.alterego.androidbound.android.converters.BooleanToVisibilityConverter;
 import solutions.alterego.androidbound.android.converters.FontConverter;
 import solutions.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.interfaces.IFontManager;
-import solutions.alterego.androidbound.binders.TextSpecificationBinder;
+import solutions.alterego.androidbound.binding.TextSpecificationBinder;
 import solutions.alterego.androidbound.factories.SourceBindingFactory;
 import solutions.alterego.androidbound.factories.TargetBindingFactory;
-import solutions.alterego.androidbound.interfaces.IBinder;
-import solutions.alterego.androidbound.interfaces.IBindingAssociation;
-import solutions.alterego.androidbound.interfaces.IValueConverter;
+import solutions.alterego.androidbound.binding.interfaces.IBinder;
+import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
+import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
-import solutions.alterego.androidbound.interfaces.IViewResolver;
+import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
 import solutions.alterego.androidbound.parsers.BindingSpecificationListParser;
 import solutions.alterego.androidbound.parsers.BindingSpecificationParser;
-import solutions.alterego.androidbound.services.ResourceService;
-import solutions.alterego.androidbound.services.ValueConverterService;
+import solutions.alterego.androidbound.resources.ResourceService;
+import solutions.alterego.androidbound.converters.ValueConverterService;
+import solutions.alterego.androidbound.viewresolvers.ChainedViewResolver;
+import solutions.alterego.androidbound.viewresolvers.ViewResolver;
 
 @Accessors(prefix = "m")
 public class ViewBinder implements IViewBinder {
@@ -58,7 +61,7 @@ public class ViewBinder implements IViewBinder {
 
     private ChainedViewResolver mViewResolver;
 
-    private Map<View, List<IBindingAssociation>> mBoundViews = new HashMap<View, List<IBindingAssociation>>();
+    private Map<View, List<IBindingAssociationEngine>> mBoundViews = new HashMap<View, List<IBindingAssociationEngine>>();
 
     @Getter
     @Setter
@@ -151,9 +154,9 @@ public class ViewBinder implements IViewBinder {
             return;
         }
 
-        List<IBindingAssociation> bindings = mBoundViews.get(view);
+        List<IBindingAssociationEngine> bindings = mBoundViews.get(view);
 
-        for (IBindingAssociation binding : bindings) {
+        for (IBindingAssociationEngine binding : bindings) {
             binding.dispose();
         }
 
@@ -163,8 +166,8 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public void clearAllBindings() {
-        for (List<IBindingAssociation> bindings : mBoundViews.values()) {
-            for (IBindingAssociation binding : bindings) {
+        for (List<IBindingAssociationEngine> bindings : mBoundViews.values()) {
+            for (IBindingAssociationEngine binding : bindings) {
                 binding.dispose();
             }
             bindings.clear();
@@ -214,7 +217,7 @@ public class ViewBinder implements IViewBinder {
 
 
     @Override
-    public void registerBindingsFor(View view, List<IBindingAssociation> bindings) {
+    public void registerBindingsFor(View view, List<IBindingAssociationEngine> bindings) {
         if (view == null || bindings == null) {
             return;
         }
@@ -227,20 +230,20 @@ public class ViewBinder implements IViewBinder {
     }
 
     @Override
-    public List<IBindingAssociation> getBindingsFor(View view) {
+    public List<IBindingAssociationEngine> getBindingsFor(View view) {
         if (mBoundViews.containsKey(view)) {
             return mBoundViews.get(view);
         }
 
-        return new ArrayList<IBindingAssociation>();
+        return new ArrayList<IBindingAssociationEngine>();
     }
 
     @Override
-    public List<IBindingAssociation> getBindingsForViewAndChildren(View rootView) {
-        return this.getBindingsForViewAndChildrenRecursive(rootView, new ArrayList<IBindingAssociation>());
+    public List<IBindingAssociationEngine> getBindingsForViewAndChildren(View rootView) {
+        return this.getBindingsForViewAndChildrenRecursive(rootView, new ArrayList<IBindingAssociationEngine>());
     }
 
-    private List<IBindingAssociation> getBindingsForViewAndChildrenRecursive(View rootView, List<IBindingAssociation> bindings) {
+    private List<IBindingAssociationEngine> getBindingsForViewAndChildrenRecursive(View rootView, List<IBindingAssociationEngine> bindings) {
 
         if (this.mBoundViews.containsKey(rootView)) {
             bindings.addAll(this.mBoundViews.get(rootView));

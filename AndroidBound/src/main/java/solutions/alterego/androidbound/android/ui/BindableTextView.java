@@ -10,7 +10,7 @@ import android.widget.TextView;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.ICommand;
-import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 
 public class BindableTextView extends TextView implements INotifyPropertyChanged, View.OnClickListener {
 

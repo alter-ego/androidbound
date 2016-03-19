@@ -5,8 +5,7 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import java.util.ArrayList;
 import java.util.List;
 
-import solutions.alterego.androidbound.binds.BindingSpecification;
-import solutions.alterego.androidbound.interfaces.IParser;
+import solutions.alterego.androidbound.binding.data.BindingSpecification;
 
 public class BindingSpecificationListParser implements IParser<List<BindingSpecification>> {
 

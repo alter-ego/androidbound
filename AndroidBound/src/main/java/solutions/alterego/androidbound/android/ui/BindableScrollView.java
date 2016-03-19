@@ -7,7 +7,7 @@ import android.widget.ScrollView;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
-import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 
 public class BindableScrollView extends ScrollView implements INotifyPropertyChanged {
 

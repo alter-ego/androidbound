@@ -7,7 +7,7 @@ import android.widget.FrameLayout;
 import java.util.List;
 
 import solutions.alterego.androidbound.ViewBinder;
-import solutions.alterego.androidbound.interfaces.IBindingAssociation;
+import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 public class BindableListItemView extends FrameLayout {
@@ -42,14 +42,14 @@ public class BindableListItemView extends FrameLayout {
             return;
         }
 
-        List<IBindingAssociation> bindings = mViewBinder.getBindingsForViewAndChildren(this);
+        List<IBindingAssociationEngine> bindings = mViewBinder.getBindingsForViewAndChildren(this);
         if (bindings == null || bindings.size() < 1) {
             ViewBinder.getLogger().debug("BindableListItemView bindTo bindings == null or 0");
             return;
         }
 
         ViewBinder.getLogger().debug("BindableListItemView bindTo continue with binding");
-        for (IBindingAssociation binding : bindings) {
+        for (IBindingAssociationEngine binding : bindings) {
             binding.setDataContext(source);
         }
 

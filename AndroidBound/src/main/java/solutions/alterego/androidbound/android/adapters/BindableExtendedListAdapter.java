@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import solutions.alterego.androidbound.android.ui.BindableListItemView;
-import solutions.alterego.androidbound.interfaces.IBindableView;
+import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 public class BindableExtendedListAdapter extends BaseAdapter {

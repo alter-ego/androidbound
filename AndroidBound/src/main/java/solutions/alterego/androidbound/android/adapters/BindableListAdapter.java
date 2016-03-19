@@ -11,8 +11,8 @@ import java.util.List;
 
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.android.ui.BindableListItemView;
-import solutions.alterego.androidbound.interfaces.IBindableView;
-import solutions.alterego.androidbound.interfaces.IBindingAssociation;
+import solutions.alterego.androidbound.android.interfaces.IBindableView;
+import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 public class BindableListAdapter extends BaseAdapter {
@@ -260,12 +260,12 @@ public class BindableListAdapter extends BaseAdapter {
     }
 
     private void bindViewTo(View view, Object source) {
-        List<IBindingAssociation> bindings = this.viewBinder.getBindingsForViewAndChildren(view);
+        List<IBindingAssociationEngine> bindings = this.viewBinder.getBindingsForViewAndChildren(view);
         if (bindings == null || bindings.size() < 1) {
             return;
         }
 
-        for (IBindingAssociation binding : bindings) {
+        for (IBindingAssociationEngine binding : bindings) {
             binding.setDataContext(source);
         }
 

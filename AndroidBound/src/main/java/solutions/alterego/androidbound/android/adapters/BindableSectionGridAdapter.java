@@ -18,7 +18,7 @@ import java.util.List;
 import solutions.alterego.androidbound.android.interfaces.IBindableSectionGridViewReceiver;
 import solutions.alterego.androidbound.android.ui.BindableLinearLayout;
 import solutions.alterego.androidbound.android.ui.BindableListItemView;
-import solutions.alterego.androidbound.interfaces.IBindableView;
+import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 //TODO - implement caching with composite binding; it's disabled at the moment

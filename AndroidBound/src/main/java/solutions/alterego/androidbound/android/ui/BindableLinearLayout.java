@@ -15,9 +15,9 @@ import java.util.List;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
-import solutions.alterego.androidbound.interfaces.IBindingAssociation;
+import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
 import solutions.alterego.androidbound.interfaces.ICommand;
-import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 public class BindableLinearLayout extends LinearLayout implements INotifyPropertyChanged, OnClickListener {
@@ -191,12 +191,12 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
             return;
         }
 
-        List<IBindingAssociation> bindings = this.mViewBinder.getBindingsForViewAndChildren(this);
+        List<IBindingAssociationEngine> bindings = this.mViewBinder.getBindingsForViewAndChildren(this);
         if (bindings == null || bindings.size() < 1) {
             return;
         }
 
-        for (IBindingAssociation binding : bindings) {
+        for (IBindingAssociationEngine binding : bindings) {
             binding.setDataContext(source);
         }
 

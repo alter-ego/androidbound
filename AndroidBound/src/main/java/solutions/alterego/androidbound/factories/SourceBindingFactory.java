@@ -5,12 +5,11 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import java.util.Arrays;
 import java.util.List;
 
-import solutions.alterego.androidbound.binds.ChainedBinding;
-import solutions.alterego.androidbound.binds.CommandBinding;
-import solutions.alterego.androidbound.binds.PropertyBinding;
-import solutions.alterego.androidbound.binds.SelfBinding;
-import solutions.alterego.androidbound.interfaces.IBinding;
-import solutions.alterego.androidbound.interfaces.IBindingFactory;
+import solutions.alterego.androidbound.binding.types.ChainedBinding;
+import solutions.alterego.androidbound.binding.types.CommandBinding;
+import solutions.alterego.androidbound.binding.types.PropertyBinding;
+import solutions.alterego.androidbound.binding.types.SelfBinding;
+import solutions.alterego.androidbound.binding.interfaces.IBinding;
 
 public class SourceBindingFactory implements IBindingFactory {
 

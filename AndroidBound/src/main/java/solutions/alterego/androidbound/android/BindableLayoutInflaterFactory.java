@@ -11,13 +11,13 @@ import android.view.View;
 
 import java.util.List;
 
-import solutions.alterego.androidbound.BindingResources;
+import solutions.alterego.androidbound.android.ui.resources.BindingResources;
 import solutions.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
-import solutions.alterego.androidbound.interfaces.IBindableView;
-import solutions.alterego.androidbound.interfaces.IBinder;
-import solutions.alterego.androidbound.interfaces.IBindingAssociation;
+import solutions.alterego.androidbound.android.interfaces.IBindableView;
+import solutions.alterego.androidbound.binding.interfaces.IBinder;
+import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
-import solutions.alterego.androidbound.interfaces.IViewResolver;
+import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
 
 public class BindableLayoutInflaterFactory implements IBindableLayoutInflaterFactory {
 
@@ -119,7 +119,7 @@ public class BindableLayoutInflaterFactory implements IBindableLayoutInflaterFac
                     BindingResources.attr.BindingBase.binding);
 
             if (bindingString != null && !bindingString.equals("")) {
-                List<IBindingAssociation> bindings = mBaseBinder.bind(source, view, bindingString);
+                List<IBindingAssociationEngine> bindings = mBaseBinder.bind(source, view, bindingString);
                 mBaseViewBinder.registerBindingsFor(view, bindings);
             }
         }
@@ -141,7 +141,7 @@ public class BindableLayoutInflaterFactory implements IBindableLayoutInflaterFac
                     BindingResources.attr.BindingBase.binding);
 
             if (bindingString != null && !bindingString.equals("")) {
-                List<IBindingAssociation> bindings = mBaseBinder.bind(source, view, bindingString);
+                List<IBindingAssociationEngine> bindings = mBaseBinder.bind(source, view, bindingString);
                 mBaseViewBinder.registerBindingsFor(view, bindings);
             }
         }

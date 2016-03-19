@@ -14,10 +14,10 @@ import android.view.View;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
-import solutions.alterego.androidbound.BindingResources;
+import solutions.alterego.androidbound.android.ui.resources.BindingResources;
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.interfaces.ICommand;
-import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 
 public class BindableExtendedTextView extends View implements INotifyPropertyChanged, View.OnClickListener {
 

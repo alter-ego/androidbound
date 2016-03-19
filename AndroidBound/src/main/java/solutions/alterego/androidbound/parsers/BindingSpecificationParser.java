@@ -5,13 +5,12 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import java.util.Map;
 
-import solutions.alterego.androidbound.binds.BindingMode;
-import solutions.alterego.androidbound.binds.BindingSpecification;
+import solutions.alterego.androidbound.binding.data.BindingMode;
+import solutions.alterego.androidbound.binding.data.BindingSpecification;
 import solutions.alterego.androidbound.helpers.Matcher;
 import solutions.alterego.androidbound.helpers.Pattern;
-import solutions.alterego.androidbound.interfaces.IParser;
-import solutions.alterego.androidbound.interfaces.IResourceProvider;
-import solutions.alterego.androidbound.interfaces.IValueConverterProvider;
+import solutions.alterego.androidbound.resources.interfaces.IResourceProvider;
+import solutions.alterego.androidbound.converters.interfaces.IValueConverterProvider;
 
 public class BindingSpecificationParser implements IParser<BindingSpecification> {
 

@@ -4,8 +4,8 @@ import android.view.View;
 
 import java.util.Locale;
 
-import solutions.alterego.androidbound.interfaces.IBinding;
-import solutions.alterego.androidbound.interfaces.IValueConverter;
+import solutions.alterego.androidbound.binding.interfaces.IBinding;
+import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
 
 public class BooleanToVisibilityConverter implements IValueConverter {
 

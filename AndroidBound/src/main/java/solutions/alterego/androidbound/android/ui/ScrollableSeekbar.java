@@ -34,9 +34,9 @@ import rx.Scheduler;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
-import solutions.alterego.androidbound.binds.BindableMap;
+import solutions.alterego.androidbound.binding.data.BindableMap;
 import solutions.alterego.androidbound.interfaces.ICommand;
-import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.IDisposable;
 import solutions.alterego.androidbound.utils.Iterables;
 

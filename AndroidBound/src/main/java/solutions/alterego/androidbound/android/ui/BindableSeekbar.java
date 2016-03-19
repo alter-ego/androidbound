@@ -7,7 +7,7 @@ import android.widget.SeekBar;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.ICommand;
-import solutions.alterego.androidbound.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 
 public class BindableSeekbar extends SeekBar implements INotifyPropertyChanged {
 

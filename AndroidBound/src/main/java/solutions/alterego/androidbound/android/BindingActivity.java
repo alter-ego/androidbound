@@ -10,7 +10,7 @@ import android.view.View;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import solutions.alterego.androidbound.interfaces.IBindableView;
+import solutions.alterego.androidbound.android.interfaces.IBindableView;
 
 @Accessors(prefix = "m")
 public abstract class BindingActivity extends Activity implements IBindableView {
