@@ -44,43 +44,22 @@ public class Reflector {
     private static SparseArray<SparseArray<FieldInfo>> mObjectFields = new SparseArray<SparseArray<FieldInfo>>();
 
     public static boolean isCommand(Class<?> type, String name) {
-//        List<MethodInfo> invokers = getMethods(type, COMMAND_PREFIX_DO + name);
-//        if (invokers != null) {
-//            for (MethodInfo invoker : invokers) {
-//                if (invoker.getMethodParameterCount() <= 1) {
-//                    return true;
-//                }
-//            }
-//        }
         return Iterables.from(getMethods(type, COMMAND_PREFIX_DO + name))
-                .where(methodInfo -> methodInfo.getMethodParameterCount() <= 1).iterator()
+                .where(methodInfo -> methodInfo.getMethodParameterCount() <= 1)
+                .iterator()
                 .hasNext();
     }
 
     public static boolean isProperty(Class<?> type, String name) {
-//        List<MethodInfo> getters = getMethods(type, PROPERTY_PREFIX_GET + name);
-//        if (getters != null) {
-//            for (MethodInfo getter : getters) {
-//                if (getter.getMethodParameterCount() == 0) {
-//                    return true;
-//                }
-//            }
-//        }
-//
-//        getters = getMethods(type, PROPERTY_PREFIX_IS + name);
-//        if (getters != null) {
-//            for (MethodInfo mi : getters) {
-//                if (mi.getMethodParameterCount() == 0) {
-//                    return true;
-//                }
-//            }
-//        }
-
-        if (Iterables.from(getMethods(type, PROPERTY_PREFIX_GET + name)).where(methodInfo -> methodInfo.getMethodParameterCount() == 0).iterator()
+        if (Iterables.from(getMethods(type, PROPERTY_PREFIX_GET + name))
+                .where(methodInfo -> methodInfo.getMethodParameterCount() == 0)
+                .iterator()
                 .hasNext()) {
             return true;
-        } else if (Iterables.from(getMethods(type, PROPERTY_PREFIX_IS + name)).where(
-                methodInfo -> methodInfo.getMethodParameterCount() == 0).iterator().hasNext()) {
+        } else if (Iterables.from(getMethods(type, PROPERTY_PREFIX_IS + name))
+                .where(methodInfo -> methodInfo.getMethodParameterCount() == 0)
+                .iterator()
+                .hasNext()) {
             return true;
         } else {
             return false;

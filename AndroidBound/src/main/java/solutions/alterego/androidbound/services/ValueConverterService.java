@@ -26,7 +26,6 @@ public class ValueConverterService implements IValueConverterRegistry, IValueCon
     }
 
     public IValueConverter find(String name) {
-        //logger.info("Requested converter " + name);
         if (converters.containsKey(name)) {
             return converters.get(name);
         }

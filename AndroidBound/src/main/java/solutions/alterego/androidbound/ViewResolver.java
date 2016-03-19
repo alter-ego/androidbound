@@ -91,10 +91,6 @@ public class ViewResolver implements IViewResolver {
             }
 
             throw new Exception("constructor not found");
-            // Constructor<?> constructor =
-            // resolvedClass.getConstructor(Context.class, AttributeSet.class);
-            // View instance = (View) constructor.newInstance(context, attrs);
-            // return instance;
         } catch (Exception e) {
             logger.warning("failed creating instance of class " + resolvedClass + ", message: " + e.getMessage());
         }
@@ -103,7 +99,7 @@ public class ViewResolver implements IViewResolver {
     }
 
     private Class<?> resolveName(String name) {
-        String result = name;
+        String result;
 
         if (name.contains(".")) {
             result = name;
