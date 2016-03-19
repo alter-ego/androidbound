@@ -12,6 +12,6 @@
               android:layout_height="wrap_content"
               android:layout_centerInParent="true"
               tools:text="test"
-              binding="{ Text &lt;= MainActivityTitle }"/>
+              binding="{ Text @= MainActivityTitle }"/>
 
 </RelativeLayout>

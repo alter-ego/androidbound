@@ -16,15 +16,14 @@ import solutions.alterego.androidbound.interfaces.IValueConverterProvider;
 public class BindingSpecificationParser implements IParser<BindingSpecification> {
 
     private final static Pattern PATTERN = Pattern
-            .compile("\\s*(?<target>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z]" +
-                    "[a-zA-Z0-9]*)*)*)\\s*(?<mode><=>|<-|->|=>|=|<=)\\s*(" +
-                    "?:(?<converter>[a-zA-Z][a-zA-Z0-9]*)\\s*\\()?\\s*(?<" +
-                    "path>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z][a-zA-Z0-9" +
-                    "]*)*)*)\\s*(?:,\\s*(?:(?<parameterName>[a-zA-Z][a-zA" +
-                    "-Z0-9]*)+?|(?:'(?<parameterString>(?:[^'\\\\]|\\\\.)" +
-                    "*)')+?))?\\s*\\)?(?:\\s*\\|\\|\\s*(?:(?:(?<fallbackN" +
-                    "ame>[a-zA-Z][a-zA-Z0-9]*)+?|(?:'(?<fallbackString>(?" +
-                    ":[^'\\\\]|\\\\.)*)')+?))?)?");
+            .compile("\\s*(?<target>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z][a-zA-Z0-9]*)*)*)" +
+                    "\\s*(?<mode>@=@|@-|-@|=@|=|@=)" +
+                    "\\s*(?:(?<converter>[a-zA-Z][a-zA-Z0-9]*)\\" +
+                    "s*\\()?\\s*(?<path>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z][a-zA-Z0-9]*)*)*)" +
+                    "\\s*(?:,\\s*(?:(?<parameterName>[a-zA-Z][a-zA-Z0-9]*)" +
+                    "+?|(?:'(?<parameterString>(?:[^'\\\\]|\\\\.)*)')+?))?\\s*\\)?" +
+                    "(?:\\s*\\|\\|\\s*(?:(?:(?<fallbackName>[a-zA-Z][a-zA-Z0-9]*)" +
+                    "+?|(?:'(?<fallbackString>(?:[^'\\\\]|\\\\.)*)')+?))?)?");
 
     private IAndroidLogger mLogger = NullAndroidLogger.instance;
 
@@ -122,19 +121,19 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
         if (value == null || value.equals("=")) {
             return BindingMode.Default;
         }
-        if (value.equals("->")) {
+        if (value.equals("-@")) {
             return BindingMode.OneWayToSourceOneTime;
         }
-        if (value.equals("=>")) {
+        if (value.equals("=@")) {
             return BindingMode.OneWayToSource;
         }
-        if (value.equals("<-")) {
+        if (value.equals("@-")) {
             return BindingMode.OneWayOneTime;
         }
-        if (value.equals("<=")) {
+        if (value.equals("@=")) {
             return BindingMode.OneWay;
         }
-        if (value.equals("<=>")) {
+        if (value.equals("@=@")) {
             return BindingMode.TwoWay;
         }
 
