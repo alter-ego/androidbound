@@ -1,0 +1,101 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'me.tatarka:gradle-retrolambda:3.2.4'
+    }
+}
+
+plugins {
+    id "me.tatarka.retrolambda" version '3.2.4'
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'me.tatarka.retrolambda'
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven() { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url "https://github.com/alter-ego/advanced-android-logger/raw/develop/releases/" }
+}
+
+ext {
+    buildVersionName = "0.5.0"
+    buildVersionCode = 19
+}
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 22
+        versionCode buildVersionCode
+        versionName buildVersionName
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile 'com.alterego:advancedandroidlogger:1.0.8@aar'
+
+    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:support-v4:22.0.0'
+
+    compile 'net.danlew:android.joda:2.9.0'
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'io.reactivex:rxjava:1.1.0'
+
+    provided 'javax.annotation:jsr250-api:1.0'
+    compile 'org.projectlombok:lombok:1.16.2'
+
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+}
+
+task clearJar(type: Delete) {
+    delete 'build/outputs/androidbound.jar'
+}
+
+task makeJar(type: Copy) {
+    from('build/intermediates/bundles/debug/')
+    into('../releases/')
+    include('classes.jar')
+    rename ('classes.jar', 'androidbound.jar')
+}
+
+makeJar.dependsOn(clearJar, build)
+
+uploadArchives {
+    repositories.mavenDeployer {
+        def deployPath = file(getProperty('aar.deployPath'))
+        repository(url: "file://${deployPath.absolutePath}")
+        pom.project {
+            groupId 'solutions.alterego'
+            artifactId 'androidbound'
+            version buildVersionName
+        }
+    }
+}
+
