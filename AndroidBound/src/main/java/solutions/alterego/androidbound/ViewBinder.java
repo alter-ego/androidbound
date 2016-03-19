@@ -21,7 +21,6 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import rx.Scheduler;
 import solutions.alterego.androidbound.android.BindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.converters.BooleanToVisibilityConverter;
 import solutions.alterego.androidbound.android.converters.FontConverter;
@@ -182,10 +181,10 @@ public class ViewBinder implements IViewBinder {
 
         LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(context);
         //TODO remove double casts???
-        if (((Object) context) instanceof Factory) {
-            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) (Object) context));
-        } else if (((Object) context) instanceof Factory2) {
-            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory2) (Object) context));
+        if (context instanceof Factory2) {
+            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory2) context));
+        } else if (context instanceof Factory) {
+            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) context));
         } else {
             inflater.setFactory(mInflaterFactory.inflaterFor(source));
         }
@@ -199,10 +198,10 @@ public class ViewBinder implements IViewBinder {
 
         mViewResolver.addResolverToFront(resolver);
         //TODO remove double casts???
-        if (((Object) context) instanceof Factory) {
-            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) (Object) context));
-        } else if (((Object) context) instanceof Factory2) {
-            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory2) (Object) context));
+        if (context instanceof Factory2) {
+            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory2) context));
+        } else if (context instanceof Factory) {
+            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) context));
         } else {
             inflater.setFactory(mInflaterFactory.inflaterFor(source));
         }
