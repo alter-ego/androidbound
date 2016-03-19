@@ -184,7 +184,7 @@ public class ViewBinder implements IViewBinder {
 
         LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(context);
 
-        if (context instanceof Factory2) {
+        if (android.os.Build.VERSION.SDK_INT >= 11 && context instanceof Factory2) {
             inflater.setFactory2(mInflaterFactory.inflaterFor(source, (Factory2) context));
         } else if (context instanceof Factory) {
             inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) context));
@@ -201,7 +201,7 @@ public class ViewBinder implements IViewBinder {
 
         mViewResolver.addResolverToFront(resolver);
 
-        if (context instanceof Factory2) {
+        if (android.os.Build.VERSION.SDK_INT >= 11 && context instanceof Factory2) {
             inflater.setFactory2(mInflaterFactory.inflaterFor(source, (Factory2) context));
         } else if (context instanceof Factory) {
             inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) context));
