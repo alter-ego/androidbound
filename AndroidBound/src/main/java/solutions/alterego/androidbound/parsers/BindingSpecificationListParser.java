@@ -23,7 +23,7 @@ public class BindingSpecificationListParser implements IParser<List<BindingSpeci
     }
 
     public List<BindingSpecification> parse(String content) {
-        logger.verbose("Parse content for BindingSpecificationList");
+        logger.verbose("Parse content for BindingSpecificationList, content = " + content);
         List<BindingSpecification> result = new ArrayList<BindingSpecification>();
 
         if (content != null) {
