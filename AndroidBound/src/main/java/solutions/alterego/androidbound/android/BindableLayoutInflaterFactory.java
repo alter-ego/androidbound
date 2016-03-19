@@ -70,8 +70,23 @@ public class BindableLayoutInflaterFactory implements IBindableLayoutInflaterFac
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
-    public Factory inflaterFor(final Object source, final Factory2 factory2) {
-        return new InflaterFactoryBase(mViewBinder, mBinder) {
+    public Factory2 inflaterFor(final Object source, final Factory2 factory2) {
+        return new InflaterFactory2Base(mViewBinder, mBinder) {
+            @Override
+            public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+                View view = mViewResolver.createView(name, context, attrs);
+                if (view == null && factory2 != null) {
+                    view = factory2.onCreateView(name, context, attrs);
+                }
+                if (view instanceof IBindableView) {
+                    ((IBindableView) view).setViewBinder(mViewBinder);
+                }
+                if (view != null) {
+                    bindView(view, context, attrs, source);
+                }
+                return view;
+            }
+
             public View onCreateView(String name, Context context, AttributeSet attrs) {
                 View view = mViewResolver.createView(name, context, attrs);
                 if (view == null && factory2 != null) {
@@ -108,6 +123,27 @@ public class BindableLayoutInflaterFactory implements IBindableLayoutInflaterFac
                 mBaseViewBinder.registerBindingsFor(view, bindings);
             }
         }
+    }
 
+    private static abstract class InflaterFactory2Base implements LayoutInflater.Factory2 {
+
+        private IBinder mBaseBinder;
+
+        private IViewBinder mBaseViewBinder;
+
+        public InflaterFactory2Base(IViewBinder viewBinder, IBinder binder) {
+            mBaseBinder = binder;
+            mBaseViewBinder = viewBinder;
+        }
+
+        protected void bindView(View view, Context context, AttributeSet attrs, Object source) {
+            String bindingString = attrs.getAttributeValue(null,
+                    BindingResources.attr.BindingBase.binding);
+
+            if (bindingString != null && !bindingString.equals("")) {
+                List<IBindingAssociation> bindings = mBaseBinder.bind(source, view, bindingString);
+                mBaseViewBinder.registerBindingsFor(view, bindings);
+            }
+        }
     }
 }

@@ -180,9 +180,9 @@ public class ViewBinder implements IViewBinder {
         }
 
         LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(context);
-        //TODO remove double casts???
+
         if (context instanceof Factory2) {
-            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory2) context));
+            inflater.setFactory2(mInflaterFactory.inflaterFor(source, (Factory2) context));
         } else if (context instanceof Factory) {
             inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) context));
         } else {
@@ -197,9 +197,9 @@ public class ViewBinder implements IViewBinder {
         LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(context);
 
         mViewResolver.addResolverToFront(resolver);
-        //TODO remove double casts???
+
         if (context instanceof Factory2) {
-            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory2) context));
+            inflater.setFactory2(mInflaterFactory.inflaterFor(source, (Factory2) context));
         } else if (context instanceof Factory) {
             inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) context));
         } else {
