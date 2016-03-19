@@ -30,12 +30,12 @@ ext {
 }
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode buildVersionCode
         versionName buildVersionName
     }
@@ -61,8 +61,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
     compile 'com.alterego:advancedandroidlogger:1.0.8@aar'
 
-    compile 'com.android.support:appcompat-v7:22.0.0'
-    compile 'com.android.support:support-v4:22.0.0'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:support-v4:23.2.1'
 
     compile 'net.danlew:android.joda:2.9.0'
     compile 'io.reactivex:rxandroid:1.1.0'
