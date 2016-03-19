@@ -45,19 +45,19 @@ public class Reflector {
 
     public static boolean isCommand(Class<?> type, String name) {
         return Iterables.from(getMethods(type, COMMAND_PREFIX_DO + name))
-                .where(methodInfo -> methodInfo.getMethodParameterCount() <= 1)
+                .filter(methodInfo -> methodInfo.getMethodParameterCount() <= 1)
                 .iterator()
                 .hasNext();
     }
 
     public static boolean isProperty(Class<?> type, String name) {
         if (Iterables.from(getMethods(type, PROPERTY_PREFIX_GET + name))
-                .where(methodInfo -> methodInfo.getMethodParameterCount() == 0)
+                .filter(methodInfo -> methodInfo.getMethodParameterCount() == 0)
                 .iterator()
                 .hasNext()) {
             return true;
         } else if (Iterables.from(getMethods(type, PROPERTY_PREFIX_IS + name))
-                .where(methodInfo -> methodInfo.getMethodParameterCount() == 0)
+                .filter(methodInfo -> methodInfo.getMethodParameterCount() == 0)
                 .iterator()
                 .hasNext()) {
             return true;
@@ -323,7 +323,7 @@ public class Reflector {
 
         return Iterables
                 .monoFrom(methods)
-                .where(matchMethodParameter(parameterTypes))
+                .filter(matchMethodParameter(parameterTypes))
                 .firstOrDefault();
     }
 
@@ -339,7 +339,7 @@ public class Reflector {
 
         return Iterables
                 .monoFrom(constructors)
-                .where(matchConstructorParameter(parameterTypes))
+                .filter(matchConstructorParameter(parameterTypes))
                 .firstOrDefault();
     }
 

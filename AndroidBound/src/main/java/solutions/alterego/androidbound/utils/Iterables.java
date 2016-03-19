@@ -222,7 +222,7 @@ public class Iterables {
         }
     }
 
-    public static class WhereIterator<T> implements Iterator<T> {
+    public static class FilterIterator<T> implements Iterator<T> {
 
         private Iterator<T> baseIterator;
 
@@ -232,7 +232,7 @@ public class Iterables {
 
         private boolean lastValueAdvanced;
 
-        public WhereIterator(Iterator<T> baseIterator, Func1<T, Boolean> filter) {
+        public FilterIterator(Iterator<T> baseIterator, Func1<T, Boolean> filter) {
             this.baseIterator = baseIterator;
             this.filter = filter;
             this.lastValueAdvanced = true;
@@ -449,7 +449,7 @@ public class Iterables {
             this.source = source;
         }
 
-        public AnonymousIterable<T> where(final Func1<T, Boolean> predicate) {
+        public AnonymousIterable<T> filter(final Func1<T, Boolean> predicate) {
             return new AnonymousIterable<T>() {
 
                 public Iterator<T> iterator() {
@@ -509,10 +509,10 @@ public class Iterables {
             this.source = source;
         }
 
-        public MonoidIterableBuilder<T> where(final Func1<T, Boolean> predicate) {
+        public MonoidIterableBuilder<T> filter(final Func1<T, Boolean> predicate) {
             final Iterable<T> baseSource = this.source;
 
-            return new MonoidIterableBuilder<T>(() -> new WhereIterator<T>(baseSource.iterator(), predicate));
+            return new MonoidIterableBuilder<T>(() -> new FilterIterator<T>(baseSource.iterator(), predicate));
         }
 
         public MonoidIterableBuilder<T> skip(final int count) {
