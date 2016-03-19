@@ -48,7 +48,8 @@ public class BindingSpecificationListParser implements IParser<List<BindingSpeci
                     case '}':
                         if (!inQuote) {
                             inGroup = false;
-                            logger.debug("Found possible binding specification. Sending to single parser");
+                            buffer.append(code);
+                            logger.debug("Found possible binding specification. Sending to single parser, spec = " + buffer.toString());
                             result.add(singleParser.parse(buffer.toString()));
                             buffer = new StringBuffer();
                         }

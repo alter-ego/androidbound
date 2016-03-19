@@ -119,7 +119,7 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
     }
 
     private BindingMode parseMode(String value) {
-        if (value.equals("=")) {
+        if (value == null || value.equals("=")) {
             return BindingMode.Default;
         }
         if (value.equals("->")) {
