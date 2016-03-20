@@ -12,7 +12,6 @@ import java.util.Map;
 import solutions.alterego.androidbound.android.ui.BindableButton;
 import solutions.alterego.androidbound.android.ui.BindableEditText;
 import solutions.alterego.androidbound.android.ui.BindableGridView;
-import solutions.alterego.androidbound.android.ui.BindableHorizontalListView;
 import solutions.alterego.androidbound.android.ui.BindableHorizontalScrollView;
 import solutions.alterego.androidbound.android.ui.BindableImageView;
 import solutions.alterego.androidbound.android.ui.BindableLinearLayout;
@@ -47,7 +46,6 @@ public class ViewResolver implements IViewResolver {
             put("android.widget.Button", BindableButton.class);
             put("android.widget.SeekBar", BindableSeekbar.class);
             put("android.widget.HorizontalScrollView", BindableHorizontalScrollView.class);
-            put("android.widget.HorizontalListView", BindableHorizontalListView.class);
             put("android.widget.ScrollView", BindableScrollView.class);
             put("android.widget.RelativeLayout", BindableRelativeLayout.class);
             put("android.widget.LinearLayout", BindableLinearLayout.class);
