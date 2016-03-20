@@ -1,5 +1,6 @@
 package solutions.alterego.androidbound.converters;
 
+import android.content.res.ColorStateList;
 import android.text.Spannable;
 import android.text.SpannableString;
 
@@ -180,6 +181,14 @@ public class DefaultConverter implements IValueConverter {
 
     public static Spannable stringToSpannable(String value) {
         return new SpannableString(value);
+    }
+
+    public static ColorStateList integerToColorStateList(Integer value) {
+        return new ColorStateList(new int[][]{
+                new int[]{}
+        }, new int[]{
+                value
+        });
     }
 
     public Object convert(Object value, Class<?> targetType, Object parameter, Locale culture) {
