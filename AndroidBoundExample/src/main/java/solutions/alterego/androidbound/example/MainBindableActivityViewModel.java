@@ -4,6 +4,7 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -39,6 +40,26 @@ public class MainBindableActivityViewModel extends ViewModel implements IDisposa
 
     @Override
     public void dispose() {
+        //do nothing
+    }
+
+    @Override
+    public void onCreate(Bundle outState) {
+        //do nothing
+    }
+
+    @Override
+    public void onResume() {
+        //do nothing
+    }
+
+    @Override
+    public void onPause() {
+        //do nothing
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
         //do nothing
     }
 

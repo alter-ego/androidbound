@@ -56,4 +56,28 @@ public abstract class BindingFragmentActivity extends FragmentActivity implement
         View view = getViewBinder().inflate(this, mViewModel, layoutResID, null);
         setContentView(view);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (getViewModel() != null) {
+            getViewModel().onResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (getViewModel() != null) {
+            getViewModel().onPause();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (getViewModel() != null) {
+            getViewModel().onSaveInstanceState(outState);
+        }
+    }
 }

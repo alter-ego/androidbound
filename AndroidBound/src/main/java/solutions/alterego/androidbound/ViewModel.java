@@ -4,6 +4,7 @@ import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.app.Activity;
+import android.os.Bundle;
 
 import java.lang.ref.WeakReference;
 
@@ -15,7 +16,7 @@ import solutions.alterego.androidbound.interfaces.IDisposable;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
 @Accessors(prefix = "m")
-public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposable {
+public abstract class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposable {
 
     protected transient IAndroidLogger mLogger = NullAndroidLogger.instance;
 
@@ -31,10 +32,12 @@ public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposa
         }
     }
 
+    @Override
     public Observable<String> onPropertyChanged() {
         return propertyChanges;
     }
 
+    @Override
     public void dispose() {
         propertyChanges.onCompleted();
         propertyChanges = null;
@@ -44,6 +47,7 @@ public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposa
         }
     }
 
+    @Override
     public void setLogger(IAndroidLogger logger) {
         mLogger = logger.getLogger(this);
     }
@@ -60,5 +64,12 @@ public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposa
         return null;
     }
 
+    public abstract void onCreate(Bundle outState);
+
+    public abstract void onResume();
+
+    public abstract void onPause();
+
+    public abstract void onSaveInstanceState(Bundle outState);
 
 }

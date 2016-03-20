@@ -5,6 +5,7 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -40,6 +41,27 @@ public class MainActivityViewModel extends ViewModel implements IDisposable {
 
     @Override
     public void dispose() {
+        super.dispose();
+        //do nothing
+    }
+
+    @Override
+    public void onCreate(Bundle outState) {
+        //do nothing
+    }
+
+    @Override
+    public void onResume() {
+        //do nothing
+    }
+
+    @Override
+    public void onPause() {
+        //do nothing
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
         //do nothing
     }
 
