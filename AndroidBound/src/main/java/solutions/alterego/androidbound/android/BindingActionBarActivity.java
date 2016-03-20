@@ -10,6 +10,7 @@ import android.view.View;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 
 @Accessors(prefix = "m")
@@ -20,7 +21,7 @@ public abstract class BindingActionBarActivity extends ActionBarActivity impleme
 
     @Getter
     @Setter
-    private Object mBoundData;
+    private ViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,25 +37,24 @@ public abstract class BindingActionBarActivity extends ActionBarActivity impleme
         if (getViewBinder() != null) {
             getViewBinder().clearAllBindings();
         }
+        if (getViewModel() != null) {
+            getViewModel().dispose();
+            setViewModel(null);
+        }
     }
 
     @Override
     public void setContentView(int layoutResID) {
-        if (mBoundData == null) {
-            throw new RuntimeException("call setBoundData(Object) before calling setContentView!");
+        if (mViewModel == null) {
+            throw new RuntimeException("call setViewModel(Object) before calling setContentView!");
         }
 
         if (getViewBinder() == null) {
             throw new RuntimeException("getViewBinder must not be null!");
         }
 
-        View view = getViewBinder().inflate(this, mBoundData, layoutResID, null);
+        View view = getViewBinder().inflate(this, mViewModel, layoutResID, null);
         setContentView(view);
     }
 
-    public void dispose() {
-        if (getViewBinder() != null) {
-            getViewBinder().clearAllBindings();
-        }
-    }
 }

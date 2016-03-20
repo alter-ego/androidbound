@@ -31,7 +31,7 @@ public class MainBindingActivity extends BindingAppCompatActivity {
         viewBinder.getFontManager().registerFont("bold", Typeface.createFromAsset(getAssets(), "Roboto-Bold.ttf"));
 
         setViewBinder(viewBinder);
-        setBoundData(new MainBindableActivityViewModel(this, logger));
+        setViewModel(new MainBindableActivityViewModel(this, logger));
 
         setContentView(R.layout.activity_bindable_main);
     }

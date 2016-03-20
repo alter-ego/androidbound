@@ -38,6 +38,10 @@ public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposa
     public void dispose() {
         propertyChanges.onCompleted();
         propertyChanges = null;
+
+        if (mParentActivity != null && mParentActivity.get() != null) {
+            mParentActivity.clear();
+        }
     }
 
     public void setLogger(IAndroidLogger logger) {
