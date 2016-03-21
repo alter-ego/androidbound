@@ -34,7 +34,7 @@ Anyway, we don't have any benchmarks currently. Feel free to do some and send th
 #So how is this different from Android Data Binding? 
 Compared to [Android Data Binding](http://developer.android.com/tools/data-binding/guide.html), the execution is similar but the idea is different. The binding implementation is pretty similar, but they don't solve the problem of a 1K+-line Activity, they just shuffle those lines to the layout, so you will have 500-line activity and 500-line layout, with logic divided between them, somehow. It takes the [Single Reponsibility Principle](https://en.wikipedia.org/wiki/Single_responsibility_principle), shoots it in the head, pisses on its corpse, goes to its funeral and then kills everyone present.  
 
-AndroidBound doesn't let you put logic in the views because the logic should in the ViewModel. Again - Android stuff in the Activity/Fragment, logic (minus viewbinding boilerplate) in the ViewModel.
+AndroidBound doesn't let you put logic in the views because the logic should be in the ViewModel. Again - Android stuff in the Activity/Fragment, logic (minus viewbinding boilerplate) in the ViewModel.
 
 #OK, you convinced me. How do I use this?
 Here's a quick guide.
