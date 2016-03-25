@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
         View view = viewBinder.inflate(this, viewModel, R.layout.activity_main, null);
         setContentView(view);
+
+        setTitle("MainActivity");
     }
 
 }

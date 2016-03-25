@@ -34,6 +34,8 @@ public class MainBindingActivity extends BindingAppCompatActivity {
         setViewModel(new MainBindableActivityViewModel(this, logger));
 
         setContentView(R.layout.activity_bindable_main);
+
+        setTitle("MainBindingActivity");
     }
 
     @Override
