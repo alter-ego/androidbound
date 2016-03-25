@@ -62,4 +62,15 @@
             android:background="@android:color/white"
             binding="{ Resource @= ImageViewResource }; { Click @- ImageViewClick }; { LongClick @- ImageViewLongClick }"/>
 
+    <Button
+            android:id="@+id/open_listview_activity_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/imageview"
+            android:textSize="20sp"
+            android:layout_margin="16dp"
+            android:text="open listview activity"
+            binding="{ Click @- OpenListViewActivity }"/>
+
 </RelativeLayout>

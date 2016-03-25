@@ -143,4 +143,15 @@ public class MainActivityViewModel extends ViewModel implements IDisposable {
         Toast.makeText(getParentActivity(), "long clicked ImageView!", Toast.LENGTH_SHORT).show();
     }
 
+    public boolean canOpenListViewActivity() {
+        return true;
+    }
+
+    public void doOpenListViewActivity() {
+        Intent activityIntent = new Intent(getParentActivity(), ListViewActivity.class);
+        if (getParentActivity() != null) {
+            getParentActivity().startActivity(activityIntent);
+        }
+    }
+
 }
