@@ -1,6 +1,7 @@
 package solutions.alterego.androidbound.android.ui;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,5 +40,25 @@ public class BindableButton extends Button implements OnClickListener {
         if (onClick.canExecute(null)) {
             onClick.execute(null);
         }
+    }
+
+    public ColorStateList getTextColor() {
+        return super.getTextColors();
+    }
+
+    public void setTextColor(int color) {
+        super.setTextColor(color);
+    }
+
+    public int getBackgroundColor() {
+        return 0;
+    }
+
+    public void setBackgroundColor(int color) {
+        super.setBackgroundColor(color);
+    }
+
+    public void setTextColorState(ColorStateList colors) {
+        super.setTextColor(colors);
     }
 }
