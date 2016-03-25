@@ -35,7 +35,7 @@ public class CommandBinding extends BindingBase {
                 @Override
                 public boolean canExecute(Object parameter) {
                     try {
-                        mInfo.check(getSubject(), parameter);
+                        return mInfo.check(getSubject(), parameter);
                     } catch (Exception ex) {
                         getLogger().error("Error while checking command " + mInfo.getCommandName() + ": " + ex.getMessage());
                     }
