@@ -73,4 +73,13 @@ public class MainBindableActivityViewModel extends ViewModel implements IDisposa
             getParentActivity().startActivity(activityIntent);
         }
     }
+
+    public boolean canRelativeLayoutClick() {
+        return true;
+    }
+
+    public void doRelativeLayoutClick() {
+        Toast.makeText(getParentActivity(), "clicked relative layout!", Toast.LENGTH_SHORT).show();
+    }
+
 }

@@ -7,7 +7,8 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity"
         tools:ignore="MissingPrefix"
-        android:padding="16dp">
+        android:padding="16dp"
+        binding="{ Click @- RelativeLayoutClick }">
 
     <TextView
             android:id="@+id/activity_title"
