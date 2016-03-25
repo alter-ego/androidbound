@@ -123,4 +123,24 @@ public class MainActivityViewModel extends ViewModel implements IDisposable {
         return Color.rgb(255, 0, 255);
     }
 
+    public int getImageViewResource() {
+        return R.mipmap.ic_launcher;
+    }
+
+    public boolean canImageViewClick() {
+        return true;
+    }
+
+    public void doImageViewClick() {
+        Toast.makeText(getParentActivity(), "clicked ImageView!", Toast.LENGTH_SHORT).show();
+    }
+
+    public boolean canImageViewLongClick() {
+        return true;
+    }
+
+    public void doImageViewLongClick() {
+        Toast.makeText(getParentActivity(), "long clicked ImageView!", Toast.LENGTH_SHORT).show();
+    }
+
 }

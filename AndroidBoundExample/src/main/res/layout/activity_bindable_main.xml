@@ -52,6 +52,14 @@
             android:text="toggle visibility"
             binding="{ Click @- ToggleTextViewVisibility }"/>
 
+    <ImageView
+            android:id="@+id/imageview"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_below="@+id/visibility_button"
+            android:layout_marginTop="50dp"
+            android:background="@android:color/white"
+            binding="{ Source @= ImageViewSourceUrl }"/>
 
 
 </RelativeLayout>

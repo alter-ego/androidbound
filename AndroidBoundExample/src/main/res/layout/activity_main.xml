@@ -53,5 +53,13 @@
             tools:text="bound to edittext"
             binding="{ Text @= TextViewBoundToEditText }; { Click @- TextViewClick }; { LongClick @- TextViewLongClick }"/>
 
+    <ImageView
+            android:id="@+id/imageview"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_below="@+id/edittext_textview"
+            android:layout_marginTop="50dp"
+            android:background="@android:color/white"
+            binding="{ Resource @= ImageViewResource }; { Click @- ImageViewClick }; { LongClick @- ImageViewLongClick }"/>
 
 </RelativeLayout>

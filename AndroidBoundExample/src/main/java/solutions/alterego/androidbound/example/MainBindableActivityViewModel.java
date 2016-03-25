@@ -98,4 +98,8 @@ public class MainBindableActivityViewModel extends ViewModel implements IDisposa
         mTextViewVisible = visible;
         raisePropertyChanged("TextViewVisible");
     }
+
+    public String getImageViewSourceUrl() {
+        return "http://www.24sata.rs/resources/images/0000/056/479/cetinjska10_RAS_foto%20ana%20paunkovic_1000x0.jpg";
+    }
 }
