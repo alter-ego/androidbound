@@ -12,13 +12,15 @@ import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 
-public class BindableTextView extends TextView implements INotifyPropertyChanged, View.OnClickListener {
+public class BindableTextView extends TextView implements INotifyPropertyChanged, View.OnClickListener, View.OnLongClickListener {
 
     private PublishSubject<String> propertyChanged = PublishSubject.create();
 
     private boolean disposed;
 
     private ICommand onClick = ICommand.empty;
+
+    private ICommand onLongClick = ICommand.empty;
 
     public BindableTextView(Context context) {
         super(context);
@@ -59,7 +61,8 @@ public class BindableTextView extends TextView implements INotifyPropertyChanged
         }
 
         this.propertyChanged = null;
-
+        onClick = null;
+        onLongClick = null;
     }
 
     @Override
@@ -107,6 +110,33 @@ public class BindableTextView extends TextView implements INotifyPropertyChanged
     public void onClick(View v) {
         if (onClick.canExecute(null)) {
             onClick.execute(null);
+        }
+    }
+
+    public ICommand getLongClick() {
+        return onLongClick;
+    }
+
+    public void setLongClick(ICommand value) {
+        if (value == null) {
+            setClickable(false);
+            setOnLongClickListener(null);
+            onLongClick = ICommand.empty;
+            return;
+        }
+        setClickable(true);
+        setOnLongClickListener(this);
+        onLongClick = value;
+    }
+
+    @Override
+    public boolean onLongClick(View arg0) {
+
+        if (onLongClick.canExecute(null)) {
+            onLongClick.execute(null);
+            return true;
+        } else {
+            return false;
         }
     }
 
