@@ -84,4 +84,10 @@ public class MainActivityViewModel extends ViewModel implements IDisposable {
         return Color.rgb(200, 250, 250);
     }
 
+
+
+    public int getButtonBackgroundColor() {
+        return Color.rgb(255, 0, 50);
+    }
+
 }
