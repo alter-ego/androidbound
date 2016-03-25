@@ -1,4 +1,6 @@
 buildscript {
+    ext.kotlin_version = '1.0.1'
+
     repositories {
         jcenter()
         mavenCentral()
@@ -6,6 +8,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:1.5.0'
         classpath 'me.tatarka:gradle-retrolambda:3.2.4'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -14,6 +17,8 @@ plugins {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'maven'
 apply plugin: 'me.tatarka.retrolambda'
 
@@ -55,6 +60,15 @@ android {
             abortOnError false
         }
     }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/java'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -72,6 +86,13 @@ dependencies {
     compile 'org.projectlombok:lombok:1.16.2'
 
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+
+    // Testing
+    testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testCompile 'junit:junit:4.12'
+    testCompile "org.mockito:mockito-core:1.9.5"
 }
 
 task clearJar(type: Delete) {
