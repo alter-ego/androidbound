@@ -32,5 +32,26 @@
             binding="{ Click @- OpenBindableActivity }; {Text @= OpenBindableActivityText }; { Typeface @- ToFont(this, &apos;missing&apos;) };
             { BackgroundColor @= ButtonBackgroundColor }; { TextColor @= MainActivityTitleColor }"/>
 
+    <EditText
+            android:id="@+id/edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/open_bindable_activity_button"
+            android:textSize="20sp"
+            tools:text="edittext"
+            android:layout_margin="10dp"
+            binding="{ TextString =@ EditTextText }; { TextColor @= EditTextColor }; { Typeface @- ToFont(this, &apos;italic&apos;) }"/>
+
+    <TextView
+            android:id="@+id/edittext_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/edittext"
+            android:textSize="20sp"
+            tools:text="bound to edittext"
+            binding="{ Text @= TextViewBoundToEditText }; { Click @- TextViewClick }; { LongClick @- TextViewLongClick }"/>
+
 
 </RelativeLayout>

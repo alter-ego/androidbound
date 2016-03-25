@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -20,6 +21,12 @@ public class MainActivityViewModel extends ViewModel implements IDisposable {
 
     @Getter
     private String mOpenBindableActivityText;
+
+    @Getter
+    private String mEditTextText = "empty edit text";
+
+    @Getter
+    private String mTextViewBoundToEditText = "empty";
 
     public MainActivityViewModel(Activity activity, IAndroidLogger logger) {
         setLogger(logger);
@@ -88,6 +95,32 @@ public class MainActivityViewModel extends ViewModel implements IDisposable {
 
     public int getButtonBackgroundColor() {
         return Color.rgb(255, 0, 50);
+    }
+
+    public boolean canTextViewClick() {
+        return true;
+    }
+
+    public void doTextViewClick() {
+        Toast.makeText(getParentActivity(), "clicked text view!", Toast.LENGTH_SHORT).show();
+    }
+
+    public boolean canTextViewLongClick() {
+        return true;
+    }
+
+    public void doTextViewLongClick() {
+        Toast.makeText(getParentActivity(), "long clicked text view!", Toast.LENGTH_SHORT).show();
+    }
+
+    public void setEditTextText(String text) {
+        mLogger.info("text = " + text);
+        mTextViewBoundToEditText = text;
+        raisePropertyChanged("TextViewBoundToEditText");
+    }
+
+    public int getEditTextColor() {
+        return Color.rgb(255, 0, 255);
     }
 
 }
