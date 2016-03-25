@@ -21,8 +21,6 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 
     static Context context;
 
-    ImageView mImageView = null;
-
     private boolean disposed;
 
     private int currentResId;
@@ -33,7 +31,6 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 
     private PublishSubject<String> propertyChanged = PublishSubject.create();
 
-    //private final static IContentProvider<Bitmap> provider = new CacheSystem<Bitmap>(new HttpBitmapProvider(), CommonSettings.CacheImage.cache);
     private ICommand onLongClick = ICommand.empty;
 
     private ICommand onClick = ICommand.empty;
@@ -55,9 +52,8 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
     }
 
     public void setSource(String value) {
-        mImageView = this;
         source = value;
-        ImageLoader.getInstance().displayImage(source, mImageView);
+        ImageLoader.getInstance().displayImage(source, this);
     }
 
     public ICommand getClick() {
@@ -202,30 +198,5 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
         p.height = height;
         this.setLayoutParams(p);
     }
-
-	/*private void setImage(final ImageView view, Bitmap remoteImage) {
-                int fadeInDuration = 2000;
-		int fadeOutDuration = 1500;
-
-		view.setVisibility(View.VISIBLE);
-
-		if (CommonSettings.Images.isAnimated) {
-			Animation fadeIn = new AlphaAnimation(0, 1);
-			fadeIn.setInterpolator(new DecelerateInterpolator());
-			fadeIn.setDuration(fadeInDuration);
-
-			Animation fadeOut = new AlphaAnimation(1, 0);
-			fadeOut.setInterpolator(new AccelerateInterpolator());
-			fadeOut.setStartOffset(fadeInDuration);
-			fadeOut.setDuration(fadeOutDuration);
-
-			AnimationSet animation = new AnimationSet(false);
-			animation.addAnimation(fadeIn);
-			animation.setRepeatCount(0);
-			view.setAnimation(animation);
-		}
-		view.setImageBitmap(remoteImage);
-	}*/
-
 
 }
