@@ -24,17 +24,14 @@ public class BindableRelativeLayout extends RelativeLayout implements INotifyPro
 
     public BindableRelativeLayout(Context context) {
         super(context);
-        // TODO Auto-generated constructor stub
     }
 
     public BindableRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        // TODO Auto-generated constructor stub
     }
 
     public BindableRelativeLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
