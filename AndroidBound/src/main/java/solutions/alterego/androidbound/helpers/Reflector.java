@@ -388,7 +388,6 @@ public class Reflector {
     }
 
     private static SparseArray<List<MethodInfo>> getMethodsForClass(Class<?> type) {
-        //TODO test for problems with getting "can" method when binding
         //Method[] ms = type.getDeclaredMethods();
         Method[] typeMethods = type.getMethods();
 
