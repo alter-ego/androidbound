@@ -21,14 +21,37 @@
             binding="{ Text @= MainActivityTitle }; { Typeface @- ToFont(this, &apos;bold&apos;) }"/>
 
     <Button
-            android:id="@+id/open_bindable_activity_button"
+            android:id="@+id/open_normal_activity_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/activity_title"
             android:textSize="16sp"
             android:layout_margin="16dp"
-            tools:text="open bindable activity"
-            binding="{ Click @- OpenNormalActivity }; {Text @= OpenNormalActivityText }; { Typeface @- ToFont(this, &apos;italic&apos;) }"             />
+            tools:text="open normal activity"
+            binding="{ Click @- OpenNormalActivity }; {Text @= OpenNormalActivityText }; { Typeface @- ToFont(this, &apos;italic&apos;) }"/>
+
+    <TextView
+            android:id="@+id/visibility_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/open_normal_activity_button"
+            android:textSize="20sp"
+            android:text="this text is now visible!"
+            binding="{ Visibility @= ToVisibility(TextViewVisible) }"/>
+
+    <Button
+            android:id="@+id/visibility_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/visibility_text"
+            android:textSize="16sp"
+            android:layout_margin="16dp"
+            android:text="toggle visibility"
+            binding="{ Click @- ToggleTextViewVisibility }"/>
+
+
 
 </RelativeLayout>

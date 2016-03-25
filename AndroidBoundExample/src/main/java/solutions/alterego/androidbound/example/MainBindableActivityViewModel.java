@@ -5,6 +5,7 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -19,6 +20,9 @@ public class MainBindableActivityViewModel extends ViewModel implements IDisposa
 
     @Getter
     private String mOpenNormalActivityText;
+
+    @Getter
+    private boolean mTextViewVisible = false;
 
     public MainBindableActivityViewModel(Activity activity, IAndroidLogger logger) {
         setLogger(logger);
@@ -82,4 +86,16 @@ public class MainBindableActivityViewModel extends ViewModel implements IDisposa
         Toast.makeText(getParentActivity(), "clicked relative layout!", Toast.LENGTH_SHORT).show();
     }
 
+    public boolean canToggleTextViewVisibility() {
+        return true;
+    }
+
+    public void doToggleTextViewVisibility() {
+        setTextViewVisible(!isTextViewVisible());
+    }
+
+    public void setTextViewVisible(boolean visible) {
+        mTextViewVisible = visible;
+        raisePropertyChanged("TextViewVisible");
+    }
 }
