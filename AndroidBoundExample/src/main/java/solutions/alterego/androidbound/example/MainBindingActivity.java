@@ -47,4 +47,12 @@ public class MainBindingActivity extends BindingAppCompatActivity {
     public void setViewBinder(IViewBinder viewBinder) {
         mViewBinder = viewBinder;
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (getViewBinder() != null) {
+            getViewBinder().dispose();
+        }
+    }
 }

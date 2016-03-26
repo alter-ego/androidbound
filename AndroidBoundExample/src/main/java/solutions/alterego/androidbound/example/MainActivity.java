@@ -18,22 +18,34 @@ public class MainActivity extends AppCompatActivity {
 
     private static final IAndroidLogger.LoggingLevel LOGGING_LEVEL = IAndroidLogger.LoggingLevel.VERBOSE;
 
+    private ViewBinder mViewBinder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         IAndroidLogger logger = new DetailedAndroidLogger(LOGGING_TAG, LOGGING_LEVEL);
-        ViewBinder viewBinder = new ViewBinder(this, logger, null);
-        viewBinder.getFontManager().setDefaultFont(Typeface.createFromAsset(getAssets(), "Roboto-Regular.ttf"));
-        viewBinder.getFontManager().registerFont("light", Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf"));
-        viewBinder.getFontManager().registerFont("italic", Typeface.createFromAsset(getAssets(), "Roboto-Italic.ttf"));
-        viewBinder.getFontManager().registerFont("bold", Typeface.createFromAsset(getAssets(), "Roboto-Bold.ttf"));
+        mViewBinder = new ViewBinder(this, logger, null);
+        mViewBinder.getFontManager().setDefaultFont(Typeface.createFromAsset(getAssets(), "Roboto-Regular.ttf"));
+        mViewBinder.getFontManager().registerFont("light", Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf"));
+        mViewBinder.getFontManager().registerFont("italic", Typeface.createFromAsset(getAssets(), "Roboto-Italic.ttf"));
+        mViewBinder.getFontManager().registerFont("bold", Typeface.createFromAsset(getAssets(), "Roboto-Bold.ttf"));
 
         ViewModel viewModel = new MainActivityViewModel(this, logger);
 
-        View view = viewBinder.inflate(this, viewModel, R.layout.activity_main, null);
+        View view = mViewBinder.inflate(this, viewModel, R.layout.activity_main, null);
         setContentView(view);
 
         setTitle("MainActivity");
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mCustomValueConverters = null;
+
+        //you should dispose of it only if it's not global (injected via Dagger, maybe)!
+        if (mViewBinder != null) {
+            mViewBinder.dispose();
+        }
+    }
 }
