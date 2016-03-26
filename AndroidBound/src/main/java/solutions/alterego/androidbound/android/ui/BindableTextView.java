@@ -43,35 +43,35 @@ public class BindableTextView extends TextView implements INotifyPropertyChanged
 
     public void setTypeface(Typeface font) {
         super.setTypeface(font);
-        if (this.disposed || this.propertyChanged == null) {
+        if (disposed || propertyChanged == null) {
             return;
         }
-        this.propertyChanged.onNext("Typeface");
+        propertyChanged.onNext("Typeface");
     }
 
     @Override
     public void dispose() {
-        if (this.disposed) {
+        if (disposed) {
             return;
         }
 
-        this.disposed = true;
-        if (this.propertyChanged != null) {
-            this.propertyChanged.onCompleted();
+        disposed = true;
+        if (propertyChanged != null) {
+            propertyChanged.onCompleted();
         }
 
-        this.propertyChanged = null;
+        propertyChanged = null;
         onClick = null;
         onLongClick = null;
     }
 
     @Override
     public Observable<String> onPropertyChanged() {
-        if (this.propertyChanged == null) {
-            this.propertyChanged = PublishSubject.create();
+        if (propertyChanged == null) {
+            propertyChanged = PublishSubject.create();
         }
 
-        return this.propertyChanged;
+        return propertyChanged;
     }
 
     public void setTextColorState(ColorStateList colors) {

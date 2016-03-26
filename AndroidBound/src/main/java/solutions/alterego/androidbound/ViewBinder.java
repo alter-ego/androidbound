@@ -136,7 +136,7 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public void clearBindingForViewAndChildren(View rootView) {
-        this.clearBindingsFor(rootView);
+        clearBindingsFor(rootView);
 
         if (!(rootView instanceof ViewGroup)) {
             return;
@@ -144,7 +144,7 @@ public class ViewBinder implements IViewBinder {
 
         ViewGroup viewGroup = (ViewGroup) rootView;
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            this.clearBindingForViewAndChildren(viewGroup.getChildAt(i));
+            clearBindingForViewAndChildren(viewGroup.getChildAt(i));
         }
     }
 
@@ -240,13 +240,13 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public List<IBindingAssociationEngine> getBindingsForViewAndChildren(View rootView) {
-        return this.getBindingsForViewAndChildrenRecursive(rootView, new ArrayList<IBindingAssociationEngine>());
+        return getBindingsForViewAndChildrenRecursive(rootView, new ArrayList<IBindingAssociationEngine>());
     }
 
     private List<IBindingAssociationEngine> getBindingsForViewAndChildrenRecursive(View rootView, List<IBindingAssociationEngine> bindings) {
 
-        if (this.mBoundViews.containsKey(rootView)) {
-            bindings.addAll(this.mBoundViews.get(rootView));
+        if (mBoundViews.containsKey(rootView)) {
+            bindings.addAll(mBoundViews.get(rootView));
         }
 
         if (!(rootView instanceof ViewGroup)) {

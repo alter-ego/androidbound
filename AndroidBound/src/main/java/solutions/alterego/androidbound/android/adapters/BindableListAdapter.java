@@ -37,41 +37,41 @@ public class BindableListAdapter extends BaseAdapter {
         this(context, null, defaultCacheSize);
     }
 
-    public BindableListAdapter(Context context, IViewBinder viewBinder) {
-        this(context, viewBinder, defaultCacheSize);
+    public BindableListAdapter(Context ctx, IViewBinder viewBinder) {
+        this(ctx, viewBinder, defaultCacheSize);
     }
 
-    public BindableListAdapter(Context context, IViewBinder viewBinder, int cacheSize) {
+    public BindableListAdapter(Context ctx, IViewBinder vb, int cacheSize) {
         mCacheSize = cacheSize;
-        this.itemViews = new SparseArray<View>();
+        itemViews = new SparseArray<View>();
 
-        this.itemViewsPriorityIndex = new ArrayList<Integer>();
-        this.context = context;
+        itemViewsPriorityIndex = new ArrayList<Integer>();
+        context = ctx;
+
+        viewBinder = vb;
 
         if (viewBinder == null) {
-            if ((Object) context instanceof IBindableView) {
-                viewBinder = ((IBindableView) (Object) context).getViewBinder();
+            if (context instanceof IBindableView) {
+                viewBinder = ((IBindableView) context).getViewBinder();
             }
         }
-
-        this.viewBinder = viewBinder;
     }
 
-    public List<? extends Object> getItemsSource() {
+    public List<?> getItemsSource() {
         return itemsSource;
     }
 
-    public void setItemsSource(List<? extends Object> value) {
+    public void setItemsSource(List<?> value) {
         if (value == null || itemsSource == null) {
             itemsSource = value;
-            this.notifyDataSetChanged();
+            notifyDataSetChanged();
             return;
         }
 
-        if (this.itemsSource != null) {
+        if (itemsSource != null) {
             List<Integer> toremovePositions = null;
-            for (int i = 0; i < this.itemsSource.size(); i++) {
-                Object o = this.itemsSource.get(i);
+            for (int i = 0; i < itemsSource.size(); i++) {
+                Object o = itemsSource.get(i);
                 int newIndex = value.indexOf(o);
                 if (newIndex < 0) {
                     if (toremovePositions == null) {
@@ -81,15 +81,15 @@ public class BindableListAdapter extends BaseAdapter {
                 }
             }
 
-            this.removeViews(toremovePositions);
+            removeViews(toremovePositions);
         }
 
-        //this.mCacheSize = value.size();
-        this.itemsSource = value;
+        //mCacheSize = value.size();
+        itemsSource = value;
 
-        this.updateViews();
+        updateViews();
 
-        this.notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     public int getItemTemplate() {
@@ -101,7 +101,7 @@ public class BindableListAdapter extends BaseAdapter {
     }
 
     public int getCount() {
-        if (this.itemsSource == null) {
+        if (itemsSource == null) {
             return 0;
         }
 
@@ -109,7 +109,7 @@ public class BindableListAdapter extends BaseAdapter {
     }
 
     public Object getItem(int position) {
-        if (this.itemsSource == null) {
+        if (itemsSource == null) {
             return null;
         }
         return itemsSource.get(position);
@@ -120,13 +120,13 @@ public class BindableListAdapter extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (this.itemsSource == null) {
+        if (itemsSource == null) {
             return null;
         }
 
         //View currentView = null;
 
-        View currentView = this.findView(position);
+        View currentView = findView(position);
 
         //we already have the view
         if (currentView != null) {
@@ -137,13 +137,13 @@ public class BindableListAdapter extends BaseAdapter {
         //        BindableListItemView recycleView = null;
         //
         //        if (convertView instanceof BindableListItemView) {
-        //            for (int i = 0; i < this.itemViews.size(); i++) {
-        //                BindableListItemView valAt = this.itemViews.valueAt(i);
-        //                int posAt = this.itemViews.keyAt(i);
+        //            for (int i = 0; i < itemViews.size(); i++) {
+        //                BindableListItemView valAt = itemViews.valueAt(i);
+        //                int posAt = itemViews.keyAt(i);
         //
         //                if (valAt == convertView) {
         //                    if (posAt != position) {
-        //                        this.removeView(this.itemViews.keyAt(i));
+        //                        removeView(itemViews.keyAt(i));
         //                        recycleView = (BindableListItemView) convertView;
         //                    }
         //                    break;
@@ -179,7 +179,7 @@ public class BindableListAdapter extends BaseAdapter {
 //            } else { //create the view ex-novo
             ViewBinder.getLogger().debug("BindableListAdapter getView inflate view from zero");
             currentView = new BindableListItemView(context, viewBinder, itemTemplate, source);
-            this.insertView(position, currentView);
+            insertView(position, currentView);
 //            }
 
             //if (recycleView != null) {
@@ -189,7 +189,7 @@ public class BindableListAdapter extends BaseAdapter {
             //currentView = new BindableListItemView(context, viewBinder, itemTemplate, source);
             //}
 
-            //this.insertView(position, currentView);
+            //insertView(position, currentView);
         } catch (Exception e) {
             //we do nothing
         }
@@ -197,24 +197,24 @@ public class BindableListAdapter extends BaseAdapter {
     }
 
     protected void insertView(int position, View v) {
-        this.itemViews.put(position, v);
+        itemViews.put(position, v);
 
-        this.itemViewsPriorityIndex.remove((Object) position);
-        this.itemViewsPriorityIndex.add(0, position);
+        itemViewsPriorityIndex.remove((Object) position);
+        itemViewsPriorityIndex.add(0, position);
 
-        while (this.itemViewsPriorityIndex.size() > mCacheSize) {
-            int indexToRemove = this.itemViewsPriorityIndex.remove(this.itemViewsPriorityIndex.size() - 1);
-            this.itemViews.remove(indexToRemove);
+        while (itemViewsPriorityIndex.size() > mCacheSize) {
+            int indexToRemove = itemViewsPriorityIndex.remove(itemViewsPriorityIndex.size() - 1);
+            itemViews.remove(indexToRemove);
         }
     }
 
     private void removeView(int position) {
-        View v = this.itemViews.get(position);
-        this.itemViews.remove(position);
-        this.itemViewsPriorityIndex.remove((Object) position);
+        View v = itemViews.get(position);
+        itemViews.remove(position);
+        itemViewsPriorityIndex.remove((Object) position);
 
         if (v != null) {
-            this.unbindView(v);
+            unbindView(v);
         }
     }
 
@@ -224,43 +224,43 @@ public class BindableListAdapter extends BaseAdapter {
         }
 
         for (Integer pos : positions) {
-            this.removeView(pos);
+            removeView(pos);
         }
     }
 
     protected View findView(int position) {
-        return this.itemViews.get(position);
+        return itemViews.get(position);
     }
 
     /*
     private void invalidateViews() {
-    	this.itemViews.clear();
-    	this.itemViewsPriorityIndex.clear();
+    	itemViews.clear();
+    	itemViewsPriorityIndex.clear();
     }
     */
 
     private void updateViews() {
-        if (this.itemsSource == null) {
+        if (itemsSource == null) {
             return;
         }
 
-        for (int i = 0; i < this.itemsSource.size(); i++) {
-            View v = this.itemViews.get(i);
+        for (int i = 0; i < itemsSource.size(); i++) {
+            View v = itemViews.get(i);
             if (v != null) {
-                this.bindViewTo(v, this.itemsSource.get(i));
+                bindViewTo(v, itemsSource.get(i));
             } else {
-                v = new BindableListItemView(context, viewBinder, itemTemplate, this.itemsSource.get(i));
-                this.insertView(i, v);
+                v = new BindableListItemView(context, viewBinder, itemTemplate, itemsSource.get(i));
+                insertView(i, v);
             }
         }
     }
 
     private View createView(Object source) {
-        return this.viewBinder.inflate(this.context, source, this.itemTemplate, null);
+        return viewBinder.inflate(context, source, itemTemplate, null);
     }
 
     private void bindViewTo(View view, Object source) {
-        List<IBindingAssociationEngine> bindings = this.viewBinder.getBindingsForViewAndChildren(view);
+        List<IBindingAssociationEngine> bindings = viewBinder.getBindingsForViewAndChildren(view);
         if (bindings == null || bindings.size() < 1) {
             return;
         }
@@ -274,7 +274,7 @@ public class BindableListAdapter extends BaseAdapter {
     }
 
     private void unbindView(View view) {
-        this.viewBinder.clearBindingForViewAndChildren(view);
+        viewBinder.clearBindingForViewAndChildren(view);
     }
 
     public void setCacheSize(int cacheSize) {

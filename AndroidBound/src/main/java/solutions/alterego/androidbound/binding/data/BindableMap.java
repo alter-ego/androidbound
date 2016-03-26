@@ -38,7 +38,7 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
         if (mPropertyValidator != null) {
             if (!mPropertyValidator.isValid(this, key, value)) {
                 if (!mPropertyValidator.canMakeValid(this, key, value)) {
-                    return this.get(key);
+                    return get(key);
                 }
 
                 value = mPropertyValidator.makeValid(this, key, value);
@@ -81,7 +81,7 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
 
         for (K key : oldKeys) {
             if (key != null) {
-                this.raisePropertyChanged(key.toString());
+                raisePropertyChanged(key.toString());
             }
         }
     }
@@ -92,7 +92,7 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
         V oldValue = super.remove(key);
 
         if (contains && key != null) {
-            this.raisePropertyChanged(key.toString());
+            raisePropertyChanged(key.toString());
         }
 
         return oldValue;
@@ -118,7 +118,7 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
 
         Map<K, V> copy = new HashMap<K, V>(this);
         for (Map.Entry<K, V> ent : copy.entrySet()) {
-            this.put(ent.getKey(), ent.getValue());
+            put(ent.getKey(), ent.getValue());
         }
     }
 

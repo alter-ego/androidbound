@@ -22,7 +22,7 @@ public class SelfBinding extends BindingBase {
         }
 
         if (getSubject() instanceof INotifyPropertyChanged) {
-            this.setupChanges(true);
+            setupChanges(true);
             getLogger().debug("Subject implements INotifyPropertyChanged. Subscribing...");
 
             mSubscription = ((INotifyPropertyChanged) subject)
@@ -32,7 +32,7 @@ public class SelfBinding extends BindingBase {
                         onBoundPropertyChanged();
                     });
         } else {
-            this.setupChanges(false);
+            setupChanges(false);
         }
     }
 

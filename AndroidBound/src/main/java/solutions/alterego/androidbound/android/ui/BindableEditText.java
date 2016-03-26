@@ -56,35 +56,35 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
 
     public void setTypeface(Typeface font) {
         super.setTypeface(font);
-        if (this.disposed || this.propertyChanged == null) {
+        if (disposed || propertyChanged == null) {
             return;
         }
-        this.propertyChanged.onNext("Typeface");
+        propertyChanged.onNext("Typeface");
     }
 
     @Override
     public void dispose() {
-        if (this.disposed) {
+        if (disposed) {
             return;
         }
 
-        this.disposed = true;
-        if (this.propertyChanged != null) {
-            this.propertyChanged.onCompleted();
+        disposed = true;
+        if (propertyChanged != null) {
+            propertyChanged.onCompleted();
             propertyChanged = null;
         }
 
-        this.propertyChanged = null;
+        propertyChanged = null;
 
     }
 
     @Override
     public Observable<String> onPropertyChanged() {
-        if (this.propertyChanged == null) {
-            this.propertyChanged = PublishSubject.create();
+        if (propertyChanged == null) {
+            propertyChanged = PublishSubject.create();
         }
 
-        return this.propertyChanged;
+        return propertyChanged;
     }
 
     public void setTextColorState(ColorStateList colors) {
@@ -108,10 +108,10 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
     }
 
     public String getTextString() {
-        return this.getText().toString();
+        return getText().toString();
     }
 
     public void setTextString(String text) {
-        this.setText(text);
+        setText(text);
     }
 }
