@@ -129,7 +129,6 @@ public class BindableRelativeLayout extends RelativeLayout implements INotifyPro
     @SuppressLint("NewApi")
     public void setBackground(Drawable bgd) {
         try {
-            super.setBackgroundDrawable(bgd);
             super.setBackground(bgd);
         } catch (Exception e) {
             //failed because of API level, probably
@@ -152,11 +151,6 @@ public class BindableRelativeLayout extends RelativeLayout implements INotifyPro
     @SuppressLint("NewApi")
     @SuppressWarnings("deprecation")
     public void setBackgroundDrawable(Drawable res) {
-
-        //        if (android.os.Build.VERSION.SDK_INT > 15)
-        //            super.setBackground(res);
-        //        else
         super.setBackgroundDrawable(res);
-
     }
 }
