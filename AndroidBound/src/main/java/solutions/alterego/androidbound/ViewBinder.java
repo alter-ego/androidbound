@@ -89,13 +89,13 @@ public class ViewBinder implements IViewBinder {
         setFontManager(new FontManager(getLogger()));
 
         registerDefaultConverters();
+        tryInitImageLoader(imageLoaderConfiguration);
+    }
 
-        if (imageLoaderConfiguration == null) {
-            ImageLoader.getInstance().init(getDefaultImageLoaderConfig(ctx));
-        } else {
-            ImageLoader.getInstance().init(imageLoaderConfiguration);
+    private void tryInitImageLoader(ImageLoaderConfiguration imageLoaderConfiguration) {
+        if (!ImageLoader.getInstance().isInited()) {
+            ImageLoader.getInstance().init(imageLoaderConfiguration != null ? imageLoaderConfiguration : getDefaultImageLoaderConfig(getContext()));
         }
-
     }
 
     private ImageLoaderConfiguration getDefaultImageLoaderConfig(Context ctx) {
