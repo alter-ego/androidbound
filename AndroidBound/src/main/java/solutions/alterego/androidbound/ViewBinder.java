@@ -278,4 +278,18 @@ public class ViewBinder implements IViewBinder {
         return bindings;
     }
 
+    @Override
+    public void dispose() {
+        clearAllBindings();
+
+        if (mContext != null) {
+            mContext.clear();
+        }
+
+        mConverterService = null;
+        mResourceService = null;
+        mInflaterFactory = null;
+        mViewResolver = null;
+        mFontManager = null;
+    }
 }

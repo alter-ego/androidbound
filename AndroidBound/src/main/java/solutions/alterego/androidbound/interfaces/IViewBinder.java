@@ -12,7 +12,7 @@ import solutions.alterego.androidbound.resources.interfaces.IResourceRegistry;
 import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
 
 
-public interface IViewBinder extends IResourceRegistry, IValueConverterRegistry {
+public interface IViewBinder extends IResourceRegistry, IValueConverterRegistry, IDisposable {
 
     public abstract void clearBindingForViewAndChildren(View rootView);
 
