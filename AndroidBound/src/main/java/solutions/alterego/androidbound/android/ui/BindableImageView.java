@@ -25,10 +25,6 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 
     private int currentResId;
 
-    private Bitmap currentBitmap;
-
-    private Drawable currentDrawable;
-
     private PublishSubject<String> propertyChanged = PublishSubject.create();
 
     private ICommand onLongClick = ICommand.empty;
@@ -149,24 +145,12 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
         }
     }
 
-    public Bitmap getBitmap() {
-        return this.currentBitmap;
-    }
-
     public void setBitmap(Bitmap bmp) {
-        this.currentBitmap = bmp;
-        this.setImageBitmap(bmp);
-        this.invalidate();
-    }
-
-    public Drawable getDrawable() {
-        return this.currentDrawable;
+        setImageBitmap(bmp);
     }
 
     public void setDrawable(Drawable drawable) {
-        this.currentDrawable = drawable;
-        this.setImageDrawable(drawable);
-        this.invalidate();
+        setImageDrawable(drawable);
     }
 
     public Integer getResource() {
@@ -174,9 +158,8 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
     }
 
     public void setResource(Integer resId) {
-        this.currentResId = resId;
-        this.setImageResource(this.currentResId);
-        this.invalidate();
+        currentResId = resId;
+        setImageResource(currentResId);
     }
 
     public void setWidth(int width) {
