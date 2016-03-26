@@ -61,5 +61,16 @@
             android:background="@android:color/white"
             binding="{ Source @= ImageViewSourceUrl }"/>
 
+    <TextView
+            android:id="@+id/prettify_custom_converter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageview"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            tools:text="custom date"
+            android:layout_marginTop="20dp"
+            binding="{ Text @= PrettifyDateTime(CurrentDate, 'longdate') }"/>
+
 
 </RelativeLayout>

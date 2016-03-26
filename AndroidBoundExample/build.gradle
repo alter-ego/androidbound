@@ -51,5 +51,6 @@ dependencies {
     compile 'com.android.support:support-v4:23.2.1'
     apt "org.projectlombok:lombok:1.16.2"
     provided "org.projectlombok:lombok:1.16.2"
+    compile 'net.danlew:android.joda:2.9.0'
     compile project(':AndroidBound')
 }

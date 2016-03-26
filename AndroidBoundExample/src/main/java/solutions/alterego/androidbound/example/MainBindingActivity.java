@@ -19,6 +19,8 @@ public class MainBindingActivity extends BindingAppCompatActivity {
 
     private IViewBinder mViewBinder;
 
+    private CustomValueConverters mCustomValueConverters;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +31,7 @@ public class MainBindingActivity extends BindingAppCompatActivity {
         viewBinder.getFontManager().registerFont("light", Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf"));
         viewBinder.getFontManager().registerFont("italic", Typeface.createFromAsset(getAssets(), "Roboto-Italic.ttf"));
         viewBinder.getFontManager().registerFont("bold", Typeface.createFromAsset(getAssets(), "Roboto-Bold.ttf"));
+        mCustomValueConverters = new CustomValueConverters(this, viewBinder);
 
         setViewBinder(viewBinder);
         setViewModel(new MainBindableActivityViewModel(this, logger));
@@ -51,6 +54,7 @@ public class MainBindingActivity extends BindingAppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mCustomValueConverters = null;
         if (getViewBinder() != null) {
             getViewBinder().dispose();
         }

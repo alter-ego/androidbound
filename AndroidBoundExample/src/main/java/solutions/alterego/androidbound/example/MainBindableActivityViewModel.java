@@ -2,6 +2,8 @@ package solutions.alterego.androidbound.example;
 
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
+import org.joda.time.DateTime;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -101,5 +103,9 @@ public class MainBindableActivityViewModel extends ViewModel implements IDisposa
 
     public String getImageViewSourceUrl() {
         return "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
+    }
+
+    public DateTime getCurrentDate() {
+        return DateTime.now();
     }
 }
