@@ -13,6 +13,7 @@ import android.view.LayoutInflater.Factory2;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,9 +50,7 @@ public class ViewBinder implements IViewBinder {
     @Setter
     private static IAndroidLogger mLogger = NullAndroidLogger.instance;
 
-    @Getter
-    @Setter
-    Context mContext;
+    WeakReference<Context> mContext;
 
     private ValueConverterService mConverterService;
 
@@ -90,6 +89,24 @@ public class ViewBinder implements IViewBinder {
 
         registerDefaultConverters();
         tryInitImageLoader(imageLoaderConfiguration);
+    }
+
+    private void setContext(Context ctx) {
+        if (mContext != null) {
+            mContext.clear();
+        }
+
+        if (ctx != null) {
+            mContext = new WeakReference<>(ctx);
+        }
+    }
+
+    private Context getContext() {
+        if (mContext != null) {
+            return mContext.get();
+        }
+
+        return null;
     }
 
     private void tryInitImageLoader(ImageLoaderConfiguration imageLoaderConfiguration) {
