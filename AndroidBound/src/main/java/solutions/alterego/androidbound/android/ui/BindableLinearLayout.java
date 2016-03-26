@@ -47,12 +47,12 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
         super(context, attrs, defStyle);
     }
 
-    public BindableLinearLayout(Context context, IViewBinder viewbinder, int itemTemplate, Object source) {
+    public BindableLinearLayout(Context context, IViewBinder viewbinder, int iTemplate, Object source) {
         super(context);
-        this.mViewBinder = viewbinder;
-        this.itemTemplate = itemTemplate;
+        mViewBinder = viewbinder;
+        itemTemplate = iTemplate;
 
-        if (this.mViewBinder != null) {
+        if (mViewBinder != null) {
             content = mViewBinder.inflate(context, source, itemTemplate, this);
         }
     }
@@ -63,42 +63,42 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
 
     @Override
     public Observable<String> onPropertyChanged() {
-        if (this.propertyChanged == null) {
-            this.propertyChanged = PublishSubject.create();
+        if (propertyChanged == null) {
+            propertyChanged = PublishSubject.create();
         }
 
-        return this.propertyChanged;
+        return propertyChanged;
     }
 
     @Override
     public void dispose() {
-        if (this.disposed) {
+        if (disposed) {
             return;
         }
 
-        this.disposed = true;
-        if (this.propertyChanged != null) {
-            this.propertyChanged.onCompleted();
+        disposed = true;
+        if (propertyChanged != null) {
+            propertyChanged.onCompleted();
             propertyChanged = null;
         }
 
-        this.propertyChanged = null;
+        propertyChanged = null;
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        if (this.disposed || this.propertyChanged == null) {
+        if (disposed || propertyChanged == null) {
             return;
         }
 
         if (w != oldw) {
-            this.propertyChanged.onNext("Width");
+            propertyChanged.onNext("Width");
         }
 
         if (h != oldh) {
-            this.propertyChanged.onNext("Height");
+            propertyChanged.onNext("Height");
         }
     }
 
@@ -116,32 +116,32 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
     public void setClick(ICommand value) {
         if (value == null) {
             onClick = ICommand.empty;
-            this.setOnClickListener(null);
+            setOnClickListener(null);
             return;
         }
 
-        this.setOnClickListener(this);
+        setOnClickListener(this);
         onClick = value;
     }
 
     public void setWidth(int width) {
-        if (width == this.getWidth()) {
+        if (width == getWidth()) {
             return;
         }
 
-        ViewGroup.LayoutParams p = this.getLayoutParams();
+        ViewGroup.LayoutParams p = getLayoutParams();
         p.width = width;
-        this.setLayoutParams(p);
+        setLayoutParams(p);
     }
 
     public void setHeight(int height) {
-        if (height == this.getHeight()) {
+        if (height == getHeight()) {
             return;
         }
 
-        ViewGroup.LayoutParams p = this.getLayoutParams();
+        ViewGroup.LayoutParams p = getLayoutParams();
         p.height = height;
-        this.setLayoutParams(p);
+        setLayoutParams(p);
     }
 
     @SuppressLint("NewApi")
@@ -187,11 +187,11 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
     }
 
     public void bindTo(Object source) {
-        if (this.mViewBinder == null) {
+        if (mViewBinder == null) {
             return;
         }
 
-        List<IBindingAssociationEngine> bindings = this.mViewBinder.getBindingsForViewAndChildren(this);
+        List<IBindingAssociationEngine> bindings = mViewBinder.getBindingsForViewAndChildren(this);
         if (bindings == null || bindings.size() < 1) {
             return;
         }
@@ -200,16 +200,16 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
             binding.setDataContext(source);
         }
 
-        this.invalidate();
-        this.requestLayout();
+        invalidate();
+        requestLayout();
 
     }
 
     public void unbind() {
-        if (this.mViewBinder == null) {
+        if (mViewBinder == null) {
             return;
         }
 
-        this.mViewBinder.clearBindingForViewAndChildren(this);
+        mViewBinder.clearBindingForViewAndChildren(this);
     }
 }

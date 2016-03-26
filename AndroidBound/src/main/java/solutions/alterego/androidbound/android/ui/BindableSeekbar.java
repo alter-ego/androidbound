@@ -34,45 +34,45 @@ public class BindableSeekbar extends SeekBar implements INotifyPropertyChanged {
     }
 
     public ICommand getProgressTrackBegin() {
-        return this.progressTrackBegin;
+        return progressTrackBegin;
     }
 
     public void setProgressTrackBegin(ICommand cmd) {
         if (cmd == null) {
-            this.progressTrackBegin = ICommand.empty;
+            progressTrackBegin = ICommand.empty;
             return;
         }
-        this.progressTrackBegin = cmd;
+        progressTrackBegin = cmd;
     }
 
     public ICommand getProgressTrackEnd() {
-        return this.progressTrackEnd;
+        return progressTrackEnd;
     }
 
     public void setProgressTrackEnd(ICommand cmd) {
         if (cmd == null) {
-            this.progressTrackEnd = ICommand.empty;
+            progressTrackEnd = ICommand.empty;
             return;
         }
-        this.progressTrackEnd = cmd;
+        progressTrackEnd = cmd;
     }
 
     public ICommand getProgressTrackChanged() {
-        return this.progressTrackChanged;
+        return progressTrackChanged;
     }
 
     public void setProgressTrackChanged(ICommand cmd) {
         if (cmd == null) {
-            this.progressTrackChanged = ICommand.empty;
+            progressTrackChanged = ICommand.empty;
         }
-        this.progressTrackChanged = cmd;
+        progressTrackChanged = cmd;
     }
 
     @Override
     public Observable<String> onPropertyChanged() {
-        if (this.propertyChanged == null || this.disposed) {
-            this.propertyChanged = PublishSubject.create();
-            this.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+        if (propertyChanged == null || disposed) {
+            propertyChanged = PublishSubject.create();
+            setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
@@ -113,23 +113,23 @@ public class BindableSeekbar extends SeekBar implements INotifyPropertyChanged {
                 }
             });
         }
-        return this.propertyChanged;
+        return propertyChanged;
     }
 
     @Override
     public void dispose() {
-        if (this.disposed) {
+        if (disposed) {
             return;
         }
 
-        this.disposed = true;
-        if (this.propertyChanged != null) {
-            this.propertyChanged.onCompleted();
+        disposed = true;
+        if (propertyChanged != null) {
+            propertyChanged.onCompleted();
         }
 
-        this.propertyChanged = null;
-        this.progressTrackBegin = null;
-        this.progressTrackChanged = null;
-        this.progressTrackEnd = null;
+        propertyChanged = null;
+        progressTrackBegin = null;
+        progressTrackChanged = null;
+        progressTrackEnd = null;
     }
 }

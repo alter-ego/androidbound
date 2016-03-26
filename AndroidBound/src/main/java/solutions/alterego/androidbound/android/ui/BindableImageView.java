@@ -108,44 +108,44 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 
     @Override
     public void dispose() {
-        if (this.disposed) {
+        if (disposed) {
             return;
         }
 
-        this.disposed = true;
-        if (this.propertyChanged != null) {
-            this.propertyChanged.onCompleted();
+        disposed = true;
+        if (propertyChanged != null) {
+            propertyChanged.onCompleted();
             propertyChanged = null;
         }
 
-        this.propertyChanged = null;
-        this.onClick = null;
+        propertyChanged = null;
+        onClick = null;
         onLongClick = null;
     }
 
     @Override
     public Observable<String> onPropertyChanged() {
-        if (this.propertyChanged == null) {
-            this.propertyChanged = PublishSubject.create();
+        if (propertyChanged == null) {
+            propertyChanged = PublishSubject.create();
         }
 
-        return this.propertyChanged;
+        return propertyChanged;
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        if (this.disposed || this.propertyChanged == null) {
+        if (disposed || propertyChanged == null) {
             return;
         }
 
         if (w != oldw) {
-            this.propertyChanged.onNext("Width");
+            propertyChanged.onNext("Width");
         }
 
         if (h != oldh) {
-            this.propertyChanged.onNext("Height");
+            propertyChanged.onNext("Height");
         }
     }
 
@@ -170,7 +170,7 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
     }
 
     public Integer getResource() {
-        return this.currentResId;
+        return currentResId;
     }
 
     public void setResource(Integer resId) {
@@ -180,23 +180,23 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
     }
 
     public void setWidth(int width) {
-        if (width == this.getWidth()) {
+        if (width == getWidth()) {
             return;
         }
 
-        ViewGroup.LayoutParams p = this.getLayoutParams();
+        ViewGroup.LayoutParams p = getLayoutParams();
         p.width = width;
-        this.setLayoutParams(p);
+        setLayoutParams(p);
     }
 
     public void setHeight(int height) {
-        if (height == this.getHeight()) {
+        if (height == getHeight()) {
             return;
         }
 
-        ViewGroup.LayoutParams p = this.getLayoutParams();
+        ViewGroup.LayoutParams p = getLayoutParams();
         p.height = height;
-        this.setLayoutParams(p);
+        setLayoutParams(p);
     }
 
 }
