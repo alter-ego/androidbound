@@ -26,10 +26,11 @@ public class ValueConverterService implements IValueConverterRegistry, IValueCon
     }
 
     public IValueConverter find(String name) {
-        if (converters.containsKey(name)) {
+        if (name != null && converters.containsKey(name)) {
+            logger.info("ValueConverterService using non-default converter " + name);
             return converters.get(name);
         }
-        logger.warning("mValueConverter " + name + " not found. Returning default.");
+
         return DefaultConverter.instance;
     }
 
