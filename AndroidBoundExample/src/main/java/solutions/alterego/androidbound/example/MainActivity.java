@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mCustomValueConverters = null;
 
         //you should dispose of it only if it's not global (injected via Dagger, maybe)!
         if (mViewBinder != null) {
