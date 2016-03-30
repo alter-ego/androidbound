@@ -51,7 +51,7 @@
             android:layout_below="@+id/edittext"
             android:textSize="20sp"
             tools:text="bound to edittext"
-            binding="{ Text @= TextViewBoundToEditText }; { Click @- TextViewClick }; { LongClick @- TextViewLongClick }"/>
+            binding="{ Text @= TextViewBoundToEditText }; { Click @- TextViewClick }; { LongClick @- TextViewLongClick }; { Typeface @- ToFont(this) }"/>
 
     <ImageView
             android:id="@+id/imageview"
