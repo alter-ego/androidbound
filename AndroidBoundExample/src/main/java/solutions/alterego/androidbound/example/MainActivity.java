@@ -20,29 +20,53 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewBinder mViewBinder;
 
+    private ViewModel mViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         IAndroidLogger logger = new DetailedAndroidLogger(LOGGING_TAG, LOGGING_LEVEL);
         mViewBinder = new ViewBinder(this, logger, null);
-        mViewBinder.getFontManager().setDefaultFont(Typeface.createFromAsset(getAssets(), "Roboto-Regular.ttf"));
+
+        mViewBinder.getFontManager().setDefaultFont(Typeface.createFromAsset(getAssets(), "Roboto-Bold.ttf"));
         mViewBinder.getFontManager().registerFont("light", Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf"));
         mViewBinder.getFontManager().registerFont("italic", Typeface.createFromAsset(getAssets(), "Roboto-Italic.ttf"));
         mViewBinder.getFontManager().registerFont("bold", Typeface.createFromAsset(getAssets(), "Roboto-Bold.ttf"));
 
-        ViewModel viewModel = new MainActivityViewModel(this, logger);
+        mViewModel = new MainActivityViewModel(this, logger);
+        mViewModel.onCreate(savedInstanceState);
 
-        View view = mViewBinder.inflate(this, viewModel, R.layout.activity_main, null);
+        View view = mViewBinder.inflate(this, mViewModel, R.layout.activity_main, null);
         setContentView(view);
 
         setTitle("MainActivity");
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mViewModel.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mViewModel.onPause();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mViewModel.onSaveInstanceState(outState);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        mViewModel.dispose();
 
-        //you should dispose of it only if it's not global (injected via Dagger, maybe)!
+        //you shouldn't actually dispose of the view binder, it should be global (injected via Dagger maybe)!
+        //this is just for demonstration purposes
         if (mViewBinder != null) {
             mViewBinder.dispose();
         }
