@@ -109,11 +109,11 @@ This library was tested with the version 23.2.1 of the support libary. It hasn't
 
 ## ROADMAP
 
-**0.6** First public release
+**0.6** First public release with basic wiki.
 
-**0.7** Add support for RecyclerView. Add support for multiple ViewModels in Binding activities.
+**0.7** Add support for RecyclerView and ViewPager. ListView improvements.
 
-**0.x** Extract Universal Image Loader and add support for other image-loading libraries like Picasso and Fresco.
+**0.x** Extract Universal Image Loader and add support for other image-loading libraries like Picasso and Fresco. Replace reflection with generated code.
 
 _Think we're missing something? Open an issue!_
 
