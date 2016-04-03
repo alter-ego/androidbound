@@ -1,3 +1,11 @@
+def siteUrl = 'https://github.com/alter-ego/androidbound'
+def gitUrl = 'https://github.com/alter-ego/androidbound.git'
+def artifactGroup = "solutions.alterego"
+def artifactName = "androidbound"
+def artifactVersion = "0.5.0"
+def artifactDesc = "This library offers easy view bindings for Android."
+def artifactVersionCode = 19
+
 buildscript {
     ext.kotlin_version = '1.0.1'
 
@@ -9,11 +17,8 @@ buildscript {
         classpath 'com.android.tools.build:gradle:1.5.0'
         classpath 'me.tatarka:gradle-retrolambda:3.2.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6"
     }
-}
-
-plugins {
-    id "me.tatarka.retrolambda" version '3.2.4'
 }
 
 apply plugin: 'com.android.library'
@@ -21,17 +26,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'maven'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
 
 repositories {
     jcenter()
     mavenCentral()
     maven() { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url "https://github.com/alter-ego/advanced-android-logger/raw/develop/releases/" }
-}
-
-ext {
-    buildVersionName = "0.5.0"
-    buildVersionCode = 19
 }
 
 android {
@@ -41,8 +43,8 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 23
-        versionCode buildVersionCode
-        versionName buildVersionName
+        versionCode artifactVersionCode
+        versionName artifactName
     }
 
     compileOptions {
@@ -94,27 +96,77 @@ dependencies {
     testCompile "org.mockito:mockito-core:1.9.5"
 }
 
-task clearJar(type: Delete) {
-    delete 'build/outputs/androidbound.jar'
+// build a jar with source files
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
 }
 
-task makeJar(type: Copy) {
-    from('build/intermediates/bundles/debug/')
-    into('../releases/')
-    include('classes.jar')
-    rename ('classes.jar', 'androidbound.jar')
+task javadoc(type: Javadoc) {
+    failOnError false
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
 }
 
-makeJar.dependsOn(clearJar, build)
+// build a jar with javadoc
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
 
 uploadArchives {
     repositories.mavenDeployer {
         def deployPath = file(getProperty('aar.deployPath'))
         repository(url: "file://${deployPath.absolutePath}")
         pom.project {
-            groupId 'solutions.alterego'
-            artifactId 'androidbound'
-            version buildVersionName
+            groupId artifactGroup
+            artifactId artifactName
+            version artifactVersion
+        }
+    }
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    dryRun = true
+
+    publications = ['Publication']
+    pkg {
+        repo = "android"
+        name = artifactName
+        userOrg = 'alterego-solutions'
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+        issueTrackerUrl = 'https://github.com/alter-ego/androidbound/issues'
+
+        version {
+            name = artifactVersion
+            desc = artifactDesc
+            released = new Date()
+            vcsTag = artifactVersion
+        }
+    }
+}
+
+publishing {
+    publications {
+        Publication(MavenPublication) {
+            artifact sourcesJar
+            artifact javadocJar
+            groupId artifactGroup
+            artifactId artifactName
+            version artifactVersion
         }
     }
 }
