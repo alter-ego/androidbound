@@ -39,7 +39,9 @@ AndroidBound doesn't let you put logic in the views because the logic should be 
 #OK, you convinced me. How do I use this?
 Here's a quick guide.
 
-1. Setup the Activity and ViewModel.
+1. Create your ViewModel for the Activity by extending a `ViewModel` class: `public class MainActivityViewModel extends ViewModel...`
+
+2. Setup the Activity and ViewModel.
 
 	**If you extend normal (non-Binding) Activities:**
 
@@ -61,7 +63,7 @@ Here's a quick guide.
         setContentView(R.layout.activity_bindable_main);
 
 
-2. Add binding to you widget in the layout file, e.g.
+3. Add binding to you widget in the layout file, e.g.
 
 		<TextView
             android:id="@+id/activity_title"
@@ -69,7 +71,7 @@ Here's a quick guide.
             android:layout_height="wrap_content"
             binding="{ Text @= MainActivityTitle }; { TextColor @= MainActivityTitleColor }"/>
 
-3. In your ViewModel, either add the property called `MainActivityTitle`, like this:
+4. In your ViewModel, either add the property called `MainActivityTitle`, like this:
 
 		public String MainActivityTitle = "Title";
 
@@ -86,7 +88,7 @@ Here's a quick guide.
 			raisePropertyChanged("MainActivityTitle");
 		}
 
-4. When you don't need the ViewModel any more, simply call `ViewModel.dispose()` which should release all the references and unsubscribe from all the subscriptions.
+5. When you don't need the ViewModel any more, simply call `ViewModel.dispose()` which should release all the references and unsubscribe from all the subscriptions.
 
 For more details, please see the example. Wiki should be coming, sooner or later.
 
