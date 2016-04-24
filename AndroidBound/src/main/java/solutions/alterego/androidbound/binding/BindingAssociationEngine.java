@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import rx.Subscription;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import solutions.alterego.androidbound.binding.data.BindingMode;
 import solutions.alterego.androidbound.binding.data.BindingRequest;
 import solutions.alterego.androidbound.binding.data.BindingSpecification;
@@ -85,12 +86,14 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
         if (needsSubs) {
             if (mSourceBinding.hasChanges()) {
-                mSourceSubscription = mSourceBinding.getChanges().subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object obj) {
-                        updateTargetFromSource(obj);
-                    }
-                });
+                mSourceSubscription = mSourceBinding.getChanges()
+                        .subscribeOn(Schedulers.computation())
+                        .subscribe(new Action1<Object>() {
+                            @Override
+                            public void call(Object obj) {
+                                updateTargetFromSource(obj);
+                            }
+                        });
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getPath() + " needs subscription, but changes were not available");
             }
@@ -104,12 +107,14 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
         if (needsSubs) {
             if (mTargetBinding.hasChanges()) {
-                mTargetSubscription = mTargetBinding.getChanges().subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object obj) {
-                        updateSourceFromTarget(obj);
-                    }
-                });
+                mTargetSubscription = mTargetBinding.getChanges()
+                        .subscribeOn(Schedulers.computation())
+                        .subscribe(new Action1<Object>() {
+                            @Override
+                            public void call(Object obj) {
+                                updateSourceFromTarget(obj);
+                            }
+                        });
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getTarget() + " needs subscription, but changes were not available.");
             }
