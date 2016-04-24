@@ -136,7 +136,7 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 bintray {
     user = properties.getProperty("bintray.user")
     key = properties.getProperty("bintray.apikey")
-    dryRun = true
+    dryRun = false
 
     publications = ['Publication']
     pkg {
@@ -161,6 +161,7 @@ bintray {
 publishing {
     publications {
         Publication(MavenPublication) {
+            artifact("$buildDir/outputs/aar/AndroidBound-release.aar")
             artifact sourcesJar
             artifact javadocJar
             groupId artifactGroup
