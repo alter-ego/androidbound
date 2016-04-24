@@ -30,22 +30,11 @@
             android:text="open main activity"
             binding="{ Click @- OpenMainActivity }"/>
 
-    <Button
-            android:id="@+id/add_list_item_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/open_main_activity_button"
-            android:textSize="16sp"
-            android:layout_margin="16dp"
-            android:text="add list item"
-            binding="{ Click @- AddListItem }"/>
-
     <ListView
             android:id="@+id/listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/add_list_item_button"
+            android:layout_below="@+id/open_main_activity_button"
             android:choiceMode="singleChoice"
             android:divider="@android:color/black"
             android:listSelector="@android:color/transparent"
