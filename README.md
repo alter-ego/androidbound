@@ -32,16 +32,28 @@ Well, it's slower than not using reflection, yes. But it isn't that noticeable. 
 Anyway, we don't have any benchmarks currently. Feel free to do some and send them to us.
 
 #So how is this different from Android Data Binding? 
-Compared to [Android Data Binding](http://developer.android.com/tools/data-binding/guide.html), the execution is similar but the idea is different. The binding implementation is pretty similar, but they don't solve the problem of a 1K+-line Activity, they just shuffle those lines to the layout, so you will have 500-line activity and 500-line layout, with logic divided between them, somehow. It takes the [Single Reponsibility Principle](https://en.wikipedia.org/wiki/Single_responsibility_principle), shoots it in the head, pisses on its corpse, goes to its funeral and then kills everyone present.  
+Compared to [Android Data Binding](http://developer.android.com/tools/data-binding/guide.html), the execution is similar but the idea is different. Their binding implementation is pretty similar, but they don't solve the problem of a 1K+-line Activity, they just shuffle those lines to the layout, so you will have 500-line activity and 500-line layout, with logic divided between them, somehow. It takes the [Single Reponsibility Principle](https://en.wikipedia.org/wiki/Single_responsibility_principle), shoots it in the head, pisses on its corpse, goes to its funeral and then kills everyone present.  
 
-AndroidBound doesn't let you put logic in the views because the logic should be in the ViewModel. Again - Android stuff in the Activity/Fragment, logic (minus viewbinding boilerplate) in the ViewModel.
+AndroidBound doesn't let you put logic in the views because the logic should be in the ViewModel or Presenter or **wherever except in the View or layout**. Again - Android stuff in the Activity/Fragment, logic (minus viewbinding boilerplate) in the ViewModel. That way you can test the ViewModel/Presenter using unit tests, which is much quicker.
 
 #OK, you convinced me. How do I use this?
 Here's a quick guide.
 
+1. Add these to your `build.gradle` file: 
+
+        repositories {
+    		...
+    		maven { url "https://dl.bintray.com/alterego-solutions/android" }
+	    }
+    
+	    dependencies {
+	    	...
+	    	compile 'solutions.alterego:androidbound:0.6.0'
+	    }
+
 1. Create your ViewModel for the Activity by extending a `ViewModel` class: `public class MainActivityViewModel extends ViewModel...`
 
-2. Setup the Activity and ViewModel.
+1. Setup the Activity and ViewModel.
 
 	**If you extend normal (non-Binding) Activities:**
 
@@ -63,7 +75,7 @@ Here's a quick guide.
         setContentView(R.layout.activity_bindable_main);
 
 
-3. Add binding to you widget in the layout file, e.g.
+1. Add binding to you widget in the layout file, e.g.
 
 		<TextView
             android:id="@+id/activity_title"
@@ -71,7 +83,7 @@ Here's a quick guide.
             android:layout_height="wrap_content"
             binding="{ Text @= MainActivityTitle }; { TextColor @= MainActivityTitleColor }"/>
 
-4. In your ViewModel, either add the property called `MainActivityTitle`, like this:
+1. In your ViewModel, either add the property called `MainActivityTitle`, like this:
 
 		public String MainActivityTitle = "Title";
 
@@ -88,7 +100,7 @@ Here's a quick guide.
 			raisePropertyChanged("MainActivityTitle");
 		}
 
-5. When you don't need the ViewModel any more, simply call `ViewModel.dispose()` which should release all the references and unsubscribe from all the subscriptions.
+1. When you don't need the ViewModel any more, simply call `ViewModel.dispose()` which should release all the references and unsubscribe from all the subscriptions.
 
 For more details, please see the example. Wiki should be coming, sooner or later.
 
@@ -113,7 +125,7 @@ This library was tested with the version 23.2.1 of the support libary. It hasn't
 
 **0.6** First public release with basic wiki.
 
-**0.7** Add support for RecyclerView and ViewPager. ListView improvements.
+**0.7** Add support for RecyclerView and ViewPager.
 
 **0.x** Extract Universal Image Loader and add support for other image-loading libraries like Picasso and Fresco. Replace reflection with generated code.
 
