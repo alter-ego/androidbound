@@ -8,6 +8,8 @@ env:
   global:
   - MALLOC_ARENA_MAX=2
 
+sudo: false
+
 android:
 
    components:
@@ -36,6 +38,11 @@ before_script:
   #- adb shell input keyevent 82 &
 
 notifications:
+  email: false
   slack: alteregosolutions:q2eicS9FFWEEyrmn55SPa5mT#libraries
 
-script: ./gradlew assemble
+cache:
+  directories:
+    - $HOME/.gradle
+
+script: ./gradlew clean assembleDebug
