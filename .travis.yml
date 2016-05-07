@@ -1,10 +1,15 @@
 language: android
 
+jdk:
+  - oraclejdk7
+  - oraclejdk8
+
 env:
   global:
   - MALLOC_ARENA_MAX=2
 
 android:
+
   components:
     # The BuildTools version used by your project
     - tools
@@ -18,6 +23,11 @@ android:
     - extra-google-m2repository
     - addon-google_apis-google-23
     - sys-img-armeabi-v7a-android-21
+
+before_install:
+  - export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
+  - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
+  - export JAVA_HOME=$JAVA7_HOME
 
 before_script:
   #- echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
