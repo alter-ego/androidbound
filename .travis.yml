@@ -10,7 +10,7 @@ env:
 
 android:
 
-  components:
+   components:
     # The BuildTools version used by your project
     - tools
     - build-tools-23.0.2
@@ -34,5 +34,8 @@ before_script:
   #- emulator -avd test -no-skin -no-audio -no-window &
   #- android-wait-for-emulator
   #- adb shell input keyevent 82 &
+
+notifications:
+  slack: alteregosolutions:q2eicS9FFWEEyrmn55SPa5mT#libraries
 
 script: ./gradlew assemble
