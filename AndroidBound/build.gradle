@@ -6,10 +6,8 @@ def artifactVersion = "0.6.1"
 def artifactDesc = "This library offers easy view bindings for Android."
 def artifactVersionCode = 21
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def bintrayuser = properties.getProperty('bintray.user')
-def bintraypwd = properties.getProperty('bintray.apikey')
+ext.bintrayuser = System.getenv("BINTRAY_USER")
+ext.bintraypwd = System.getenv("BINTRAY_PWD")
 
 buildscript {
     ext.kotlin_version = '1.0.1'
