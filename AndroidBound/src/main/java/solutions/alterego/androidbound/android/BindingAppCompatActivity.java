@@ -23,19 +23,18 @@ public abstract class BindingAppCompatActivity extends AppCompatActivity impleme
     @Setter
     private ViewModel mViewModel;
 
+    private View mView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getViewBinder() != null) {
-            getViewBinder().clearAllBindings();
-        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (getViewBinder() != null) {
-            getViewBinder().clearAllBindings();
+            getViewBinder().clearBindingForViewAndChildren(mView);
         }
         if (getViewModel() != null) {
             getViewModel().dispose();
@@ -53,8 +52,8 @@ public abstract class BindingAppCompatActivity extends AppCompatActivity impleme
             throw new RuntimeException("getViewBinder must not be null!");
         }
 
-        View view = getViewBinder().inflate(this, mViewModel, layoutResID, null);
-        setContentView(view);
+        mView = getViewBinder().inflate(this, mViewModel, layoutResID, null);
+        setContentView(mView);
     }
 
     @Override
