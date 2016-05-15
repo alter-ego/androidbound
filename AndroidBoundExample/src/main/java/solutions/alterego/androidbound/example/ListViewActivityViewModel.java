@@ -89,6 +89,14 @@ public class ListViewActivityViewModel extends ViewModel implements IDisposable 
 
     public void doSelectListItem(ListViewItem item) {
         Toast.makeText(getParentActivity(), "clicked list item = " + item.getTitle(), Toast.LENGTH_SHORT).show();
+
+        Intent activityIntent = new Intent(getParentActivity(), ListItemDetailActivity.class);
+        activityIntent.putExtra(ListItemDetailActivity.EXTRA_ITEM_TITLE, item.getTitle());
+        activityIntent.putExtra(ListItemDetailActivity.EXTRA_ITEM_IMAGE_URL, item.getImageUrl());
+
+        if (getParentActivity() != null) {
+            getParentActivity().startActivity(activityIntent);
+        }
     }
 
     public static class ListViewItem {
