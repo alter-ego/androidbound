@@ -6,7 +6,9 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.LayoutInflater.Factory;
 import android.view.LayoutInflater.Factory2;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,19 +32,19 @@ import solutions.alterego.androidbound.android.converters.FontConverter;
 import solutions.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.interfaces.IFontManager;
 import solutions.alterego.androidbound.binding.TextSpecificationBinder;
-import solutions.alterego.androidbound.factories.SourceBindingFactory;
-import solutions.alterego.androidbound.factories.TargetBindingFactory;
 import solutions.alterego.androidbound.binding.interfaces.IBinder;
 import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
+import solutions.alterego.androidbound.converters.ValueConverterService;
 import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
+import solutions.alterego.androidbound.factories.SourceBindingFactory;
+import solutions.alterego.androidbound.factories.TargetBindingFactory;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
-import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
 import solutions.alterego.androidbound.parsers.BindingSpecificationListParser;
 import solutions.alterego.androidbound.parsers.BindingSpecificationParser;
 import solutions.alterego.androidbound.resources.ResourceService;
-import solutions.alterego.androidbound.converters.ValueConverterService;
 import solutions.alterego.androidbound.viewresolvers.ChainedViewResolver;
 import solutions.alterego.androidbound.viewresolvers.ViewResolver;
+import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
 
 @Accessors(prefix = "m")
 public class ViewBinder implements IViewBinder {
@@ -202,7 +205,7 @@ public class ViewBinder implements IViewBinder {
         LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(context);
 
         if (android.os.Build.VERSION.SDK_INT >= 11 && context instanceof Factory2) {
-            inflater.setFactory2(mInflaterFactory.inflaterFor(source, (Factory2) context));
+            setFactory2(context, source, inflater);
         } else if (context instanceof Factory) {
             inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) context));
         } else {
@@ -214,24 +217,65 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup, IViewResolver resolver) {
-        LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(context);
 
         mViewResolver.addResolverToFront(resolver);
-
-        if (android.os.Build.VERSION.SDK_INT >= 11 && context instanceof Factory2) {
-            inflater.setFactory2(mInflaterFactory.inflaterFor(source, (Factory2) context));
-        } else if (context instanceof Factory) {
-            inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) context));
-        } else {
-            inflater.setFactory(mInflaterFactory.inflaterFor(source));
-        }
-
-        View view = inflater.inflate(layoutResID, viewGroup);
+        View view = this.inflate(context, source, layoutResID, viewGroup);
         mViewResolver.removeResolver(resolver);
 
         return view;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void setFactory2(Context context, Object source, LayoutInflater inflater) {
+        LayoutInflater.Factory2 factory2 = mInflaterFactory.inflaterFor(source, (Factory2) context);
+        inflater.setFactory2(factory2);
+
+        //code from android.support.v4.view.LayoutInflaterCompatHC
+        if (android.os.Build.VERSION.SDK_INT < 21) {
+            final LayoutInflater.Factory f = inflater.getFactory();
+            if (f instanceof LayoutInflater.Factory2) {
+                // The merged factory is now set to getFactory(), but not getFactory2() (pre-v21).
+                // We will now try and force set the merged factory to mFactory2
+                forceSetFactory2(inflater, (LayoutInflater.Factory2) f);
+            } else {
+                // Else, we will force set the original wrapped Factory2
+                forceSetFactory2(inflater, factory2);
+            }
+        }
+    }
+
+    /**
+     * For APIs >= 11 && < 21, there was a framework bug that prevented a LayoutInflater's
+     * Factory2 from being merged properly if set after a cloneInContext from a LayoutInflater
+     * that already had a Factory2 registered. We work around that bug here. If we can't we
+     * log an error.
+     */
+    private boolean sCheckedField;
+
+    private Field sLayoutInflaterFactory2Field;
+
+    //code from android.support.v4.view.LayoutInflaterCompatHC
+    private void forceSetFactory2(LayoutInflater inflater, LayoutInflater.Factory2 factory) {
+        if (!sCheckedField) {
+            try {
+                sLayoutInflaterFactory2Field = LayoutInflater.class.getDeclaredField("mFactory2");
+                sLayoutInflaterFactory2Field.setAccessible(true);
+            } catch (NoSuchFieldException e) {
+                mLogger.error("forceSetFactory2 Could not find field 'mFactory2' on class " + LayoutInflater.class.getName()
+                        + "; inflation may have unexpected results." + e.getMessage());
+            }
+            sCheckedField = true;
+        }
+        if (sLayoutInflaterFactory2Field != null) {
+            try {
+                sLayoutInflaterFactory2Field.set(inflater, factory);
+            } catch (IllegalAccessException e) {
+                mLogger.error(
+                        "forceSetFactory2 could not set the Factory2 on LayoutInflater " + inflater + "; inflation may have unexpected results." + e
+                                .getMessage());
+            }
+        }
+    }
 
     @Override
     public void registerBindingsFor(View view, List<IBindingAssociationEngine> bindings) {
