@@ -39,7 +39,7 @@ before_script:
 
 notifications:
   email: false
-  slack: alteregosolutions:q2eicS9FFWEEyrmn55SPa5mT#libraries
+  slack: alteregosolutions:q2eicS9FFWEEyrmn55SPa5mT#android-bound
 
 cache:
   directories:
