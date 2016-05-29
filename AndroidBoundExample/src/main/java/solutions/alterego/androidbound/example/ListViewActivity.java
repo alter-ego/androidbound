@@ -1,7 +1,9 @@
 package solutions.alterego.androidbound.example;
 
 import com.alterego.advancedandroidlogger.implementations.DetailedAndroidLogger;
+import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+import com.codemonkeylabs.fpslibrary.TinyDancer;
 
 import android.os.Bundle;
 
@@ -22,8 +24,9 @@ public class ListViewActivity extends BindingAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         IAndroidLogger logger = new DetailedAndroidLogger(LOGGING_TAG, LOGGING_LEVEL);
+        TinyDancer.create().show(this);
 
-        ViewBinder viewBinder = new ViewBinder(this, logger, null);
+        ViewBinder viewBinder = new ViewBinder(this, NullAndroidLogger.instance, null);
         setViewBinder(viewBinder);
         setViewModel(new ListViewActivityViewModel(this, logger));
 
