@@ -39,8 +39,10 @@ public abstract class ViewModel implements INeedsLogger, INotifyPropertyChanged,
 
     @Override
     public void dispose() {
-        propertyChanges.onCompleted();
-        propertyChanges = null;
+        if (propertyChanges != null) {
+            propertyChanges.onCompleted();
+            propertyChanges = null;
+        }
 
         if (mParentActivity != null && mParentActivity.get() != null) {
             mParentActivity.clear();
