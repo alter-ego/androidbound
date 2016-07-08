@@ -8,6 +8,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,9 @@ public class BindableListView extends ListView implements OnItemClickListener, O
     @Getter
     private BindableListAdapter mAdapter;
 
+    @Getter
+    private Map<Class<?>, Integer> mTemplatesForObjects;
+
     private IViewBinder viewBinder;
 
     private View mHeader;
@@ -46,11 +50,14 @@ public class BindableListView extends ListView implements OnItemClickListener, O
     public BindableListView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        //TODO add footer
         mContext = context;
         mAttributes = attrs;
 
         itemTemplate = getItemTemplate(context, attrs);
-        listHeaderTemplate = getListHeaderTemplate(context, attrs);
+        listHeaderTemplate = getListHeaderTemplate(context, attrs); //TODO doing anything with header?
+
+        mTemplatesForObjects = new HashMap<>();
 
         setOnItemClickListener(this);
         setOnItemLongClickListener(this);
@@ -60,15 +67,15 @@ public class BindableListView extends ListView implements OnItemClickListener, O
         super(context, attrs, defStyle);
     }
 
-    private static int getItemTemplate(Context context, AttributeSet attrs) {
+    private int getItemTemplate(Context context, AttributeSet attrs) {
         return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableListView.itemTemplate, 0);
     }
 
-    private static int getListHeaderTemplate(Context context, AttributeSet attrs) {
+    private int getListHeaderTemplate(Context context, AttributeSet attrs) {
         return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableListView.listHeaderTemplate, 0);
     }
 
-    private static int getListFooterTemplate(Context context, AttributeSet attrs) {
+    private int getListFooterTemplate(Context context, AttributeSet attrs) {
         return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableListView.listFooterTemplate, 0);
     }
 
@@ -110,10 +117,18 @@ public class BindableListView extends ListView implements OnItemClickListener, O
         if (mAdapter == null) {
             mAdapter = new BindableListAdapter(getContext(), getViewBinder());
             mAdapter.setItemTemplate(itemTemplate);
+            mAdapter.setTemplatesForObjects(mTemplatesForObjects);
             mAdapter.setItemsSource(value);
             setAdapter(mAdapter);
         } else {
             mAdapter.setItemsSource(value);
+        }
+    }
+
+    public void setTemplatesForObjects(Map<Class<?>, Integer> map) {
+        mTemplatesForObjects = map;
+        if (mAdapter != null) {
+            mAdapter.setTemplatesForObjects(mTemplatesForObjects);
         }
     }
 
