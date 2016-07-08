@@ -48,7 +48,7 @@ Here's a quick guide.
     
 	    dependencies {
 	    	...
-	    	compile 'solutions.alterego:androidbound:0.6.0'
+	    	compile 'solutions.alterego:androidbound:0.6.3'
 	    }
 
 1. Create your ViewModel for the Activity by extending a `ViewModel` class: `public class MainActivityViewModel extends ViewModel...`
