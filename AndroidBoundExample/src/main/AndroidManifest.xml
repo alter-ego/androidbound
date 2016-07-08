@@ -32,6 +32,11 @@
         </activity>
 
         <activity
+                android:name=".ListViewWithObjectsActivity"
+                android:label="@string/title_activity_LVWithObjects">
+        </activity>
+
+        <activity
                 android:name=".ListItemDetailActivity"
                 android:label="@string/app_name">
         </activity>

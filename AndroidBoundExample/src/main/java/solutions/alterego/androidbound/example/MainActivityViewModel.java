@@ -154,4 +154,15 @@ public class MainActivityViewModel extends ViewModel implements IDisposable {
         }
     }
 
+    public boolean canOpenListViewWithObjectsActivity() {
+        return true;
+    }
+
+    public void doOpenListViewWithObjectsActivity() {
+        Intent activityIntent = new Intent(getParentActivity(), ListViewWithObjectsActivity.class);
+        if (getParentActivity() != null) {
+            getParentActivity().startActivity(activityIntent);
+        }
+    }
+
 }

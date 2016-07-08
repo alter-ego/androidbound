@@ -6,7 +6,7 @@
                 android:orientation="vertical"
                 android:padding="10dp"
                 tools:ignore="MissingPrefix"
-                android:background="@color/darker_gray">
+                android:background="@color/lighter_gray">
 
     <ImageView
             android:id="@+id/image"
