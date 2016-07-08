@@ -38,6 +38,24 @@ Compared to [Android Data Binding](http://developer.android.com/tools/data-bindi
 
 AndroidBound doesn't let you put logic in the views because the logic should be in the ViewModel or Presenter or **wherever except in the View or layout**. Again - Android stuff in the Activity/Fragment, logic (minus viewbinding boilerplate) in the ViewModel. That way you can test the ViewModel/Presenter using unit tests, which is much quicker.
 
+#But is it better than Android Data Binding?
+There are pros and cons. 
+
+**Cons**
+
+- it uses reflection and not generated code - hence, it's slightly slower at the moment of generating binds (binding itself is not affected)
+- not all attributes can be used for bindings - wanted attributes have to be added manually to the library
+- there's no notation for converters, they have to be written manually
+
+**Pros**
+
+- you don't need adapters for supported views (ListView, GridView)
+- value converters are based on type, but are also named. That means that you can have multiple converters that convert, say, `Boolean` to `Integer`
+- it supports hierarchical binding so instead of binding to an object `MyObject`, you can also bind to `MyObject.MySubObject` etc.
+- total support for two-way binding, and return binds (view -> method) pass on the object that's bound to the view and not the view itself (cleaner code, don't have to keep/fetch the objects)
+- uses RxJava internally - so if there are bugfixes or improvements there, they will trickle down
+- automatic URL loading
+
 #OK, you convinced me. How do I use this?
 Here's a quick guide.
 
