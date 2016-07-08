@@ -2,6 +2,8 @@
 
 This library offers easy view bindings for Android.
 
+[![Build Status](https://travis-ci.org/alter-ego/androidbound.svg?branch=develop)](https://travis-ci.org/alter-ego/androidbound)
+
 #The what now?
 View bindings - you know, so that you don't have to keep writing `TextView tv = findViewById(R.id.texView)` and then `tv.setText("some text")` and then later `tv.setText("some new text")`. It can also automatically update the views or be bound in the other direction so that you can receive events in your app that come from the view.
 
