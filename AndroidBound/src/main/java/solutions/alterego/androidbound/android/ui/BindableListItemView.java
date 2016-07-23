@@ -31,6 +31,10 @@ public class BindableListItemView extends FrameLayout {
         if (mViewBinder != null) {
             mView = viewBinder.inflate(context, source, itemTemplate, this);
         }
+
+        if (mView != null && source instanceof INeedsBoundView) {
+            ((INeedsBoundView) source).setBoundView(mView);
+        }
     }
 
     public int getItemTemplate() {
@@ -52,10 +56,6 @@ public class BindableListItemView extends FrameLayout {
         ViewBinder.getLogger().verbose("BindableListItemView bindTo continue with binding");
         for (IBindingAssociationEngine binding : bindings) {
             binding.setDataContext(source);
-        }
-
-        if (source instanceof INeedsBoundView) {
-            ((INeedsBoundView) source).setBoundView(mView);
         }
     }
 
