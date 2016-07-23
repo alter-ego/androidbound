@@ -5,6 +5,7 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.android.interfaces.INeedsBoundView;
 import solutions.alterego.androidbound.interfaces.IDisposable;
 
 @Accessors(prefix = "m")
@@ -110,7 +112,7 @@ public class ListViewWithObjectsActivityViewModel extends ViewModel implements I
         }
     }
 
-    public static class ListViewItem {
+    public static class ListViewItem implements INeedsBoundView {
 
         @Getter
         private String mTitle;
@@ -120,6 +122,11 @@ public class ListViewWithObjectsActivityViewModel extends ViewModel implements I
 
         public ListViewItem(String title) {
             mTitle = title;
+        }
+
+        @Override
+        public void setBoundView(View view) {
+            android.util.Log.i(MainActivity.LOGGING_TAG, "setBoundView = " + view);
         }
     }
 

@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import java.lang.ref.WeakReference;
 
+import lombok.Getter;
 import lombok.experimental.Accessors;
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -18,6 +19,7 @@ import solutions.alterego.androidbound.interfaces.INeedsLogger;
 @Accessors(prefix = "m")
 public abstract class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposable {
 
+    @Getter
     protected transient IAndroidLogger mLogger = NullAndroidLogger.instance;
 
     private transient PublishSubject<String> propertyChanges = PublishSubject.create();

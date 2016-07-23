@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import java.util.List;
 
 import solutions.alterego.androidbound.ViewBinder;
+import solutions.alterego.androidbound.android.interfaces.INeedsBoundView;
 import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
@@ -53,6 +54,9 @@ public class BindableListItemView extends FrameLayout {
             binding.setDataContext(source);
         }
 
+        if (source instanceof INeedsBoundView) {
+            ((INeedsBoundView) source).setBoundView(mView);
+        }
     }
 
     public void unbind() {
