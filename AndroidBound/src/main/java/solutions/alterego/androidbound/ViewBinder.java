@@ -31,8 +31,8 @@ import solutions.alterego.androidbound.android.converters.BooleanToVisibilityCon
 import solutions.alterego.androidbound.android.converters.FontConverter;
 import solutions.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.interfaces.IFontManager;
+import solutions.alterego.androidbound.android.interfaces.INeedsBoundView;
 import solutions.alterego.androidbound.binding.TextSpecificationBinder;
-import solutions.alterego.androidbound.binding.interfaces.IBinder;
 import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
 import solutions.alterego.androidbound.converters.ValueConverterService;
 import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
@@ -63,7 +63,11 @@ public class ViewBinder implements IViewBinder {
 
     private ChainedViewResolver mViewResolver;
 
+    private TextSpecificationBinder mBinder;
+
     private Map<View, List<IBindingAssociationEngine>> mBoundViews = new HashMap<View, List<IBindingAssociationEngine>>();
+
+    private Map<View, String> mLazyBoundViews = new HashMap<>();
 
     @Getter
     @Setter
@@ -84,10 +88,10 @@ public class ViewBinder implements IViewBinder {
         BindingSpecificationParser bindingParser = new BindingSpecificationParser(mConverterService, mResourceService, getLogger());
         BindingSpecificationListParser listParser = new BindingSpecificationListParser(bindingParser, getLogger());
 
-        IBinder binder = new TextSpecificationBinder(listParser, sourceFactory, targetFactory, getLogger());
+        mBinder = new TextSpecificationBinder(listParser, sourceFactory, targetFactory, getLogger());
 
         mViewResolver = new ChainedViewResolver(new ViewResolver(getLogger()));
-        mInflaterFactory = new BindableLayoutInflaterFactory(binder, this, mViewResolver);
+        mInflaterFactory = new BindableLayoutInflaterFactory(this, mViewResolver);
         setFontManager(new FontManager(getLogger()));
 
         registerDefaultConverters();
@@ -155,6 +159,51 @@ public class ViewBinder implements IViewBinder {
     }
 
     @Override
+    public void registerLazyBindingsFor(View view, String bindingString) {
+        mLazyBoundViews.put(view, bindingString);
+        if (mBoundViews.containsKey(view)) {
+            clearBindingForViewAndChildren(view);
+        }
+    }
+
+    @Override
+    public void lazyBindView(View view, Object source) {
+        if (source == null) {
+            mLogger.error("ViewModel source cannot be null!");
+            return;
+        }
+
+        checkAndBindView(view, source);
+    }
+
+    private void checkAndBindView(View view, Object source) {
+        mLogger.verbose("checking bindings for view = " + view + " and source = " + source);
+
+        if (view instanceof ViewGroup) {
+            for (int childIndex = 0; childIndex < ((ViewGroup) view).getChildCount(); childIndex++) {
+                checkAndBindView(((ViewGroup) view).getChildAt(childIndex), source);
+            }
+        } else if (mLazyBoundViews.containsKey(view)) {
+            bindViewToSource(source, view, mLazyBoundViews.get(view));
+            mLazyBoundViews.remove(view);
+        }
+    }
+
+    @Override
+    public void bindViewToSource(Object source, View view, String bindingString) {
+        if (bindingString != null && !bindingString.equals("")) {
+            mLogger.verbose("bindViewToSource binding view = " + view + " to source = " + source);
+
+            List<IBindingAssociationEngine> bindings = mBinder.bind(source, view, bindingString);
+            registerBindingsFor(view, bindings);
+        }
+
+        if (view != null && source instanceof INeedsBoundView) {
+            ((INeedsBoundView) source).setBoundView(view);
+        }
+    }
+
+    @Override
     public void clearBindingForViewAndChildren(View rootView) {
         clearBindingsFor(rootView);
 
@@ -197,11 +246,6 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup) {
-        if (source == null) {
-            mLogger.error("ViewModel source cannot be null!");
-            return null;
-        }
-
         LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(context);
 
         if (android.os.Build.VERSION.SDK_INT >= 11 && context instanceof Factory2) {
