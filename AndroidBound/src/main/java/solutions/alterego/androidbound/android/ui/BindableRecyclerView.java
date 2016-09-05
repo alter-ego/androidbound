@@ -63,18 +63,23 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView 
             mAdapter = new BindableRecyclerViewAdapter(getContext(), getViewBinder());
             mAdapter.setItemTemplate(mItemTemplate);
             mAdapter.setTemplatesForObjects(mTemplatesForObjects);
-            mAdapter.setItemsSource(value);
             setAdapter(mAdapter);
-        } else {
-            mAdapter.setItemsSource(value);
         }
+
+        if (getLayoutManager() != null) {
+            mAdapter.setLayoutManager(getLayoutManager());
+        }
+
+        mAdapter.setItemsSource(value);
     }
 
     @Override
     public void setAdapter(Adapter adapter) {
         super.setAdapter(adapter);
         mAdapter = (BindableRecyclerViewAdapter) adapter;
-//        mAdapter.setLayoutManager(getLayoutManager().generateDefaultLayoutParams()); //TODO
+        if (getLayoutManager() != null) {
+            mAdapter.setLayoutManager(getLayoutManager());
+        }
     }
 
     public void setTemplatesForObjects(Map<Class<?>, Integer> map) {

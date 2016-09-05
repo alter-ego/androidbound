@@ -2,6 +2,7 @@ package solutions.alterego.androidbound.android.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
@@ -33,6 +34,10 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
     private SparseArray<Class<?>> mObjectIndex;
 
+    @Getter
+    @Setter
+    private RecyclerView.LayoutManager mLayoutManager;
+
     public BindableRecyclerViewAdapter(Context ctx, IViewBinder vb) {
         mContext = ctx;
         mViewBinder = vb;
@@ -42,6 +47,7 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Class<?> clazz = mObjectIndex.get(viewType);
         int layoutRes = mTemplatesForObjects.get(clazz);
+
         ViewBinder.getLogger().verbose(
                 "BindableRecyclerViewAdapter creating VH for viewType = " + viewType + " i.e. class = " + clazz.toString() + " using layoutRes = "
                         + layoutRes);
@@ -51,7 +57,11 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof BindableRecyclerViewItemViewHolder) {
-            ((BindableRecyclerViewItemViewHolder) holder).onBindViewHolder(getItemsSource().get(position));
+            if (getLayoutManager() instanceof StaggeredGridLayoutManager) {
+                ((BindableRecyclerViewItemViewHolder) holder).onBindViewHolder(getItemsSource().get(position), getLayoutManager());
+            } else {
+                ((BindableRecyclerViewItemViewHolder) holder).onBindViewHolder(getItemsSource().get(position));
+            }
         }
     }
 
@@ -65,8 +75,8 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         Object obj = getItemsSource().get(position);
         int viewType = mObjectIndex.indexOfValue(obj.getClass());
         ViewBinder.getLogger().verbose(
-                "BindableRecyclerViewAdapter getItemViewType viewType = " + viewType + " i.e. class = " + obj.getClass().toString() + " for position = "
-                        + position);
+                "BindableRecyclerViewAdapter getItemViewType viewType = " + viewType + " i.e. class = " + obj.getClass().toString()
+                        + " for position = " + position);
         return viewType;
     }
 
@@ -88,4 +98,5 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             notifyDataSetChanged();
         }
     }
+
 }
