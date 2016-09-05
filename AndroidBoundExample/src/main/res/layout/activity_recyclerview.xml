@@ -46,6 +46,12 @@
                 android:layout_below="@+id/recyclerview_linear"
                 binding="{ItemsSource @= ExampleListStaggered}"/>
 
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/recyclerview_staggered"/>
+
     </RelativeLayout>
 
 </ScrollView>

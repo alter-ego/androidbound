@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import java.util.HashMap;
@@ -55,6 +56,13 @@ public class RecyclerViewWithObjectsActivity extends BindingAppCompatActivity {
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL);
         recyclerViewStaggered.setLayoutManager(staggeredGridLayoutManager);
         recyclerViewStaggered.setTemplatesForObjects(objectTemplates);
+
+        //to test that the normal recycler view still works without any problems
+        RecyclerView recyclerViewNormal = (RecyclerView) findViewById(R.id.recyclerview_normal);
+        recyclerViewNormal.setNestedScrollingEnabled(false);
+        LinearLayoutManager layoutManagerLinearNormal = new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
+        recyclerViewNormal.setLayoutManager(layoutManagerLinearNormal);
+        recyclerViewNormal.setAdapter(new RecyclerViewNormalAdapter(this));
     }
 
     @Override

@@ -76,9 +76,12 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView 
     @Override
     public void setAdapter(Adapter adapter) {
         super.setAdapter(adapter);
-        mAdapter = (BindableRecyclerViewAdapter) adapter;
-        if (getLayoutManager() != null) {
-            mAdapter.setLayoutManager(getLayoutManager());
+
+        if (adapter instanceof BindableRecyclerViewAdapter) {
+            mAdapter = (BindableRecyclerViewAdapter) adapter;
+            if (getLayoutManager() != null) {
+                mAdapter.setLayoutManager(getLayoutManager());
+            }
         }
     }
 
