@@ -16,6 +16,7 @@ import solutions.alterego.androidbound.android.ui.BindableHorizontalScrollView;
 import solutions.alterego.androidbound.android.ui.BindableImageView;
 import solutions.alterego.androidbound.android.ui.BindableLinearLayout;
 import solutions.alterego.androidbound.android.ui.BindableListView;
+import solutions.alterego.androidbound.android.ui.BindableRecyclerView;
 import solutions.alterego.androidbound.android.ui.BindableRelativeLayout;
 import solutions.alterego.androidbound.android.ui.BindableScrollView;
 import solutions.alterego.androidbound.android.ui.BindableSeekbar;
@@ -55,6 +56,7 @@ public class ViewResolver implements IViewResolver {
             }
             put("android.widget.ToggleButton", BindableToggleButton.class);
             put("android.widget.EditText", BindableEditText.class);
+            put("android.support.v7.widget.RecyclerView", BindableRecyclerView.class);
         }
     };
 
