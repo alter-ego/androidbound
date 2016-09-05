@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,15 +40,21 @@ public class RecyclerViewWithObjectsActivity extends BindingAppCompatActivity {
         setContentView(R.layout.activity_recyclerview);
 
         //populating map with object-layout relationships
-        @SuppressLint("WrongViewCast") BindableRecyclerView recyclerView = (BindableRecyclerView) findViewById(R.id.recyclerview);
-
         Map<Class<?>, Integer> objectTemplates = new HashMap<Class<?>, Integer>();
         objectTemplates.put(RecyclerViewWithObjectsActivityViewModel.ListViewItem.class, R.layout.activity_listview_listitem);
         objectTemplates.put(RecyclerViewWithObjectsActivityViewModel.ListViewItem2.class, R.layout.activity_listview_listitem2);
 
+        @SuppressLint("WrongViewCast") BindableRecyclerView recyclerViewLinear = (BindableRecyclerView) findViewById(R.id.recyclerview_linear);
+        recyclerViewLinear.setNestedScrollingEnabled(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setTemplatesForObjects(objectTemplates);
+        recyclerViewLinear.setLayoutManager(layoutManager);
+        recyclerViewLinear.setTemplatesForObjects(objectTemplates);
+
+        @SuppressLint("WrongViewCast") BindableRecyclerView recyclerViewStaggered = (BindableRecyclerView) findViewById(R.id.recyclerview_staggered);
+        recyclerViewStaggered.setNestedScrollingEnabled(false);
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL);
+        recyclerViewStaggered.setLayoutManager(staggeredGridLayoutManager);
+        recyclerViewStaggered.setTemplatesForObjects(objectTemplates);
     }
 
     @Override

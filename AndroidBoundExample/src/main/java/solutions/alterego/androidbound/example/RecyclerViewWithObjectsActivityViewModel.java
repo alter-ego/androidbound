@@ -20,7 +20,7 @@ import solutions.alterego.androidbound.interfaces.IDisposable;
 @Accessors(prefix = "m")
 public class RecyclerViewWithObjectsActivityViewModel extends ViewModel implements IDisposable {
 
-    private static final int listSize = 250;
+    private static final int listSize = 20;
 
     @Getter
     private String mListViewActivityTitle;
@@ -29,7 +29,10 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel implemen
     private String mOpenMainActivityText;
 
     @Getter
-    private List<Object> mExampleList = new ArrayList<Object>();
+    private List<Object> mExampleListLinear = new ArrayList<Object>();
+
+    @Getter
+    private List<Object> mExampleListStaggered = new ArrayList<Object>();
 
     public RecyclerViewWithObjectsActivityViewModel(Activity activity, IAndroidLogger logger) {
         setLogger(logger);
@@ -39,12 +42,16 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel implemen
 
         for (int i = 0; i < listSize; i++) {
             if (i % 2 == 0) {
-                mExampleList.add(new ListViewItem(Integer.toString(i)));
+                mExampleListLinear.add(new ListViewItem(Integer.toString(i)));
             } else {
-                mExampleList.add(new ListViewItem2(Integer.toString(i)));
+                mExampleListLinear.add(new ListViewItem2(Integer.toString(i)));
             }
         }
-        raisePropertyChanged("ExampleList");
+
+        mExampleListStaggered.addAll(mExampleListLinear);
+
+        raisePropertyChanged("ExampleListLinear");
+        raisePropertyChanged("ExampleListStaggered");
     }
 
     public void setListViewActivityTitle(String title) {
