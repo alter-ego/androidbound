@@ -165,4 +165,16 @@ public class MainActivityViewModel extends ViewModel implements IDisposable {
         }
     }
 
+    public boolean canOpenRecyclerViewWithObjectsActivity() {
+        return true;
+    }
+
+    public void doOpenRecyclerViewWithObjectsActivity() {
+        Intent activityIntent = new Intent(getParentActivity(), RecyclerViewWithObjectsActivity.class);
+        if (getParentActivity() != null) {
+            getParentActivity().startActivity(activityIntent);
+        }
+    }
+
+
 }

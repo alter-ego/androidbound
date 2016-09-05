@@ -33,9 +33,11 @@
 
         <activity
                 android:name=".ListViewWithObjectsActivity"
-                android:label="@string/title_activity_LVWithObjects">
-        </activity>
+                android:label="@string/title_activity_LVWithObjects"/>
 
+        <activity
+                android:name=".RecyclerViewWithObjectsActivity"
+                android:label="@string/title_activity_RVWithObjects"/>
         <activity
                 android:name=".ListItemDetailActivity"
                 android:label="@string/app_name">

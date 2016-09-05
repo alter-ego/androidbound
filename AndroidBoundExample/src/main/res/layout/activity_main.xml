@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:layout_below="@+id/edittext_textview"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:background="@android:color/white"
             binding="{ Resource @= ImageViewResource }; { Click @- ImageViewClick }; { LongClick @- ImageViewLongClick }"/>
 
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/imageview"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:layout_margin="10dp"
             android:text="open listview activity"
             binding="{ Click @- OpenListViewActivity }"/>
@@ -79,9 +79,19 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/open_listview_activity_button"
-            android:textSize="20sp"
-            android:layout_margin="10dp"
-            android:text="open listview with objects activity"
+            android:textSize="16sp"
+            android:text="open lv with objects activity"
             binding="{ Click @- OpenListViewWithObjectsActivity }"/>
+
+    <Button
+            android:id="@+id/open_rvwithobjects_activity_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/open_listviewwithobjects_activity_button"
+            android:textSize="16sp"
+            android:layout_margin="10dp"
+            android:text="open rv with objects activity"
+            binding="{ Click @- OpenRecyclerViewWithObjectsActivity }"/>
 
 </RelativeLayout>
