@@ -37,20 +37,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/open_main_activity_button"
-                binding="{ItemsSource @= ExampleListLinear}"/>
+                binding="{ItemsSource @= ExampleListLinear}; {OnItemClickListener @= OnItemClicked}; "/>
 
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_staggered"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/recyclerview_linear"
-                binding="{ItemsSource @= ExampleListStaggered}"/>
+                binding="{ItemsSource @= ExampleListStaggered}; {OnItemClickListener @= OnStaggeredItemClicked};"/>
+
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_grid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/recyclerview_staggered"
+                binding="{ItemsSource @= ExampleGrid}; {OnItemClickListener @= OnGridItemClicked}; "/>
 
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_normal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/recyclerview_staggered"/>
+                android:layout_below="@+id/recyclerview_grid"/>
 
     </RelativeLayout>
 

@@ -7,6 +7,7 @@ import com.codemonkeylabs.fpslibrary.TinyDancer;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
@@ -42,7 +43,7 @@ public class RecyclerViewWithObjectsActivity extends BindingAppCompatActivity {
 
         //populating map with object-layout relationships
         Map<Class<?>, Integer> objectTemplates = new HashMap<Class<?>, Integer>();
-        objectTemplates.put(RecyclerViewWithObjectsActivityViewModel.ListViewItem.class, R.layout.activity_listview_listitem);
+        objectTemplates.put(RecyclerViewWithObjectsActivityViewModel.ListViewItemVM.class, R.layout.activity_listview_listitem);
         objectTemplates.put(RecyclerViewWithObjectsActivityViewModel.ListViewItem2.class, R.layout.activity_listview_listitem2);
 
         @SuppressLint("WrongViewCast") BindableRecyclerView recyclerViewLinear = (BindableRecyclerView) findViewById(R.id.recyclerview_linear);
@@ -56,6 +57,14 @@ public class RecyclerViewWithObjectsActivity extends BindingAppCompatActivity {
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL);
         recyclerViewStaggered.setLayoutManager(staggeredGridLayoutManager);
         recyclerViewStaggered.setTemplatesForObjects(objectTemplates);
+
+        @SuppressLint("WrongViewCast") BindableRecyclerView recyclerViewGrid = (BindableRecyclerView) findViewById(R.id.recyclerview_grid);
+        recyclerViewGrid.setNestedScrollingEnabled(false);
+        recyclerViewGrid.setLayoutManager(new GridLayoutManager(this, 3));
+
+        Map<Class<?>, Integer> gridObjectTemplates = new HashMap<Class<?>, Integer>();
+        gridObjectTemplates.put(RecyclerViewWithObjectsActivityViewModel.GridItemVM.class, R.layout.activity_grid_item);
+        recyclerViewGrid.setTemplatesForObjects(gridObjectTemplates);
 
         //to test that the normal recycler view still works without any problems
         RecyclerView recyclerViewNormal = (RecyclerView) findViewById(R.id.recyclerview_normal);
