@@ -127,7 +127,7 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     @Override
     public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-        if (e.getAction() == MotionEvent.ACTION_UP) {
+        if (e.getAction() == MotionEvent.ACTION_UP && getScrollState() == SCROLL_STATE_IDLE) {
             handleClick(e);
         }
         return false;
