@@ -19,7 +19,6 @@ import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged
 
 public class BindableImageView extends ImageView implements OnClickListener, INotifyPropertyChanged, OnLongClickListener {
 
-    static Context context;
 
     private boolean disposed;
 
@@ -35,12 +34,10 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 
     public BindableImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        BindableImageView.context = context;
     }
 
     public BindableImageView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        BindableImageView.context = context;
+        super(context, attrs, defStyle); 
     }
 
     public String getSource() {
