@@ -6,15 +6,15 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.android.interfaces.IActivityLifecycle;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.android.interfaces.IBoundActivity;
-import solutions.alterego.androidbound.android.interfaces.IActivityLifecycle;
 import solutions.alterego.androidbound.android.interfaces.INeedsConfigurationChange;
 import solutions.alterego.androidbound.android.interfaces.INeedsNewIntent;
 import solutions.alterego.androidbound.android.interfaces.INeedsOnActivityResult;
@@ -22,8 +22,10 @@ import solutions.alterego.androidbound.android.interfaces.INeedsOnActivityResult
 @Accessors(prefix = "m")
 public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity, INeedsOnActivityResult, INeedsNewIntent, INeedsConfigurationChange {
 
+    public static final String TAG_VIEWMODEL_MAIN = "androidbound_viewmodel_main";
+
     @Getter
-    private List<ViewModel> mViewModels;
+    private Map<String, ViewModel> mViewModels;
 
     private Activity mBoundActivity;
 
@@ -37,11 +39,11 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
             throw new RuntimeException("Bound Activity is null!");
         }
 
-        mBoundActivity.setContentView(addViewModel(layoutResID, viewModel));
+        mBoundActivity.setContentView(addViewModel(layoutResID, viewModel, TAG_VIEWMODEL_MAIN));
     }
 
     @Override
-    public View addViewModel(int layoutResID, ViewModel viewModel) {
+    public View addViewModel(int layoutResID, ViewModel viewModel, String id) {
         if (mBoundActivity == null) {
             throw new RuntimeException("Bound Activity is null!");
         }
@@ -59,23 +61,37 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
         }
 
         if (mViewModels == null) {
-            mViewModels = new ArrayList<>();
+            mViewModels = new HashMap<>();
         }
 
-        if (mViewModels.contains(viewModel)) {
+        if (mViewModels.values().contains(viewModel)) {
             throw new RuntimeException("cannot add same instance of viewModel twice!");
         }
 
         viewModel.setParentActivity(mBoundActivity);
-        mViewModels.add(viewModel);
+        mViewModels.put(id, viewModel);
 
         return ((IBindableView) mBoundActivity).getViewBinder().inflate(mBoundActivity, viewModel, layoutResID, null);
     }
 
     @Override
+    public ViewModel getViewModel(String id) {
+        if (mViewModels != null) {
+            return mViewModels.get(id);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public ViewModel getContentViewModel() {
+        return getViewModel(TAG_VIEWMODEL_MAIN);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         if (getViewModels() != null) {
-            for (ViewModel viewModel : getViewModels()) {
+            for (ViewModel viewModel : getViewModels().values()) {
                 viewModel.onCreate(savedInstanceState);
             }
         }
@@ -84,7 +100,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
     @Override
     public void onStart() {
         if (getViewModels() != null) {
-            for (ViewModel viewModel : getViewModels()) {
+            for (ViewModel viewModel : getViewModels().values()) {
                 viewModel.onStart();
             }
         }
@@ -93,7 +109,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
     @Override
     public void onRestart() {
         if (getViewModels() != null) {
-            for (ViewModel viewModel : getViewModels()) {
+            for (ViewModel viewModel : getViewModels().values()) {
                 viewModel.onRestart();
             }
         }
@@ -102,7 +118,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
     @Override
     public void onResume() {
         if (getViewModels() != null) {
-            for (ViewModel viewModel : getViewModels()) {
+            for (ViewModel viewModel : getViewModels().values()) {
                 viewModel.onResume();
             }
         }
@@ -111,7 +127,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
     @Override
     public void onPause() {
         if (getViewModels() != null) {
-            for (ViewModel viewModel : getViewModels()) {
+            for (ViewModel viewModel : getViewModels().values()) {
                 viewModel.onPause();
             }
         }
@@ -120,7 +136,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
     @Override
     public void onStop() {
         if (getViewModels() != null) {
-            for (ViewModel viewModel : getViewModels()) {
+            for (ViewModel viewModel : getViewModels().values()) {
                 viewModel.onStop();
             }
         }
@@ -129,7 +145,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
     @Override
     public void onSaveInstanceState(Bundle outState) {
         if (getViewModels() != null) {
-            for (ViewModel viewModel : getViewModels()) {
+            for (ViewModel viewModel : getViewModels().values()) {
                 viewModel.onSaveInstanceState(outState);
             }
         }
@@ -146,7 +162,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
         }
 
         if (getViewModels() != null) {
-            for (ViewModel viewModel : getViewModels()) {
+            for (ViewModel viewModel : getViewModels().values()) {
                 viewModel.onDestroy();
             }
         }
@@ -158,7 +174,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         if (getViewModels() != null) {
-            for (ViewModel viewModel : getViewModels()) {
+            for (ViewModel viewModel : getViewModels().values()) {
                 if (viewModel instanceof INeedsConfigurationChange) {
                     ((INeedsConfigurationChange) viewModel).onConfigurationChanged(newConfig);
                 }
@@ -169,7 +185,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
     @Override
     public void onNewIntent(Intent newIntent) {
         if (getViewModels() != null) {
-            for (ViewModel viewModel : getViewModels()) {
+            for (ViewModel viewModel : getViewModels().values()) {
                 if (viewModel instanceof INeedsNewIntent) {
                     ((INeedsNewIntent) viewModel).onNewIntent(newIntent);
                 }
@@ -180,7 +196,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (getViewModels() != null) {
-            for (ViewModel viewModel : getViewModels()) {
+            for (ViewModel viewModel : getViewModels().values()) {
                 if (viewModel instanceof INeedsOnActivityResult) {
                     ((INeedsOnActivityResult) viewModel).onActivityResult(requestCode, resultCode, data);
                 }

@@ -107,12 +107,22 @@ public abstract class BindingAppCompatActivity extends AppCompatActivity impleme
     }
 
     @Override
-    public View addViewModel(int layoutResID, ViewModel viewModel) {
+    public View addViewModel(int layoutResID, ViewModel viewModel, String id) {
         if (mBoundActivityDelegate != null) {
-            return mBoundActivityDelegate.addViewModel(layoutResID, viewModel);
+            return mBoundActivityDelegate.addViewModel(layoutResID, viewModel, id);
         } else {
             return null;
         }
+    }
+
+    @Override
+    public ViewModel getViewModel(String id) {
+        return mBoundActivityDelegate.getViewModel(id);
+    }
+
+    @Override
+    public ViewModel getContentViewModel() {
+        return mBoundActivityDelegate.getContentViewModel();
     }
 
     @Override
