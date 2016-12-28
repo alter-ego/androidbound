@@ -207,7 +207,7 @@ public class ViewBinder implements IViewBinder {
     public void clearBindingForViewAndChildren(View rootView) {
         clearBindingsFor(rootView);
 
-        if (!(rootView instanceof ViewGroup)) {
+        if (rootView == null || !(rootView instanceof ViewGroup)) {
             return;
         }
 
@@ -219,7 +219,7 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public void clearBindingsFor(View view) {
-        if (!mBoundViews.containsKey(view)) {
+        if (view == null || !mBoundViews.containsKey(view)) {
             return;
         }
 
