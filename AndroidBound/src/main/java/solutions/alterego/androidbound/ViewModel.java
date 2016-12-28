@@ -12,19 +12,22 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import rx.Observable;
 import rx.subjects.PublishSubject;
+import solutions.alterego.androidbound.android.interfaces.IActivityLifecycle;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.IDisposable;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
 @Accessors(prefix = "m")
-public abstract class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposable {
+public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposable, IActivityLifecycle {
 
     @Getter
     protected transient IAndroidLogger mLogger = NullAndroidLogger.instance;
 
     private transient PublishSubject<String> propertyChanges = PublishSubject.create();
 
-    protected transient WeakReference<Activity> mParentActivity;
+    private transient WeakReference<Activity> mParentActivity;
+
+    private boolean mDisposed = false;
 
     protected void raisePropertyChanged(String property) {
         try {
@@ -32,28 +35,6 @@ public abstract class ViewModel implements INeedsLogger, INotifyPropertyChanged,
         } catch (Exception e) {
             mLogger.error("exception when raising property changes = " + e.getMessage());
         }
-    }
-
-    @Override
-    public Observable<String> onPropertyChanged() {
-        return propertyChanges;
-    }
-
-    @Override
-    public void dispose() {
-        if (propertyChanges != null) {
-            propertyChanges.onCompleted();
-            propertyChanges = null;
-        }
-
-        if (mParentActivity != null && mParentActivity.get() != null) {
-            mParentActivity.clear();
-        }
-    }
-
-    @Override
-    public void setLogger(IAndroidLogger logger) {
-        mLogger = logger.getLogger(this);
     }
 
     public void setParentActivity(Activity activity) {
@@ -68,12 +49,59 @@ public abstract class ViewModel implements INeedsLogger, INotifyPropertyChanged,
         return null;
     }
 
-    public abstract void onCreate(Bundle outState);
+    @Override
+    public void setLogger(IAndroidLogger logger) {
+        mLogger = logger.getLogger(this);
+    }
 
-    public abstract void onResume();
+    @Override
+    public Observable<String> onPropertyChanged() {
+        return propertyChanges;
+    }
 
-    public abstract void onPause();
+    @Override
+    public void dispose() {
+        if (mDisposed) {
+            return;
+        }
 
-    public abstract void onSaveInstanceState(Bundle outState);
+        mDisposed = true;
+
+        if (propertyChanges != null) {
+            propertyChanges.onCompleted();
+            propertyChanges = null;
+        }
+
+        if (mParentActivity != null && mParentActivity.get() != null) {
+            mParentActivity.clear();
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        //do nothing, to be overridden
+    }
+
+    @Override
+    public void onResume() {
+        //do nothing, to be overridden
+    }
+
+    @Override
+    public void onPause() {
+        //do nothing, to be overridden
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //do nothing, to be overridden
+    }
+
+    @Override
+    public void onDestroy() {
+        if (!mDisposed) {
+            dispose();
+        }
+    }
 
 }

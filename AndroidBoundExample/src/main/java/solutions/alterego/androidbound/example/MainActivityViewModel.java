@@ -11,10 +11,9 @@ import android.widget.Toast;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
-import solutions.alterego.androidbound.interfaces.IDisposable;
 
 @Accessors(prefix = "m")
-public class MainActivityViewModel extends ViewModel implements IDisposable {
+public class MainActivityViewModel extends ViewModel {
 
     @Getter
     private String mMainActivityTitle;
@@ -47,15 +46,19 @@ public class MainActivityViewModel extends ViewModel implements IDisposable {
     }
 
     @Override
-    public void dispose() {
-        super.dispose();
-        //do nothing
-    }
-
-    @Override
     public void onCreate(Bundle outState) {
         //do nothing
     }
+
+//    @Override
+//    public void onStart() {
+//        //do nothing
+//    }
+//
+//    @Override
+//    public void onRestart() {
+//        //do nothing
+//    }
 
     @Override
     public void onResume() {
@@ -66,6 +69,11 @@ public class MainActivityViewModel extends ViewModel implements IDisposable {
     public void onPause() {
         //do nothing
     }
+
+//    @Override
+//    public void onStop() {
+//        //do nothing
+//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

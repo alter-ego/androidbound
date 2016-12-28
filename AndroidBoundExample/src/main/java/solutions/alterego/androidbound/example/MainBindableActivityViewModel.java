@@ -6,16 +6,14 @@ import org.joda.time.DateTime;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.widget.Toast;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
-import solutions.alterego.androidbound.interfaces.IDisposable;
 
 @Accessors(prefix = "m")
-public class MainBindableActivityViewModel extends ViewModel implements IDisposable {
+public class MainBindableActivityViewModel extends ViewModel {
 
     @Getter
     private String mMainActivityTitle;
@@ -42,31 +40,6 @@ public class MainBindableActivityViewModel extends ViewModel implements IDisposa
     public void setOpenNormalActivityText(String title) {
         mOpenNormalActivityText = title;
         raisePropertyChanged("OpenNormalActivityText");
-    }
-
-    @Override
-    public void dispose() {
-        //do nothing
-    }
-
-    @Override
-    public void onCreate(Bundle outState) {
-        //do nothing
-    }
-
-    @Override
-    public void onResume() {
-        //do nothing
-    }
-
-    @Override
-    public void onPause() {
-        //do nothing
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        //do nothing
     }
 
     public boolean canOpenNormalActivity() {
