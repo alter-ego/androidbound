@@ -28,9 +28,8 @@ public class ListViewActivity extends BindingAppCompatActivity {
 
         ViewBinder viewBinder = new ViewBinder(this, NullAndroidLogger.instance, null);
         setViewBinder(viewBinder);
-        setViewModel(new ListViewActivityViewModel(this, logger));
 
-        setContentView(R.layout.activity_listview);
+        setContentView(R.layout.activity_listview, new ListViewActivityViewModel(this, logger));
 
         setTitle("ListViewActivity");
     }

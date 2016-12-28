@@ -34,9 +34,8 @@ public class MainBindingActivity extends BindingAppCompatActivity {
         mCustomValueConverters = new CustomValueConverters(this, viewBinder);
 
         setViewBinder(viewBinder);
-        setViewModel(new MainBindableActivityViewModel(this, logger));
 
-        setContentView(R.layout.activity_bindable_main);
+        setContentView(R.layout.activity_bindable_main, new MainBindableActivityViewModel(this, logger));
 
         setTitle("MainBindingActivity");
     }

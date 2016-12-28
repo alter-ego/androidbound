@@ -32,9 +32,8 @@ public class ListViewWithObjectsActivity extends BindingAppCompatActivity {
 
         ViewBinder viewBinder = new ViewBinder(this, NullAndroidLogger.instance, null);
         setViewBinder(viewBinder);
-        setViewModel(new ListViewWithObjectsActivityViewModel(this, logger));
 
-        setContentView(R.layout.activity_listview);
+        setContentView(R.layout.activity_listview, new ListViewWithObjectsActivityViewModel(this, logger));
 
         //populating map with object-layout relationships
         // we're not adding ListViewItem layout because that will use the default layout declared in XML
