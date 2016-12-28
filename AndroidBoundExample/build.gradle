@@ -52,6 +52,6 @@ dependencies {
     apt "org.projectlombok:lombok:1.16.2"
     provided "org.projectlombok:lombok:1.16.2"
     compile 'net.danlew:android.joda:2.9.0'
-    debugCompile 'com.github.brianPlummer:tinydancer:0.0.9'
+    compile 'com.github.brianPlummer:tinydancer:0.0.9'
     compile project(':AndroidBound')
 }
