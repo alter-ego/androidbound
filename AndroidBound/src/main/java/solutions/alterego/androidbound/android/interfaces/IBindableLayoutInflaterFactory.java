@@ -4,9 +4,9 @@ import android.view.LayoutInflater;
 
 public interface IBindableLayoutInflaterFactory {
 
-    public abstract LayoutInflater.Factory inflaterFor(Object source);
+    LayoutInflater.Factory inflaterFor(Object source);
 
-    public abstract LayoutInflater.Factory inflaterFor(Object source, LayoutInflater.Factory factory);
+    LayoutInflater.Factory inflaterFor(Object source, LayoutInflater.Factory factory);
 
-    public abstract LayoutInflater.Factory2 inflaterFor(Object source, LayoutInflater.Factory2 factory2);
+    LayoutInflater.Factory2 inflaterFor(Object source, LayoutInflater.Factory2 factory2);
 }

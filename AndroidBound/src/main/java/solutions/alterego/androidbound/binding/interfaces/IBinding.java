@@ -6,15 +6,15 @@ import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
 public interface IBinding extends IDisposable, INeedsLogger {
 
-    static final Object noValue = new Object();
+    Object noValue = new Object();
 
-    public abstract Class<?> getType();
+    Class<?> getType();
 
-    public abstract Object getValue();
+    Object getValue();
 
-    public abstract void setValue(Object value);
+    void setValue(Object value);
 
-    public abstract boolean hasChanges();
+    boolean hasChanges();
 
-    public abstract Observable<Object> getChanges();
+    Observable<Object> getChanges();
 }

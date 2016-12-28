@@ -5,7 +5,7 @@ import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
 public interface IBindingAssociationEngine extends INeedsLogger, IDisposable {
 
-    public abstract Object getDataContext();
+    Object getDataContext();
 
-    public abstract void setDataContext(Object value);
+    void setDataContext(Object value);
 }

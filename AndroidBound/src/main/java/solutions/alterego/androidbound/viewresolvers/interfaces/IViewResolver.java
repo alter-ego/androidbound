@@ -9,5 +9,5 @@ import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
 public interface IViewResolver extends INeedsLogger {
 
-    public abstract View createView(String name, Context context, AttributeSet attrs);
+    View createView(String name, Context context, AttributeSet attrs);
 }

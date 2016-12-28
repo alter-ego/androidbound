@@ -2,10 +2,10 @@ package solutions.alterego.androidbound.android.interfaces;
 
 public interface ICache {
 
-    public abstract Object retrieve(String url);
+    Object retrieve(String url);
 
-    public abstract void invalidate();
+    void invalidate();
 
-    public abstract void store(String url, Object dm);
+    void store(String url, Object dm);
 
 }
