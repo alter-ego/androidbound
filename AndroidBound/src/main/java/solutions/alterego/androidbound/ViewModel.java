@@ -83,12 +83,27 @@ public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposa
     }
 
     @Override
+    public void onStart() {
+        //do nothing, to be overridden
+    }
+
+    @Override
+    public void onRestart() {
+        //do nothing, to be overridden
+    }
+
+    @Override
     public void onResume() {
         //do nothing, to be overridden
     }
 
     @Override
     public void onPause() {
+        //do nothing, to be overridden
+    }
+
+    @Override
+    public void onStop() {
         //do nothing, to be overridden
     }
 
