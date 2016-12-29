@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.Setter;
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.android.ui.BindableListItemView;
@@ -25,8 +24,7 @@ public class BindableListAdapter extends BaseAdapter {
     private IViewBinder viewBinder;
 
     @Getter
-    @Setter
-    private int itemTemplate;
+    private int mItemTemplate;
 
     @Getter
     private Map<Class<?>, Integer> mTemplatesForObjects;
@@ -34,10 +32,10 @@ public class BindableListAdapter extends BaseAdapter {
     @Getter
     private List<?> itemsSource;
 
-    public BindableListAdapter(Context ctx, IViewBinder vb) {
+    public BindableListAdapter(Context ctx, IViewBinder vb, int itemTemplate) {
         context = ctx;
-
         viewBinder = vb;
+        mItemTemplate = itemTemplate;
 
         if (viewBinder == null) {
             if (context instanceof IBindableView) {
@@ -117,7 +115,7 @@ public class BindableListAdapter extends BaseAdapter {
     }
 
     private int getLayoutTemplateForObject(Object objectForLayout) {
-        int layoutToInflate = itemTemplate;
+        int layoutToInflate = mItemTemplate;
 
         //if we have separate templates for objects through Java code, they will override itemTemplate layout ref set from XML.
         //that way you can also use XML itemTemplate as default layout.

@@ -112,8 +112,7 @@ public class BindableListView extends ListView implements OnItemClickListener, O
     public void setItemsSource(List<?> value) {
 
         if (mAdapter == null) {
-            mAdapter = new BindableListAdapter(getContext(), getViewBinder());
-            mAdapter.setItemTemplate(itemTemplate);
+            mAdapter = new BindableListAdapter(getContext(), getViewBinder(), itemTemplate);
             mAdapter.setTemplatesForObjects(mTemplatesForObjects);
             mAdapter.setItemsSource(value);
             setAdapter(mAdapter);
