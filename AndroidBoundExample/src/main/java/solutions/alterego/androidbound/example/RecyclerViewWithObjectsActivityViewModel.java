@@ -3,6 +3,7 @@ package solutions.alterego.androidbound.example;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Toast;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.INeedsBoundView;
@@ -32,6 +34,9 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
     @Getter
     private List<Object> mExampleListStaggered = new ArrayList<Object>();
 
+    @Getter
+    private List<GridItemVM> mExampleGrid = new ArrayList<GridItemVM>();
+
     public RecyclerViewWithObjectsActivityViewModel(Activity activity, IAndroidLogger logger) {
         setLogger(logger);
         setParentActivity(activity);
@@ -40,10 +45,11 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
 
         for (int i = 0; i < listSize; i++) {
             if (i % 2 == 0) {
-                mExampleListLinear.add(new ListViewItem(Integer.toString(i)));
+                mExampleListLinear.add(new ListViewItemVM(getParentActivity(), new ListViewItem(Integer.toString(i))));
             } else {
                 mExampleListLinear.add(new ListViewItem2(Integer.toString(i)));
             }
+            mExampleGrid.add(new GridItemVM(getParentActivity(), new ListViewItem(Integer.toString(i))));
         }
 
         mExampleListStaggered.addAll(mExampleListLinear);
@@ -91,6 +97,61 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
         }
     }
 
+
+    @Accessors(prefix = "m")
+    public static class GridItemVM {
+
+        private final Context mContext;
+
+        @Getter
+        private final String mImageUrl;
+
+        @Getter
+        private ListViewItem mListViewItem;
+
+        GridItemVM(Context context, ListViewItem item) {
+            mContext = context;
+            mListViewItem = item;
+            mImageUrl = item.getImageUrl();
+        }
+
+        public void doImageClick() {
+            Toast.makeText(mContext, "Clicked on ImageView: " + mImageUrl + " ( " + this + " ) ", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Accessors(prefix = "m")
+    public static class ListViewItemVM {
+
+        private Context mContext;
+
+        @Getter
+        private ListViewItem mListViewItem;
+
+        @Getter
+        private String mImageUrl;
+
+        @Getter
+        private String mTitle;
+
+        public ListViewItemVM(Context c, ListViewItem item) {
+            mContext = c;
+            mListViewItem = item;
+            mImageUrl = item.getImageUrl();
+            mTitle = item.getTitle();
+        }
+
+        public void doImageClick() {
+            Toast.makeText(mContext, "Clicked on ImageView: " + mImageUrl + " ( " + mTitle + " ) ", Toast.LENGTH_SHORT).show();
+        }
+
+        public void doTextClick() {
+            Toast.makeText(mContext, "Clicked on TextView " + mTitle, Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @ToString
     public static class ListViewItem implements INeedsBoundView {
 
         @Getter
@@ -109,6 +170,7 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
         }
     }
 
+    @ToString
     public static class ListViewItem2 {
 
         @Getter
@@ -122,4 +184,19 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
         }
     }
 
+    public void doOnItemClicked(Object item) {
+        if (item instanceof ListViewItemVM) {
+            Toast.makeText(getParentActivity(), "Clicked on ROW " + ((ListViewItemVM) item).getTitle(), Toast.LENGTH_SHORT).show();
+        } else if (item instanceof ListViewItem2) {
+            Toast.makeText(getParentActivity(), "Clicked on ROW " + ((ListViewItem2) item).getTitle(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void doOnStaggeredItemClicked(ListViewItem item) {
+        Toast.makeText(getParentActivity(), "Clicked on STAGGERED " + item.getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    public void doOnGridItemClicked(GridItemVM gridItemVM) {
+        Toast.makeText(getParentActivity(), "Clicked on GRID ITEM " + gridItemVM.getListViewItem().getTitle(), Toast.LENGTH_SHORT).show();
+    }
 }
