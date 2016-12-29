@@ -1,7 +1,6 @@
 package solutions.alterego.androidbound.example;
 
 import com.alterego.advancedandroidlogger.implementations.DetailedAndroidLogger;
-import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.codemonkeylabs.fpslibrary.TinyDancer;
 
@@ -34,7 +33,7 @@ public class RecyclerViewWithObjectsActivity extends BindingAppCompatActivity {
         IAndroidLogger logger = new DetailedAndroidLogger(LOGGING_TAG, LOGGING_LEVEL);
         TinyDancer.create().show(this);
 
-        ViewBinder viewBinder = new ViewBinder(this, NullAndroidLogger.instance, null);
+        ViewBinder viewBinder = new ViewBinder(this, logger, null);
         setViewBinder(viewBinder);
 
         setContentView(R.layout.activity_recyclerview, new RecyclerViewWithObjectsActivityViewModel(this, logger));
@@ -48,7 +47,7 @@ public class RecyclerViewWithObjectsActivity extends BindingAppCompatActivity {
         recyclerViewLinear.setNestedScrollingEnabled(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
         recyclerViewLinear.setLayoutManager(layoutManager);
-        recyclerViewLinear.setTemplatesForObjects(objectTemplates);
+//        recyclerViewLinear.setTemplatesForObjects(objectTemplates); this is commented to show that it will work using itemTemplate set in XML
 
         @SuppressLint("WrongViewCast") BindableRecyclerView recyclerViewStaggered = (BindableRecyclerView) findViewById(R.id.recyclerview_staggered);
         recyclerViewStaggered.setNestedScrollingEnabled(false);
