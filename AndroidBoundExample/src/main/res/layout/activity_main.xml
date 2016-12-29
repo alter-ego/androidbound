@@ -8,7 +8,7 @@
         tools:context=".MainActivity"
         tools:ignore="MissingPrefix"
         android:padding="16dp"
-        binding="{ BackgroundColor @= MainActivityBackgroundColor }">
+        binding="{{ BackgroundColor @= MainActivityBackgroundColor }}"> //these double {{ and }} are just here for testing the parser - don't do this!
 
     <TextView
             android:id="@+id/activity_title"
