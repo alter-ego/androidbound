@@ -8,7 +8,7 @@
         tools:context=".MainActivity"
         tools:ignore="MissingPrefix"
         android:padding="16dp"
-        binding="{ BackgroundColor @= MainActivityBackgroundColor }">
+        binding="{{ BackgroundColor @= MainActivityBackgroundColor }}"> //these double {{ and }} are just here for testing the parser - don't do this!
 
     <TextView
             android:id="@+id/activity_title"
@@ -62,36 +62,39 @@
             android:background="@android:color/white"
             binding="{ Resource @= ImageViewResource }; { Click @- ImageViewClick }; { LongClick @- ImageViewLongClick }"/>
 
-    <Button
-            android:id="@+id/open_listview_activity_button"
-            android:layout_width="wrap_content"
+    <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:orientation="vertical"
             android:layout_below="@+id/imageview"
-            android:textSize="16sp"
-            android:layout_margin="10dp"
-            android:text="open listview activity"
-            binding="{ Click @- OpenListViewActivity }"/>
+            android:gravity="center">
 
-    <Button
-            android:id="@+id/open_listviewwithobjects_activity_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/open_listview_activity_button"
-            android:textSize="16sp"
-            android:text="open lv with objects activity"
-            binding="{ Click @- OpenListViewWithObjectsActivity }"/>
+        <Button
+                android:id="@+id/open_listview_activity_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open listview activity"
+                binding="{ Click @- OpenListViewActivity }"/>
 
-    <Button
-            android:id="@+id/open_rvwithobjects_activity_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/open_listviewwithobjects_activity_button"
-            android:textSize="16sp"
-            android:layout_margin="10dp"
-            android:text="open rv with objects activity"
-            binding="{ Click @- OpenRecyclerViewWithObjectsActivity }"/>
+        <Button
+                android:id="@+id/open_listviewwithobjects_activity_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="open lv with objects activity"
+                binding="{ Click @- OpenListViewWithObjectsActivity }"/>
+
+        <Button
+                android:id="@+id/open_rvwithobjects_activity_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open rv with objects activity"
+                binding="{ Click @- OpenRecyclerViewWithObjectsActivity }"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

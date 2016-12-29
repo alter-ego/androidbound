@@ -60,8 +60,7 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView 
 
     public void setItemsSource(List<?> value) {
         if (mAdapter == null) {
-            mAdapter = new BindableRecyclerViewAdapter(getContext(), getViewBinder());
-            mAdapter.setItemTemplate(mItemTemplate);
+            mAdapter = new BindableRecyclerViewAdapter(getContext(), getViewBinder(), mItemTemplate);
             mAdapter.setTemplatesForObjects(mTemplatesForObjects);
             setAdapter(mAdapter);
         }

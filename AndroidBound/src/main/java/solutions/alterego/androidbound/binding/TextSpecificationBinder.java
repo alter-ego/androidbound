@@ -38,16 +38,19 @@ public class TextSpecificationBinder implements IBinder {
         final List<IBindingAssociationEngine> bindings = new ArrayList<IBindingAssociationEngine>();
 
         for (BindingSpecification specification : mParser.parse(bindingSpecifications)) {
+            if (specification.getPath() != null && !specification.getPath().equals("")) {
+                BindingRequest request = new BindingRequest();
+                request.setSource(source);
+                request.setTarget(target);
+                request.setSpecification(specification);
 
-            BindingRequest request = new BindingRequest();
-            request.setSource(source);
-            request.setTarget(target);
-            request.setSpecification(specification);
+                mLogger.debug("Creating full binding for " + source + " " + target);
 
-            mLogger.debug("Creating full binding for " + source + " " + target);
-
-            BindingAssociationEngine bindingAssociationEngine = new BindingAssociationEngine(request, mSourceFactory, mTargetFactory, mLogger);
-            bindings.add(bindingAssociationEngine);
+                BindingAssociationEngine bindingAssociationEngine = new BindingAssociationEngine(request, mSourceFactory, mTargetFactory, mLogger);
+                bindings.add(bindingAssociationEngine);
+            } else {
+                mLogger.debug("Cannot create binding for " + source + " " + target + ", path is null or empty!");
+            }
         }
         return bindings;
     }

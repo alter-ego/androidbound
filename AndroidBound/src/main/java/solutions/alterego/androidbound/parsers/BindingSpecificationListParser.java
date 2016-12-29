@@ -40,12 +40,12 @@ public class BindingSpecificationListParser implements IParser<List<BindingSpeci
                 }
                 switch (code) {
                     case '{':
-                        if (!inQuote) {
+                        if (!inQuote && !inGroup) {
                             inGroup = true;
                         }
                         break;
                     case '}':
-                        if (!inQuote) {
+                        if (!inQuote && inGroup) {
                             inGroup = false;
                             buffer.append(code);
                             logger.debug("Found possible binding specification. Sending to single parser, spec = " + buffer.toString());

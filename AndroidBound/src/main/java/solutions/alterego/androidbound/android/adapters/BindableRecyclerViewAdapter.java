@@ -6,6 +6,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,11 +24,10 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private final IViewBinder mViewBinder;
 
     @Getter
-    @Setter
     private int mItemTemplate;
 
     @Getter
-    private Map<Class<?>, Integer> mTemplatesForObjects;
+    private Map<Class<?>, Integer> mTemplatesForObjects = new HashMap<>();
 
     @Getter
     private List<?> mItemsSource;
@@ -38,19 +38,29 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Setter
     private RecyclerView.LayoutManager mLayoutManager;
 
-    public BindableRecyclerViewAdapter(Context ctx, IViewBinder vb) {
+    public BindableRecyclerViewAdapter(Context ctx, IViewBinder vb, int itemTemplate) {
         mContext = ctx;
         mViewBinder = vb;
+        mItemTemplate = itemTemplate;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Class<?> clazz = mObjectIndex.get(viewType);
-        int layoutRes = mTemplatesForObjects.get(clazz);
+        int layoutRes = mItemTemplate;
 
-        ViewBinder.getLogger().verbose(
-                "BindableRecyclerViewAdapter creating VH for viewType = " + viewType + " i.e. class = " + clazz.toString() + " using layoutRes = "
-                        + layoutRes);
+        if (clazz != null && mTemplatesForObjects.containsKey(clazz)) {
+            layoutRes = mTemplatesForObjects.get(clazz);
+            ViewBinder.getLogger().verbose(
+                    "BindableRecyclerViewAdapter creating VH for viewType = " + viewType + " i.e. class = " + clazz + " using layoutRes = "
+                            + layoutRes);
+        } else if (layoutRes != 0) {
+            ViewBinder.getLogger().verbose("BindableRecyclerViewAdapter creating VH using layoutRes = " + layoutRes);
+        } else {
+            ViewBinder.getLogger().error("BindableRecyclerViewAdapter cannot find templates for class = " + clazz
+                    + ": did you call setTemplatesForObjects or set itemTemplate in XML?");
+        }
+
         return new BindableRecyclerViewItemViewHolder(mContext, mViewBinder, parent, layoutRes);
     }
 
@@ -86,8 +96,13 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     public void setTemplatesForObjects(Map<Class<?>, Integer> templatesForObjects) {
+        if (mTemplatesForObjects == null) {
+            return;
+        }
+
         mTemplatesForObjects = templatesForObjects;
         mObjectIndex = new SparseArray<>();
+
         Class<?>[] classes = mTemplatesForObjects.keySet().toArray(new Class[mTemplatesForObjects.keySet().size()]);
 
         for (int index = 0; index < classes.length; index++) {
