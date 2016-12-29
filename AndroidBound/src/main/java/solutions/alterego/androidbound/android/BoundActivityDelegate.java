@@ -29,6 +29,10 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
 
     private Activity mBoundActivity;
 
+    private boolean mShouldCallCreate = false;
+
+    private Bundle mCreateBundle;
+
     public BoundActivityDelegate(Activity activity) {
         mBoundActivity = activity;
     }
@@ -71,7 +75,13 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
         viewModel.setParentActivity(mBoundActivity);
         mViewModels.put(id, viewModel);
 
-        return ((IBindableView) mBoundActivity).getViewBinder().inflate(mBoundActivity, viewModel, layoutResID, null);
+        View view = ((IBindableView) mBoundActivity).getViewBinder().inflate(mBoundActivity, viewModel, layoutResID, null);
+
+        if (mShouldCallCreate) {
+            onCreate(mCreateBundle);
+        }
+
+        return view;
     }
 
     @Override
@@ -94,6 +104,9 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
             for (ViewModel viewModel : getViewModels().values()) {
                 viewModel.onCreate(savedInstanceState);
             }
+        } else {
+            mShouldCallCreate = true;
+            mCreateBundle = savedInstanceState;
         }
     }
 
@@ -144,6 +157,9 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        mShouldCallCreate = false;
+        mCreateBundle = null;
+
         if (getViewModels() != null) {
             for (ViewModel viewModel : getViewModels().values()) {
                 viewModel.onSaveInstanceState(outState);
