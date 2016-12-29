@@ -3,6 +3,7 @@ package solutions.alterego.androidbound.android.adapters;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.BaseAdapter;
 
 import java.util.List;
@@ -81,6 +82,11 @@ public class BindableListAdapter extends BaseAdapter {
             convertView = checkInflatedView((BindableListItemView) convertView, position);
         } else {
             ViewBinder.getLogger().info("BindableListAdapter getView not inflating, not rebinding");
+        }
+
+        if (convertView == null){
+            ViewBinder.getLogger().warning("BindableListAdapter getView is null, returning ViewStub!");
+            convertView = new ViewStub(context);
         }
 
         return convertView;
