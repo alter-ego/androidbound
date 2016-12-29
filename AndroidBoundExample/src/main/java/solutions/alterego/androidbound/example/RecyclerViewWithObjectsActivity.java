@@ -36,9 +36,8 @@ public class RecyclerViewWithObjectsActivity extends BindingAppCompatActivity {
 
         ViewBinder viewBinder = new ViewBinder(this, NullAndroidLogger.instance, null);
         setViewBinder(viewBinder);
-        setViewModel(new RecyclerViewWithObjectsActivityViewModel(this, logger));
 
-        setContentView(R.layout.activity_recyclerview);
+        setContentView(R.layout.activity_recyclerview, new RecyclerViewWithObjectsActivityViewModel(this, logger));
 
         //populating map with object-layout relationships
         Map<Class<?>, Integer> objectTemplates = new HashMap<Class<?>, Integer>();

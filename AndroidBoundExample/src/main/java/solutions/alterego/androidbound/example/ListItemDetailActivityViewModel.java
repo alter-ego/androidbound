@@ -3,15 +3,13 @@ package solutions.alterego.androidbound.example;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.app.Activity;
-import android.os.Bundle;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
-import solutions.alterego.androidbound.interfaces.IDisposable;
 
 @Accessors(prefix = "m")
-public class ListItemDetailActivityViewModel extends ViewModel implements IDisposable {
+public class ListItemDetailActivityViewModel extends ViewModel {
 
     private static final int listSize = 250;
 
@@ -37,32 +35,6 @@ public class ListItemDetailActivityViewModel extends ViewModel implements IDispo
     public void setImageUrl(String imageUrl) {
         mImageUrl = imageUrl;
         raisePropertyChanged("ImageUrl");
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        //do nothing
-    }
-
-    @Override
-    public void onCreate(Bundle outState) {
-        //do nothing
-    }
-
-    @Override
-    public void onResume() {
-        //do nothing
-    }
-
-    @Override
-    public void onPause() {
-        //do nothing
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        //do nothing
     }
 
 }

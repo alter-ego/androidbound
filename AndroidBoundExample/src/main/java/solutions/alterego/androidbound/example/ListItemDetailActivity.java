@@ -32,9 +32,8 @@ public class ListItemDetailActivity extends BindingAppCompatActivity {
 
         ViewBinder viewBinder = new ViewBinder(this, logger, null);
         setViewBinder(viewBinder);
-        setViewModel(new ListItemDetailActivityViewModel(this, logger, title, imageUrl));
 
-        setContentView(R.layout.activity_item_detail);
+        setContentView(R.layout.activity_item_detail, new ListItemDetailActivityViewModel(this, logger, title, imageUrl));
 
         setTitle("ListItemDetailActivity");
     }

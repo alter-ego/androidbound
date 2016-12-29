@@ -4,7 +4,6 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
@@ -15,10 +14,9 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.INeedsBoundView;
-import solutions.alterego.androidbound.interfaces.IDisposable;
 
 @Accessors(prefix = "m")
-public class ListViewWithObjectsActivityViewModel extends ViewModel implements IDisposable {
+public class ListViewWithObjectsActivityViewModel extends ViewModel {
 
     private static final int listSize = 250;
 
@@ -50,32 +48,6 @@ public class ListViewWithObjectsActivityViewModel extends ViewModel implements I
     public void setListViewActivityTitle(String title) {
         mListViewActivityTitle = title;
         raisePropertyChanged("ListViewActivityTitle");
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        //do nothing
-    }
-
-    @Override
-    public void onCreate(Bundle outState) {
-        //do nothing
-    }
-
-    @Override
-    public void onResume() {
-        //do nothing
-    }
-
-    @Override
-    public void onPause() {
-        //do nothing
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        //do nothing
     }
 
     public boolean canOpenMainActivity() {

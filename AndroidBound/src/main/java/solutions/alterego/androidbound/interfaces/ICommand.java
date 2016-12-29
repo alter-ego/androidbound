@@ -2,7 +2,7 @@ package solutions.alterego.androidbound.interfaces;
 
 public interface ICommand {
 
-    public static final ICommand empty = new ICommand() {
+    ICommand empty = new ICommand() {
         public boolean canExecute(Object parameter) {
             return false;
         }
