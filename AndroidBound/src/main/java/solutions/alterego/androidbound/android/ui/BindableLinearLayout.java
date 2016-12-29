@@ -26,8 +26,6 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
 
     private IViewBinder mViewBinder;
 
-    private View content;
-
     private int itemTemplate;
 
     private PublishSubject<String> propertyChanged = PublishSubject.create();
@@ -53,7 +51,7 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
         itemTemplate = iTemplate;
 
         if (mViewBinder != null) {
-            content = mViewBinder.inflate(context, source, itemTemplate, this);
+            View content = mViewBinder.inflate(context, source, itemTemplate, this);
         }
     }
 

@@ -29,8 +29,6 @@ public class BindableListView extends ListView implements OnItemClickListener, O
 
     private AttributeSet mAttributes;
 
-    private Context mContext;
-
     private int itemTemplate;
 
     private ICommand onClick = ICommand.empty;
@@ -51,7 +49,6 @@ public class BindableListView extends ListView implements OnItemClickListener, O
         super(context, attrs);
 
         //TODO add footer
-        mContext = context;
         mAttributes = attrs;
 
         itemTemplate = getItemTemplate(context, attrs);

@@ -15,8 +15,6 @@ public class BindableListItemView extends FrameLayout {
 
     private IViewBinder mViewBinder;
 
-    private View mView;
-
     private int mItemTemplate;
 
     private BindableListItemView(Context context) {
@@ -25,15 +23,16 @@ public class BindableListItemView extends FrameLayout {
 
     public BindableListItemView(Context context, IViewBinder viewBinder, int itemTemplate, Object source) {
         super(context);
+        View view = null;
         mViewBinder = viewBinder;
         mItemTemplate = itemTemplate;
 
         if (mViewBinder != null) {
-            mView = viewBinder.inflate(context, source, itemTemplate, this);
+            view = viewBinder.inflate(context, source, itemTemplate, this);
         }
 
-        if (mView != null && source instanceof INeedsBoundView) {
-            ((INeedsBoundView) source).setBoundView(mView);
+        if (view != null && source instanceof INeedsBoundView) {
+            ((INeedsBoundView) source).setBoundView(view);
         }
     }
 
