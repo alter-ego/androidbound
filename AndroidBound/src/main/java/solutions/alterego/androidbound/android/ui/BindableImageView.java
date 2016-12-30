@@ -1,7 +1,5 @@
 package solutions.alterego.androidbound.android.ui;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -14,10 +12,12 @@ import android.widget.ImageView;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
-import solutions.alterego.androidbound.interfaces.ICommand;
+import solutions.alterego.androidbound.android.interfaces.IImageLoader;
+import solutions.alterego.androidbound.android.interfaces.INeedsImageLoader;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.interfaces.ICommand;
 
-public class BindableImageView extends ImageView implements OnClickListener, INotifyPropertyChanged, OnLongClickListener {
+public class BindableImageView extends ImageView implements OnClickListener, INotifyPropertyChanged, OnLongClickListener, INeedsImageLoader {
 
 
     private boolean disposed;
@@ -31,6 +31,8 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
     private ICommand onClick = ICommand.empty;
 
     private String source;
+
+    private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
 
     public BindableImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -46,7 +48,7 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
 
     public void setSource(String value) {
         source = value;
-        ImageLoader.getInstance().displayImage(source, this);
+        mImageLoader.loadImageFromUri(source, this);
     }
 
     public ICommand getClick() {
@@ -179,4 +181,8 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
         setLayoutParams(p);
     }
 
+    @Override
+    public void setImageLoader(IImageLoader imageLoader) {
+        mImageLoader = imageLoader;
+    }
 }
