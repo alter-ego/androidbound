@@ -181,8 +181,8 @@ public class ViewBinder implements IViewBinder {
             ((INeedsBoundView) source).setBoundView(view);
         }
 
-        if (view != null && source instanceof INeedsImageLoader) {
-            ((INeedsImageLoader) source).setImageLoader(mImageLoader);
+        if (view != null && view instanceof INeedsImageLoader) {
+            ((INeedsImageLoader) view).setImageLoader(mImageLoader);
         }
     }
 
