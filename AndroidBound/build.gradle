@@ -89,8 +89,6 @@ dependencies {
     provided 'javax.annotation:jsr250-api:1.0'
     compile 'org.projectlombok:lombok:1.16.2'
 
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-
     // Testing
     testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"

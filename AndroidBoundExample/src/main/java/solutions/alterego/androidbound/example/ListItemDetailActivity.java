@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.android.BindingAppCompatActivity;
+import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 
@@ -30,7 +31,8 @@ public class ListItemDetailActivity extends BindingAppCompatActivity {
         String title = getIntent().getStringExtra(EXTRA_ITEM_TITLE);
         String imageUrl = getIntent().getStringExtra(EXTRA_ITEM_IMAGE_URL);
 
-        ViewBinder viewBinder = new ViewBinder(this, logger, null);
+        ViewBinder viewBinder = new ViewBinder(this, logger);
+        viewBinder.setImageLoader(new UILImageLoader(this, null));
         setViewBinder(viewBinder);
 
         setContentView(R.layout.activity_item_detail, new ListItemDetailActivityViewModel(this, logger, title, imageUrl));

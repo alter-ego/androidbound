@@ -2,9 +2,6 @@ package solutions.alterego.androidbound;
 
 import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -31,7 +28,9 @@ import solutions.alterego.androidbound.android.converters.BooleanToVisibilityCon
 import solutions.alterego.androidbound.android.converters.FontConverter;
 import solutions.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.interfaces.IFontManager;
+import solutions.alterego.androidbound.android.interfaces.IImageLoader;
 import solutions.alterego.androidbound.android.interfaces.INeedsBoundView;
+import solutions.alterego.androidbound.android.interfaces.INeedsImageLoader;
 import solutions.alterego.androidbound.binding.TextSpecificationBinder;
 import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
 import solutions.alterego.androidbound.converters.ValueConverterService;
@@ -73,11 +72,9 @@ public class ViewBinder implements IViewBinder {
     @Setter
     private IFontManager mFontManager;
 
-    public ViewBinder(Context ctx, IAndroidLogger logger) {
-        this(ctx, logger, null);
-    }
+    private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
 
-    public ViewBinder(Context ctx, IAndroidLogger logger, ImageLoaderConfiguration imageLoaderConfiguration) {
+    public ViewBinder(Context ctx, IAndroidLogger logger) {
         setLogger(logger);
         setContext(ctx);
         mConverterService = new ValueConverterService(getLogger());
@@ -95,7 +92,6 @@ public class ViewBinder implements IViewBinder {
         setFontManager(new FontManager(getLogger()));
 
         registerDefaultConverters();
-        tryInitImageLoader(imageLoaderConfiguration);
     }
 
     private void setContext(Context ctx) {
@@ -114,23 +110,6 @@ public class ViewBinder implements IViewBinder {
         }
 
         return null;
-    }
-
-    private void tryInitImageLoader(ImageLoaderConfiguration imageLoaderConfiguration) {
-        if (!ImageLoader.getInstance().isInited()) {
-            ImageLoader.getInstance().init(imageLoaderConfiguration != null ? imageLoaderConfiguration : getDefaultImageLoaderConfig(getContext()));
-        }
-    }
-
-    private ImageLoaderConfiguration getDefaultImageLoaderConfig(Context ctx) {
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(ctx)
-                .defaultDisplayImageOptions(defaultOptions)
-                .build();
-        return config;
     }
 
     private void registerDefaultConverters() {
@@ -200,6 +179,10 @@ public class ViewBinder implements IViewBinder {
 
         if (view != null && source instanceof INeedsBoundView) {
             ((INeedsBoundView) source).setBoundView(view);
+        }
+
+        if (view != null && view instanceof INeedsImageLoader) {
+            ((INeedsImageLoader) view).setImageLoader(mImageLoader);
         }
     }
 
@@ -379,5 +362,11 @@ public class ViewBinder implements IViewBinder {
         mInflaterFactory = null;
         mViewResolver = null;
         mFontManager = null;
+        mImageLoader = IImageLoader.nullImageLoader;
+    }
+
+    @Override
+    public void setImageLoader(IImageLoader imageLoader) {
+        mImageLoader = imageLoader;
     }
 }

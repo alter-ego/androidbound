@@ -46,7 +46,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:24.2.0'
     compile 'com.android.support:support-v4:24.2.0'
     apt "org.projectlombok:lombok:1.16.2"
@@ -54,4 +53,6 @@ dependencies {
     compile 'net.danlew:android.joda:2.9.0'
     compile 'com.github.brianPlummer:tinydancer:0.0.9'
     compile project(':AndroidBound')
+
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 }

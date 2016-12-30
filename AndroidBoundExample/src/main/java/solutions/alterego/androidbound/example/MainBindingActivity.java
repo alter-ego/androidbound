@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.android.BindingAppCompatActivity;
+import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 
@@ -26,12 +27,13 @@ public class MainBindingActivity extends BindingAppCompatActivity {
         super.onCreate(savedInstanceState);
         IAndroidLogger logger = new DetailedAndroidLogger(LOGGING_TAG, LOGGING_LEVEL);
 
-        ViewBinder viewBinder = new ViewBinder(this, logger, null);
+        ViewBinder viewBinder = new ViewBinder(this, logger);
         viewBinder.getFontManager().setDefaultFont(Typeface.createFromAsset(getAssets(), "Roboto-Regular.ttf"));
         viewBinder.getFontManager().registerFont("light", Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf"));
         viewBinder.getFontManager().registerFont("italic", Typeface.createFromAsset(getAssets(), "Roboto-Italic.ttf"));
         viewBinder.getFontManager().registerFont("bold", Typeface.createFromAsset(getAssets(), "Roboto-Bold.ttf"));
         mCustomValueConverters = new CustomValueConverters(this, viewBinder);
+        viewBinder.setImageLoader(new UILImageLoader(this, null));
 
         setViewBinder(viewBinder);
 
