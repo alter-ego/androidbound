@@ -10,6 +10,7 @@ import android.view.View;
 
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -26,12 +27,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         IAndroidLogger logger = new DetailedAndroidLogger(LOGGING_TAG, LOGGING_LEVEL);
-        mViewBinder = new ViewBinder(this, logger, null);
+        mViewBinder = new ViewBinder(this, logger);
 
         mViewBinder.getFontManager().setDefaultFont(Typeface.createFromAsset(getAssets(), "Roboto-Bold.ttf"));
         mViewBinder.getFontManager().registerFont("light", Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf"));
         mViewBinder.getFontManager().registerFont("italic", Typeface.createFromAsset(getAssets(), "Roboto-Italic.ttf"));
         mViewBinder.getFontManager().registerFont("bold", Typeface.createFromAsset(getAssets(), "Roboto-Bold.ttf"));
+        mViewBinder.setImageLoader(new UILImageLoader(this, null));
 
         mViewModel = new MainActivityViewModel(this, logger);
         mViewModel.onCreate(savedInstanceState);
