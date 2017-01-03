@@ -11,7 +11,6 @@ import solutions.alterego.androidbound.android.BindingAppCompatActivity;
 import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
-
 public class MainBindingActivity extends BindingAppCompatActivity {
 
     public static final String LOGGING_TAG = "TEST_APP";
