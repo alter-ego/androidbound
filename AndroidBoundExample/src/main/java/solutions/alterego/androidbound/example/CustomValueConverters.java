@@ -17,14 +17,14 @@ import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 public class CustomValueConverters {
 
-    private static Context mContext;
+    private Context mContext;
 
     public CustomValueConverters(Context ctx, IViewBinder viewBinder) {
         mContext = ctx;
-        viewBinder.registerConverter("PrettifyDateTime", CustomValueConverters.PrettifyDateTime);
+        viewBinder.registerConverter("PrettifyDateTime", PrettifyDateTime);
     }
 
-    public static IValueConverter PrettifyDateTime = new IValueConverter() {
+    public IValueConverter PrettifyDateTime = new IValueConverter() {
         @Override
         public Object convert(Object value, Class<?> targetType, Object parameter, Locale locale) {
 
@@ -39,7 +39,7 @@ public class CustomValueConverters {
         }
     };
 
-    public static String convertDateToString(Context context, DateTime dateTime, Locale locale, DateTimeZone timeZone, String type) {
+    public String convertDateToString(Context context, DateTime dateTime, Locale locale, DateTimeZone timeZone, String type) {
         String result = "";
         LocalDateTime localDateTime = dateTime.withZone(timeZone).toLocalDateTime();
 
