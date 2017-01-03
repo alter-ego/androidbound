@@ -137,6 +137,7 @@ public abstract class BindingAppCompatActivity extends AppCompatActivity impleme
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        setIntent(intent); //we're manually setting new intent to be able to fetch it later with getIntent
 
         if (mBoundActivityDelegate != null) {
             mBoundActivityDelegate.onNewIntent(intent);
