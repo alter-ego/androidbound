@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,23 +28,27 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
     @Getter
     private Map<String, ViewModel> mViewModels;
 
-    private Activity mBoundActivity;
+    private transient WeakReference<Activity> mBoundActivity;
 
     private boolean mShouldCallCreate = false;
 
     private Bundle mCreateBundle;
 
     public BoundActivityDelegate(Activity activity) {
-        mBoundActivity = activity;
+        mBoundActivity = new WeakReference<>(activity);
+    }
+
+    private Activity getBoundActivity() {
+        return mBoundActivity != null ? mBoundActivity.get() : null;
     }
 
     @Override
     public void setContentView(int layoutResID, ViewModel viewModel) {
-        if (mBoundActivity == null) {
+        if (mBoundActivity == null || getBoundActivity() == null) {
             throw new RuntimeException("Bound Activity is null!");
         }
 
-        mBoundActivity.setContentView(addViewModel(layoutResID, viewModel, TAG_VIEWMODEL_MAIN));
+        getBoundActivity().setContentView(addViewModel(layoutResID, viewModel, TAG_VIEWMODEL_MAIN));
     }
 
     @Override
@@ -52,15 +57,15 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
             throw new RuntimeException("Bound Activity is null!");
         }
 
-        if (!(mBoundActivity instanceof IBindableView)) {
-            throw new RuntimeException("Activity must extend IBindableView!");
+        if (!(getBoundActivity() instanceof IBindableView)) {
+            throw new RuntimeException("Activity must implement IBindableView!");
         }
 
         if (viewModel == null) {
             throw new RuntimeException("viewModel is null!");
         }
 
-        if (((IBindableView) mBoundActivity).getViewBinder() == null) {
+        if (((IBindableView) getBoundActivity()).getViewBinder() == null) {
             throw new RuntimeException("getViewBinder must not be null!");
         }
 
@@ -72,10 +77,10 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
             throw new RuntimeException("cannot add same instance of viewModel twice!");
         }
 
-        viewModel.setParentActivity(mBoundActivity);
+        viewModel.setParentActivity(getBoundActivity());
         mViewModels.put(id, viewModel);
 
-        View view = ((IBindableView) mBoundActivity).getViewBinder().inflate(mBoundActivity, viewModel, layoutResID, null);
+        View view = ((IBindableView) getBoundActivity()).getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, null);
 
         if (mShouldCallCreate) {
             onCreate(mCreateBundle);
@@ -169,12 +174,16 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
 
     @Override
     public void onDestroy() {
+        Activity boundActivityRef = getBoundActivity();
+
         if (mBoundActivity != null
-                && mBoundActivity instanceof IBindableView
-                && ((IBindableView) mBoundActivity).getViewBinder() != null
-                && mBoundActivity.getWindow() != null
-                && mBoundActivity.getWindow().getDecorView() != null) {
-            ((IBindableView) mBoundActivity).getViewBinder().clearBindingForViewAndChildren(mBoundActivity.getWindow().getDecorView().getRootView());
+                && boundActivityRef != null
+                && boundActivityRef instanceof IBindableView
+                && ((IBindableView) boundActivityRef).getViewBinder() != null
+                && boundActivityRef.getWindow() != null
+                && boundActivityRef.getWindow().getDecorView() != null) {
+            ((IBindableView) boundActivityRef).getViewBinder()
+                    .clearBindingForViewAndChildren(getBoundActivity().getWindow().getDecorView().getRootView());
         }
 
         if (getViewModels() != null) {
@@ -184,6 +193,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
         }
 
         mViewModels = null;
+        mBoundActivity.clear();
         mBoundActivity = null;
     }
 
