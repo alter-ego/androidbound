@@ -202,7 +202,17 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public void clearBindingsFor(View view) {
-        if (view == null || !mBoundViews.containsKey(view)) {
+        if (view == null) {
+            return;
+        }
+
+        mLogger.verbose("clearBindingsFor view = " + view);
+
+        if (mLazyBoundViews.containsKey(view)) {
+            mLazyBoundViews.remove(view);
+        }
+
+        if (!mBoundViews.containsKey(view)) {
             return;
         }
 
@@ -225,6 +235,7 @@ public class ViewBinder implements IViewBinder {
             bindings.clear();
         }
         mBoundViews.clear();
+        mLazyBoundViews.clear();
     }
 
     @Override
