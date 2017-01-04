@@ -21,7 +21,7 @@ public abstract class BindingAppCompatActivity extends AppCompatActivity impleme
     @Setter
     protected IAndroidLogger mLogger = NullAndroidLogger.instance;
 
-    private BoundActivityDelegate mBoundActivityDelegate;
+    protected BoundActivityDelegate mBoundActivityDelegate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

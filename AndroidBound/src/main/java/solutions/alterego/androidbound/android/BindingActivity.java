@@ -21,7 +21,7 @@ public abstract class BindingActivity extends Activity implements IBindableView,
     @Setter
     protected IAndroidLogger mLogger = NullAndroidLogger.instance;
 
-    private BoundActivityDelegate mBoundActivityDelegate;
+    protected BoundActivityDelegate mBoundActivityDelegate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
