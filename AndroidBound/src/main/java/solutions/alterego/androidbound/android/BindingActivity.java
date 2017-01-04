@@ -1,6 +1,5 @@
 package solutions.alterego.androidbound.android;
 
-import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.app.Activity;
@@ -9,17 +8,16 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 
-import lombok.Setter;
 import lombok.experimental.Accessors;
+import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.android.interfaces.IBoundActivity;
+import solutions.alterego.androidbound.interfaces.IHasLogger;
+import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
 @Accessors(prefix = "m")
-public abstract class BindingActivity extends Activity implements IBindableView, IBoundActivity {
-
-    @Setter
-    protected IAndroidLogger mLogger = NullAndroidLogger.instance;
+public abstract class BindingActivity extends Activity implements IBindableView, IBoundActivity, INeedsLogger, IHasLogger {
 
     protected BoundActivityDelegate mBoundActivityDelegate;
 
@@ -150,6 +148,22 @@ public abstract class BindingActivity extends Activity implements IBindableView,
 
         if (mBoundActivityDelegate != null) {
             mBoundActivityDelegate.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public IAndroidLogger getLogger() {
+        if (mBoundActivityDelegate != null) {
+            return mBoundActivityDelegate.getLogger();
+        } else {
+            return ViewBinder.getLogger();
+        }
+    }
+
+    @Override
+    public void setLogger(IAndroidLogger logger) {
+        if (mBoundActivityDelegate != null) {
+            mBoundActivityDelegate.setLogger(logger);
         }
     }
 }

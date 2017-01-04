@@ -1,5 +1,7 @@
 package solutions.alterego.androidbound.android;
 
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -12,6 +14,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IActivityLifecycle;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
@@ -19,14 +22,19 @@ import solutions.alterego.androidbound.android.interfaces.IBoundActivity;
 import solutions.alterego.androidbound.android.interfaces.INeedsConfigurationChange;
 import solutions.alterego.androidbound.android.interfaces.INeedsNewIntent;
 import solutions.alterego.androidbound.android.interfaces.INeedsOnActivityResult;
+import solutions.alterego.androidbound.interfaces.IHasLogger;
+import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
 @Accessors(prefix = "m")
-public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity, INeedsOnActivityResult, INeedsNewIntent, INeedsConfigurationChange {
+public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity, INeedsOnActivityResult, INeedsNewIntent, INeedsConfigurationChange,
+        INeedsLogger, IHasLogger {
 
     public static final String TAG_VIEWMODEL_MAIN = "androidbound_viewmodel_main";
 
     @Getter
     private Map<String, ViewModel> mViewModels;
+
+    private IAndroidLogger mLogger = null;
 
     private transient WeakReference<Activity> mBoundActivity;
 
@@ -78,6 +86,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
         }
 
         viewModel.setParentActivity(getBoundActivity());
+        viewModel.setLogger(getLogger());
         mViewModels.put(id, viewModel);
 
         View view = ((IBindableView) getBoundActivity()).getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, null);
@@ -195,6 +204,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
         mViewModels = null;
         mBoundActivity.clear();
         mBoundActivity = null;
+        mLogger = null;
     }
 
     @Override
@@ -226,6 +236,22 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
                 if (viewModel instanceof INeedsOnActivityResult) {
                     ((INeedsOnActivityResult) viewModel).onActivityResult(requestCode, resultCode, data);
                 }
+            }
+        }
+    }
+
+    @Override
+    public IAndroidLogger getLogger() {
+        return mLogger != null ? mLogger : ViewBinder.getLogger();
+    }
+
+    @Override
+    public void setLogger(IAndroidLogger logger) {
+        mLogger = logger;
+
+        if (getViewModels() != null) {
+            for (ViewModel viewModel : getViewModels().values()) {
+                viewModel.setLogger(getLogger());
             }
         }
     }
