@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.interfaces.IDisposable;
@@ -27,6 +28,10 @@ public class MainActivityViewModel extends ViewModel implements IDisposable {
 
     @Getter
     private String mTextViewBoundToEditText = "empty";
+
+    @Getter
+    @Setter
+    private String mBoundEditTextText = mEditTextText;
 
     public MainActivityViewModel(Activity activity, IAndroidLogger logger) {
         setLogger(logger);
@@ -55,6 +60,7 @@ public class MainActivityViewModel extends ViewModel implements IDisposable {
     @Override
     public void onCreate(Bundle outState) {
         //do nothing
+        raisePropertyChanged("BoundEditTextText");
     }
 
     @Override
@@ -83,6 +89,15 @@ public class MainActivityViewModel extends ViewModel implements IDisposable {
         }
     }
 
+    public boolean canClearEditTextText() {
+        return true;
+    }
+
+    public void doClearEditTextText() {
+        setBoundEditTextText("");
+        raisePropertyChanged("BoundEditTextText");
+    }
+
     public int getMainActivityTitleColor() {
         return Color.rgb(0, 255, 0);
     }
@@ -90,7 +105,6 @@ public class MainActivityViewModel extends ViewModel implements IDisposable {
     public int getMainActivityBackgroundColor() {
         return Color.rgb(200, 250, 250);
     }
-
 
 
     public int getButtonBackgroundColor() {
