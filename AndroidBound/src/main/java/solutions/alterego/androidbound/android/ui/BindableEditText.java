@@ -124,11 +124,11 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
         setText(text);
     }
 
-    public void setEditTextText(CharSequence text) {
+    public void setEditTextCharSequence(CharSequence text) {
         super.setText(text);
     }
 
-    public CharSequence getEditTextText() {
-        return super.getText();
+    public CharSequence getEditTextCharSequence() {
+        return getTextString();
     }
 }

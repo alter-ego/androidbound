@@ -98,7 +98,7 @@
             android:textSize="20sp"
             tools:text="edittext"
             binding="{ TextString =@ EditTextText };
-             { EditTextText @= BoundEditTextText }
+             { EditTextCharSequence @= BoundEditTextText }
              { TextColor @= EditTextColor }; { Typeface @- ToFont(this, &apos;italic&apos;) }" />
 
         <Button
