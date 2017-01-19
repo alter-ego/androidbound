@@ -18,7 +18,7 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
 
     private boolean disposed;
 
-    private TextWatcher textWatcher = new TextWatcher() {
+    private final TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -37,17 +37,26 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
 
     public BindableEditText(Context context) {
         super(context);
-        addTextChangedListener(textWatcher);
     }
 
     public BindableEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        addTextChangedListener(textWatcher);
     }
 
     public BindableEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
         addTextChangedListener(textWatcher);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        removeTextChangedListener(textWatcher);
     }
 
     public Typeface getTypeface() {
@@ -113,5 +122,13 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
 
     public void setTextString(String text) {
         setText(text);
+    }
+
+    public void setEditTextCharSequence(CharSequence text) {
+        super.setText(text);
+    }
+
+    public CharSequence getEditTextCharSequence() {
+        return getTextString();
     }
 }
