@@ -37,6 +37,7 @@ import solutions.alterego.androidbound.converters.ValueConverterService;
 import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
 import solutions.alterego.androidbound.factories.SourceBindingFactory;
 import solutions.alterego.androidbound.factories.TargetBindingFactory;
+import solutions.alterego.androidbound.interfaces.IDisposable;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 import solutions.alterego.androidbound.parsers.BindingSpecificationListParser;
 import solutions.alterego.androidbound.parsers.BindingSpecificationParser;
@@ -220,6 +221,10 @@ public class ViewBinder implements IViewBinder {
 
         for (IBindingAssociationEngine binding : bindings) {
             binding.dispose();
+        }
+
+        if (view instanceof IDisposable) {
+            ((IDisposable) view).dispose();
         }
 
         bindings.clear();
