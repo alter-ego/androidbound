@@ -1,12 +1,11 @@
 package solutions.alterego.androidbound.example;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import android.app.Activity;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
 public class ListItemDetailActivityViewModel extends ViewModel {
@@ -19,7 +18,7 @@ public class ListItemDetailActivityViewModel extends ViewModel {
     @Getter
     private String mTitle;
 
-    public ListItemDetailActivityViewModel(Activity activity, IAndroidLogger logger, String title, String imageUrl) {
+    public ListItemDetailActivityViewModel(Activity activity, ILogger logger, String title, String imageUrl) {
         setLogger(logger);
         setParentActivity(activity);
 

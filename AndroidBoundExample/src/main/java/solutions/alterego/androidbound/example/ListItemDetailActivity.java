@@ -1,6 +1,5 @@
 package solutions.alterego.androidbound.example;
 
-import com.alterego.advancedandroidlogger.implementations.DetailedAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.os.Bundle;
@@ -8,6 +7,7 @@ import android.os.Bundle;
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.android.BindingAppCompatActivity;
 import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
+import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 
@@ -26,7 +26,7 @@ public class ListItemDetailActivity extends BindingAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        IAndroidLogger logger = new DetailedAndroidLogger(LOGGING_TAG, LOGGING_LEVEL);
+        ILogger logger = new AdvancedAndroidLoggerAdapter(LOGGING_TAG, LOGGING_LEVEL);
 
         String title = getIntent().getStringExtra(EXTRA_ITEM_TITLE);
         String imageUrl = getIntent().getStringExtra(EXTRA_ITEM_IMAGE_URL);

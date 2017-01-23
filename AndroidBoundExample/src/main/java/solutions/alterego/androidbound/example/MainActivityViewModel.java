@@ -1,7 +1,5 @@
 package solutions.alterego.androidbound.example;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
 public class MainActivityViewModel extends ViewModel {
@@ -32,7 +31,7 @@ public class MainActivityViewModel extends ViewModel {
     @Setter
     private String mBoundEditTextText = mEditTextText;
 
-    public MainActivityViewModel(Activity activity, IAndroidLogger logger) {
+    public MainActivityViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
         setParentActivity(activity);
 

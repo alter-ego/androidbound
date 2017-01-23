@@ -1,7 +1,5 @@
 package solutions.alterego.androidbound.example;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import org.joda.time.DateTime;
 
 import android.app.Activity;
@@ -11,6 +9,7 @@ import android.widget.Toast;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
 public class MainBindableActivityViewModel extends ViewModel {
@@ -24,7 +23,7 @@ public class MainBindableActivityViewModel extends ViewModel {
     @Getter
     private boolean mTextViewVisible = false;
 
-    public MainBindableActivityViewModel(Activity activity, IAndroidLogger logger) {
+    public MainBindableActivityViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
         setParentActivity(activity);
 
