@@ -1,11 +1,10 @@
 package solutions.alterego.androidbound.binding.types;
 
-import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import rx.Observable;
 import rx.subjects.PublishSubject;
+import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.binding.interfaces.IBinding;
+import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
 public abstract class BindingBase implements IBinding, INeedsLogger {
@@ -16,9 +15,9 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
 
     private Object mSubject;
 
-    private IAndroidLogger mLogger = NullAndroidLogger.instance;
+    private ILogger mLogger = NullLogger.instance;
 
-    public BindingBase(Object subject, IAndroidLogger logger) {
+    public BindingBase(Object subject, ILogger logger) {
         mSubject = subject;
         setLogger(logger);
     }
@@ -64,11 +63,11 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
         return mSubject;
     }
 
-    protected IAndroidLogger getLogger() {
+    protected ILogger getLogger() {
         return mLogger;
     }
 
-    public void setLogger(IAndroidLogger logger) {
+    public void setLogger(ILogger logger) {
         mLogger = logger.getLogger(this);
     }
 

@@ -1,8 +1,5 @@
 package solutions.alterego.androidbound;
 
-import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -38,6 +35,7 @@ import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
 import solutions.alterego.androidbound.factories.SourceBindingFactory;
 import solutions.alterego.androidbound.factories.TargetBindingFactory;
 import solutions.alterego.androidbound.interfaces.IDisposable;
+import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 import solutions.alterego.androidbound.parsers.BindingSpecificationListParser;
 import solutions.alterego.androidbound.parsers.BindingSpecificationParser;
@@ -51,7 +49,7 @@ public class ViewBinder implements IViewBinder {
 
     @Getter
     @Setter
-    private static IAndroidLogger mLogger = NullAndroidLogger.instance;
+    private static ILogger mLogger = NullLogger.instance;
 
     WeakReference<Context> mContext;
 
@@ -75,7 +73,7 @@ public class ViewBinder implements IViewBinder {
 
     private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
 
-    public ViewBinder(Context ctx, IAndroidLogger logger) {
+    public ViewBinder(Context ctx, ILogger logger) {
         setLogger(logger);
         setContext(ctx);
         mConverterService = new ValueConverterService(getLogger());

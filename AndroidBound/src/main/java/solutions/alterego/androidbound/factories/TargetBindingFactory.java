@@ -1,13 +1,12 @@
 package solutions.alterego.androidbound.factories;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
-import solutions.alterego.androidbound.binding.types.TargetPropertyBinding;
 import solutions.alterego.androidbound.binding.interfaces.IBinding;
+import solutions.alterego.androidbound.binding.types.TargetPropertyBinding;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class TargetBindingFactory extends SourceBindingFactory {
 
-    public TargetBindingFactory(IAndroidLogger logger) {
+    public TargetBindingFactory(ILogger logger) {
         super(logger);
     }
 

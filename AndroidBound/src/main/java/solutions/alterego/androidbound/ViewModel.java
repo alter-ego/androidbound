@@ -1,8 +1,5 @@
 package solutions.alterego.androidbound;
 
-import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -15,13 +12,14 @@ import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.android.interfaces.IActivityLifecycle;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.IDisposable;
+import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
 @Accessors(prefix = "m")
 public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposable, IActivityLifecycle {
 
     @Getter
-    protected transient IAndroidLogger mLogger = NullAndroidLogger.instance;
+    protected transient ILogger mLogger = NullLogger.instance;
 
     private transient PublishSubject<String> propertyChanges = PublishSubject.create();
 
@@ -50,7 +48,7 @@ public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposa
     }
 
     @Override
-    public void setLogger(IAndroidLogger logger) {
+    public void setLogger(ILogger logger) {
         mLogger = logger.getLogger(this);
     }
 
