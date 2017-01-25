@@ -49,12 +49,12 @@ There are pros and cons.
 
 **Pros**
 
-- you don't need adapters for supported views (ListView, GridView)
+- you don't need adapters for supported views (ListView, GridView, RecyclerView)
 - value converters are based on type, but are also named. That means that you can have multiple converters that convert, say, `Boolean` to `Integer`
 - it supports hierarchical binding so instead of binding to an object `MyObject`, you can also bind to `MyObject.MySubObject` etc.
 - total support for two-way binding, and return binds (view -> method) pass on the object that's bound to the view and not the view itself (cleaner code, don't have to keep/fetch the objects)
 - uses RxJava internally - so if there are bugfixes or improvements there, they will trickle down
-- automatic URL loading
+- automatic URL loading when using ImageView (if you set the `IImageLoader` in the `ViewBinder`, you can see how to do this in the example code)
 
 #OK, you convinced me. How do I use this?
 Here's a quick guide.
@@ -68,7 +68,7 @@ Here's a quick guide.
     
 	    dependencies {
 	    	...
-	    	compile 'solutions.alterego:androidbound:0.6.3'
+	    	compile 'solutions.alterego:androidbound:0.6.9'
 	    }
 
 1. Create your ViewModel for the Activity by extending a `ViewModel` class: `public class MainActivityViewModel extends ViewModel...`
@@ -77,8 +77,7 @@ Here's a quick guide.
 
 	**If you extend normal (non-Binding) Activities:**
 
-		IAndroidLogger logger = new DetailedAndroidLogger(LOGGING_TAG, LOGGING_LEVEL);
-		ViewBinder viewBinder = new ViewBinder(this, logger, null);
+		ViewBinder viewBinder = new ViewBinder(this);
 		ViewModel viewModel = new MainActivityViewModel(this, logger);
 
 		View view = viewBinder.inflate(this, viewModel, R.layout.activity_main, null);
@@ -86,8 +85,7 @@ Here's a quick guide.
 
 	**If you extend a Binding Activity, like BindingAppCompatActivity:**
 
-		IAndroidLogger logger = new DetailedAndroidLogger(LOGGING_TAG, LOGGING_LEVEL);
-        ViewBinder viewBinder = new ViewBinder(this, logger, null);
+		ViewBinder viewBinder = new ViewBinder(this);
 		ViewModel viewModel = new MainBindableActivityViewModel(this, logger);
 
         setViewBinder(viewBinder);
@@ -120,9 +118,9 @@ Here's a quick guide.
 			raisePropertyChanged("MainActivityTitle");
 		}
 
-1. When you don't need the ViewModel any more, simply call `ViewModel.dispose()` which should release all the references and unsubscribe from all the subscriptions.
+1. When you don't need the ViewModel any more, simply call `ViewModel.dispose()` which should release all the references and unsubscribe from all the subscriptions. **This is done automatically if you use any of the `Binding*` activities!**
 
-For more details, please see the example. Wiki should be coming, sooner or later.
+For more details, please see the example and don't forget to read the Wiki.
 
 #It doesn't work!!!
 Yes it does. 
@@ -139,7 +137,7 @@ Most of the code in the first version was written by [Fabrizio Chignoli](https:/
 
 ## COMPATIBILITY
 
-This library was tested with the version 23.2.1 of the support libary. It hasn't been tested with the design support library. Also, there's no support for the RecyclerView.
+This library was tested with the version 25.1.0 of the support library. It hasn't been tested with the design support library.
 
 ## ROADMAP
 
