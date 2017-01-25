@@ -1,17 +1,16 @@
 package solutions.alterego.androidbound.binding.types;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import java.security.InvalidParameterException;
 
 import rx.Subscription;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class SelfBinding extends BindingBase {
 
     private Subscription mSubscription;
 
-    public SelfBinding(Object subject, IAndroidLogger logger) {
+    public SelfBinding(Object subject, ILogger logger) {
         super(subject, logger);
         setupBinding(subject);
     }

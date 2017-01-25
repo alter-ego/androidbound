@@ -1,7 +1,5 @@
 package solutions.alterego.androidbound.android;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -9,11 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import lombok.experimental.Accessors;
-import solutions.alterego.androidbound.ViewBinder;
+import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.android.interfaces.IBoundActivity;
 import solutions.alterego.androidbound.interfaces.IHasLogger;
+import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
 @Accessors(prefix = "m")
@@ -152,16 +151,16 @@ public abstract class BindingAppCompatActivity extends AppCompatActivity impleme
     }
 
     @Override
-    public IAndroidLogger getLogger() {
+    public ILogger getLogger() {
         if (mBoundActivityDelegate != null) {
             return mBoundActivityDelegate.getLogger();
         } else {
-            return ViewBinder.getLogger();
+            return NullLogger.instance;
         }
     }
 
     @Override
-    public void setLogger(IAndroidLogger logger) {
+    public void setLogger(ILogger logger) {
         if (mBoundActivityDelegate != null) {
             mBoundActivityDelegate.setLogger(logger);
         }

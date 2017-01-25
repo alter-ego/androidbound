@@ -1,11 +1,10 @@
 package solutions.alterego.androidbound.binding.types;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import rx.Subscription;
+import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.helpers.Reflector;
 import solutions.alterego.androidbound.helpers.reflector.PropertyInfo;
-import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class PropertyBinding extends BindingBase {
 
@@ -13,10 +12,10 @@ public class PropertyBinding extends BindingBase {
 
     private PropertyInfo mPropertyInfo;
 
-    public PropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, IAndroidLogger logger) {
+    public PropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, ILogger logger) {
         super(subject, logger);
 
-        mPropertyInfo = Reflector.getProperty(subject.getClass(), propertyName);
+        mPropertyInfo = Reflector.getProperty(subject.getClass(), propertyName, logger);
         setupBinding(subject, mPropertyInfo.getPropertyName(), needChangesIfPossible);
     }
 

@@ -1,8 +1,7 @@
 package solutions.alterego.androidbound.binding.types;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import rx.android.schedulers.AndroidSchedulers;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class TargetPropertyBinding extends PropertyBinding {
 
@@ -10,7 +9,7 @@ public class TargetPropertyBinding extends PropertyBinding {
 
     private String propertyName;
 
-    public TargetPropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, IAndroidLogger logger) {
+    public TargetPropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, ILogger logger) {
         super(subject, propertyName, needChangesIfPossible, logger);
         this.propertyName = propertyName;
     }

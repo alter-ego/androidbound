@@ -1,24 +1,23 @@
 package solutions.alterego.androidbound.parsers;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import solutions.alterego.androidbound.binding.data.BindingSpecification;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class BindingSpecificationListParser implements IParser<List<BindingSpecification>> {
 
-    private IAndroidLogger logger;
+    private ILogger logger;
 
     private IParser<BindingSpecification> singleParser;
 
-    public BindingSpecificationListParser(IParser<BindingSpecification> singleParser, IAndroidLogger logger) {
+    public BindingSpecificationListParser(IParser<BindingSpecification> singleParser, ILogger logger) {
         this.singleParser = singleParser;
         setLogger(logger);
     }
 
-    public void setLogger(IAndroidLogger logger) {
+    public void setLogger(ILogger logger) {
         this.logger = logger.getLogger(this);
     }
 

@@ -77,7 +77,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compile 'solutions.alterego:advancedandroidlogger:1.0.8@aar'
 
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:support-v4:25.1.0'

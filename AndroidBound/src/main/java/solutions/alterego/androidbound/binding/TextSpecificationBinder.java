@@ -1,15 +1,14 @@
 package solutions.alterego.androidbound.binding;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import solutions.alterego.androidbound.binding.data.BindingRequest;
 import solutions.alterego.androidbound.binding.data.BindingSpecification;
-import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
 import solutions.alterego.androidbound.binding.interfaces.IBinder;
+import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
 import solutions.alterego.androidbound.factories.IBindingFactory;
+import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.parsers.IParser;
 
 public class TextSpecificationBinder implements IBinder {
@@ -20,13 +19,13 @@ public class TextSpecificationBinder implements IBinder {
 
     private final IBindingFactory mTargetFactory;
 
-    private IAndroidLogger mLogger;
+    private ILogger mLogger;
 
     public TextSpecificationBinder(
             IParser<List<BindingSpecification>> parser,
             IBindingFactory sourceFactory,
             IBindingFactory targetFactory,
-            IAndroidLogger logger) {
+            ILogger logger) {
 
         mParser = parser;
         mSourceFactory = sourceFactory;
@@ -55,7 +54,7 @@ public class TextSpecificationBinder implements IBinder {
         return bindings;
     }
 
-    public void setLogger(IAndroidLogger logger) {
+    public void setLogger(ILogger logger) {
         mLogger = logger.getLogger(this);
     }
 }

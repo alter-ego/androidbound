@@ -1,15 +1,15 @@
 package solutions.alterego.androidbound.example;
 
-import com.alterego.advancedandroidlogger.implementations.DetailedAndroidLogger;
-import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.codemonkeylabs.fpslibrary.TinyDancer;
 
 import android.os.Bundle;
 
+import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.android.BindingAppCompatActivity;
 import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
+import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 
@@ -24,10 +24,10 @@ public class ListViewActivity extends BindingAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        IAndroidLogger logger = new DetailedAndroidLogger(LOGGING_TAG, LOGGING_LEVEL);
+        ILogger logger = new AdvancedAndroidLoggerAdapter(LOGGING_TAG, LOGGING_LEVEL);
         TinyDancer.create().show(this);
 
-        ViewBinder viewBinder = new ViewBinder(this, NullAndroidLogger.instance);
+        ViewBinder viewBinder = new ViewBinder(this, NullLogger.instance);
         viewBinder.setImageLoader(new UILImageLoader(this, null));
         setViewBinder(viewBinder);
 

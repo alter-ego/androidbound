@@ -1,7 +1,5 @@
 package solutions.alterego.androidbound.android;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -14,7 +12,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import solutions.alterego.androidbound.ViewBinder;
+import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IActivityLifecycle;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
@@ -23,6 +21,7 @@ import solutions.alterego.androidbound.android.interfaces.INeedsConfigurationCha
 import solutions.alterego.androidbound.android.interfaces.INeedsNewIntent;
 import solutions.alterego.androidbound.android.interfaces.INeedsOnActivityResult;
 import solutions.alterego.androidbound.interfaces.IHasLogger;
+import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
 @Accessors(prefix = "m")
@@ -34,7 +33,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
     @Getter
     private Map<String, ViewModel> mViewModels;
 
-    private IAndroidLogger mLogger = null;
+    private ILogger mLogger = null;
 
     private transient WeakReference<Activity> mBoundActivity;
 
@@ -241,12 +240,12 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
     }
 
     @Override
-    public IAndroidLogger getLogger() {
-        return mLogger != null ? mLogger : ViewBinder.getLogger();
+    public ILogger getLogger() {
+        return mLogger != null ? mLogger : NullLogger.instance;
     }
 
     @Override
-    public void setLogger(IAndroidLogger logger) {
+    public void setLogger(ILogger logger) {
         mLogger = logger;
 
         if (getViewModels() != null) {

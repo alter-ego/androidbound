@@ -1,13 +1,12 @@
 package solutions.alterego.androidbound.binding.types;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import java.util.List;
 
 import rx.Subscription;
 import rx.functions.Action1;
 import solutions.alterego.androidbound.binding.interfaces.IBinding;
 import solutions.alterego.androidbound.factories.IBindingFactory;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class ChainedBinding extends PropertyBinding {
 
@@ -24,7 +23,7 @@ public class ChainedBinding extends PropertyBinding {
     private String mMemberName;
 
     public ChainedBinding(Object source, String propertyName, List<String> tokens, boolean needChangesIfPossible, IBindingFactory factory,
-            IAndroidLogger logger) {
+            ILogger logger) {
         super(source, propertyName, needChangesIfPossible, logger);
         mNeedChangesIfPossible = needChangesIfPossible;
         mMemberName = propertyName;

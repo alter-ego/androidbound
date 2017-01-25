@@ -1,20 +1,19 @@
 package solutions.alterego.androidbound.android;
 
-import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import android.graphics.Typeface;
 
 import java.util.HashMap;
 
 import lombok.Getter;
 import lombok.Setter;
+import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.android.interfaces.IFontManager;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 
 public class FontManager implements IFontManager {
 
-    private IAndroidLogger mLogger = NullAndroidLogger.instance;
+    private ILogger mLogger = NullLogger.instance;
 
     @Getter
     @Setter
@@ -22,7 +21,7 @@ public class FontManager implements IFontManager {
 
     private HashMap<String, Typeface> mRegisteredFonts = new HashMap<String, Typeface>();
 
-    public FontManager(IAndroidLogger logger) {
+    public FontManager(ILogger logger) {
         mLogger = logger;
     }
 

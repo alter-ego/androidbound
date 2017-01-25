@@ -54,6 +54,7 @@ dependencies {
     compile 'com.github.brianPlummer:tinydancer:0.0.9'
     compile project(':AndroidBound')
 
+    compile 'solutions.alterego:advancedandroidlogger:1.0.8@aar'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'

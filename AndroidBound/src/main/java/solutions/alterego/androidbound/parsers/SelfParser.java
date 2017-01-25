@@ -1,13 +1,13 @@
 package solutions.alterego.androidbound.parsers;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class SelfParser implements IParser<String> {
 
     public final static IParser<String> instance = new SelfParser();
 
     @Override
-    public void setLogger(IAndroidLogger logger) {
+    public void setLogger(ILogger logger) {
     }
 
     @Override

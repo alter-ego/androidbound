@@ -79,11 +79,11 @@ public class BindableListAdapter extends BaseAdapter {
         } else if (convertView instanceof BindableListItemView) {
             convertView = checkInflatedView((BindableListItemView) convertView, position);
         } else {
-            ViewBinder.getLogger().info("BindableListAdapter getView not inflating, not rebinding");
+            viewBinder.getLogger().info("BindableListAdapter getView not inflating, not rebinding");
         }
 
         if (convertView == null){
-            ViewBinder.getLogger().warning("BindableListAdapter getView is null, returning ViewStub!");
+            viewBinder.getLogger().warning("BindableListAdapter getView is null, returning ViewStub!");
             convertView = new ViewStub(context);
         }
 

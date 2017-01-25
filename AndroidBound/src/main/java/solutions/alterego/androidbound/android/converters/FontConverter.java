@@ -1,12 +1,11 @@
 package solutions.alterego.androidbound.android.converters;
 
-import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import java.util.Locale;
 
+import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.android.interfaces.IFontManager;
 import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class FontConverter implements IValueConverter {
 
@@ -14,9 +13,9 @@ public class FontConverter implements IValueConverter {
 
     private IFontManager mFontManager;
 
-    private IAndroidLogger mLogger = NullAndroidLogger.instance;
+    private ILogger mLogger = NullLogger.instance;
 
-    public FontConverter(IFontManager mgr, IAndroidLogger logger) {
+    public FontConverter(IFontManager mgr, ILogger logger) {
         mFontManager = mgr;
         mLogger = logger;
     }

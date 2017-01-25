@@ -1,19 +1,18 @@
 package solutions.alterego.androidbound.binding;
 
-import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import java.util.Locale;
 
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.binding.data.BindingMode;
 import solutions.alterego.androidbound.binding.data.BindingRequest;
 import solutions.alterego.androidbound.binding.data.BindingSpecification;
 import solutions.alterego.androidbound.binding.interfaces.IBinding;
 import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
 import solutions.alterego.androidbound.factories.IBindingFactory;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class BindingAssociationEngine implements IBindingAssociationEngine {
 
@@ -31,13 +30,13 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
     private Subscription mTargetSubscription;
 
-    private IAndroidLogger mLogger = NullAndroidLogger.instance;
+    private ILogger mLogger = NullLogger.instance;
 
     private IBindingFactory mSourceFactory;
 
     private IBindingFactory mTargetFactory;
 
-    public BindingAssociationEngine(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, IAndroidLogger logger) {
+    public BindingAssociationEngine(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, ILogger logger) {
         mMode = request.getSpecification().getMode();
         mSourceFactory = sourceFactory;
         mTargetFactory = targetFactory;
@@ -197,7 +196,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
-    public void setLogger(IAndroidLogger logger) {
+    public void setLogger(ILogger logger) {
         mLogger = logger.getLogger(this);
     }
 
