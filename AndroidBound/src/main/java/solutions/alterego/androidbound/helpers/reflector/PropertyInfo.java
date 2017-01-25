@@ -67,11 +67,14 @@ public class PropertyInfo {
         if (mSetterMethod != null || mField != null) {
             try {
                 if (mSetterMethod != null) {
+                    mLogger.verbose("PropertyInfo setValue value = " + value + " for object = " + obj + " using method = " + mSetterMethod.getOriginalMethod().getName());
                     mSetterMethod.getOriginalMethod().invoke(obj, value);
                 } else if (mField != null) {
+                    mLogger.verbose("PropertyInfo setValue value = " + value + " for object = " + obj + " using field = " + mField.getFieldOriginal().getName());
                     mField.getFieldOriginal().set(obj, value);
                 }
             } catch (Exception e) {
+                mLogger.warning("PropertyInfo couldn't setValue value = " + value + " for object = ");
             }
         } else if (obj != null && obj instanceof Map) {
             ((Map) obj).put(mPropertyName, value);
