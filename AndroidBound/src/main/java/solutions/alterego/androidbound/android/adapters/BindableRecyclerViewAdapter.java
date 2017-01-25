@@ -51,13 +51,13 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
         if (clazz != null && mTemplatesForObjects.containsKey(clazz)) {
             layoutRes = mTemplatesForObjects.get(clazz);
-            ViewBinder.getLogger().verbose(
+            mViewBinder.getLogger().verbose(
                     "BindableRecyclerViewAdapter creating VH for viewType = " + viewType + " i.e. class = " + clazz + " using layoutRes = "
                             + layoutRes);
         } else if (layoutRes != 0) {
-            ViewBinder.getLogger().verbose("BindableRecyclerViewAdapter creating VH using layoutRes = " + layoutRes);
+            mViewBinder.getLogger().verbose("BindableRecyclerViewAdapter creating VH using layoutRes = " + layoutRes);
         } else {
-            ViewBinder.getLogger().error("BindableRecyclerViewAdapter cannot find templates for class = " + clazz
+            mViewBinder.getLogger().error("BindableRecyclerViewAdapter cannot find templates for class = " + clazz
                     + ": did you call setTemplatesForObjects or set itemTemplate in XML?");
         }
 
@@ -84,7 +84,7 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     public int getItemViewType(int position) {
         Object obj = getItemsSource().get(position);
         int viewType = mObjectIndex.indexOfValue(obj.getClass());
-        ViewBinder.getLogger().verbose(
+        mViewBinder.getLogger().verbose(
                 "BindableRecyclerViewAdapter getItemViewType viewType = " + viewType + " i.e. class = " + obj.getClass().toString()
                         + " for position = " + position);
         return viewType;

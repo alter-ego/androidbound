@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import lombok.experimental.Accessors;
-import solutions.alterego.androidbound.ViewBinder;
+import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.android.interfaces.IBoundActivity;
@@ -155,7 +155,7 @@ public abstract class BindingAppCompatActivity extends AppCompatActivity impleme
         if (mBoundActivityDelegate != null) {
             return mBoundActivityDelegate.getLogger();
         } else {
-            return ViewBinder.getLogger();
+            return NullLogger.instance;
         }
     }
 

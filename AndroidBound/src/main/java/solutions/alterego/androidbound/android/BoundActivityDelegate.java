@@ -12,7 +12,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import solutions.alterego.androidbound.ViewBinder;
+import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IActivityLifecycle;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
@@ -241,7 +241,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
 
     @Override
     public ILogger getLogger() {
-        return mLogger != null ? mLogger : ViewBinder.getLogger();
+        return mLogger != null ? mLogger : NullLogger.instance;
     }
 
     @Override

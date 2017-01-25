@@ -45,23 +45,23 @@ public class BindableRecyclerViewItemView extends FrameLayout {
     }
 
     public void bindTo(Object source) {
-
         if (mViewBinder == null) {
-            ViewBinder.getLogger().verbose("BindableListItemView bindTo mViewBinder == null");
+            mViewBinder.getLogger().verbose("BindableListItemView bindTo mViewBinder == null");
             return;
         }
 
         if (source == null) {
-            ViewBinder.getLogger().verbose("BindableListItemView bindTo source == null");
+            mViewBinder.getLogger().verbose("BindableListItemView bindTo source == null");
             return;
         }
 
         List<IBindingAssociationEngine> bindings = mViewBinder.getBindingsForViewAndChildren(this);
+
         if (bindings == null || bindings.size() < 1) {
-            ViewBinder.getLogger().verbose("BindableListItemView bindTo bindings == null or 0, doing lazy binding");
+            mViewBinder.getLogger().verbose("BindableListItemView bindTo bindings == null or 0, doing lazy binding");
             mViewBinder.lazyBindView(this, source);
         } else {
-            ViewBinder.getLogger().verbose("BindableListItemView bindTo continue with binding");
+            mViewBinder.getLogger().verbose("BindableListItemView bindTo continue with binding");
             for (IBindingAssociationEngine binding : bindings) {
                 binding.setDataContext(source);
             }

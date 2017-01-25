@@ -5,7 +5,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import solutions.alterego.androidbound.ViewBinder;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
 public class PropertyInfo {
@@ -31,8 +31,10 @@ public class PropertyInfo {
     @Getter
     private final MethodInfo mSetterMethod;
 
-    public PropertyInfo(String name, boolean canRead, boolean canWrite, Class<?> type,
-            MethodInfo getter, MethodInfo setter, FieldInfo field) {
+    private final ILogger mLogger;
+
+    public PropertyInfo(String name, boolean canRead, boolean canWrite, Class<?> type, MethodInfo getter, MethodInfo setter, FieldInfo field,
+            ILogger logger) {
         mPropertyType = type;
         mPropertyName = name;
         mCanRead = canRead;
@@ -40,6 +42,7 @@ public class PropertyInfo {
         mGetterMethod = getter;
         mSetterMethod = setter;
         mField = field;
+        mLogger = logger;
     }
 
     public Object getValue(Object obj) {
@@ -49,13 +52,13 @@ public class PropertyInfo {
                 result = mGetterMethod != null ? mGetterMethod.getOriginalMethod().invoke(obj)
                         : (mField != null ? mField.getFieldOriginal().get(obj) : null);
             } catch (Exception e) {
-                ViewBinder.getLogger().error("Reflector getValue exception = " + e.getCause().toString());
+                mLogger.error("PropertyInfo getValue exception = " + e.getCause().toString());
             }
         } else if (obj != null && obj instanceof Map) {
             result = ((Map) obj).get(mPropertyName);
         }
         if (result == null) {
-            ViewBinder.getLogger().warning("Reflector getValue returns null");
+            mLogger.warning("PropertyInfo getValue returns null");
         }
         return result;
     }
