@@ -57,8 +57,6 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
         mItemTemplate = getItemTemplate(context, attrs);
         mTemplatesForObjects = new HashMap<>();
-
-        addOnItemTouchListener(this);
     }
 
     private int getItemTemplate(Context context, AttributeSet attrs) {
@@ -118,6 +116,11 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
         mOnItemClickListener = l;
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        addOnItemTouchListener(this);
+    }
 
     @Override
     protected void onDetachedFromWindow() {
