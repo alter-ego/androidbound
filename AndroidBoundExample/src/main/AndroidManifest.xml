@@ -43,5 +43,11 @@
                 android:name=".ListItemDetailActivity"
                 android:label="@string/app_name">
         </activity>
+
+        <activity
+                android:name=".PaginatedRecyclerViewActivity"
+                android:label="@string/app_name">
+        </activity>
+
     </application>
 </manifest>
