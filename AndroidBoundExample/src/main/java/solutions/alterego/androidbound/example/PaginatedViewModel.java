@@ -29,20 +29,26 @@ public class PaginatedViewModel extends ViewModel {
     }
 
     @Getter
+    public int mLoadNextPage;
+
+    @Getter
     private List<RecyclerViewItem> mDataItems;
 
     public PaginatedViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
         setParentActivity(activity);
-        createItems();
     }
 
-    private void createItems() {
+    private void createItems(int page) {
         int size = mDataItems == null ? 0 : mDataItems.size();
         mDataItems = new ArrayList<RecyclerViewItem>();
         for (int i = 0; i < 20; i++) {
-            mDataItems.add(new RecyclerViewItem("item " + (size + i), ""));
+            mDataItems.add(new RecyclerViewItem("item " + (((page - 1) * size) + i), ""));
         }
         raisePropertyChanged("DataItems");
+    }
+
+    public void setLoadNextPage(int page) {
+        createItems(page);
     }
 }
