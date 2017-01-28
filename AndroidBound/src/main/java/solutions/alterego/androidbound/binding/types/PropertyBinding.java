@@ -57,7 +57,8 @@ public class PropertyBinding extends BindingBase {
             return mPropertyInfo.getValue(getSubject());
         }
 
-        getLogger().warning("Cannot get value for property " + mPropertyInfo.getPropertyName() + ": property is non-existent");
+        getLogger().warning(
+                "Cannot get value for property " + mPropertyInfo.getPropertyName() + ": property is non-existent");
         return noValue;
     }
 
@@ -67,12 +68,30 @@ public class PropertyBinding extends BindingBase {
             mPropertyInfo.setValue(getSubject(), value);
         } else {
             if (mPropertyInfo.isCanRead()) {
-                getLogger().warning("Cannot set value for property " + mPropertyInfo.getPropertyName() + ": propery is read-only");
+                getLogger().warning(
+                        "Cannot set value for property " + mPropertyInfo.getPropertyName() + ": propery is read-only");
             } else {
-                getLogger().warning("Cannot set value for property " + mPropertyInfo.getPropertyName() + ": propery is non-existent");
+                getLogger().warning("Cannot set value for property " + mPropertyInfo.getPropertyName()
+                        + ": propery is non-existent");
             }
         }
     }
+
+    @Override
+    public void addValue(Object object) {
+        if (mPropertyInfo.isCanAdd()) {
+            mPropertyInfo.addValue(getSubject(), object);
+        } else {
+            if (mPropertyInfo.isCanRead()) {
+                getLogger().warning(
+                        "Cannot add value for property " + mPropertyInfo.getPropertyName() + ": propery is read-only");
+            } else {
+                getLogger().warning("Cannot add value for property " + mPropertyInfo.getPropertyName()
+                        + ": propery is non-existent");
+            }
+        }
+    }
+
 
     @Override
     public void dispose() {

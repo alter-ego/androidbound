@@ -79,6 +79,11 @@ public class ChainedBinding extends PropertyBinding {
     }
 
     @Override
+    public void addValue(Object object) {
+        mCurrentBinding.addValue(object);
+    }
+
+    @Override
     public void dispose() {
         super.dispose();
         if (mCurrentBindingChanged != null) {

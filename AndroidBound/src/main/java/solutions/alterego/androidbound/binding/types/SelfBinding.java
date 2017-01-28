@@ -55,6 +55,11 @@ public class SelfBinding extends BindingBase {
     }
 
     @Override
+    public void addValue(Object object) {
+        throw new InvalidParameterException("Cannot add the value of a SelfBinding");
+    }
+
+    @Override
     public void dispose() {
         if (mSubscription != null) {
             mSubscription.unsubscribe();

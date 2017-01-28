@@ -36,7 +36,8 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
     private IBindingFactory mTargetFactory;
 
-    public BindingAssociationEngine(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, ILogger logger) {
+    public BindingAssociationEngine(BindingRequest request, IBindingFactory sourceFactory,
+            IBindingFactory targetFactory, ILogger logger) {
         mMode = request.getSpecification().getMode();
         mSourceFactory = sourceFactory;
         mTargetFactory = targetFactory;
@@ -53,7 +54,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         if (needsSourceUpdate()) {
             updateTargetFromSource(mSourceBinding.getValue());
         }
+
+        if (needsTargetAccumulate()) {
+            accumulateItems(mSourceBinding.getValue());
+        }
     }
+
 
     public Object getDataContext() {
         return mDataContext;
@@ -76,6 +82,9 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         if (needsSourceUpdate()) {
             updateTargetFromSource(mSourceBinding.getValue());
         }
+        if (needsTargetAccumulate()) {
+            accumulateItems(mSourceBinding.getValue());
+        }
     }
 
     private void createSourceBinding(Object source) {
@@ -90,11 +99,16 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                         .subscribe(new Action1<Object>() {
                             @Override
                             public void call(Object obj) {
-                                updateTargetFromSource(obj);
+                                if (mBindingSpecification.getMode() == BindingMode.Accumulate) {
+                                    accumulateItems(obj);
+                                } else {
+                                    updateTargetFromSource(obj);
+                                }
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getPath() + " needs subscription, but changes were not available");
+                mLogger.warning("Binding " + mBindingSpecification.getPath()
+                        + " needs subscription, but changes were not available");
             }
         }
     }
@@ -115,7 +129,8 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getTarget() + " needs subscription, but changes were not available.");
+                mLogger.warning("Binding " + mBindingSpecification.getTarget()
+                        + " needs subscription, but changes were not available.");
             }
         }
     }
@@ -125,6 +140,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             case Default:
             case OneWay:
             case TwoWay:
+            case Accumulate:
                 return true;
             default:
                 return false;
@@ -148,6 +164,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             case OneWayOneTime:
             case OneWay:
             case TwoWay:
+            case Accumulate:
                 return true;
             default:
                 return false;
@@ -165,13 +182,18 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
+    public boolean needsTargetAccumulate() {
+        return mMode == BindingMode.Accumulate;
+    }
+
     protected void updateTargetFromSource(Object obj) {
         Object result;
         try {
             if (obj != IBinding.noValue) {
                 result = mBindingSpecification
                         .getValueConverter()
-                        .convert(obj, mTargetBinding.getType(), mBindingSpecification.getConverterParameter(), Locale.getDefault());
+                        .convert(obj, mTargetBinding.getType(), mBindingSpecification.getConverterParameter(),
+                                Locale.getDefault());
 
             } else {
                 mLogger.warning("Switching to fallback value for " + mBindingSpecification.getPath());
@@ -179,7 +201,8 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             }
             mTargetBinding.setValue(result);
         } catch (Exception e) {
-            mLogger.error("Error occurred while binding " + mBindingSpecification.getPath() + " to target " + mBindingSpecification.getTarget()
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getPath() + " to target "
+                    + mBindingSpecification.getTarget()
                     + ": " + e.getMessage());
         }
     }
@@ -188,10 +211,34 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         try {
             Object result = mBindingSpecification
                     .getValueConverter()
-                    .convertBack(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(), Locale.getDefault());
-            mSourceBinding.setValue(result);
+                    .convertBack(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
+                            Locale.getDefault());
+                    mSourceBinding.setValue(result);
         } catch (Exception e) {
-            mLogger.error("Error occurred while binding " + mBindingSpecification.getTarget() + " to source " + mBindingSpecification.getPath()
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getTarget() + " to source "
+                    + mBindingSpecification.getPath()
+                    + ": " + e.getMessage());
+        }
+    }
+
+
+    private void accumulateItems(Object obj) {
+        Object result;
+        try {
+            if (obj != IBinding.noValue) {
+                result = mBindingSpecification
+                        .getValueConverter()
+                        .convert(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
+                                Locale.getDefault());
+
+            } else {
+                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getPath());
+                result = mBindingSpecification.getFallbackValue();
+            }
+            mTargetBinding.addValue(result);
+        } catch (Exception e) {
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getPath() + " to target "
+                    + mBindingSpecification.getTarget()
                     + ": " + e.getMessage());
         }
     }
