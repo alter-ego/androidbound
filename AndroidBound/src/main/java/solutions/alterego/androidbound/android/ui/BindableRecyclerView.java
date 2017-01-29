@@ -119,7 +119,7 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     private void createAdapterChecked() {
         if (mAdapter == null) {
-            mAdapter = new BindableRecyclerViewAdapter(getContext(), getViewBinder(), mItemTemplate);
+            mAdapter = new BindableRecyclerViewAdapter(getViewBinder(), mItemTemplate);
             mAdapter.setTemplatesForObjects(mTemplatesForObjects);
             setAdapter(mAdapter);
         }
@@ -175,6 +175,9 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
     }
 
     public void setNextPage(int page) {
+        if (mPageScrollListener != null) {
+            mPageScrollListener.setPage(page);
+        }
     }
 
     private void createPageInternal(int page) {

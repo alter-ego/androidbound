@@ -1,6 +1,6 @@
 package solutions.alterego.androidbound.android.adapters;
 
-import android.content.Context;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.SparseArray;
@@ -19,8 +19,6 @@ import solutions.alterego.androidbound.interfaces.IViewBinder;
 @Accessors(prefix = "m")
 public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final Context mContext;
-
     private final IViewBinder mViewBinder;
 
     @Getter
@@ -38,8 +36,9 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Setter
     private RecyclerView.LayoutManager mLayoutManager;
 
-    public BindableRecyclerViewAdapter(Context ctx, IViewBinder vb, int itemTemplate) {
-        mContext = ctx;
+    private Handler mHandler = new Handler();
+
+    public BindableRecyclerViewAdapter(IViewBinder vb, int itemTemplate) {
         mViewBinder = vb;
         mItemTemplate = itemTemplate;
     }
@@ -62,7 +61,7 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     + ": did you call setTemplatesForObjects or set itemTemplate in XML?");
         }
 
-        return new BindableRecyclerViewItemViewHolder(mContext, mViewBinder, parent, layoutRes);
+        return new BindableRecyclerViewItemViewHolder(parent.getContext(), mViewBinder, parent, layoutRes);
     }
 
     @Override
@@ -101,10 +100,10 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     public void addItemsSource(List value) {
         if (value == null) {
             if (mItemsSource != null) {
-                notifyItemRangeRemoved(0, mItemsSource.size());
-                mItemsSource.clear();
+                int size = mItemsSource.size();
+                mItemsSource = null;
+                postNotifyItemRangeRemoved(0, size);
             }
-            mItemsSource = null;
             return;
         }
         if (mItemsSource == null) {
@@ -114,6 +113,14 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         mItemsSource.addAll(value);
         notifyItemRangeInserted(startIndex, value.size());
     }
+
+    /* to prevent Cannot call this method in a scroll callback. Scroll callbacks might be run during a measure
+    & layout pass where you cannot change the RecyclerView data. Any method call that might change the structure
+    of the RecyclerView or the adapter contents should be postponed to the next frame.*/
+    private void postNotifyItemRangeRemoved(final int start, final int itemCount) {
+        mHandler.post(() -> notifyItemRangeRemoved(start, itemCount));
+    }
+
 
     public void setTemplatesForObjects(Map<Class<?>, Integer> templatesForObjects) {
         if (mTemplatesForObjects == null) {
