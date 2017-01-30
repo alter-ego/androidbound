@@ -17,6 +17,7 @@ import lombok.experimental.Accessors;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.android.adapters.BindableRecyclerViewAdapter;
+import solutions.alterego.androidbound.android.adapters.PageDescriptor;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.android.ui.resources.BindingResources;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
@@ -30,17 +31,19 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
         private int[] mVisiblePosition;
 
-        @Setter
         @Getter
+        @Setter
+        private PageDescriptor mPageDescriptor;
+
+        @Getter
+        @Setter
         private int mPage = 1;
 
-        @Setter
-        @Getter
-        private int mThreshold = 5;
 
-        @Setter
-        @Getter
-        private int mPageSize = 20;
+        PageScrollListener(PageDescriptor pageDescriptor) {
+            mPageDescriptor = pageDescriptor;
+            mPage = mPageDescriptor.getStartPage();
+        }
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -50,9 +53,9 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
             final LayoutManager layoutManager = recyclerView.getLayoutManager();
             int totalItemCount = layoutManager.getItemCount();
             int lastVisibleItem = getLastVisibleItemPosition(layoutManager);
-            if ((totalItemCount - lastVisibleItem) <= mThreshold) {
-                if (mPage < (1 + (totalItemCount / mPageSize))) {
-                    mPage = 1 + (totalItemCount / mPageSize);
+            if ((totalItemCount - lastVisibleItem) <= mPageDescriptor.getThreshold()) {
+                if (mPageDescriptor.getCurrentPage() < (1 + (totalItemCount / mPageDescriptor.getPageSize()))) {
+                    mPageDescriptor.setCurrentPage(1 + (totalItemCount / mPageDescriptor.getPageSize()));
                     propertyChanged.onNext("NextPage");
                 }
             }
@@ -91,6 +94,8 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     private PageScrollListener mPageScrollListener;
 
+    private PageDescriptor mDefaultPageDescriptor;
+
     public BindableRecyclerView(Context context) {
         this(context, null);
     }
@@ -101,6 +106,12 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     public BindableRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        mDefaultPageDescriptor =
+                new PageDescriptor.PageDescriptorBuilder()
+                        .setPageSize(20)
+                        .setStartPage(1)
+                        .setThreshold(5).build();
 
         mItemTemplate = getItemTemplate(context, attrs);
         mTemplatesForObjects = new HashMap<>();
@@ -166,28 +177,36 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
         }
     }
 
-    public int getNextPage() {
-        int page = mPageScrollListener != null ? mPageScrollListener.getPage() : 0;
-        if (mPageScrollListener == null) {
-            createPageInternal(1);
-        }
-        return page;
+    public PageDescriptor getNextPage() {
+        return mPageScrollListener != null ? mPageScrollListener.getPageDescriptor() : null;
     }
 
-    public void setNextPage(int page) {
+    public void setNextPage(PageDescriptor pageDescriptor) {
         if (mPageScrollListener != null) {
-            mPageScrollListener.setPage(page);
+            mPageScrollListener.setPageDescriptor(pageDescriptor);
         }
     }
 
-    private void createPageInternal(int page) {
+    private void createPageInternal(PageDescriptor pageDescriptor) {
         if (mPageScrollListener != null) {
             removeOnScrollListener(mPageScrollListener);
             mPageScrollListener = null;
         }
-        mPageScrollListener = new PageScrollListener();
-        mPageScrollListener.setPage(page);
+        mPageScrollListener = new PageScrollListener(pageDescriptor);
         addOnScrollListener(mPageScrollListener);
+    }
+
+    public PageDescriptor getPageDescriptor() {
+        return mDefaultPageDescriptor;
+    }
+
+    public void setPageDescriptor(PageDescriptor pageDescritor) {
+        if (mPageScrollListener != null) {
+            removeOnScrollListener(mPageScrollListener);
+        }
+        mPageScrollListener = new PageScrollListener(pageDescritor);
+        addOnScrollListener(mPageScrollListener);
+        propertyChanged.onNext("NextPage");
     }
 
     @Override
