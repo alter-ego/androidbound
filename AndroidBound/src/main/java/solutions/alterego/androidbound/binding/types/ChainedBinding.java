@@ -80,7 +80,11 @@ public class ChainedBinding extends PropertyBinding {
 
     @Override
     public void addValue(Object object) {
-        mCurrentBinding.addValue(object);
+        if (mCurrentBinding == null) {
+            getLogger().warning("Target property path is missing. Couldn't set value for " + mMemberName);
+        } else {
+            mCurrentBinding.setValue(object);
+        }
     }
 
     @Override

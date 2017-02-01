@@ -5,6 +5,7 @@ import java.util.Locale;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.Subscriptions;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.binding.data.BindingMode;
 import solutions.alterego.androidbound.binding.data.BindingRequest;
@@ -30,6 +31,10 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
     private Subscription mTargetSubscription;
 
+    private Subscription mSourceAccumulateSubscription = Subscriptions.unsubscribed();
+
+    private Subscription mTargetAccumulateSubscription = Subscriptions.unsubscribed();
+
     private ILogger mLogger = NullLogger.instance;
 
     private IBindingFactory mSourceFactory;
@@ -46,6 +51,8 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         setLogger(logger);
         createTargetBinding(request.getTarget());
         createSourceBinding(request.getSource());
+
+        createAccumulateSourceBinding(request.getSource());
         createAccumulateTargetBinding(request.getTarget());
 
         if (needsTargetUpdate()) {
@@ -105,11 +112,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                         .subscribe(new Action1<Object>() {
                             @Override
                             public void call(Object obj) {
-                                if (mBindingSpecification.getMode() == BindingMode.Accumulate) {
-                                    accumulateItems(obj);
-                                } else {
-                                    updateTargetFromSource(obj);
-                                }
+                                updateTargetFromSource(obj);
                             }
                         });
             } else {
@@ -118,6 +121,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             }
         }
     }
+
 
     private void createTargetBinding(Object target) {
         boolean needsSubs = needsTargetSubscription();
@@ -141,12 +145,32 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
+
+    private void createAccumulateSourceBinding(Object source) {
+        boolean needsSubs = needsTargetAccumulate();
+
+        mSourceBinding = mSourceFactory.create(source, mBindingSpecification.getPath(), needsSubs);
+
+        if (needsSubs) {
+            if (mSourceBinding.hasChanges()) {
+                mSourceAccumulateSubscription = mSourceBinding.getChanges()
+                        .subscribeOn(Schedulers.computation())
+                        .subscribe(obj -> {
+                            accumulateItems(obj);
+                        });
+            } else {
+                mLogger.warning("Binding " + mBindingSpecification.getPath()
+                        + " needs subscription, but changes were not available");
+            }
+        }
+    }
+
     private void createAccumulateTargetBinding(Object target) {
         boolean needsSubs = needsSourceAccumulate();
         mTargetBinding = mTargetFactory.create(target, mBindingSpecification.getTarget(), needsSubs);
         if (needsSubs) {
             if (mTargetBinding.hasChanges()) {
-                mTargetSubscription = mTargetBinding.getChanges()
+                mTargetAccumulateSubscription = mTargetBinding.getChanges()
                         .subscribeOn(Schedulers.computation())
                         .subscribe(this::accumulateItemsToSource);
             } else {
@@ -161,7 +185,6 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             case Default:
             case OneWay:
             case TwoWay:
-            case Accumulate:
                 return true;
             default:
                 return false;
@@ -185,7 +208,6 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             case OneWayOneTime:
             case OneWay:
             case TwoWay:
-            case Accumulate:
                 return true;
             default:
                 return false;
@@ -297,5 +319,8 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         if (mTargetBinding != null) {
             mTargetBinding.dispose();
         }
+
+        mTargetAccumulateSubscription.unsubscribe();
+        mSourceAccumulateSubscription.unsubscribe();
     }
 }

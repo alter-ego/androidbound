@@ -63,6 +63,8 @@ public class PaginatedViewModel extends ViewModel {
 
 
     public void setLoadNextPage(PageDescriptor page) {
-        createItems(page.getCurrentPage());
+        if (page != null) {
+            createItems(page.getCurrentPage());
+        }
     }
 }
