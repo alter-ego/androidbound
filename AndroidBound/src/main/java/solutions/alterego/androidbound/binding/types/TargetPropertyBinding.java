@@ -30,6 +30,21 @@ public class TargetPropertyBinding extends PropertyBinding {
     }
 
     @Override
+    public void addValue(final Object value) {
+        if (currentState != UpdatingState.None) {
+            return;
+        }
+
+        getLogger().verbose("Receiving set state for type" + (value != null ? value.getClass() : "<null>"));
+        try {
+            currentState = UpdatingState.UpdatingTarget;
+            AndroidSchedulers.mainThread().createWorker().schedule(() -> TargetPropertyBinding.super.addValue(value));
+        } finally {
+            currentState = UpdatingState.None;
+        }
+    }
+
+    @Override
     protected void onBoundPropertyChanged() {
         if (currentState != UpdatingState.None) {
             return;

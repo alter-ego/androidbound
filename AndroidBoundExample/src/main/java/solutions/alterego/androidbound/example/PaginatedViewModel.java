@@ -1,6 +1,7 @@
 package solutions.alterego.androidbound.example;
 
 import android.app.Activity;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +55,10 @@ public class PaginatedViewModel extends ViewModel {
             mDataItems.add(new RecyclerViewItem("item " + (((page - 1) * size) + i), ""));
         }
         raisePropertyChanged("DataItems");
+    }
+
+    public void addDataItems(List<RecyclerViewItem> items) {
+        Log.e("TEST", "items  " + items);
     }
 
 

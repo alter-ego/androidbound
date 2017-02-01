@@ -46,6 +46,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         setLogger(logger);
         createTargetBinding(request.getTarget());
         createSourceBinding(request.getSource());
+        createAccumulateTargetBinding(request.getTarget());
 
         if (needsTargetUpdate()) {
             updateSourceFromTarget(mTargetBinding.getValue());
@@ -57,6 +58,10 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
         if (needsTargetAccumulate()) {
             accumulateItems(mSourceBinding.getValue());
+        }
+
+        if (needsSourceAccumulate()) {
+            accumulateItemsToSource(mTargetBinding.getValue());
         }
     }
 
@@ -82,6 +87,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         if (needsSourceUpdate()) {
             updateTargetFromSource(mSourceBinding.getValue());
         }
+
         if (needsTargetAccumulate()) {
             accumulateItems(mSourceBinding.getValue());
         }
@@ -128,6 +134,21 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                                 updateSourceFromTarget(obj);
                             }
                         });
+            } else {
+                mLogger.warning("Binding " + mBindingSpecification.getTarget()
+                        + " needs subscription, but changes were not available.");
+            }
+        }
+    }
+
+    private void createAccumulateTargetBinding(Object target) {
+        boolean needsSubs = needsSourceAccumulate();
+        mTargetBinding = mTargetFactory.create(target, mBindingSpecification.getTarget(), needsSubs);
+        if (needsSubs) {
+            if (mTargetBinding.hasChanges()) {
+                mTargetSubscription = mTargetBinding.getChanges()
+                        .subscribeOn(Schedulers.computation())
+                        .subscribe(this::accumulateItemsToSource);
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getTarget()
                         + " needs subscription, but changes were not available.");
@@ -186,6 +207,8 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         return mMode == BindingMode.Accumulate;
     }
 
+    public boolean needsSourceAccumulate() { return mMode == BindingMode.AccumulateToSource;}
+
     protected void updateTargetFromSource(Object obj) {
         Object result;
         try {
@@ -213,7 +236,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                     .getValueConverter()
                     .convertBack(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
                             Locale.getDefault());
-                    mSourceBinding.setValue(result);
+            mSourceBinding.setValue(result);
         } catch (Exception e) {
             mLogger.error("Error occurred while binding " + mBindingSpecification.getTarget() + " to source "
                     + mBindingSpecification.getPath()
@@ -239,6 +262,20 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         } catch (Exception e) {
             mLogger.error("Error occurred while binding " + mBindingSpecification.getPath() + " to target "
                     + mBindingSpecification.getTarget()
+                    + ": " + e.getMessage());
+        }
+    }
+
+    private void accumulateItemsToSource(Object obj) {
+        try {
+            Object result = mBindingSpecification
+                    .getValueConverter()
+                    .convertBack(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
+                            Locale.getDefault());
+            mSourceBinding.addValue(result);
+        } catch (Exception e) {
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getTarget() + " to source "
+                    + mBindingSpecification.getPath()
                     + ": " + e.getMessage());
         }
     }
