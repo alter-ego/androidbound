@@ -191,7 +191,7 @@ public class Pattern {
         return input;
     }
 
-    private java.util.regex.Pattern buildStandardPattern(String namedPattern, Integer flags) {
+    private java.util.regex.Pattern buildStandardPattern(String namedPattern, int flags) {
         StringBuilder stringBuilder = new StringBuilder(namedPattern);
         stringBuilder = replace(stringBuilder, NAMED_GROUP_PATTERN, "(");
         stringBuilder = replaceGroupNameWithIndex(stringBuilder, BACKREF_NAMED_GROUP_PATTERN, "\\");
