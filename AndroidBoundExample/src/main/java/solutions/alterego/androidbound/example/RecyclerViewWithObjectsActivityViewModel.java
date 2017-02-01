@@ -1,7 +1,5 @@
 package solutions.alterego.androidbound.example;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
@@ -14,6 +12,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.INeedsBoundView;
+import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
 public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
@@ -32,7 +31,7 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
     @Getter
     private List<Object> mExampleListStaggered = new ArrayList<Object>();
 
-    public RecyclerViewWithObjectsActivityViewModel(Activity activity, IAndroidLogger logger) {
+    public RecyclerViewWithObjectsActivityViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
         setParentActivity(activity);
 

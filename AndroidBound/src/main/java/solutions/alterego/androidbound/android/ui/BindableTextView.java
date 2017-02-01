@@ -24,17 +24,14 @@ public class BindableTextView extends TextView implements INotifyPropertyChanged
 
     public BindableTextView(Context context) {
         super(context);
-        setOnClickListener(this);
     }
 
     public BindableTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setOnClickListener(this);
     }
 
     public BindableTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        setOnClickListener(this);
     }
 
     public Typeface getTypeface() {
@@ -101,8 +98,10 @@ public class BindableTextView extends TextView implements INotifyPropertyChanged
     public void setClick(ICommand value) {
         if (value == null) {
             onClick = ICommand.empty;
+            setOnClickListener(null);
             return;
         }
+        setOnClickListener(this);
         onClick = value;
     }
 

@@ -17,6 +17,7 @@ import solutions.alterego.androidbound.helpers.reflector.ConstructorInfo;
 import solutions.alterego.androidbound.helpers.reflector.FieldInfo;
 import solutions.alterego.androidbound.helpers.reflector.MethodInfo;
 import solutions.alterego.androidbound.helpers.reflector.PropertyInfo;
+import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.utils.Iterables;
 
 public class Reflector {
@@ -66,7 +67,7 @@ public class Reflector {
         }
     }
 
-    public static PropertyInfo getProperty(Class<?> type, String name) {
+    public static PropertyInfo getProperty(Class<?> type, String name, ILogger logger) {
         MethodInfo propertyGetter = null;
         MethodInfo propertySetter = null;
         FieldInfo propertyField = null;
@@ -107,7 +108,8 @@ public class Reflector {
                 propertyGetter != null ? propertyGetter.getMethodReturnType() : (propertyField != null ? propertyField.getFieldType() : Object.class),
                 propertyGetter,
                 propertySetter,
-                propertyField);
+                propertyField,
+                logger);
 
         synchronized (mSynchronizedObject) {
             SparseArray<PropertyInfo> sa = mObjectProperties.get(typeCode);

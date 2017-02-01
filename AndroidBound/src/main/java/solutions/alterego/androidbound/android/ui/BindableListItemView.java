@@ -42,17 +42,16 @@ public class BindableListItemView extends FrameLayout {
 
     public void bindTo(Object source) {
         if (mViewBinder == null) {
-            ViewBinder.getLogger().verbose("BindableListItemView bindTo mViewBinder == null");
             return;
         }
 
         List<IBindingAssociationEngine> bindings = mViewBinder.getBindingsForViewAndChildren(this);
         if (bindings == null || bindings.size() < 1) {
-            ViewBinder.getLogger().verbose("BindableListItemView bindTo bindings == null or 0");
+            mViewBinder.getLogger().verbose("BindableListItemView bindTo bindings == null or 0");
             return;
         }
 
-        ViewBinder.getLogger().verbose("BindableListItemView bindTo continue with binding");
+        mViewBinder.getLogger().verbose("BindableListItemView bindTo continue with binding");
         for (IBindingAssociationEngine binding : bindings) {
             binding.setDataContext(source);
         }

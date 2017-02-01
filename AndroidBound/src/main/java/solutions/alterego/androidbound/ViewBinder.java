@@ -1,8 +1,5 @@
 package solutions.alterego.androidbound;
 
-import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -38,6 +35,8 @@ import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
 import solutions.alterego.androidbound.factories.SourceBindingFactory;
 import solutions.alterego.androidbound.factories.TargetBindingFactory;
 import solutions.alterego.androidbound.interfaces.IDisposable;
+import solutions.alterego.androidbound.interfaces.ILogger;
+import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 import solutions.alterego.androidbound.parsers.BindingSpecificationListParser;
 import solutions.alterego.androidbound.parsers.BindingSpecificationParser;
@@ -51,9 +50,9 @@ public class ViewBinder implements IViewBinder {
 
     @Getter
     @Setter
-    private static IAndroidLogger mLogger = NullAndroidLogger.instance;
+    private ILogger mLogger = NullLogger.instance;
 
-    WeakReference<Context> mContext;
+    private WeakReference<Context> mContext;
 
     private ValueConverterService mConverterService;
 
@@ -75,9 +74,18 @@ public class ViewBinder implements IViewBinder {
 
     private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
 
-    public ViewBinder(Context ctx, IAndroidLogger logger) {
+    public ViewBinder(Context ctx) {
+        setContext(ctx);
+        init();
+    }
+
+    public ViewBinder(Context ctx, ILogger logger) {
         setLogger(logger);
         setContext(ctx);
+        init();
+    }
+
+    private void init() {
         mConverterService = new ValueConverterService(getLogger());
         mResourceService = new ResourceService(getLogger());
 
@@ -178,12 +186,16 @@ public class ViewBinder implements IViewBinder {
             registerBindingsFor(view, bindings);
         }
 
-        if (view != null && source instanceof INeedsBoundView) {
-            ((INeedsBoundView) source).setBoundView(view);
-        }
-
-        if (view != null && view instanceof INeedsImageLoader) {
-            ((INeedsImageLoader) view).setImageLoader(mImageLoader);
+        if (view != null) {
+            if (source instanceof INeedsBoundView) {
+                ((INeedsBoundView) source).setBoundView(view);
+            }
+            if (view instanceof INeedsImageLoader) {
+                ((INeedsImageLoader) view).setImageLoader(mImageLoader);
+            }
+            if (view instanceof INeedsLogger) {
+                ((INeedsLogger) view).setLogger(getLogger());
+            }
         }
     }
 
@@ -379,6 +391,7 @@ public class ViewBinder implements IViewBinder {
         mViewResolver = null;
         mFontManager = null;
         mImageLoader = IImageLoader.nullImageLoader;
+        mLogger = NullLogger.instance;
     }
 
     @Override

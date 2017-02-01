@@ -1,7 +1,5 @@
 package solutions.alterego.androidbound.viewresolvers;
 
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -9,6 +7,7 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
 
 public class ChainedViewResolver implements IViewResolver {
@@ -31,7 +30,7 @@ public class ChainedViewResolver implements IViewResolver {
     }
 
     @Override
-    public void setLogger(IAndroidLogger logger) {
+    public void setLogger(ILogger logger) {
     }
 
     @Override

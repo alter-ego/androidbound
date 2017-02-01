@@ -1,16 +1,15 @@
 package solutions.alterego.androidbound.parsers;
 
-import com.alterego.advancedandroidlogger.implementations.NullAndroidLogger;
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
-
 import java.util.Map;
 
+import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.binding.data.BindingMode;
 import solutions.alterego.androidbound.binding.data.BindingSpecification;
+import solutions.alterego.androidbound.converters.interfaces.IValueConverterProvider;
 import solutions.alterego.androidbound.helpers.Matcher;
 import solutions.alterego.androidbound.helpers.Pattern;
+import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.resources.interfaces.IResourceProvider;
-import solutions.alterego.androidbound.converters.interfaces.IValueConverterProvider;
 
 public class BindingSpecificationParser implements IParser<BindingSpecification> {
 
@@ -24,13 +23,13 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
                     "(?:\\s*\\|\\|\\s*(?:(?:(?<fallbackName>[a-zA-Z][a-zA-Z0-9]*)" +
                     "+?|(?:'(?<fallbackString>(?:[^'\\\\]|\\\\.)*)')+?))?)?");
 
-    private IAndroidLogger mLogger = NullAndroidLogger.instance;
+    private ILogger mLogger = NullLogger.instance;
 
     private IValueConverterProvider mValueConverterProvider;
 
     private IResourceProvider mResourceProvider;
 
-    public BindingSpecificationParser(IValueConverterProvider converterProvider, IResourceProvider resourceProvider, IAndroidLogger logger) {
+    public BindingSpecificationParser(IValueConverterProvider converterProvider, IResourceProvider resourceProvider, ILogger logger) {
         mValueConverterProvider = converterProvider;
         mResourceProvider = resourceProvider;
         setLogger(logger);
@@ -90,7 +89,7 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
         return result.toString();
     }
 
-    public void setLogger(IAndroidLogger logger) {
+    public void setLogger(ILogger logger) {
         mLogger = logger.getLogger(this);
     }
 
