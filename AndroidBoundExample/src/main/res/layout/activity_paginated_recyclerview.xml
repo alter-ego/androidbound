@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical"
-        android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
             android:id="@+id/paginated_rv"
@@ -8,6 +10,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/open_main_activity_button"
             itemTemplate="@layout/activity_paginated_rv_item"
-            binding="{Items @+ DataItems}; {Items +@ DataItems}; { PageDescriptor @= PageDescriptor }; { NextPage =@ LoadNextPage }; "/>
+            binding="{Items @+@ DataItems}; { PageDescriptor @= PageDescriptor }; { NextPage =@ LoadNextPage }; " />
 
 </LinearLayout>

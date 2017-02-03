@@ -8,5 +8,6 @@ public enum BindingMode {
     OneWayToSourceOneTime,
     TwoWay,
     Accumulate,
-    AccumulateToSource
+    AccumulateToSource,
+    AccumulateTwoWay
 }

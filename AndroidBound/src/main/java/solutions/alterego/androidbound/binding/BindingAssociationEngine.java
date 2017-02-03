@@ -226,10 +226,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
     }
 
     public boolean needsTargetAccumulate() {
-        return mMode == BindingMode.Accumulate;
+        return mMode == BindingMode.Accumulate || mMode == BindingMode.AccumulateTwoWay;
     }
 
-    public boolean needsSourceAccumulate() { return mMode == BindingMode.AccumulateToSource;}
+    public boolean needsSourceAccumulate() {
+        return mMode == BindingMode.AccumulateToSource || mMode == BindingMode.AccumulateTwoWay;
+    }
 
     protected void updateTargetFromSource(Object obj) {
         Object result;
