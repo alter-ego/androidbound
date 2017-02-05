@@ -89,6 +89,9 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         if (mSourceSubscription != null) {
             mSourceSubscription.unsubscribe();
         }
+        if (mSourceAccumulateSubscription != null) {
+            mSourceAccumulateSubscription.unsubscribe();
+        }
 
         createSourceBinding(value);
         if (needsSourceUpdate()) {
