@@ -76,7 +76,7 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     }
 
-    private PublishSubject<String> propertyChanged = PublishSubject.create();
+    protected PublishSubject<String> propertyChanged = PublishSubject.create();
 
     private boolean disposed;
 
