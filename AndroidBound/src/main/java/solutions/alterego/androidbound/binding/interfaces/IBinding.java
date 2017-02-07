@@ -19,4 +19,6 @@ public interface IBinding extends IDisposable, INeedsLogger {
     boolean hasChanges();
 
     Observable<Object> getChanges();
+
+    void removeValue(Object result);
 }

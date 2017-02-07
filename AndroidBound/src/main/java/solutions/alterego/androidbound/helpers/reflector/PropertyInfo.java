@@ -39,16 +39,23 @@ public class PropertyInfo {
     @Getter
     private final boolean mCanAdd;
 
-    public PropertyInfo(String name, boolean canRead, boolean canWrite, boolean canAdd, Class<?> type,
-            MethodInfo getter, MethodInfo setter, MethodInfo adder, FieldInfo field,
+    @Getter
+    private final boolean mCanRemove;
+
+    private final MethodInfo mRemover;
+
+    public PropertyInfo(String name, boolean canRead, boolean canWrite, boolean canAdd, boolean canRemove, Class<?> type,
+            MethodInfo getter, MethodInfo setter, MethodInfo adder, MethodInfo remover, FieldInfo field,
             ILogger logger) {
         mPropertyType = type;
         mPropertyName = name;
         mCanRead = canRead;
         mCanWrite = canWrite;
         mCanAdd = canAdd;
+        mCanRemove = canRemove;
         mGetterMethod = getter;
         mSetterMethod = setter;
+        mRemover = remover;
         mField = field;
         mAdder = adder;
         mLogger = logger;
@@ -57,7 +64,7 @@ public class PropertyInfo {
     public PropertyInfo(String name, boolean canRead, boolean canWrite, Class<?> type, MethodInfo getter,
             MethodInfo setter, FieldInfo field,
             ILogger logger) {
-        this(name, canRead, canWrite, false, type, getter, setter, null, field, logger);
+        this(name, canRead, canWrite, false, false, type, getter, setter, null, null, field, logger);
     }
 
     public Object getValue(Object obj) {
@@ -104,6 +111,20 @@ public class PropertyInfo {
         try {
             if (mAdder != null) {
                 mAdder.getOriginalMethod().invoke(src, dst);
+            } else {
+                mLogger.verbose(
+                        "PropertyInfo addValue value = " + dst + " for object = " + src + " using field = "
+                                + " can't be invoked on a field.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeValue(Object src, Object dst) {
+        try {
+            if (mRemover != null) {
+                mRemover.getOriginalMethod().invoke(src, dst);
             } else {
                 mLogger.verbose(
                         "PropertyInfo addValue value = " + dst + " for object = " + src + " using field = "

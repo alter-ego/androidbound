@@ -52,6 +52,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         createTargetBinding(request.getTarget());
         createSourceBinding(request.getSource());
 
+        createRemoveBinding(request.getSource());
         createAccumulateSourceBinding(request.getSource());
         createAccumulateTargetBinding(request.getTarget());
 
@@ -67,11 +68,14 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             accumulateItems(mSourceBinding.getValue());
         }
 
+        if (needsTargetRemove()) {
+            removeItems(mSourceBinding.getValue());
+        }
+
         if (needsSourceAccumulate()) {
             accumulateItemsToSource(mTargetBinding.getValue());
         }
     }
-
 
     public Object getDataContext() {
         return mDataContext;
@@ -126,6 +130,22 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
+    private void createRemoveBinding(Object target) {
+        boolean needsSubs = needsTargetRemove();
+        mTargetBinding = mTargetFactory.create(target, mBindingSpecification.getTarget(), needsSubs);
+        if (needsSubs) {
+            if (mTargetBinding.hasChanges()) {
+                mTargetSubscription = mTargetBinding.getChanges()
+                        .subscribeOn(Schedulers.computation())
+                        .subscribe(obj -> {
+                            removeItems(obj);
+                        });
+            } else {
+                mLogger.warning("Binding " + mBindingSpecification.getTarget()
+                        + " needs subscription, but changes were not available.");
+            }
+        }
+    }
 
     private void createTargetBinding(Object target) {
         boolean needsSubs = needsTargetSubscription();
@@ -233,6 +253,11 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         return mMode == BindingMode.Accumulate || mMode == BindingMode.AccumulateTwoWay;
     }
 
+    private boolean needsTargetRemove() {
+        return mMode == BindingMode.RemoveSource;
+    }
+
+
     public boolean needsSourceAccumulate() {
         return mMode == BindingMode.AccumulateToSource || mMode == BindingMode.AccumulateTwoWay;
     }
@@ -272,6 +297,26 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
+    private void removeItems(Object obj) {
+        Object result;
+        try {
+            if (obj != IBinding.noValue) {
+                result = mBindingSpecification
+                        .getValueConverter()
+                        .convert(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
+                                Locale.getDefault());
+
+            } else {
+                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getPath());
+                result = mBindingSpecification.getFallbackValue();
+            }
+            mTargetBinding.removeValue(result);
+        } catch (Exception e) {
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getPath() + " to target "
+                    + mBindingSpecification.getTarget()
+                    + ": " + e.getMessage());
+        }
+    }
 
     private void accumulateItems(Object obj) {
         Object result;

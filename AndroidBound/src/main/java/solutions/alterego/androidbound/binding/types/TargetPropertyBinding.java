@@ -45,6 +45,21 @@ public class TargetPropertyBinding extends PropertyBinding {
     }
 
     @Override
+    public void removeValue(Object value) {
+        if (currentState != UpdatingState.None) {
+            return;
+        }
+
+        getLogger().verbose("Receiving set state for type" + (value != null ? value.getClass() : "<null>"));
+        try {
+            currentState = UpdatingState.UpdatingTarget;
+            AndroidSchedulers.mainThread().createWorker().schedule(() -> TargetPropertyBinding.super.removeValue(value));
+        } finally {
+            currentState = UpdatingState.None;
+        }
+    }
+
+    @Override
     protected void onBoundPropertyChanged() {
         if (currentState != UpdatingState.None) {
             return;

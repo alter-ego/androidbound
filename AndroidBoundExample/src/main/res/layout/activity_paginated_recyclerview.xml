@@ -10,6 +10,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/open_main_activity_button"
             itemTemplate="@layout/activity_paginated_rv_item"
-            binding="{Items @+@ DataItems}; { PageDescriptor @= PageDescriptor }; { NextPage =@ LoadNextPage }; " />
+            binding="{Items @+@ DataItems};
+            { RemoveItems @@ RemoveItems};
+            { PageDescriptor @= PageDescriptor }; { NextPage =@ LoadNextPage }; " />
 
 </LinearLayout>

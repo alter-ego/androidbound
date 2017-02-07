@@ -154,6 +154,16 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
         mAdapter.addItemsSource(value);
     }
 
+    public void removeRemoveItems(List<?> value) {
+        if (mAdapter != null) {
+            mAdapter.removeItems(value);
+        }
+    }
+
+    public List<?> getRemoveItems() {
+        return getItems();
+    }
+
     public List<?> getItems() {
         return mAdapter != null ? mAdapter.getItemsSource() : null;
     }

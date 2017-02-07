@@ -35,6 +35,8 @@ public class Reflector {
 
     private static final String PROPERTY_PREFIX_ADD = "add";
 
+    private static final String PROPERTY_PREFIX_REMOVE = "remove";
+
     private static final Object mSynchronizedObject = new Object();
 
     private static SparseArray<SparseArray<PropertyInfo>> mObjectProperties
@@ -76,6 +78,7 @@ public class Reflector {
         MethodInfo propertyGetter = null;
         MethodInfo propertySetter = null;
         MethodInfo propertyAdd = null;
+        MethodInfo propertyRemove = null;
         FieldInfo propertyField = null;
 
         int typeCode = type.hashCode();
@@ -103,10 +106,15 @@ public class Reflector {
             propertyGetter = findGetterWithPrefix(type, PROPERTY_PREFIX_ADD, name);
         }
 
+        if (propertyGetter == null) {
+            propertyGetter = findGetterWithPrefix(type, PROPERTY_PREFIX_REMOVE, name);
+        }
+
         //if the getter is not null, then we look for the setter; if it is null, we bind directly to the variable
         if (propertyGetter != null) {
             propertySetter = findSetter(type, name, propertyGetter);
             propertyAdd = findAddMethods(type, name, propertyGetter);
+            propertyRemove = findRemoveMethods(type, name, propertyGetter);
         } else {
             propertyField = Reflector.getField(type, name);
         }
@@ -117,11 +125,13 @@ public class Reflector {
                 propertyGetter != null || propertyField != null || isMap,
                 propertySetter != null || propertyField != null || isMap,
                 propertyAdd != null,
+                propertyRemove != null,
                 propertyGetter != null ? propertyGetter.getMethodReturnType()
                         : (propertyField != null ? propertyField.getFieldType() : Object.class),
                 propertyGetter,
                 propertySetter,
                 propertyAdd,
+                propertyRemove,
                 propertyField,
                 logger);
 
@@ -168,7 +178,6 @@ public class Reflector {
 
         MethodInfo found_setter = null;
         List<MethodInfo> setters = getMethods(type, PROPERTY_PREFIX_SET + name);
-        List<MethodInfo> adders = getMethods(type, PROPERTY_PREFIX_ADD + name);
         if (setters != null) {
             for (MethodInfo setter : setters) {
                 if (setter.getMethodParameterCount() == 1 && getter.getMethodReturnType()
@@ -186,6 +195,21 @@ public class Reflector {
     private static MethodInfo findAddMethods(Class<?> type, String name, MethodInfo getter) {
         MethodInfo found_setter = null;
         List<MethodInfo> adders = getMethods(type, PROPERTY_PREFIX_ADD + name);
+        if (adders != null) {
+            for (MethodInfo setter : adders) {
+                if (setter.getMethodParameterCount() == 1
+                        && Collection.class.isAssignableFrom(setter.getMethodParameterTypes()[0])) {
+                    found_setter = setter;
+                    break;
+                }
+            }
+        }
+        return found_setter;
+    }
+
+    private static MethodInfo findRemoveMethods(Class<?> type, String name, MethodInfo getter) {
+        MethodInfo found_setter = null;
+        List<MethodInfo> adders = getMethods(type, PROPERTY_PREFIX_REMOVE + name);
         if (adders != null) {
             for (MethodInfo setter : adders) {
                 if (setter.getMethodParameterCount() == 1

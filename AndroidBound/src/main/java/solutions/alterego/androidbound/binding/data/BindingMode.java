@@ -9,5 +9,5 @@ public enum BindingMode {
     TwoWay,
     Accumulate,
     AccumulateToSource,
-    AccumulateTwoWay
+    RemoveSource, AccumulateTwoWay
 }

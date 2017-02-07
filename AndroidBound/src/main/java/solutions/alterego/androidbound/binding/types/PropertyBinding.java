@@ -92,6 +92,21 @@ public class PropertyBinding extends BindingBase {
         }
     }
 
+    @Override
+    public void removeValue(Object result) {
+        if (mPropertyInfo.isCanRemove()) {
+            mPropertyInfo.removeValue(getSubject(), result);
+        } else {
+            if (mPropertyInfo.isCanRead()) {
+                getLogger().warning(
+                        "Cannot add value for property " + mPropertyInfo.getPropertyName() + ": propery is read-only");
+            } else {
+                getLogger().warning("Cannot add value for property " + mPropertyInfo.getPropertyName()
+                        + ": propery is non-existent");
+            }
+        }
+    }
+
 
     @Override
     public void dispose() {

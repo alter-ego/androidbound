@@ -1,6 +1,7 @@
 package solutions.alterego.androidbound.android.adapters;
 
 import android.os.Handler;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.SparseArray;
@@ -14,6 +15,9 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 @Accessors(prefix = "m")
@@ -28,7 +32,7 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private Map<Class<?>, Integer> mTemplatesForObjects = new HashMap<>();
 
     @Getter
-    private List<?> mItemsSource;
+    private List<?> mItemsSource = new ArrayList<>();
 
     private SparseArray<Class<?>> mObjectIndex;
 
@@ -93,8 +97,7 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     public void setItemsSource(List<?> value) {
-        mItemsSource = value;
-        notifyDataSetChanged();
+        addItemsSource(value);
     }
 
     public void addItemsSource(List value) {
@@ -141,4 +144,20 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
+    public void removeItems(final List<?> value) {
+        if (mItemsSource == null) {
+            return;
+        }
+        List<?> tmp = new ArrayList<>(mItemsSource);
+        Observable.just(tmp)
+                .subscribeOn(Schedulers.computation())
+                .map(list -> {
+                    list.removeAll(value);
+                    return list;
+                })
+                .doOnError(throwable -> notifyDataSetChanged())
+                .map(list -> DiffUtil.calculateDiff(new ItemSourceDiffCallback(mItemsSource, list), true))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(diffResult -> diffResult.dispatchUpdatesTo(this));
+    }
 }
