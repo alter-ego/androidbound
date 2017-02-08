@@ -178,16 +178,17 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     list.removeAll(value);
                     return list;
                 })
-                .doOnError(throwable -> notifyDataSetChanged())
                 .map(list -> new Pair<List, DiffUtil.DiffResult>(list,
                         DiffUtil.calculateDiff(new ItemSourceDiffCallback(mItemsSource, list), true)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pair -> {
-                    if (pair.first != null) {
+                    if (pair.first != null && mItemsSource != null) {
                         mItemsSource.clear();
                         mItemsSource.addAll(pair.first);
                     }
                     pair.second.dispatchUpdatesTo(this);
+                }, throwable -> {
+                    notifyDataSetChanged();
                 });
     }
 
