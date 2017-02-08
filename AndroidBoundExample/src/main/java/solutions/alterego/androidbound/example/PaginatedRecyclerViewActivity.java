@@ -38,6 +38,11 @@ public class PaginatedRecyclerViewActivity extends BindingAppCompatActivity {
         paginatedRv.setNestedScrollingEnabled(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
         paginatedRv.setLayoutManager(layoutManager);
+
+        paginatedRv = (BindableRecyclerView) findViewById(R.id.paginated_rv2);
+        paginatedRv.setNestedScrollingEnabled(false);
+        layoutManager = new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
+        paginatedRv.setLayoutManager(layoutManager);
     }
 
     @Override

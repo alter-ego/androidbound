@@ -52,5 +52,6 @@ public class PageDescriptor {
         mStartPage = builder.mStartPage;
         mPageSize = builder.mPageSize;
         mThreshold = builder.mThreshold;
+        mCurrentPage = mStartPage;
     }
 }

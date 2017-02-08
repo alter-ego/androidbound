@@ -11,7 +11,7 @@ public class ItemSourceDiffCallback extends DiffUtil.Callback {
     private List<?> mNewList;
 
     ItemSourceDiffCallback(List<?> oldList, List<?> newList) {
-        mOldList = newList;
+        mOldList = oldList;
         mNewList = newList;
     }
 

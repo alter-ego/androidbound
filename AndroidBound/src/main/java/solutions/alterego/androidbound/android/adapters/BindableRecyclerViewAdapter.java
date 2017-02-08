@@ -1,6 +1,7 @@
 package solutions.alterego.androidbound.android.adapters;
 
 import android.os.Handler;
+import android.support.v4.util.Pair;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -16,8 +17,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.Subscriptions;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 @Accessors(prefix = "m")
@@ -41,6 +44,10 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private RecyclerView.LayoutManager mLayoutManager;
 
     private Handler mHandler = new Handler();
+
+    private Subscription mSetValuesSubscription = Subscriptions.unsubscribed();
+
+    private Subscription mRemoveItemsSubscription = Subscriptions.unsubscribed();
 
     public BindableRecyclerViewAdapter(IViewBinder vb, int itemTemplate) {
         mViewBinder = vb;
@@ -96,8 +103,23 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         return viewType;
     }
 
-    public void setItemsSource(List<?> value) {
-        addItemsSource(value);
+    public void setItemsSource(final List<?> value) {
+        mSetValuesSubscription.unsubscribe();
+        mSetValuesSubscription = Observable.just(value)
+                .subscribeOn(Schedulers.computation())
+                .map(newList -> {
+                    Pair<List<?>, DiffUtil.DiffResult>
+                            pair = new Pair(newList, DiffUtil.calculateDiff(new ItemSourceDiffCallback(mItemsSource, value)));
+                    return pair;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listDiffResultPair -> {
+                    mItemsSource.clear();
+                    if (listDiffResultPair.first != null) {
+                        mItemsSource.addAll(new ArrayList(listDiffResultPair.first));
+                    }
+                    listDiffResultPair.second.dispatchUpdatesTo(this);
+                }, Throwable::printStackTrace);
     }
 
     public void addItemsSource(List value) {
@@ -149,15 +171,30 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             return;
         }
         List<?> tmp = new ArrayList<>(mItemsSource);
-        Observable.just(tmp)
+        mRemoveItemsSubscription.unsubscribe();
+        mRemoveItemsSubscription = Observable.just(tmp)
                 .subscribeOn(Schedulers.computation())
                 .map(list -> {
                     list.removeAll(value);
                     return list;
                 })
                 .doOnError(throwable -> notifyDataSetChanged())
-                .map(list -> DiffUtil.calculateDiff(new ItemSourceDiffCallback(mItemsSource, list), true))
+                .map(list -> new Pair<List, DiffUtil.DiffResult>(list,
+                        DiffUtil.calculateDiff(new ItemSourceDiffCallback(mItemsSource, list), true)))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(diffResult -> diffResult.dispatchUpdatesTo(this));
+                .subscribe(pair -> {
+                    if (pair.first != null) {
+                        mItemsSource.clear();
+                        mItemsSource.addAll(pair.first);
+                    }
+                    pair.second.dispatchUpdatesTo(this);
+                });
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        mRemoveItemsSubscription.unsubscribe();
+        mSetValuesSubscription.unsubscribe();
     }
 }

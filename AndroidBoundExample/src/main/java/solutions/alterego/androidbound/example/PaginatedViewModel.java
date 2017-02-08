@@ -33,13 +33,16 @@ public class PaginatedViewModel extends ViewModel {
     }
 
     @Getter
-    private PageDescriptor mPageDescriptor;
-
-    @Getter
     public PageDescriptor mLoadNextPage;
 
     @Getter
+    public PageDescriptor mLoadNextPage2;
+
+    @Getter
     private List<RecyclerViewItem> mDataItems;
+
+    @Getter
+    private List<RecyclerViewItem> mDataItems2;
 
     @Getter
     private List<RecyclerViewItem> mRemoveItems;
@@ -59,21 +62,39 @@ public class PaginatedViewModel extends ViewModel {
     public PaginatedViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
         setParentActivity(activity);
-        mPageDescriptor = new PageDescriptor.PageDescriptorBuilder()
-                .setPageSize(30)
+        mLoadNextPage = new PageDescriptor.PageDescriptorBuilder()
+                .setPageSize(20)
                 .setStartPage(1)
                 .setThreshold(2).build();
 
-     //   handler.postDelayed(mRunnable, 5000);
+        mLoadNextPage2 = new PageDescriptor.PageDescriptorBuilder()
+                .setPageSize(20)
+                .setStartPage(1)
+                .setThreshold(2).build();
+
+        //   handler.postDelayed(mRunnable, 5000);
     }
 
-    private void createItems(int page) {
-        int size = mDataItems == null ? 0 : mDataItems.size();
-        mDataItems = new ArrayList<RecyclerViewItem>();
-        for (int i = 0; i < mPageDescriptor.getPageSize(); i++) {
-            mDataItems.add(new RecyclerViewItem("item " + (((page - 1) * size) + i), ""));
+    private void createAddItems(PageDescriptor pageDescriptor) {
+        if (pageDescriptor.getCurrentPage() > 1) {
+            return;
+        }
+        int size = pageDescriptor.getPageSize();
+        mDataItems2 = new ArrayList<RecyclerViewItem>();
+        for (int i = 0; i < pageDescriptor.getPageSize(); i++) {
+            mDataItems2.add(new RecyclerViewItem("item " + (((pageDescriptor.getCurrentPage() - 1) * size) + i), ""));
         }
         tmep.addAll(mDataItems);
+        raisePropertyChanged("DataItems2");
+    }
+
+    private void createItems(PageDescriptor page) {
+        if (mDataItems == null) {
+            mDataItems = new ArrayList<RecyclerViewItem>();
+        }
+        for (int i = 0; i < page.getPageSize(); i++) {
+            mDataItems.add(new RecyclerViewItem("item " + (((page.getCurrentPage() - 1) * page.getPageSize()) + i), ""));
+        }
         raisePropertyChanged("DataItems");
     }
 
@@ -98,7 +119,13 @@ public class PaginatedViewModel extends ViewModel {
 
     public void setLoadNextPage(PageDescriptor page) {
         if (page != null) {
-            createItems(page.getCurrentPage());
+            createItems(page);
+        }
+    }
+
+    public void setLoadNextPage2(PageDescriptor page) {
+        if (page != null) {
+            createAddItems(page);
         }
     }
 
@@ -106,5 +133,17 @@ public class PaginatedViewModel extends ViewModel {
     public void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(mRunnable);
+    }
+
+    public boolean canRemoveItem() {
+        return !tmep.isEmpty();
+    }
+
+    public void doRemoveItem() {
+        Random random = new Random();
+        int rand = random.nextInt(Math.min(10, tmep.size()));
+        mRemoveItems = new ArrayList<RecyclerViewItem>();
+        mRemoveItems.add(tmep.remove(random.nextInt(rand)));
+        raisePropertyChanged("RemoveItems");
     }
 }
