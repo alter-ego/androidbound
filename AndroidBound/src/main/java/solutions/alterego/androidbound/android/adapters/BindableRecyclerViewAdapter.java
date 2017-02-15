@@ -20,8 +20,11 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
+
+import static android.support.v7.util.DiffUtil.calculateDiff;
 
 @Accessors(prefix = "m")
 public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -35,7 +38,7 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private Map<Class<?>, Integer> mTemplatesForObjects = new HashMap<>();
 
     @Getter
-    private List<?> mItemsSource = new ArrayList<>();
+    private List mItemsSource = new ArrayList<>();
 
     private SparseArray<Class<?>> mObjectIndex;
 
@@ -48,6 +51,8 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private Subscription mSetValuesSubscription = Subscriptions.unsubscribed();
 
     private Subscription mRemoveItemsSubscription = Subscriptions.unsubscribed();
+
+    private CompositeSubscription mPageSubscriptions = new CompositeSubscription();
 
     public BindableRecyclerViewAdapter(IViewBinder vb, int itemTemplate) {
         mViewBinder = vb;
@@ -109,7 +114,7 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                 .subscribeOn(Schedulers.computation())
                 .map(newList -> {
                     Pair<List<?>, DiffUtil.DiffResult>
-                            pair = new Pair(newList, DiffUtil.calculateDiff(new ItemSourceDiffCallback(mItemsSource, value)));
+                            pair = new Pair(newList, calculateDiff(new ItemSourceDiffCallback(mItemsSource, value)));
                     return pair;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -122,8 +127,8 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                 }, Throwable::printStackTrace);
     }
 
-    public void addItemsSource(List value) {
-        if (value == null) {
+    public void addItemsSource(List<?> values) {
+        if (values == null) {
             if (mItemsSource != null) {
                 int size = mItemsSource.size();
                 mItemsSource = null;
@@ -134,9 +139,13 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (mItemsSource == null) {
             mItemsSource = new ArrayList<>();
         }
-        final int startIndex = mItemsSource.size();
-        mItemsSource.addAll(value);
-        notifyItemRangeInserted(startIndex, value.size());
+        Subscription s = Observable.from(values)
+                .filter(value -> value != null && !mItemsSource.contains(value))
+                .filter(value -> mItemsSource.add(value))
+                .subscribe(value -> {
+                    notifyItemInserted(mItemsSource.size() - 1);
+                });
+        mPageSubscriptions.add(s);
     }
 
     /* to prevent Cannot call this method in a scroll callback. Scroll callbacks might be run during a measure
@@ -179,7 +188,7 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     return list;
                 })
                 .map(list -> new Pair<List, DiffUtil.DiffResult>(list,
-                        DiffUtil.calculateDiff(new ItemSourceDiffCallback(mItemsSource, list), true)))
+                        calculateDiff(new ItemSourceDiffCallback(mItemsSource, list), true)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pair -> {
                     if (pair.first != null && mItemsSource != null) {
@@ -197,5 +206,6 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         super.onDetachedFromRecyclerView(recyclerView);
         mRemoveItemsSubscription.unsubscribe();
         mSetValuesSubscription.unsubscribe();
+        mPageSubscriptions.unsubscribe();
     }
 }
