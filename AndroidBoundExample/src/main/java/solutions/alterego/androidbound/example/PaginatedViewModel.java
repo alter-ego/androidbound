@@ -77,7 +77,7 @@ public class PaginatedViewModel extends ViewModel {
 
     private void createAddItems(PageDescriptor pageDescriptor) {
         if (pageDescriptor.getCurrentPage() > 1) {
-            return;
+          //  return;
         }
         int size = pageDescriptor.getPageSize();
         mDataItems2 = new ArrayList<RecyclerViewItem>();

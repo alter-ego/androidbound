@@ -139,11 +139,18 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (mItemsSource == null) {
             mItemsSource = new ArrayList<>();
         }
+
         Subscription s = Observable.from(values)
-                .filter(value -> value != null && !mItemsSource.contains(value))
-                .filter(value -> mItemsSource.add(value))
+                .filter(value -> value != null)
                 .subscribe(value -> {
-                    notifyItemInserted(mItemsSource.size() - 1);
+                    boolean contains = mItemsSource.contains(value);
+                    if (contains) {
+                        int index = mItemsSource.indexOf(value);
+                        mItemsSource.set(index, value);
+                        notifyItemChanged(index);
+                    } else if (mItemsSource.add(value)) {
+                        notifyItemInserted(mItemsSource.size() - 1);
+                    }
                 });
         mPageSubscriptions.add(s);
     }
