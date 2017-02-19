@@ -28,6 +28,7 @@ import solutions.alterego.androidbound.android.interfaces.INeedsOnActivityResult
 import solutions.alterego.androidbound.interfaces.IHasLogger;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
+import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 @Accessors(prefix = "m")
 public class BoundFragmentDelegate
@@ -48,8 +49,25 @@ public class BoundFragmentDelegate
 
     private Bundle mCreateBundle;
 
+    private IViewBinder mViewBinder;
+
     public BoundFragmentDelegate(Fragment fragment) {
+        this(fragment, null);
+    }
+
+    public BoundFragmentDelegate(Fragment fragment, IViewBinder viewBinder) {
         mBoundActivity = new WeakReference<>(fragment.getActivity());
+        mViewBinder = viewBinder;
+    }
+
+    private IViewBinder getViewBinder() {
+        if (mViewBinder != null) {
+            return mViewBinder;
+        } else if (getBoundActivity() instanceof IBindableView) {
+            return ((IBindableView) getBoundActivity()).getViewBinder();
+        } else {
+            throw new RuntimeException("There's no IViewBinder available!");
+        }
     }
 
     private Activity getBoundActivity() {
@@ -62,16 +80,8 @@ public class BoundFragmentDelegate
             throw new RuntimeException("Bound Activity is null!");
         }
 
-        if (!(getBoundActivity() instanceof IBindableView)) {
-            throw new RuntimeException("Activity must implement IBindableView!");
-        }
-
         if (viewModel == null) {
             throw new RuntimeException("viewModel is null!");
-        }
-
-        if (((IBindableView) getBoundActivity()).getViewBinder() == null) {
-            throw new RuntimeException("getViewBinder must not be null!");
         }
 
         if (mViewModels == null) {
@@ -86,7 +96,7 @@ public class BoundFragmentDelegate
         viewModel.setLogger(getLogger());
         mViewModels.put(id, viewModel);
 
-        View view = ((IBindableView) getBoundActivity()).getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, parent);
+        View view = getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, parent);
 
         if (mShouldCallCreate) {
             onCreate(mCreateBundle);
@@ -244,12 +254,10 @@ public class BoundFragmentDelegate
 
         if (mBoundActivity != null
                 && boundActivityRef != null
-                && boundActivityRef instanceof IBindableView
-                && ((IBindableView) boundActivityRef).getViewBinder() != null
+                && getViewBinder() != null
                 && boundActivityRef.getWindow() != null
                 && boundActivityRef.getWindow().getDecorView() != null) {
-            ((IBindableView) boundActivityRef).getViewBinder()
-                    .clearBindingForViewAndChildren(getBoundActivity().getWindow().getDecorView().getRootView());
+            getViewBinder().clearBindingForViewAndChildren(getBoundActivity().getWindow().getDecorView().getRootView());
         }
 
         if (getViewModels() != null) {
@@ -259,7 +267,7 @@ public class BoundFragmentDelegate
         }
 
         mViewModels = null;
-        mShouldCallCreate = true; //this is here to balance it with onCreate not being called again
+        mShouldCallCreate = true; //this is here to balance it with onCreate not being called again when coming from background
     }
 
     @Override
