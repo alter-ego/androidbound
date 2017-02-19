@@ -184,13 +184,16 @@ public class BoundFragmentDelegate
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        mShouldCallCreate = false;
-        mCreateBundle = null;
-
         if (getViewModels() != null) {
             for (ViewModel viewModel : getViewModels().values()) {
                 viewModel.onSaveInstanceState(outState);
             }
+
+            //we reset this only if we have non-null VMs
+            //otherwise it's possible that this was called after onDestroyView which saved the state in these, so we shouldn't destroy it
+            //like for example in the ViewPager
+            mShouldCallCreate = false;
+            mCreateBundle = null;
         }
     }
 
