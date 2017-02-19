@@ -140,15 +140,15 @@ public class BoundFragmentDelegate
             throw new RuntimeException("Bound Activity is null!");
         }
 
+        if (mShouldCallCreate) {
+            onCreate(mCreateBundle);
+        }
+
         return addViewModel(layoutResID, viewModel, TAG_VIEWMODEL_MAIN, null);
     }
 
     @Override
     public void onStart() {
-        if (mShouldCallCreate) {
-            onCreate(mCreateBundle);
-        }
-
         if (getViewModels() != null) {
             for (ViewModel viewModel : getViewModels().values()) {
                 viewModel.onStart();
@@ -163,10 +163,6 @@ public class BoundFragmentDelegate
 
     @Override
     public void onResume() {
-        if (mShouldCallCreate) {
-            onCreate(mCreateBundle);
-        }
-
         if (getViewModels() != null) {
             for (ViewModel viewModel : getViewModels().values()) {
                 viewModel.onResume();
