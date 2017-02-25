@@ -8,10 +8,12 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -53,6 +55,9 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private Subscription mRemoveItemsSubscription = Subscriptions.unsubscribed();
 
     private CompositeSubscription mPageSubscriptions = new CompositeSubscription();
+
+    private Queue<List<?>> pendingUpdates =
+            new ArrayDeque<>();
 
     public BindableRecyclerViewAdapter(IViewBinder vb, int itemTemplate) {
         mViewBinder = vb;
@@ -109,22 +114,13 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     public void setItemsSource(final List<?> value) {
+        final List<?> oldItems = new ArrayList<>(mItemsSource);
         mSetValuesSubscription.unsubscribe();
         mSetValuesSubscription = Observable.just(value)
                 .subscribeOn(Schedulers.computation())
-                .map(newList -> {
-                    Pair<List<?>, DiffUtil.DiffResult>
-                            pair = new Pair(newList, calculateDiff(new ItemSourceDiffCallback(mItemsSource, value)));
-                    return pair;
-                })
+                .map(newList -> new Pair<List<?>, DiffUtil.DiffResult>(newList, calculateDiff(new ItemSourceDiffCallback(oldItems, value))))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(listDiffResultPair -> {
-                    mItemsSource.clear();
-                    if (listDiffResultPair.first != null) {
-                        mItemsSource.addAll(new ArrayList(listDiffResultPair.first));
-                    }
-                    listDiffResultPair.second.dispatchUpdatesTo(this);
-                }, Throwable::printStackTrace);
+                .subscribe(this::applyDiffResult, Throwable::printStackTrace);
     }
 
     public void addItemsSource(List<?> values) {
@@ -153,6 +149,20 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     }
                 });
         mPageSubscriptions.add(s);
+    }
+
+    private void applyDiffResult(Pair<List<?>, DiffUtil.DiffResult> resultPair) {
+        if (!pendingUpdates.isEmpty()) {
+            pendingUpdates.remove();
+        }
+        mItemsSource.clear();
+        if (resultPair.first != null) {
+            mItemsSource.addAll(new ArrayList<>(resultPair.first));
+        }
+        resultPair.second.dispatchUpdatesTo(this);
+        if (pendingUpdates.size() > 0) {
+            setItemsSource(pendingUpdates.peek());
+        }
     }
 
     /* to prevent Cannot call this method in a scroll callback. Scroll callbacks might be run during a measure
