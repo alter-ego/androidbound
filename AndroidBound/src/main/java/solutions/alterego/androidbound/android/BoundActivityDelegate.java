@@ -26,6 +26,7 @@ import solutions.alterego.androidbound.android.interfaces.INeedsOnActivityResult
 import solutions.alterego.androidbound.interfaces.IHasLogger;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
+import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 @Accessors(prefix = "m")
 public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity, INeedsOnActivityResult, INeedsNewIntent, INeedsConfigurationChange,
@@ -44,8 +45,25 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
 
     private Bundle mCreateBundle;
 
+    private IViewBinder mViewBinder;
+
     public BoundActivityDelegate(Activity activity) {
+        this(activity, null);
+    }
+
+    public BoundActivityDelegate(Activity activity, IViewBinder viewBinder) {
         mBoundActivity = new WeakReference<>(activity);
+        mViewBinder = viewBinder;
+    }
+
+    private IViewBinder getViewBinder() {
+        if (mViewBinder != null) {
+            return mViewBinder;
+        } else if (getBoundActivity() instanceof IBindableView) {
+            return ((IBindableView) getBoundActivity()).getViewBinder();
+        } else {
+            throw new RuntimeException("There's no IViewBinder available!");
+        }
     }
 
     private Activity getBoundActivity() {
@@ -67,16 +85,8 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
             throw new RuntimeException("Bound Activity is null!");
         }
 
-        if (!(getBoundActivity() instanceof IBindableView)) {
-            throw new RuntimeException("Activity must implement IBindableView!");
-        }
-
         if (viewModel == null) {
             throw new RuntimeException("viewModel is null!");
-        }
-
-        if (((IBindableView) getBoundActivity()).getViewBinder() == null) {
-            throw new RuntimeException("getViewBinder must not be null!");
         }
 
         if (mViewModels == null) {
@@ -91,7 +101,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
         viewModel.setLogger(getLogger());
         mViewModels.put(id, viewModel);
 
-        View view = ((IBindableView) getBoundActivity()).getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, null);
+        View view = getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, null);
 
         if (mShouldCallCreate) {
             onCreate(mCreateBundle);
@@ -122,6 +132,8 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
                     viewModel.onCreate(savedInstanceState);
                 }
             }
+
+            mShouldCallCreate = false;
         } else {
             mShouldCallCreate = true;
             mCreateBundle = savedInstanceState;
@@ -192,11 +204,9 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
         if (mBoundActivity != null
                 && boundActivityRef != null
                 && boundActivityRef instanceof IBindableView
-                && ((IBindableView) boundActivityRef).getViewBinder() != null
                 && boundActivityRef.getWindow() != null
                 && boundActivityRef.getWindow().getDecorView() != null) {
-            ((IBindableView) boundActivityRef).getViewBinder()
-                    .clearBindingForViewAndChildren(getBoundActivity().getWindow().getDecorView().getRootView());
+            getViewBinder().clearBindingForViewAndChildren(getBoundActivity().getWindow().getDecorView().getRootView());
         }
 
         if (getViewModels() != null) {
@@ -208,6 +218,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
         mViewModels = null;
         mBoundActivity.clear();
         mBoundActivity = null;
+        mViewBinder = null;
         mLogger = null;
     }
 
