@@ -123,7 +123,9 @@ public class BoundFragmentDelegate
     public void onCreate(Bundle savedInstanceState) {
         if (getViewModels() != null) {
             for (ViewModel viewModel : getViewModels().values()) {
-                viewModel.onCreate(savedInstanceState);
+                if (!viewModel.isCreated()) {
+                    viewModel.onCreate(savedInstanceState);
+                }
             }
 
             mShouldCallCreate = false;

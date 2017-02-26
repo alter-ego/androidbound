@@ -118,7 +118,9 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
     public void onCreate(Bundle savedInstanceState) {
         if (getViewModels() != null) {
             for (ViewModel viewModel : getViewModels().values()) {
-                viewModel.onCreate(savedInstanceState);
+                if (!viewModel.isCreated()) {
+                    viewModel.onCreate(savedInstanceState);
+                }
             }
         } else {
             mShouldCallCreate = true;
