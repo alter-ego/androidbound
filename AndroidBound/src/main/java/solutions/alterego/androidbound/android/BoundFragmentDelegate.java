@@ -211,6 +211,8 @@ public class BoundFragmentDelegate
             mBoundActivity.clear();
             mBoundActivity = null;
         }
+
+        mViewBinder = null;
     }
 
     @Override
