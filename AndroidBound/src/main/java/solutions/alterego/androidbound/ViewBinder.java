@@ -74,6 +74,10 @@ public class ViewBinder implements IViewBinder {
 
     private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
 
+    public ViewBinder() {
+        init();
+    }
+
     public ViewBinder(Context ctx) {
         setContext(ctx);
         init();
@@ -103,7 +107,8 @@ public class ViewBinder implements IViewBinder {
         registerDefaultConverters();
     }
 
-    private void setContext(Context ctx) {
+    @Override
+    public void setContext(Context ctx) {
         if (mContext != null) {
             mContext.clear();
         }
@@ -113,7 +118,8 @@ public class ViewBinder implements IViewBinder {
         }
     }
 
-    private Context getContext() {
+    @Override
+    public Context getContext() {
         if (mContext != null) {
             return mContext.get();
         }
