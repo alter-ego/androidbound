@@ -27,6 +27,12 @@ public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposa
 
     private boolean mDisposed = false;
 
+    private boolean mCreated = false;
+
+    public boolean isCreated() {
+        return mCreated;
+    }
+
     protected void raisePropertyChanged(String property) {
         try {
             propertyChanges.onNext(property);
@@ -64,6 +70,7 @@ public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposa
         }
 
         mDisposed = true;
+        mCreated = false;
 
         if (propertyChanges != null) {
             propertyChanges.onCompleted();
@@ -77,7 +84,7 @@ public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposa
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        //do nothing, to be overridden
+        mCreated = true;
     }
 
     @Override
