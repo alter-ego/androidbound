@@ -41,7 +41,7 @@
                 android:layout_below="@+id/open_main_activity_button"
                 itemTemplate="@layout/activity_paginated_rv_item"
                 binding="{Items @+@ DataItems2};
-            { RemoveItems @@ RemoveItems};
+            { RemoveItems !@ RemoveItems};
             { PageDescriptor @= LoadNextPage2 }; { NextPage =@ LoadNextPage2 }; " />
 
     </LinearLayout>
