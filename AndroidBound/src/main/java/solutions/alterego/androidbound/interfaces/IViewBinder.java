@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import solutions.alterego.androidbound.android.interfaces.IFontManager;
+import solutions.alterego.androidbound.android.interfaces.INeedsFontManager;
 import solutions.alterego.androidbound.android.interfaces.INeedsImageLoader;
 import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
 import solutions.alterego.androidbound.converters.interfaces.IValueConverterRegistry;
@@ -14,7 +14,7 @@ import solutions.alterego.androidbound.resources.interfaces.IResourceRegistry;
 import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
 
 
-public interface IViewBinder extends IResourceRegistry, IValueConverterRegistry, IDisposable, INeedsImageLoader, IHasLogger {
+public interface IViewBinder extends IResourceRegistry, IValueConverterRegistry, IDisposable, INeedsImageLoader, IHasLogger, INeedsFontManager {
 
     void clearBindingForViewAndChildren(View rootView);
 
@@ -41,10 +41,6 @@ public interface IViewBinder extends IResourceRegistry, IValueConverterRegistry,
     void lazyBindView(View view, Object source);
 
     void bindViewToSource(Object source, View view, String bindingString);
-
-    IFontManager getFontManager();
-
-    void setFontManager(IFontManager fontManager);
 
     Context getContext();
 

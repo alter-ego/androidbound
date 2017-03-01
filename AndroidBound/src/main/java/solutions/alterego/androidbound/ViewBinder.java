@@ -69,7 +69,6 @@ public class ViewBinder implements IViewBinder {
     private Map<View, String> mLazyBoundViews = new HashMap<>();
 
     @Getter
-    @Setter
     private IFontManager mFontManager;
 
     private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
@@ -129,7 +128,6 @@ public class ViewBinder implements IViewBinder {
 
     private void registerDefaultConverters() {
         registerConverter(BooleanToVisibilityConverter.getConverterName(), new BooleanToVisibilityConverter());
-        registerConverter(FontConverter.getConverterName(), new FontConverter(getFontManager(), getLogger()));
     }
 
     @Override
@@ -398,6 +396,12 @@ public class ViewBinder implements IViewBinder {
         mFontManager = null;
         mImageLoader = IImageLoader.nullImageLoader;
         mLogger = NullLogger.instance;
+    }
+
+    @Override
+    public void setFontManager(IFontManager fontManager) {
+        mFontManager = fontManager;
+        registerConverter(FontConverter.getConverterName(), new FontConverter(getFontManager(), getLogger()));
     }
 
     @Override
