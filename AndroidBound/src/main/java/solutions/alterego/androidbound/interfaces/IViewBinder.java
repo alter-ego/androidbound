@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import solutions.alterego.androidbound.android.interfaces.IFontManager;
 import solutions.alterego.androidbound.android.interfaces.INeedsFontManager;
 import solutions.alterego.androidbound.android.interfaces.INeedsImageLoader;
 import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
@@ -46,4 +47,5 @@ public interface IViewBinder extends IResourceRegistry, IValueConverterRegistry,
 
     void setContext(Context context);
 
+    IFontManager getFontManager();
 }

@@ -5,5 +5,4 @@ public interface INeedsFontManager {
 
     void setFontManager(IFontManager fontManager);
 
-    IFontManager getFontManager();
 }
