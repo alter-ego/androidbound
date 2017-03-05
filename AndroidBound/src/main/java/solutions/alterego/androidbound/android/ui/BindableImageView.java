@@ -3,6 +3,8 @@ package solutions.alterego.androidbound.android.ui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,7 +41,7 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
     }
 
     public BindableImageView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle); 
+        super(context, attrs, defStyle);
     }
 
     public String getSource() {
@@ -49,6 +51,18 @@ public class BindableImageView extends ImageView implements OnClickListener, INo
     public void setSource(String value) {
         source = value;
         mImageLoader.loadImageFromUri(source, this);
+    }
+
+    public Uri getSourceUri() {
+        if (!TextUtils.isEmpty(source)) {
+            return Uri.parse(source);
+        } else {
+            return Uri.EMPTY;
+        }
+    }
+
+    public void setSourceUri(Uri value) {
+        setSource(value.toString());
     }
 
     public ICommand getClick() {
