@@ -49,6 +49,10 @@ public class MainActivityViewModel extends ViewModel {
         raisePropertyChanged("OpenBindableActivityText");
     }
 
+    public void doOpenPaginatedRecyclerViewActivity() {
+        getParentActivity().startActivity(new Intent(getParentActivity(), PaginatedRecyclerViewActivity.class));
+    }
+
     @Override
     public void onCreate(Bundle outState) {
         //do nothing

@@ -5,6 +5,7 @@ import java.util.Locale;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.Subscriptions;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.binding.data.BindingMode;
 import solutions.alterego.androidbound.binding.data.BindingRequest;
@@ -30,13 +31,18 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
     private Subscription mTargetSubscription;
 
+    private Subscription mSourceAccumulateSubscription = Subscriptions.unsubscribed();
+
+    private Subscription mTargetAccumulateSubscription = Subscriptions.unsubscribed();
+
     private ILogger mLogger = NullLogger.instance;
 
     private IBindingFactory mSourceFactory;
 
     private IBindingFactory mTargetFactory;
 
-    public BindingAssociationEngine(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, ILogger logger) {
+    public BindingAssociationEngine(BindingRequest request, IBindingFactory sourceFactory,
+            IBindingFactory targetFactory, ILogger logger) {
         mMode = request.getSpecification().getMode();
         mSourceFactory = sourceFactory;
         mTargetFactory = targetFactory;
@@ -46,12 +52,28 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         createTargetBinding(request.getTarget());
         createSourceBinding(request.getSource());
 
+        createRemoveBinding(request.getSource());
+        createAccumulateSourceBinding(request.getSource());
+        createAccumulateTargetBinding(request.getTarget());
+
         if (needsTargetUpdate()) {
             updateSourceFromTarget(mTargetBinding.getValue());
         }
 
         if (needsSourceUpdate()) {
             updateTargetFromSource(mSourceBinding.getValue());
+        }
+
+        if (needsTargetAccumulate()) {
+            accumulateItems(mSourceBinding.getValue());
+        }
+
+        if (needsTargetRemove()) {
+            removeItems(mSourceBinding.getValue());
+        }
+
+        if (needsSourceAccumulate()) {
+            accumulateItemsToSource(mTargetBinding.getValue());
         }
     }
 
@@ -71,10 +93,18 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         if (mSourceSubscription != null) {
             mSourceSubscription.unsubscribe();
         }
+        if (mSourceAccumulateSubscription != null) {
+            mSourceAccumulateSubscription.unsubscribe();
+        }
 
+        createAccumulateSourceBinding(value);
         createSourceBinding(value);
         if (needsSourceUpdate()) {
             updateTargetFromSource(mSourceBinding.getValue());
+        }
+
+        if (needsTargetAccumulate()) {
+            accumulateItems(mSourceBinding.getValue());
         }
     }
 
@@ -94,7 +124,25 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getPath() + " needs subscription, but changes were not available");
+                mLogger.warning("Binding " + mBindingSpecification.getPath()
+                        + " needs subscription, but changes were not available");
+            }
+        }
+    }
+
+    private void createRemoveBinding(Object target) {
+        boolean needsSubs = needsTargetRemove();
+        mTargetBinding = mTargetFactory.create(target, mBindingSpecification.getTarget(), needsSubs);
+        if (needsSubs) {
+            if (mTargetBinding.hasChanges()) {
+                mTargetSubscription = mTargetBinding.getChanges()
+                        .subscribeOn(Schedulers.computation())
+                        .subscribe(obj -> {
+                            removeItems(obj);
+                        });
+            } else {
+                mLogger.warning("Binding " + mBindingSpecification.getTarget()
+                        + " needs subscription, but changes were not available.");
             }
         }
     }
@@ -115,7 +163,43 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getTarget() + " needs subscription, but changes were not available.");
+                mLogger.warning("Binding " + mBindingSpecification.getTarget()
+                        + " needs subscription, but changes were not available.");
+            }
+        }
+    }
+
+
+    private void createAccumulateSourceBinding(Object source) {
+        boolean needsSubs = needsTargetAccumulate();
+
+        mSourceBinding = mSourceFactory.create(source, mBindingSpecification.getPath(), needsSubs);
+
+        if (needsSubs) {
+            if (mSourceBinding.hasChanges()) {
+                mSourceAccumulateSubscription = mSourceBinding.getChanges()
+                        .subscribeOn(Schedulers.computation())
+                        .subscribe(obj -> {
+                            accumulateItems(obj);
+                        });
+            } else {
+                mLogger.warning("Binding " + mBindingSpecification.getPath()
+                        + " needs subscription, but changes were not available");
+            }
+        }
+    }
+
+    private void createAccumulateTargetBinding(Object target) {
+        boolean needsSubs = needsSourceAccumulate();
+        mTargetBinding = mTargetFactory.create(target, mBindingSpecification.getTarget(), needsSubs);
+        if (needsSubs) {
+            if (mTargetBinding.hasChanges()) {
+                mTargetAccumulateSubscription = mTargetBinding.getChanges()
+                        .subscribeOn(Schedulers.computation())
+                        .subscribe(this::accumulateItemsToSource);
+            } else {
+                mLogger.warning("Binding " + mBindingSpecification.getTarget()
+                        + " needs subscription, but changes were not available.");
             }
         }
     }
@@ -165,13 +249,27 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
+    public boolean needsTargetAccumulate() {
+        return mMode == BindingMode.Accumulate || mMode == BindingMode.AccumulateTwoWay;
+    }
+
+    private boolean needsTargetRemove() {
+        return mMode == BindingMode.RemoveSource;
+    }
+
+
+    public boolean needsSourceAccumulate() {
+        return mMode == BindingMode.AccumulateToSource || mMode == BindingMode.AccumulateTwoWay;
+    }
+
     protected void updateTargetFromSource(Object obj) {
         Object result;
         try {
             if (obj != IBinding.noValue) {
                 result = mBindingSpecification
                         .getValueConverter()
-                        .convert(obj, mTargetBinding.getType(), mBindingSpecification.getConverterParameter(), Locale.getDefault());
+                        .convert(obj, mTargetBinding.getType(), mBindingSpecification.getConverterParameter(),
+                                Locale.getDefault());
 
             } else {
                 mLogger.warning("Switching to fallback value for " + mBindingSpecification.getPath());
@@ -179,7 +277,8 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             }
             mTargetBinding.setValue(result);
         } catch (Exception e) {
-            mLogger.error("Error occurred while binding " + mBindingSpecification.getPath() + " to target " + mBindingSpecification.getTarget()
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getPath() + " to target "
+                    + mBindingSpecification.getTarget()
                     + ": " + e.getMessage());
         }
     }
@@ -188,10 +287,68 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         try {
             Object result = mBindingSpecification
                     .getValueConverter()
-                    .convertBack(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(), Locale.getDefault());
+                    .convertBack(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
+                            Locale.getDefault());
             mSourceBinding.setValue(result);
         } catch (Exception e) {
-            mLogger.error("Error occurred while binding " + mBindingSpecification.getTarget() + " to source " + mBindingSpecification.getPath()
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getTarget() + " to source "
+                    + mBindingSpecification.getPath()
+                    + ": " + e.getMessage());
+        }
+    }
+
+    private void removeItems(Object obj) {
+        Object result;
+        try {
+            if (obj != IBinding.noValue) {
+                result = mBindingSpecification
+                        .getValueConverter()
+                        .convert(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
+                                Locale.getDefault());
+
+            } else {
+                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getPath());
+                result = mBindingSpecification.getFallbackValue();
+            }
+            mTargetBinding.removeValue(result);
+        } catch (Exception e) {
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getPath() + " to target "
+                    + mBindingSpecification.getTarget()
+                    + ": " + e.getMessage());
+        }
+    }
+
+    private void accumulateItems(Object obj) {
+        Object result;
+        try {
+            if (obj != IBinding.noValue) {
+                result = mBindingSpecification
+                        .getValueConverter()
+                        .convert(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
+                                Locale.getDefault());
+
+            } else {
+                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getPath());
+                result = mBindingSpecification.getFallbackValue();
+            }
+            mTargetBinding.addValue(result);
+        } catch (Exception e) {
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getPath() + " to target "
+                    + mBindingSpecification.getTarget()
+                    + ": " + e.getMessage());
+        }
+    }
+
+    private void accumulateItemsToSource(Object obj) {
+        try {
+            Object result = mBindingSpecification
+                    .getValueConverter()
+                    .convertBack(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
+                            Locale.getDefault());
+            mSourceBinding.addValue(result);
+        } catch (Exception e) {
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getTarget() + " to source "
+                    + mBindingSpecification.getPath()
                     + ": " + e.getMessage());
         }
     }
@@ -213,5 +370,8 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         if (mTargetBinding != null) {
             mTargetBinding.dispose();
         }
+
+        mTargetAccumulateSubscription.unsubscribe();
+        mSourceAccumulateSubscription.unsubscribe();
     }
 }

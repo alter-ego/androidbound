@@ -7,7 +7,6 @@ import android.widget.FrameLayout;
 
 import java.util.List;
 
-import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
@@ -35,7 +34,7 @@ public class BindableRecyclerViewItemView extends FrameLayout {
         mViewBinder = viewBinder;
         mItemTemplate = itemTemplate;
 
-        if (mViewBinder != null) {
+        if (mViewBinder != null && itemTemplate > 0) {
             viewBinder.inflate(context, source, itemTemplate, this);
         }
     }

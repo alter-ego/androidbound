@@ -15,7 +15,7 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
 
     private final static Pattern PATTERN = Pattern
             .compile("\\s*(?<target>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z][a-zA-Z0-9]*)*)*)" +
-                    "\\s*(?<mode>@=@|@-|-@|=@|=|@=)" +
+                    "\\s*(?<mode>@=@|@-|-@|=@|=|@=|@\\+@|(@\\+)|(\\+@)|\\!@)" +
                     "\\s*(?:(?<converter>[a-zA-Z][a-zA-Z0-9]*)\\" +
                     "s*\\()?\\s*(?<path>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z][a-zA-Z0-9]*)*)*)" +
                     "\\s*(?:,\\s*(?:(?<parameterName>[a-zA-Z][a-zA-Z0-9]*)" +
@@ -133,6 +133,18 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
         }
         if (value.equals("@=@")) {
             return BindingMode.TwoWay;
+        }
+        if (value.equals("@+")) {
+            return BindingMode.Accumulate;
+        }
+        if (value.equals("+@")) {
+            return BindingMode.AccumulateToSource;
+        }
+        if (value.equals("@+@")) {
+            return BindingMode.AccumulateTwoWay;
+        }
+        if (value.equals("!@")) {
+            return BindingMode.RemoveSource;
         }
 
         mLogger.warning("Invalid value '" + value + "' found for BindingMode. Switching to Default.");

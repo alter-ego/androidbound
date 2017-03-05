@@ -69,6 +69,16 @@ public class CommandBinding extends BindingBase {
     }
 
     @Override
+    public void addValue(Object object) {
+        getLogger().warning("Cannot add value for command " + mInfo.getCommandName());
+    }
+
+    @Override
+    public void removeValue(Object result) {
+        getLogger().warning("Cannot add value for command " + mInfo.getCommandName());
+    }
+
+    @Override
     public void dispose() {
         super.dispose();
     }

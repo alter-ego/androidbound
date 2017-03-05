@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -32,13 +33,19 @@ public class Reflector {
 
     private static final String PROPERTY_PREFIX_IS = "is";
 
+    private static final String PROPERTY_PREFIX_ADD = "add";
+
+    private static final String PROPERTY_PREFIX_REMOVE = "remove";
+
     private static final Object mSynchronizedObject = new Object();
 
-    private static SparseArray<SparseArray<PropertyInfo>> mObjectProperties = new SparseArray<SparseArray<PropertyInfo>>();
+    private static SparseArray<SparseArray<PropertyInfo>> mObjectProperties
+            = new SparseArray<SparseArray<PropertyInfo>>();
 
     private static SparseArray<SparseArray<CommandInfo>> mObjectCommands = new SparseArray<SparseArray<CommandInfo>>();
 
-    private static SparseArray<SparseArray<List<MethodInfo>>> mObjectMethods = new SparseArray<SparseArray<List<MethodInfo>>>();
+    private static SparseArray<SparseArray<List<MethodInfo>>> mObjectMethods
+            = new SparseArray<SparseArray<List<MethodInfo>>>();
 
     private static SparseArray<List<ConstructorInfo>> mObjectConstructors = new SparseArray<List<ConstructorInfo>>();
 
@@ -70,6 +77,8 @@ public class Reflector {
     public static PropertyInfo getProperty(Class<?> type, String name, ILogger logger) {
         MethodInfo propertyGetter = null;
         MethodInfo propertySetter = null;
+        MethodInfo propertyAdd = null;
+        MethodInfo propertyRemove = null;
         FieldInfo propertyField = null;
 
         int typeCode = type.hashCode();
@@ -93,9 +102,19 @@ public class Reflector {
             propertyGetter = findGetterWithIsPrefix(type, name);
         }
 
+        if (propertyGetter == null) {
+            propertyGetter = findGetterWithPrefix(type, PROPERTY_PREFIX_ADD, name);
+        }
+
+        if (propertyGetter == null) {
+            propertyGetter = findGetterWithPrefix(type, PROPERTY_PREFIX_REMOVE, name);
+        }
+
         //if the getter is not null, then we look for the setter; if it is null, we bind directly to the variable
         if (propertyGetter != null) {
             propertySetter = findSetter(type, name, propertyGetter);
+            propertyAdd = findAddMethods(type, name, propertyGetter);
+            propertyRemove = findRemoveMethods(type, name, propertyGetter);
         } else {
             propertyField = Reflector.getField(type, name);
         }
@@ -105,9 +124,14 @@ public class Reflector {
         propertyInfo = new PropertyInfo(name,
                 propertyGetter != null || propertyField != null || isMap,
                 propertySetter != null || propertyField != null || isMap,
-                propertyGetter != null ? propertyGetter.getMethodReturnType() : (propertyField != null ? propertyField.getFieldType() : Object.class),
+                propertyAdd != null,
+                propertyRemove != null,
+                propertyGetter != null ? propertyGetter.getMethodReturnType()
+                        : (propertyField != null ? propertyField.getFieldType() : Object.class),
                 propertyGetter,
                 propertySetter,
+                propertyAdd,
+                propertyRemove,
                 propertyField,
                 logger);
 
@@ -126,27 +150,17 @@ public class Reflector {
 
     }
 
-    private static MethodInfo findGetterWithGetPrefix(Class<?> type, String name) {
-
-        MethodInfo found_getter = null;
-        List<MethodInfo> getters = getMethods(type, PROPERTY_PREFIX_GET + name);
-
-        if (getters != null) {
-            for (MethodInfo getter : getters) {
-                if (getter.getMethodParameterCount() == 0) {
-                    found_getter = getter;
-                    break;
-                }
-            }
-        }
-
-        return found_getter;
+    private static MethodInfo findGetterWithIsPrefix(Class<?> type, String name) {
+        return findGetterWithPrefix(type, PROPERTY_PREFIX_IS, name);
     }
 
-    private static MethodInfo findGetterWithIsPrefix(Class<?> type, String name) {
+    private static MethodInfo findGetterWithGetPrefix(Class<?> type, String name) {
+        return findGetterWithPrefix(type, PROPERTY_PREFIX_GET, name);
+    }
 
+    private static MethodInfo findGetterWithPrefix(Class<?> type, String prefix, String name) {
         MethodInfo found_getter = null;
-        List<MethodInfo> getters = getMethods(type, PROPERTY_PREFIX_IS + name);
+        List<MethodInfo> getters = getMethods(type, prefix + name);
 
         if (getters != null) {
             for (MethodInfo getter : getters) {
@@ -164,16 +178,47 @@ public class Reflector {
 
         MethodInfo found_setter = null;
         List<MethodInfo> setters = getMethods(type, PROPERTY_PREFIX_SET + name);
-
         if (setters != null) {
             for (MethodInfo setter : setters) {
-                if (setter.getMethodParameterCount() == 1 && getter.getMethodReturnType().equals(setter.getMethodParameterTypes()[0])) {
+                if (setter.getMethodParameterCount() == 1 && getter.getMethodReturnType()
+                        .equals(setter.getMethodParameterTypes()[0])) {
                     found_setter = setter;
                     break;
                 }
             }
         }
 
+        return found_setter;
+    }
+
+
+    private static MethodInfo findAddMethods(Class<?> type, String name, MethodInfo getter) {
+        MethodInfo found_setter = null;
+        List<MethodInfo> adders = getMethods(type, PROPERTY_PREFIX_ADD + name);
+        if (adders != null) {
+            for (MethodInfo setter : adders) {
+                if (setter.getMethodParameterCount() == 1
+                        && Collection.class.isAssignableFrom(setter.getMethodParameterTypes()[0])) {
+                    found_setter = setter;
+                    break;
+                }
+            }
+        }
+        return found_setter;
+    }
+
+    private static MethodInfo findRemoveMethods(Class<?> type, String name, MethodInfo getter) {
+        MethodInfo found_setter = null;
+        List<MethodInfo> adders = getMethods(type, PROPERTY_PREFIX_REMOVE + name);
+        if (adders != null) {
+            for (MethodInfo setter : adders) {
+                if (setter.getMethodParameterCount() == 1
+                        && Collection.class.isAssignableFrom(setter.getMethodParameterTypes()[0])) {
+                    found_setter = setter;
+                    break;
+                }
+            }
+        }
         return found_setter;
     }
 
