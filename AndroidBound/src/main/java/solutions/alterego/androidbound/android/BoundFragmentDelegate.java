@@ -40,7 +40,6 @@ public class BoundFragmentDelegate
     @Getter
     private Map<String, ViewModel> mViewModels;
 
-    @Getter
     private ILogger mLogger = NullLogger.instance;
 
     private transient WeakReference<Activity> mBoundActivity;
