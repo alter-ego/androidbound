@@ -40,7 +40,8 @@ public class BindableRecyclerViewItemViewHolder extends RecyclerView.ViewHolder 
                 ViewGroup.LayoutParams layoutParams = mParent.getLayoutParams();
 
                 if (layoutManager instanceof StaggeredGridLayoutManager) {
-                    StaggeredGridLayoutManager.LayoutParams newLayoutParams = (StaggeredGridLayoutManager.LayoutParams) layoutManager.generateLayoutParams(layoutParams);
+                    StaggeredGridLayoutManager.LayoutParams newLayoutParams = (StaggeredGridLayoutManager.LayoutParams) layoutManager
+                            .generateLayoutParams(layoutParams);
                     mViewBinder.getLogger().debug("viewholder for StaggeredGridLayoutManager, full span");
                     itemView.setLayoutParams(layoutParams);
                 } else {
@@ -50,4 +51,10 @@ public class BindableRecyclerViewItemViewHolder extends RecyclerView.ViewHolder 
         }
     }
 
+
+    void unbind() {
+        if (itemView instanceof BindableRecyclerViewItemView) {
+            ((BindableRecyclerViewItemView) itemView).unbind();
+        }
+    }
 }
