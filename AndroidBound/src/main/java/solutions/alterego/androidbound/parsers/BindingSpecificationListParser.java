@@ -26,7 +26,7 @@ public class BindingSpecificationListParser implements IParser<List<BindingSpeci
         List<BindingSpecification> result = new ArrayList<BindingSpecification>();
 
         if (content != null) {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             boolean inGroup = false;
             boolean inQuote = false;
             boolean inEscape = false;
@@ -49,7 +49,7 @@ public class BindingSpecificationListParser implements IParser<List<BindingSpeci
                             buffer.append(code);
                             logger.debug("Found possible binding specification. Sending to single parser, spec = " + buffer.toString());
                             result.add(singleParser.parse(buffer.toString()));
-                            buffer = new StringBuffer();
+                            buffer = new StringBuilder();
                         }
                         break;
                     case '\'':
@@ -66,4 +66,5 @@ public class BindingSpecificationListParser implements IParser<List<BindingSpeci
         }
         return result;
     }
+
 }
