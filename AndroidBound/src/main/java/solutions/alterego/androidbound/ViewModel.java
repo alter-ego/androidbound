@@ -74,12 +74,13 @@ public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposa
 
         if (propertyChanges != null) {
             propertyChanges.onCompleted();
-            propertyChanges = null;
         }
 
         if (mParentActivity != null && mParentActivity.get() != null) {
             mParentActivity.clear();
         }
+
+        propertyChanges = PublishSubject.create(); //we recreate the subject so that we can reuse the same VM without recreating it
     }
 
     @Override
