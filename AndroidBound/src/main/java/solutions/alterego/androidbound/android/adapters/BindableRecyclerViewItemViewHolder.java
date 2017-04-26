@@ -1,12 +1,16 @@
 package solutions.alterego.androidbound.android.adapters;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.View;
 import android.view.ViewGroup;
 
-import solutions.alterego.androidbound.android.ui.BindableRecyclerViewItemView;
+import java.util.List;
+
+import solutions.alterego.androidbound.NullLogger;
+import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
+import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 public class BindableRecyclerViewItemViewHolder extends RecyclerView.ViewHolder {
@@ -15,39 +19,67 @@ public class BindableRecyclerViewItemViewHolder extends RecyclerView.ViewHolder 
 
     private final IViewBinder mViewBinder;
 
-    public BindableRecyclerViewItemViewHolder(@NonNull Context ctx, @NonNull IViewBinder viewBinder, @NonNull ViewGroup parent,
-            @NonNull int layoutResId) {
-        super(new BindableRecyclerViewItemView(ctx, viewBinder, layoutResId, null, parent));
+    private ILogger mLogger = NullLogger.instance;
+
+    public BindableRecyclerViewItemViewHolder(View itemView, IViewBinder viewBinder, ViewGroup parent) {
+        super(itemView);
         mParent = parent;
         mViewBinder = viewBinder;
+        mLogger = viewBinder != null && viewBinder.getLogger() != null
+                ? viewBinder.getLogger()
+                : NullLogger.instance;
     }
 
     public void onBindViewHolder(@NonNull Object objectForLayout) {
-        if (itemView != null) {
-            ((BindableRecyclerViewItemView) itemView).bindTo(objectForLayout);
+        bindTo(objectForLayout);
+        if (mParent != null && itemView != null) {
+            itemView.setLayoutParams(mParent.getLayoutParams());
+        }
+    }
 
-            if (mParent != null) {
+    public void onBindViewHolder(@NonNull Object objectForLayout, RecyclerView.LayoutManager layoutManager) {
+        bindTo(objectForLayout);
+        if (itemView != null && mParent != null) {
+            ViewGroup.LayoutParams layoutParams = mParent.getLayoutParams();
+            if (layoutManager instanceof StaggeredGridLayoutManager) {
+                StaggeredGridLayoutManager.LayoutParams newLayoutParams = (StaggeredGridLayoutManager.LayoutParams) layoutManager
+                        .generateLayoutParams(layoutParams);
+                mLogger.debug("viewholder for StaggeredGridLayoutManager, full span");
+                itemView.setLayoutParams(newLayoutParams);
+            } else {
                 itemView.setLayoutParams(mParent.getLayoutParams());
             }
         }
     }
 
-    public void onBindViewHolder(@NonNull Object objectForLayout, RecyclerView.LayoutManager layoutManager) {
-        if (itemView != null) {
-            ((BindableRecyclerViewItemView) itemView).bindTo(objectForLayout);
+    private void bindTo(Object source) {
+        if (mViewBinder == null) {
+            mLogger.verbose("BindableListItemView bindTo mViewBinder == null");
+            return;
+        }
 
-            if (mParent != null) {
-                ViewGroup.LayoutParams layoutParams = mParent.getLayoutParams();
+        if (source == null) {
+            mLogger.verbose("BindableListItemView bindTo source == null");
+            return;
+        }
 
-                if (layoutManager instanceof StaggeredGridLayoutManager) {
-                    StaggeredGridLayoutManager.LayoutParams newLayoutParams = (StaggeredGridLayoutManager.LayoutParams) layoutManager.generateLayoutParams(layoutParams);
-                    mViewBinder.getLogger().debug("viewholder for StaggeredGridLayoutManager, full span");
-                    itemView.setLayoutParams(layoutParams);
-                } else {
-                    itemView.setLayoutParams(mParent.getLayoutParams());
-                }
+        List<IBindingAssociationEngine> bindings = mViewBinder.getBindingsForViewAndChildren(itemView);
+
+        if (bindings == null || bindings.size() < 1) {
+            mLogger.verbose("BindableListItemView bindTo bindings == null or 0, doing lazy binding");
+            mViewBinder.lazyBindView(itemView, source);
+        } else {
+            mLogger.verbose("BindableListItemView bindTo continue with binding");
+            for (IBindingAssociationEngine binding : bindings) {
+                binding.setDataContext(source);
             }
         }
     }
 
+    public void unbind() {
+        if (mViewBinder == null) {
+            return;
+        }
+        mViewBinder.clearBindingForViewAndChildren(itemView);
+    }
 }
