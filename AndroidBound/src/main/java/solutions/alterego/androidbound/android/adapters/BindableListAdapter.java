@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
-import solutions.alterego.androidbound.ViewBinder;
+import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
-import solutions.alterego.androidbound.android.ui.BindableListItemView;
+import solutions.alterego.androidbound.android.interfaces.INeedsBoundView;
+import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
+import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 public class BindableListAdapter extends BaseAdapter {
@@ -32,6 +34,8 @@ public class BindableListAdapter extends BaseAdapter {
     @Getter
     private List<?> itemsSource;
 
+    private ILogger mLogger;
+
     public BindableListAdapter(Context ctx, IViewBinder vb, int itemTemplate) {
         context = ctx;
         viewBinder = vb;
@@ -42,6 +46,10 @@ public class BindableListAdapter extends BaseAdapter {
                 viewBinder = ((IBindableView) context).getViewBinder();
             }
         }
+
+        mLogger = viewBinder == null
+                ? NullLogger.instance
+                : viewBinder.getLogger();
     }
 
     public void setItemsSource(List<?> value) {
@@ -76,36 +84,52 @@ public class BindableListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = inflateViewForObject(getItem(position));
-        } else if (convertView instanceof BindableListItemView) {
-            convertView = checkInflatedView((BindableListItemView) convertView, position);
-        } else {
-            viewBinder.getLogger().info("BindableListAdapter getView not inflating, not rebinding");
         }
 
-        if (convertView == null){
-            viewBinder.getLogger().warning("BindableListAdapter getView is null, returning ViewStub!");
+        convertView = checkInflatedView(convertView, position);
+
+        if (convertView == null) {
+            mLogger.warning("BindableListAdapter getView is null, returning ViewStub!");
             convertView = new ViewStub(context);
         }
-
         return convertView;
     }
 
-    private BindableListItemView inflateViewForObject(Object objectForLayout) {
+    private void bindTo(View convertView, Object object) {
+        if (viewBinder == null) {
+            return;
+        }
+
+        List<IBindingAssociationEngine> bindings = viewBinder.getBindingsForViewAndChildren(convertView);
+        if (bindings == null || bindings.size() < 1) {
+            mLogger.verbose("BindableListItemView bindTo bindings == null or 0");
+            return;
+        }
+
+        mLogger.verbose("BindableListItemView bindTo continue with binding");
+        for (IBindingAssociationEngine binding : bindings) {
+            binding.setDataContext(object);
+        }
+    }
+
+    private View inflateViewForObject(Object objectForLayout) {
         int layoutToInflate = getLayoutTemplateForObject(objectForLayout);
 
-        BindableListItemView inflatedView = new BindableListItemView(context, viewBinder, layoutToInflate, objectForLayout);
+        View inflatedView = viewBinder.inflate(context, objectForLayout, layoutToInflate, null);
         inflatedView.setTag(VIEW_LAYOUT_TAG, layoutToInflate);
-
+        if (objectForLayout instanceof INeedsBoundView) {
+            ((INeedsBoundView) objectForLayout).setBoundView(inflatedView);
+        }
         return inflatedView;
     }
 
-    private BindableListItemView checkInflatedView(BindableListItemView inflatedView, int position) {
+    private View checkInflatedView(View inflatedView, int position) {
         Object objectForLayout = getItem(position);
 
         //if the view has a tag and that tag corresponds to the layout ref for the object, we can just bind again
         if (inflatedView.getTag(VIEW_LAYOUT_TAG) != null
                 && (int) inflatedView.getTag(VIEW_LAYOUT_TAG) == getLayoutTemplateForObject(objectForLayout)) {
-            inflatedView.bindTo(objectForLayout);
+            bindTo(inflatedView, objectForLayout);
         } else {
             //it was a different view layout, we need to inflate again
             inflatedView = inflateViewForObject(objectForLayout);

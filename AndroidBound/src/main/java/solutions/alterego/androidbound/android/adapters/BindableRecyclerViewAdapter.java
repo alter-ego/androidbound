@@ -81,8 +81,9 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             mViewBinder.getLogger().error("BindableRecyclerViewAdapter cannot find templates for class = " + clazz
                     + ": did you call setTemplatesForObjects or set itemTemplate in XML?");
         }
-
-        return new BindableRecyclerViewItemViewHolder(parent.getContext(), mViewBinder, parent, layoutRes);
+        return new BindableRecyclerViewItemViewHolder(
+                mViewBinder.inflate(parent.getContext(), null, layoutRes, null),
+                mViewBinder, parent);
     }
 
     @Override
