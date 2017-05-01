@@ -207,6 +207,10 @@ public class MainActivityViewModel extends ViewModel {
             Intent intent = new Intent(getParentActivity(), TestFragmentActivity.class);
             getParentActivity().startActivity(intent);
         }
+
     }
 
+    public String getOpenActivityButtonContentDescription() {
+        return "opens main activity";
+    }
 }
