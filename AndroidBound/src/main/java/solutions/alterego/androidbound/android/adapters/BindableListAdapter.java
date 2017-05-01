@@ -83,10 +83,10 @@ public class BindableListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = inflateViewForObject(getItem(position));
+            convertView = inflateViewForObject(getItem(position), parent);
         }
 
-        convertView = checkInflatedView(convertView, position);
+        convertView = checkInflatedView(convertView, position, parent);
 
         if (convertView == null) {
             mLogger.warning("BindableListAdapter getView is null, returning ViewStub!");
@@ -112,10 +112,10 @@ public class BindableListAdapter extends BaseAdapter {
         }
     }
 
-    private View inflateViewForObject(Object objectForLayout) {
+    private View inflateViewForObject(Object objectForLayout, ViewGroup parent) {
         int layoutToInflate = getLayoutTemplateForObject(objectForLayout);
 
-        View inflatedView = viewBinder.inflate(context, objectForLayout, layoutToInflate, null);
+        View inflatedView = viewBinder.inflate(context, objectForLayout, layoutToInflate, parent, false);
         inflatedView.setTag(VIEW_LAYOUT_TAG, layoutToInflate);
         if (objectForLayout instanceof INeedsBoundView) {
             ((INeedsBoundView) objectForLayout).setBoundView(inflatedView);
@@ -123,7 +123,7 @@ public class BindableListAdapter extends BaseAdapter {
         return inflatedView;
     }
 
-    private View checkInflatedView(View inflatedView, int position) {
+    private View checkInflatedView(View inflatedView, int position, ViewGroup parent) {
         Object objectForLayout = getItem(position);
 
         //if the view has a tag and that tag corresponds to the layout ref for the object, we can just bind again
@@ -132,7 +132,7 @@ public class BindableListAdapter extends BaseAdapter {
             bindTo(inflatedView, objectForLayout);
         } else {
             //it was a different view layout, we need to inflate again
-            inflatedView = inflateViewForObject(objectForLayout);
+            inflatedView = inflateViewForObject(objectForLayout, parent);
         }
 
         return inflatedView;

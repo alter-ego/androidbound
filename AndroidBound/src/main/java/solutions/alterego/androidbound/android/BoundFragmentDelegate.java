@@ -95,7 +95,7 @@ public class BoundFragmentDelegate
         viewModel.setLogger(getLogger());
         mViewModels.put(id, viewModel);
 
-        View view = getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, parent);
+        View view = getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, parent, false);
 
         if (mShouldCallCreate) {
             onCreate(mCreateBundle);
@@ -145,7 +145,7 @@ public class BoundFragmentDelegate
             onCreate(mCreateBundle);
         }
 
-        return addViewModel(layoutResID, viewModel, TAG_VIEWMODEL_MAIN, null);
+        return addViewModel(layoutResID, viewModel, TAG_VIEWMODEL_MAIN, container);
     }
 
     @Override

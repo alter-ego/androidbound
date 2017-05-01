@@ -30,9 +30,13 @@ public class BindingFragment extends Fragment implements IFragmentLifecycle, IBo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBoundFragmentDelegate = new BoundFragmentDelegate(this);
+        mBoundFragmentDelegate = getBoundFragmentDelegate();
         mBoundFragmentDelegate.onCreate(savedInstanceState);
         mBoundFragmentDelegate.setLogger(mLogger);
+    }
+
+    protected BoundFragmentDelegate getBoundFragmentDelegate() {
+        return new BoundFragmentDelegate(this);
     }
 
     @Nullable
