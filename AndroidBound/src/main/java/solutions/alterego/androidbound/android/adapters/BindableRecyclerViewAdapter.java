@@ -82,7 +82,7 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     + ": did you call setTemplatesForObjects or set itemTemplate in XML?");
         }
         return new BindableRecyclerViewItemViewHolder(
-                mViewBinder.inflate(parent.getContext(), null, layoutRes, null),
+                mViewBinder.inflate(parent.getContext(), null, layoutRes, parent, false),
                 mViewBinder, parent);
     }
 
