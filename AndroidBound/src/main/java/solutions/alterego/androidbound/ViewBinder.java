@@ -261,6 +261,11 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup) {
+        return inflate(context, source, layoutResID, viewGroup, viewGroup != null);
+    }
+
+    @Override
+    public View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup, boolean attachToRoot) {
         LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(context);
 
         if (android.os.Build.VERSION.SDK_INT >= 11 && context instanceof Factory2) {
@@ -271,7 +276,7 @@ public class ViewBinder implements IViewBinder {
             inflater.setFactory(mInflaterFactory.inflaterFor(source));
         }
 
-        return inflater.inflate(layoutResID, viewGroup);
+        return inflater.inflate(layoutResID, viewGroup, attachToRoot);
     }
 
     @Override

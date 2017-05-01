@@ -25,6 +25,8 @@ public interface IViewBinder extends IResourceRegistry, IValueConverterRegistry,
 
     View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup);
 
+    View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup, boolean attachToRoot);
+
     View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup, IViewResolver additionalResolver);
 
     void registerBindingsFor(View view, List<IBindingAssociationEngine> bindings);
