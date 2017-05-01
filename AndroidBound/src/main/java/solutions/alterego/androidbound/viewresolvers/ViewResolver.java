@@ -22,6 +22,7 @@ import solutions.alterego.androidbound.android.ui.BindableSwitch;
 import solutions.alterego.androidbound.android.ui.BindableTextView;
 import solutions.alterego.androidbound.android.ui.BindableToggleButton;
 import solutions.alterego.androidbound.android.ui.BindableVideoView;
+import solutions.alterego.androidbound.android.ui.BindableView;
 import solutions.alterego.androidbound.helpers.Reflector;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
@@ -39,6 +40,7 @@ public class ViewResolver implements IViewResolver {
     @SuppressWarnings("serial")
     private static final Map<String, Class<?>> mappings = new HashMap<String, Class<?>>() {
         {
+            put("android.widget.View", BindableView.class);
             put("android.widget.TextView", BindableTextView.class);
             put("android.widget.ListView", BindableListView.class);
             put("android.widget.ImageView", BindableImageView.class);
