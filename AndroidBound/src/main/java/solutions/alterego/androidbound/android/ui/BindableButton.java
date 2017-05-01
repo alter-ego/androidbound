@@ -4,14 +4,13 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
 
 import rx.Observable;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.IDisposable;
 
-public class BindableButton extends Button implements IDisposable, INotifyPropertyChanged {
+public class BindableButton extends android.support.v7.widget.AppCompatButton implements IDisposable, INotifyPropertyChanged {
 
     private BindableViewDelegate mDelegate;
 
