@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.example.fragment.TestFragmentActivity;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
@@ -201,5 +202,11 @@ public class MainActivityViewModel extends ViewModel {
         }
     }
 
+    public void doOpenFragmentActivity() {
+        if (getParentActivity() != null) {
+            Intent intent = new Intent(getParentActivity(), TestFragmentActivity.class);
+            getParentActivity().startActivity(intent);
+        }
+    }
 
 }
