@@ -4,43 +4,61 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import rx.Observable;
+import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
+import solutions.alterego.androidbound.interfaces.IDisposable;
 
-public class BindableButton extends Button implements OnClickListener {
+public class BindableButton extends Button implements IDisposable, INotifyPropertyChanged {
 
-    private ICommand onClick = ICommand.empty;
+    private BindableViewDelegate mDelegate;
 
     public BindableButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setOnClickListener(this);
+        mDelegate = createDelegate(this);
     }
 
     public BindableButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        setOnClickListener(this);
+        mDelegate = createDelegate(this);
+    }
+
+    /****** beginning of the delegated methods, to be copy/pasted in every bindable view ******/
+
+    protected BindableViewDelegate createDelegate(View view) {
+        return new BindableViewDelegate(view);
     }
 
     public ICommand getClick() {
-        return onClick;
+        return mDelegate.getClick();
     }
 
     public void setClick(ICommand value) {
-        if (value == null) {
-            onClick = ICommand.empty;
-            return;
-        }
-        onClick = value;
+        mDelegate.setClick(value);
+    }
+
+    public int getBackgroundColor() {
+        return mDelegate.getBackgroundColor();
+    }
+
+    public void setBackgroundColor(int color) {
+        mDelegate.setBackgroundColor(color);
+        super.setBackgroundColor(color);
     }
 
     @Override
-    public void onClick(View v) {
-        if (onClick.canExecute(null)) {
-            onClick.execute(null);
-        }
+    public Observable<String> onPropertyChanged() {
+        return mDelegate.onPropertyChanged();
     }
+
+    @Override
+    public void dispose() {
+        mDelegate.dispose();
+    }
+
+    /****** end of the delegated methods, to be copy/pasted in every bindable view ******/
 
     public ColorStateList getTextColor() {
         return super.getTextColors();
@@ -50,15 +68,12 @@ public class BindableButton extends Button implements OnClickListener {
         super.setTextColor(color);
     }
 
-    public int getBackgroundColor() {
-        return 0;
-    }
-
-    public void setBackgroundColor(int color) {
-        super.setBackgroundColor(color);
-    }
-
     public void setTextColorState(ColorStateList colors) {
         super.setTextColor(colors);
     }
+
+    public ColorStateList getTextColorState() {
+        return super.getTextColors();
+    }
+
 }
