@@ -151,6 +151,14 @@ public class DefaultConverter implements IValueConverter {
         return Integer.valueOf(value);
     }
 
+    public static String longToString(Long value) {
+        return value.toString();
+    }
+
+    public static Long stringToLong(String value) {
+        return Long.valueOf(value);
+    }
+
     public static String booleanToString(Boolean value) {
         return value.toString();
     }
@@ -161,6 +169,14 @@ public class DefaultConverter implements IValueConverter {
 
     public static Integer charSequenceToInteger(CharSequence value) {
         return stringToInteger(value.toString());
+    }
+
+    public static CharSequence longToCharSequence(Long value) {
+        return longToString(value);
+    }
+
+    public static Long charSequenceToLong(CharSequence value) {
+        return stringToLong(value.toString());
     }
 
     public static Boolean stringToBoolean(String value) {
