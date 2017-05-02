@@ -2,6 +2,7 @@ package solutions.alterego.androidbound.android.ui;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Typeface;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -68,6 +69,14 @@ public class BindableButton extends android.support.v7.widget.AppCompatButton im
         super.setBackgroundResource(res);
     }
 
+    public Typeface getTypeface() {
+        return mDelegate.getTypeface();
+    }
+
+    public void setTypeface(Typeface font) {
+        mDelegate.setTypeface(font);
+    }
+
     @Override
     public Observable<String> onPropertyChanged() {
         return mDelegate.onPropertyChanged();
@@ -88,12 +97,12 @@ public class BindableButton extends android.support.v7.widget.AppCompatButton im
         super.setTextColor(color);
     }
 
-    public void setTextColorState(ColorStateList colors) {
-        super.setTextColor(colors);
-    }
-
     public ColorStateList getTextColorState() {
         return super.getTextColors();
+    }
+
+    public void setTextColorState(ColorStateList colors) {
+        super.setTextColor(colors);
     }
 
 }
