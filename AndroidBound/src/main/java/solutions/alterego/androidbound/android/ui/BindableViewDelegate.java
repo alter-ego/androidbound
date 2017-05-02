@@ -10,10 +10,9 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
-import solutions.alterego.androidbound.interfaces.IDisposable;
 
 @Accessors(prefix = "m")
-public class BindableViewDelegate implements IDisposable, INotifyPropertyChanged, View.OnClickListener, View.OnLongClickListener {
+public class BindableViewDelegate implements INotifyPropertyChanged, View.OnClickListener, View.OnLongClickListener {
 
     private View mOriginalView;
 

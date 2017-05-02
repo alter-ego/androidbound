@@ -11,9 +11,8 @@ import android.view.View;
 import rx.Observable;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
-import solutions.alterego.androidbound.interfaces.IDisposable;
 
-public class BindableButton extends android.support.v7.widget.AppCompatButton implements IDisposable, INotifyPropertyChanged {
+public class BindableButton extends android.support.v7.widget.AppCompatButton implements INotifyPropertyChanged {
 
     private BindableViewDelegate mDelegate;
 
