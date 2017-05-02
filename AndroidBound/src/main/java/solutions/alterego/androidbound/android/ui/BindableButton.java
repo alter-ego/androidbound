@@ -16,6 +16,10 @@ public class BindableButton extends android.support.v7.widget.AppCompatButton im
 
     private BindableViewDelegate mDelegate;
 
+    public BindableButton(Context context) {
+        this(context, null);
+    }
+
     public BindableButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         mDelegate = createDelegate(this);
