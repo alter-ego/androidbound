@@ -2,6 +2,7 @@ package solutions.alterego.androidbound.android.ui;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -56,6 +57,17 @@ public class BindableView extends View implements IDisposable, INotifyPropertyCh
     public void setBackgroundColor(int color) {
         mDelegate.setBackgroundColor(color);
         super.setBackgroundColor(color);
+    }
+
+    public void setBackgroundDrawableState(StateListDrawable colors) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            super.setBackground(colors);
+            mDelegate.setBackgroundDrawableState(colors);
+        }
+    }
+
+    public StateListDrawable getBackgroundDrawableState() {
+        return mDelegate.getBackgroundDrawableState();
     }
 
     @Override

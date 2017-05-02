@@ -2,6 +2,8 @@ package solutions.alterego.androidbound.android.ui;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.drawable.StateListDrawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -45,6 +47,17 @@ public class BindableButton extends android.support.v7.widget.AppCompatButton im
     public void setBackgroundColor(int color) {
         mDelegate.setBackgroundColor(color);
         super.setBackgroundColor(color);
+    }
+
+    public void setBackgroundDrawableState(StateListDrawable colors) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            super.setBackground(colors);
+            mDelegate.setBackgroundDrawableState(colors);
+        }
+    }
+
+    public StateListDrawable getBackgroundDrawableState() {
+        return mDelegate.getBackgroundDrawableState();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package solutions.alterego.androidbound.android.ui;
 
+import android.graphics.drawable.StateListDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,6 +29,8 @@ public class BindableViewDelegate implements IDisposable, INotifyPropertyChanged
 
     @Getter
     private int mBackgroundColor = 0;
+
+    private StateListDrawable mBackgroundDrawableState;
 
     public BindableViewDelegate(View view) {
         mOriginalView = view;
@@ -95,6 +98,14 @@ public class BindableViewDelegate implements IDisposable, INotifyPropertyChanged
 
     public void setBackgroundColor(int color) {
         mBackgroundColor = color;
+    }
+
+    public void setBackgroundDrawableState(StateListDrawable colors) {
+        mBackgroundDrawableState = colors;
+    }
+
+    public StateListDrawable getBackgroundDrawableState() {
+        return mBackgroundDrawableState;
     }
 
     @Override
