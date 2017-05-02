@@ -70,24 +70,12 @@ public class BindableButton extends android.support.v7.widget.AppCompatButton im
     }
 
     public Typeface getTypeface() {
-        return mDelegate.getTypeface();
+        return super.getTypeface();
     }
 
     public void setTypeface(Typeface font) {
-        mDelegate.setTypeface(font);
+        super.setTypeface(font);
     }
-
-    @Override
-    public Observable<String> onPropertyChanged() {
-        return mDelegate.onPropertyChanged();
-    }
-
-    @Override
-    public void dispose() {
-        mDelegate.dispose();
-    }
-
-    /****** end of the delegated methods, to be copy/pasted in every bindable view ******/
 
     public ColorStateList getTextColor() {
         return super.getTextColors();
@@ -104,5 +92,17 @@ public class BindableButton extends android.support.v7.widget.AppCompatButton im
     public void setTextColorState(ColorStateList colors) {
         super.setTextColor(colors);
     }
+
+    @Override
+    public Observable<String> onPropertyChanged() {
+        return mDelegate.onPropertyChanged();
+    }
+
+    @Override
+    public void dispose() {
+        mDelegate.dispose();
+    }
+
+    /****** end of the delegated methods, to be copy/pasted in every bindable view ******/
 
 }

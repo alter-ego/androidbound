@@ -1,10 +1,8 @@
 package solutions.alterego.androidbound.android.ui;
 
-import android.graphics.Typeface;
 import android.graphics.drawable.StateListDrawable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -109,21 +107,6 @@ public class BindableViewDelegate implements IDisposable, INotifyPropertyChanged
 
     public StateListDrawable getBackgroundDrawableState() {
         return mBackgroundDrawableState;
-    }
-
-    public Typeface getTypeface() {
-        if (mOriginalView instanceof TextView) {
-            return ((TextView) mOriginalView).getTypeface();
-        } else {
-            return null;
-        }
-    }
-
-    public void setTypeface(Typeface font) {
-        if (mOriginalView instanceof TextView || !mDisposed) {
-            ((TextView) mOriginalView).setTypeface(font);
-            mPropertyChanged.onNext("Typeface");
-        }
     }
 
     @Override
