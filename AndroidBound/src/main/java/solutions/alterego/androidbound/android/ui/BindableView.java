@@ -70,6 +70,14 @@ public class BindableView extends View implements IDisposable, INotifyPropertyCh
         return mDelegate.getBackgroundDrawableState();
     }
 
+    public int getBackgroundResource() {
+        return 0;
+    }
+
+    public void setBackgroundResource(int res) {
+        super.setBackgroundResource(res);
+    }
+
     @Override
     public Observable<String> onPropertyChanged() {
         return mDelegate.onPropertyChanged();

@@ -60,6 +60,14 @@ public class BindableButton extends android.support.v7.widget.AppCompatButton im
         return mDelegate.getBackgroundDrawableState();
     }
 
+    public int getBackgroundResource() {
+        return 0;
+    }
+
+    public void setBackgroundResource(int res) {
+        super.setBackgroundResource(res);
+    }
+
     @Override
     public Observable<String> onPropertyChanged() {
         return mDelegate.onPropertyChanged();
