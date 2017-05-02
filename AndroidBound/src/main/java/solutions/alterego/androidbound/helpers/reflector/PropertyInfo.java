@@ -71,10 +71,9 @@ public class PropertyInfo {
         Object result = null;
         if (mGetterMethod != null || mField != null) {
             try {
-                result = mGetterMethod != null ? mGetterMethod.getOriginalMethod().invoke(obj)
-                        : (mField != null ? mField.getFieldOriginal().get(obj) : null);
+                result = mGetterMethod != null ? mGetterMethod.getOriginalMethod().invoke(obj) : mField.getFieldOriginal().get(obj);
             } catch (Exception e) {
-                mLogger.error("PropertyInfo getValue exception = " + e.getCause().toString());
+                mLogger.error("PropertyInfo getValue exception = " + e.getCause().toString() + " for object = " + obj);
             }
         } else if (obj != null && obj instanceof Map) {
             result = ((Map) obj).get(mPropertyName);
@@ -86,23 +85,25 @@ public class PropertyInfo {
     }
 
     public void setValue(Object obj, Object value) {
-        if (mSetterMethod != null || mField != null) {
+        if (mSetterMethod != null) {
             try {
-                if (mSetterMethod != null) {
-                    mLogger.verbose(
-                            "PropertyInfo setValue value = " + value + " for object = " + obj + " using method = "
-                                    + mSetterMethod.getOriginalMethod().getName());
-                    mSetterMethod.getOriginalMethod().invoke(obj, value);
-                } else if (mField != null) {
-                    mLogger.verbose(
-                            "PropertyInfo setValue value = " + value + " for object = " + obj + " using field = "
-                                    + mField.getFieldOriginal().getName());
-                    mField.getFieldOriginal().set(obj, value);
-                }
+                mLogger.verbose(
+                        "PropertyInfo setValue value = " + value + " for object = " + obj + " using method = "
+                                + mSetterMethod.getOriginalMethod().getName());
+                mSetterMethod.getOriginalMethod().invoke(obj, value);
             } catch (Exception e) {
-                mLogger.warning("PropertyInfo couldn't setValue value = " + value + " for object = ");
+                mLogger.warning("PropertyInfo couldn't setValue using method, value = " + value + " for object = " + obj);
             }
-        } else if (obj != null && obj instanceof Map) {
+        } else if (mField != null) {
+            try {
+                mLogger.verbose(
+                        "PropertyInfo setValue value = " + value + " for object = " + obj + " using field = "
+                                + mField.getFieldOriginal().getName());
+                mField.getFieldOriginal().set(obj, value);
+            } catch (Exception e) {
+                mLogger.warning("PropertyInfo couldn't setValue using property, value = " + value + " for object = " + obj);
+            }
+        } else if (obj != null && obj instanceof Map) { //using local map of values
             ((Map) obj).put(mPropertyName, value);
         }
     }
