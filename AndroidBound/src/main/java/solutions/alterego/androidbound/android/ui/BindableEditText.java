@@ -129,6 +129,20 @@ public class BindableEditText extends AppCompatEditText implements INotifyProper
     }
 
     @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mDelegate.onSizeChanged(w, h, oldw, oldh);
+    }
+
+    public void setWidth(int width) {
+        mDelegate.setWidth(width);
+    }
+
+    public void setHeight(int height) {
+        mDelegate.setHeight(height);
+    }
+
+    @Override
     public Observable<String> onPropertyChanged() {
         return mDelegate.onPropertyChanged();
     }
