@@ -155,4 +155,28 @@ public class BindableEditText extends AppCompatEditText implements INotifyProper
     public CharSequence getEditTextCharSequence() {
         return getTextString();
     }
+
+    public void setHintText(CharSequence hint) {
+        setHint(hint);
+    }
+
+    public CharSequence getHintText() {
+        return getHint();
+    }
+
+    public void setHintColor(int color) {
+        setHintTextColor(color);
+    }
+
+    public void setHintColor(ColorStateList color) {
+        setHintTextColor(color);
+    }
+
+    public void setErrorText(CharSequence text) {
+        setError(text);
+    }
+
+    public CharSequence getErrorText() {
+        return getError();
+    }
 }
