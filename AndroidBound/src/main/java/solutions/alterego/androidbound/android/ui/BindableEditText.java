@@ -3,20 +3,35 @@ package solutions.alterego.androidbound.android.ui;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
+import android.graphics.drawable.StateListDrawable;
+import android.os.Build;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.widget.EditText;
+import android.view.View;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.interfaces.ICommand;
 
-public class BindableEditText extends EditText implements INotifyPropertyChanged {
+public class BindableEditText extends AppCompatEditText implements INotifyPropertyChanged {
 
-    private PublishSubject<String> propertyChanged = PublishSubject.create();
+    private BindableViewDelegate mDelegate;
 
-    private boolean disposed;
+    public BindableEditText(Context context) {
+        this(context, null);
+    }
+
+    public BindableEditText(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        mDelegate = createDelegate(this);
+    }
+
+    public BindableEditText(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        mDelegate = createDelegate(this);
+    }
 
     private final TextWatcher textWatcher = new TextWatcher() {
         @Override
@@ -31,21 +46,9 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
 
         @Override
         public void afterTextChanged(Editable s) {
-            propertyChanged.onNext("TextString");
+            mDelegate.getPropertyChanged().onNext("TextString");
         }
     };
-
-    public BindableEditText(Context context) {
-        super(context);
-    }
-
-    public BindableEditText(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public BindableEditText(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
 
     @Override
     protected void onAttachedToWindow() {
@@ -59,45 +62,54 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
         removeTextChangedListener(textWatcher);
     }
 
+    /****** beginning of the delegated methods, to be copy/pasted in every bindable view ******/
+
+    protected BindableViewDelegate createDelegate(View view) {
+        return new BindableViewDelegate(view);
+    }
+
+    public ICommand getClick() {
+        return mDelegate.getClick();
+    }
+
+    public void setClick(ICommand value) {
+        mDelegate.setClick(value);
+    }
+
+    public int getBackgroundColor() {
+        return mDelegate.getBackgroundColor();
+    }
+
+    public void setBackgroundColor(int color) {
+        mDelegate.setBackgroundColor(color);
+        super.setBackgroundColor(color);
+    }
+
+    public void setBackgroundDrawableState(StateListDrawable colors) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            super.setBackground(colors);
+            mDelegate.setBackgroundDrawableState(colors);
+        }
+    }
+
+    public StateListDrawable getBackgroundDrawableState() {
+        return mDelegate.getBackgroundDrawableState();
+    }
+
+    public int getBackgroundResource() {
+        return 0;
+    }
+
+    public void setBackgroundResource(int res) {
+        super.setBackgroundResource(res);
+    }
+
     public Typeface getTypeface() {
         return super.getTypeface();
     }
 
     public void setTypeface(Typeface font) {
         super.setTypeface(font);
-        if (disposed || propertyChanged == null) {
-            return;
-        }
-        propertyChanged.onNext("Typeface");
-    }
-
-    @Override
-    public void dispose() {
-        if (disposed) {
-            return;
-        }
-
-        disposed = true;
-        if (propertyChanged != null) {
-            propertyChanged.onCompleted();
-            propertyChanged = null;
-        }
-
-        propertyChanged = null;
-
-    }
-
-    @Override
-    public Observable<String> onPropertyChanged() {
-        if (propertyChanged == null) {
-            propertyChanged = PublishSubject.create();
-        }
-
-        return propertyChanged;
-    }
-
-    public void setTextColorState(ColorStateList colors) {
-        super.setTextColor(colors);
     }
 
     public ColorStateList getTextColor() {
@@ -108,13 +120,25 @@ public class BindableEditText extends EditText implements INotifyPropertyChanged
         super.setTextColor(color);
     }
 
-    public int getBackgroundColor() {
-        return 0;
+    public ColorStateList getTextColorState() {
+        return super.getTextColors();
     }
 
-    public void setBackgroundColor(int color) {
-        super.setBackgroundColor(color);
+    public void setTextColorState(ColorStateList colors) {
+        super.setTextColor(colors);
     }
+
+    @Override
+    public Observable<String> onPropertyChanged() {
+        return mDelegate.onPropertyChanged();
+    }
+
+    @Override
+    public void dispose() {
+        mDelegate.dispose();
+    }
+
+    /****** end of the delegated methods, to be copy/pasted in every bindable view ******/
 
     public String getTextString() {
         return getText().toString();
