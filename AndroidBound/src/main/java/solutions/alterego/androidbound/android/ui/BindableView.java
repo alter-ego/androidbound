@@ -27,18 +27,18 @@ public class BindableView extends View implements IDisposable, INotifyPropertyCh
 
     public BindableView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mDelegate = getDelegate(this);
+        mDelegate = createDelegate(this);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public BindableView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mDelegate = getDelegate(this);
+        mDelegate = createDelegate(this);
     }
 
     /****** beginning of the delegated methods, to be copy/pasted in every bindable view ******/
 
-    protected BindableViewDelegate getDelegate(View view) {
+    protected BindableViewDelegate createDelegate(View view) {
         return new BindableViewDelegate(view);
     }
 
@@ -59,15 +59,15 @@ public class BindableView extends View implements IDisposable, INotifyPropertyCh
         super.setBackgroundColor(color);
     }
 
+    public StateListDrawable getBackgroundDrawableState() {
+        return mDelegate.getBackgroundDrawableState();
+    }
+
     public void setBackgroundDrawableState(StateListDrawable colors) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             super.setBackground(colors);
             mDelegate.setBackgroundDrawableState(colors);
         }
-    }
-
-    public StateListDrawable getBackgroundDrawableState() {
-        return mDelegate.getBackgroundDrawableState();
     }
 
     public int getBackgroundResource() {

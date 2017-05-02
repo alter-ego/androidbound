@@ -85,15 +85,15 @@ public class BindableEditText extends AppCompatEditText implements INotifyProper
         super.setBackgroundColor(color);
     }
 
+    public StateListDrawable getBackgroundDrawableState() {
+        return mDelegate.getBackgroundDrawableState();
+    }
+
     public void setBackgroundDrawableState(StateListDrawable colors) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             super.setBackground(colors);
             mDelegate.setBackgroundDrawableState(colors);
         }
-    }
-
-    public StateListDrawable getBackgroundDrawableState() {
-        return mDelegate.getBackgroundDrawableState();
     }
 
     public int getBackgroundResource() {
