@@ -63,7 +63,13 @@ public class ViewResolver implements IViewResolver {
             put("android.support.v7.widget.RecyclerView", BindableRecyclerView.class);
             put("android.widget.ProgressBar", BindableProgressBar.class);
             put("android.widget.FrameLayout", BindableFrameLayout.class);
-            put(" android.support.v4.widget.SwipeRefreshLayout", BindableSwipeRefreshLayout.class);
+            put("android.support.v4.widget.SwipeRefreshLayout", BindableSwipeRefreshLayout.class);
+
+            put("android.support.v7.widget.AppCompatButton", BindableButton.class);
+            put("android.support.v7.widget.AppCompatEditText", BindableEditText.class);
+            put("android.support.v7.widget.AppCompatImageView", BindableImageView.class);
+            put("android.support.v7.widget.AppCompatSeekBar", BindableSeekbar.class);
+            put("android.support.v7.widget.AppCompatTextView", BindableTextView.class);
         }
     };
 
