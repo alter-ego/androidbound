@@ -3,6 +3,7 @@ package solutions.alterego.androidbound.android.ui;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.support.v7.widget.AppCompatEditText;
@@ -102,6 +103,14 @@ public class BindableEditText extends AppCompatEditText implements INotifyProper
 
     public void setBackgroundResource(int res) {
         super.setBackgroundResource(res);
+    }
+
+    public int getBackgroundDrawable() {
+        return 0;
+    }
+
+    public void setBackgroundDrawable(Drawable res) {
+        super.setBackgroundDrawable(res);
     }
 
     public Typeface getTypeface() {
