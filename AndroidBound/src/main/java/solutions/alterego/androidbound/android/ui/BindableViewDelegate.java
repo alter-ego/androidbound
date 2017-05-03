@@ -16,6 +16,7 @@ public class BindableViewDelegate implements INotifyPropertyChanged, View.OnClic
 
     private View mOriginalView;
 
+    @Getter
     private boolean mDisposed = false;
 
     @Getter
