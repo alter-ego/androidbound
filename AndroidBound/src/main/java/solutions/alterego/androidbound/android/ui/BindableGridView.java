@@ -79,8 +79,7 @@ public class BindableGridView extends GridView implements OnItemClickListener, O
 
     public void setItemsSource(List<?> value) {
         if (adapter == null) {
-            adapter = new BindableListAdapter(getContext(), getViewBinder(), itemTemplate);
-            adapter.setItemsSource(value);
+            adapter = new BindableListAdapter(getContext(), getViewBinder(), itemTemplate, value);
             setAdapter(adapter);
         } else {
             adapter.setItemsSource(value);
