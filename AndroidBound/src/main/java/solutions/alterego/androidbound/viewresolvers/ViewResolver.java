@@ -9,6 +9,7 @@ import java.util.Map;
 
 import solutions.alterego.androidbound.android.ui.BindableButton;
 import solutions.alterego.androidbound.android.ui.BindableEditText;
+import solutions.alterego.androidbound.android.ui.BindableFrameLayout;
 import solutions.alterego.androidbound.android.ui.BindableGridView;
 import solutions.alterego.androidbound.android.ui.BindableHorizontalScrollView;
 import solutions.alterego.androidbound.android.ui.BindableImageView;
@@ -60,6 +61,7 @@ public class ViewResolver implements IViewResolver {
             put("android.widget.EditText", BindableEditText.class);
             put("android.support.v7.widget.RecyclerView", BindableRecyclerView.class);
             put("android.widget.ProgressBar", BindableProgressBar.class);
+            put("android.widget.FrameLayout", BindableFrameLayout.class);
         }
     };
 
