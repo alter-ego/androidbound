@@ -3,6 +3,7 @@ package solutions.alterego.androidbound.android.ui;
 import android.graphics.drawable.StateListDrawable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -74,27 +75,43 @@ public class BindableViewDelegate implements INotifyPropertyChanged, View.OnClic
     public void setClick(ICommand value) {
         if (value == null || value == ICommand.empty || mDisposed) {
             mOriginalView.setClickable(false);
-            mOriginalView.setOnClickListener(null);
+            setClickListener(false);
             mClick = ICommand.empty;
             return;
         }
 
         mOriginalView.setClickable(true);
-        mOriginalView.setOnClickListener(this);
+        setClickListener(true);
         mClick = value;
+    }
+
+    private void setClickListener(boolean setListener) {
+        if (mOriginalView instanceof AbsListView) {
+            //do nothing, handled by original view
+        } else {
+            mOriginalView.setOnClickListener(setListener ? this : null);
+        }
     }
 
     public void setLongClick(ICommand value) {
         if (value == null || value == ICommand.empty || mDisposed) {
             mOriginalView.setClickable(false);
-            mOriginalView.setOnLongClickListener(null);
+            setLongClickListener(false);
             mLongClick = ICommand.empty;
             return;
         }
 
         mOriginalView.setClickable(true);
-        mOriginalView.setOnLongClickListener(this);
+        setLongClickListener(true);
         mLongClick = value;
+    }
+
+    private void setLongClickListener(boolean setListener) {
+        if (mOriginalView instanceof AbsListView) {
+            //do nothing, handled by original view
+        } else {
+            mOriginalView.setOnLongClickListener(setListener ? this : null);
+        }
     }
 
     public void setBackgroundColor(int color) {
@@ -148,4 +165,5 @@ public class BindableViewDelegate implements INotifyPropertyChanged, View.OnClic
             return false;
         }
     }
+
 }
