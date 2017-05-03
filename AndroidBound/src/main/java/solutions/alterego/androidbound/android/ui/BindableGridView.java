@@ -14,9 +14,10 @@ import solutions.alterego.androidbound.android.ui.resources.BindingResources;
 import solutions.alterego.androidbound.android.adapters.BindableListAdapter;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.interfaces.ICommand;
+import solutions.alterego.androidbound.interfaces.IDisposable;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
-public class BindableGridView extends GridView implements OnItemClickListener, OnItemLongClickListener, IBindableView {
+public class BindableGridView extends GridView implements OnItemClickListener, OnItemLongClickListener, IBindableView, IDisposable {
 
     private int itemTemplate;
 
@@ -87,19 +88,34 @@ public class BindableGridView extends GridView implements OnItemClickListener, O
     }
 
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        Object parameter = getItemsSource().get(position);
-        if (onLongClick != null && onLongClick.canExecute(parameter)) {
-            onLongClick.execute(parameter);
-            return true;
+        try {
+            Object parameter = getItemsSource().get(position);
+            if (onLongClick != null && onLongClick.canExecute(parameter)) {
+                onLongClick.execute(parameter);
+                return true;
+            }
+        } catch (Exception e) {
         }
+
         return false;
     }
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Object parameter = getItemsSource().get(position);
-        if (onClick != null && onClick.canExecute(parameter)) {
-            onClick.execute(parameter);
+        try {
+            Object parameter = getItemsSource().get(position);
+            if (onClick != null && onClick.canExecute(parameter)) {
+                onClick.execute(parameter);
+            }
+        } catch (Exception e) {
         }
+
     }
 
+    @Override
+    public void dispose() {
+        onClick = ICommand.empty;
+        onLongClick = ICommand.empty;
+        viewBinder = null;
+        adapter = null;
+    }
 }
