@@ -51,6 +51,14 @@ public class BindableView extends View implements IDisposable, INotifyPropertyCh
         mDelegate.setClick(value);
     }
 
+    public ICommand getLongClick() {
+        return mDelegate.getClick();
+    }
+
+    public void setLongClick(ICommand value) {
+        mDelegate.setClick(value);
+    }
+
     public int getBackgroundColor() {
         return mDelegate.getBackgroundColor();
     }

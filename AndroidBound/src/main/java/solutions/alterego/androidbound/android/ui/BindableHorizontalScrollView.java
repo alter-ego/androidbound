@@ -44,6 +44,14 @@ public class BindableHorizontalScrollView extends HorizontalScrollView implement
         mDelegate.setClick(value);
     }
 
+    public ICommand getLongClick() {
+        return mDelegate.getClick();
+    }
+
+    public void setLongClick(ICommand value) {
+        mDelegate.setClick(value);
+    }
+
     public int getBackgroundColor() {
         return mDelegate.getBackgroundColor();
     }

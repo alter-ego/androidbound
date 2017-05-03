@@ -45,6 +45,14 @@ public class BindableButton extends android.support.v7.widget.AppCompatButton im
         mDelegate.setClick(value);
     }
 
+    public ICommand getLongClick() {
+        return mDelegate.getClick();
+    }
+
+    public void setLongClick(ICommand value) {
+        mDelegate.setClick(value);
+    }
+
     public int getBackgroundColor() {
         return mDelegate.getBackgroundColor();
     }

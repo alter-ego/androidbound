@@ -41,7 +41,6 @@ public class BindableImageView extends AppCompatImageView implements INotifyProp
         mDelegate = createDelegate(this);
     }
 
-
     /****** beginning of the delegated methods ******/
 
     protected BindableViewDelegate createDelegate(View view) {
@@ -53,6 +52,14 @@ public class BindableImageView extends AppCompatImageView implements INotifyProp
     }
 
     public void setClick(ICommand value) {
+        mDelegate.setClick(value);
+    }
+
+    public ICommand getLongClick() {
+        return mDelegate.getClick();
+    }
+
+    public void setLongClick(ICommand value) {
         mDelegate.setClick(value);
     }
 
