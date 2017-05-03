@@ -1,11 +1,11 @@
 package solutions.alterego.androidbound.android.ui;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -13,26 +13,18 @@ import rx.Observable;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-public class BindableView extends View implements INotifyPropertyChanged {
+public class BindableSwipeRefreshLayout extends SwipeRefreshLayout implements INotifyPropertyChanged, SwipeRefreshLayout.OnRefreshListener {
 
     private BindableViewDelegate mDelegate;
 
-    public BindableView(Context context) {
-        this(context, null, 0);
+    ICommand onRefresh = ICommand.empty;
+
+    public BindableSwipeRefreshLayout(Context context) {
+        this(context, null);
     }
 
-    public BindableView(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public BindableView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        mDelegate = createDelegate(this);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public BindableView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+    public BindableSwipeRefreshLayout(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
         mDelegate = createDelegate(this);
     }
 
@@ -116,7 +108,31 @@ public class BindableView extends View implements INotifyPropertyChanged {
     @Override
     public void dispose() {
         mDelegate.dispose();
+        onRefresh = ICommand.empty;
     }
 
     /****** end of the delegated methods, to be copy/pasted in every bindable view ******/
+
+    public ICommand getOnRefresh() {
+        return onRefresh;
+    }
+
+    public void setOnRefresh(ICommand value) {
+        if (value == null) {
+            setEnabled(false);
+            setOnRefreshListener(null);
+            onRefresh = ICommand.empty;
+            return;
+        }
+        setEnabled(true);
+        setOnRefreshListener(this);
+        onRefresh = value;
+    }
+
+    @Override
+    public void onRefresh() {
+        if (onRefresh.canExecute(null)) {
+            onRefresh.execute(null);
+        }
+    }
 }

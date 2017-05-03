@@ -20,6 +20,7 @@ import solutions.alterego.androidbound.android.ui.BindableRecyclerView;
 import solutions.alterego.androidbound.android.ui.BindableRelativeLayout;
 import solutions.alterego.androidbound.android.ui.BindableScrollView;
 import solutions.alterego.androidbound.android.ui.BindableSeekbar;
+import solutions.alterego.androidbound.android.ui.BindableSwipeRefreshLayout;
 import solutions.alterego.androidbound.android.ui.BindableSwitch;
 import solutions.alterego.androidbound.android.ui.BindableTextView;
 import solutions.alterego.androidbound.android.ui.BindableToggleButton;
@@ -62,6 +63,7 @@ public class ViewResolver implements IViewResolver {
             put("android.support.v7.widget.RecyclerView", BindableRecyclerView.class);
             put("android.widget.ProgressBar", BindableProgressBar.class);
             put("android.widget.FrameLayout", BindableFrameLayout.class);
+            put(" android.support.v4.widget.SwipeRefreshLayout", BindableSwipeRefreshLayout.class);
         }
     };
 
