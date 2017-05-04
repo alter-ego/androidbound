@@ -1,6 +1,9 @@
 package solutions.alterego.androidbound.android.ui;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,37 +13,44 @@ import android.widget.GridView;
 
 import java.util.List;
 
-import solutions.alterego.androidbound.android.ui.resources.BindingResources;
+import rx.Observable;
 import solutions.alterego.androidbound.android.adapters.BindableListAdapter;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
+import solutions.alterego.androidbound.android.ui.resources.BindingResources;
+import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
-import solutions.alterego.androidbound.interfaces.IDisposable;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
-public class BindableGridView extends GridView implements OnItemClickListener, OnItemLongClickListener, IBindableView, IDisposable {
+public class BindableGridView extends GridView implements OnItemClickListener, OnItemLongClickListener, IBindableView, INotifyPropertyChanged {
 
     private int itemTemplate;
 
-    private ICommand onClick = ICommand.empty;
+    private BindableViewDelegate mDelegate;
 
-    private ICommand onLongClick = ICommand.empty;
-
-    private BindableListAdapter adapter;
+    private BindableListAdapter mAdapter;
 
     private IViewBinder viewBinder;
 
     public BindableGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        itemTemplate = getItemTemplate(context, attrs);
-        setOnItemClickListener(this);
-        setOnItemLongClickListener(this);
+        setupListView(attrs);
     }
 
     public BindableGridView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        setupListView(attrs);
     }
 
-    private static int getItemTemplate(Context context, AttributeSet attrs) {
+    private void setupListView(AttributeSet attrs) {
+        mDelegate = createDelegate(this);
+
+        itemTemplate = getItemTemplate(attrs);
+
+        setOnItemClickListener(this);
+        setOnItemLongClickListener(this);
+    }
+
+    private static int getItemTemplate(AttributeSet attrs) {
         return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableListView.itemTemplate, 0);
     }
 
@@ -54,43 +64,117 @@ public class BindableGridView extends GridView implements OnItemClickListener, O
         this.viewBinder = viewBinder;
     }
 
+    /****** beginning of the delegated methods, to be copy/pasted in every bindable view ******/
+
+    protected BindableViewDelegate createDelegate(View view) {
+        return new BindableViewDelegate(view);
+    }
+
     public ICommand getClick() {
-        return onClick;
+        return mDelegate.getClick();
     }
 
     public void setClick(ICommand value) {
-        onClick = value;
+        mDelegate.setClick(value);
     }
 
     public ICommand getLongClick() {
-        return onLongClick;
+        return mDelegate.getClick();
     }
 
     public void setLongClick(ICommand value) {
-        onLongClick = value;
+        mDelegate.setClick(value);
     }
 
+    public int getBackgroundColor() {
+        return mDelegate.getBackgroundColor();
+    }
+
+    public void setBackgroundColor(int color) {
+        mDelegate.setBackgroundColor(color);
+        super.setBackgroundColor(color);
+    }
+
+    public StateListDrawable getBackgroundDrawableState() {
+        return mDelegate.getBackgroundDrawableState();
+    }
+
+    public void setBackgroundDrawableState(StateListDrawable colors) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            super.setBackground(colors);
+            mDelegate.setBackgroundDrawableState(colors);
+        }
+    }
+
+    public int getBackgroundResource() {
+        return 0;
+    }
+
+    public void setBackgroundResource(int res) {
+        super.setBackgroundResource(res);
+    }
+
+    public int getBackgroundDrawable() {
+        return 0;
+    }
+
+    public void setBackgroundDrawable(Drawable res) {
+        super.setBackgroundDrawable(res);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mDelegate.onSizeChanged(w, h, oldw, oldh);
+    }
+
+    public void setWidth(int width) {
+        mDelegate.setWidth(width);
+    }
+
+    public void setHeight(int height) {
+        mDelegate.setHeight(height);
+    }
+
+    @Override
+    public Observable<String> onPropertyChanged() {
+        return mDelegate.onPropertyChanged();
+    }
+
+    @Override
+    public void dispose() {
+        mDelegate.dispose();
+        setOnItemClickListener(null);
+        setOnItemLongClickListener(null);
+
+        mAdapter = null;
+        viewBinder = null;
+    }
+
+    /****** end of the delegated methods, to be copy/pasted in every bindable view ******/
+
     public List<?> getItemsSource() {
-        if (adapter != null) {
-            return adapter.getItemsSource();
+        if (mAdapter != null) {
+            return mAdapter.getItemsSource();
         }
         return null;
     }
 
     public void setItemsSource(List<?> value) {
-        if (adapter == null) {
-            adapter = new BindableListAdapter(getContext(), getViewBinder(), itemTemplate, value);
-            setAdapter(adapter);
+        if (mAdapter == null) {
+            mAdapter = new BindableListAdapter(getContext(), getViewBinder(), itemTemplate, value);
+            setAdapter(mAdapter);
         } else {
-            adapter.setItemsSource(value);
+            mAdapter.setItemsSource(value);
         }
     }
 
+    @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         try {
             Object parameter = getItemsSource().get(position);
-            if (onLongClick != null && onLongClick.canExecute(parameter)) {
-                onLongClick.execute(parameter);
+            if (!mDelegate.isDisposed() && mDelegate.getLongClick().canExecute(parameter)) {
+                mDelegate.getLongClick().execute(parameter);
                 return true;
             }
         } catch (Exception e) {
@@ -99,22 +183,15 @@ public class BindableGridView extends GridView implements OnItemClickListener, O
         return false;
     }
 
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         try {
             Object parameter = getItemsSource().get(position);
-            if (onClick != null && onClick.canExecute(parameter)) {
-                onClick.execute(parameter);
+            if (!mDelegate.isDisposed() && mDelegate.getClick().canExecute(parameter)) {
+                mDelegate.getClick().execute(parameter);
             }
         } catch (Exception e) {
         }
-
     }
 
-    @Override
-    public void dispose() {
-        onClick = ICommand.empty;
-        onLongClick = ICommand.empty;
-        viewBinder = null;
-        adapter = null;
-    }
 }
