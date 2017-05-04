@@ -20,7 +20,6 @@ public class BindableViewDelegate implements INotifyPropertyChanged, View.OnClic
     @Getter
     private boolean mDisposed = false;
 
-    @Getter
     private PublishSubject<String> mPropertyChanged = PublishSubject.create();
 
     @Getter
@@ -124,6 +123,10 @@ public class BindableViewDelegate implements INotifyPropertyChanged, View.OnClic
 
     public StateListDrawable getBackgroundDrawableState() {
         return mBackgroundDrawableState;
+    }
+
+    public void notifyPropertyChanged(String property) {
+        mPropertyChanged.onNext(property);
     }
 
     @Override

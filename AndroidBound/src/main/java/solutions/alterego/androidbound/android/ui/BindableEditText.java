@@ -47,7 +47,7 @@ public class BindableEditText extends AppCompatEditText implements INotifyProper
 
         @Override
         public void afterTextChanged(Editable s) {
-            mDelegate.getPropertyChanged().onNext("TextString");
+            mDelegate.notifyPropertyChanged("TextString");
         }
     };
 

@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.SeekBar;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
@@ -183,7 +182,7 @@ public class BindableSeekbar extends AppCompatSeekBar implements INotifyProperty
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             if (!mDelegate.isDisposed() && progressTrackChanged.canExecute(null)) {
                 progressTrackChanged.execute(null);
-                mDelegate.getPropertyChanged().onNext("Progress");
+                mDelegate.notifyPropertyChanged("Progress");
             }
         }
     };
