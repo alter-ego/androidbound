@@ -98,13 +98,25 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
         @Getter
         private String mImageUrl = "https://www.google.co.uk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
 
+        private View mBoundView;
+
         public ListViewItem(String title) {
             mTitle = title;
         }
 
         @Override
         public void setBoundView(View view) {
+            mBoundView = view;
             android.util.Log.i(MainActivity.LOGGING_TAG, "setBoundView = " + view);
+        }
+
+        public void doImageClicked() {
+            Toast.makeText(mBoundView.getContext(), " doImageClicked ", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public String toString() {
+            return mTitle;
         }
     }
 
@@ -119,6 +131,14 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
         public ListViewItem2(String title) {
             mTitle = title;
         }
+
+        @Override
+        public String toString() {
+            return mTitle;
+        }
     }
 
+    public void doOnItemClickListener(Object object) {
+        Toast.makeText(getParentActivity(), " " + object, Toast.LENGTH_SHORT).show();
+    }
 }
