@@ -141,4 +141,8 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
     public void doOnItemClickListener(Object object) {
         Toast.makeText(getParentActivity(), " " + object, Toast.LENGTH_SHORT).show();
     }
+
+    public void doOnItemClickListenerView(View view, Object object) {
+        Toast.makeText(getParentActivity(), "ID " + view.getId() + " " + object, Toast.LENGTH_SHORT).show();
+    }
 }

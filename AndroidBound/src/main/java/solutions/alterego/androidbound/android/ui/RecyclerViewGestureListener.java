@@ -62,6 +62,11 @@ public class RecyclerViewGestureListener extends GestureDetector.SimpleOnGesture
         }
         
         final Object object = recyclerView.getItemsSource().get(position);
+        if (mRecyclerViewClickListener.canExecute(childView, object)) {
+            mRecyclerViewClickListener.execute(childView, object);
+            return true;
+        }
+
         if (mRecyclerViewClickListener.canExecute(object)) {
             mRecyclerViewClickListener.execute(object);
             return true;

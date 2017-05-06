@@ -1,6 +1,8 @@
 package solutions.alterego.androidbound.helpers.reflector;
 
 
+import android.view.View;
+
 import java.lang.reflect.InvocationTargetException;
 
 import lombok.Getter;
@@ -45,19 +47,43 @@ public class CommandInfo {
             IllegalAccessException, InvocationTargetException {
         if (mCheckerMethod != null) {
             if (mCheckerHasParameter) {
-                return (Boolean) mCheckerMethod.getOriginalMethod().invoke(subject, parameter);
+                return (boolean) mCheckerMethod.getOriginalMethod().invoke(subject, parameter);
             } else {
-                return (Boolean) mCheckerMethod.getOriginalMethod().invoke(subject);
+                return (boolean) mCheckerMethod.getOriginalMethod().invoke(subject);
             }
         }
         return true;
     }
+
+    public boolean check(Object subject, View parameter, Object parameter2) throws IllegalArgumentException,
+            IllegalAccessException, InvocationTargetException {
+        if (mCheckerMethod != null) {
+            if (mCheckerHasParameter) {
+                return (boolean) mCheckerMethod.getOriginalMethod().invoke(subject, parameter, parameter2);
+            } else {
+                return (boolean) mCheckerMethod.getOriginalMethod().invoke(subject);
+            }
+        }
+        return true;
+    }
+
 
     public void invoke(Object subject, Object parameter) throws IllegalArgumentException,
             IllegalAccessException, InvocationTargetException {
         if (mInvokerMethod != null) {
             if (mInvokerHasParameter) {
                 mInvokerMethod.getOriginalMethod().invoke(subject, parameter);
+            } else {
+                mInvokerMethod.getOriginalMethod().invoke(subject);
+            }
+        }
+    }
+
+    public void invoke(Object subject, View parameter, Object parameter2) throws IllegalArgumentException,
+            IllegalAccessException, InvocationTargetException {
+        if (mInvokerMethod != null) {
+            if (mInvokerHasParameter) {
+                mInvokerMethod.getOriginalMethod().invoke(subject, parameter, parameter2);
             } else {
                 mInvokerMethod.getOriginalMethod().invoke(subject);
             }
