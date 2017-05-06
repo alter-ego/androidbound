@@ -53,7 +53,7 @@ public class Reflector {
 
     public static boolean isCommand(Class<?> type, String name) {
         return Iterables.from(getMethods(type, COMMAND_PREFIX_DO + name))
-                .filter(methodInfo -> methodInfo.getMethodParameterCount() <= 1)
+                .filter(methodInfo -> methodInfo.getMethodParameterCount() <= 2)
                 .iterator()
                 .hasNext();
     }
@@ -247,7 +247,7 @@ public class Reflector {
         List<MethodInfo> invokers = getMethods(type, COMMAND_PREFIX_DO + name);
         if (invokers != null) {
             for (MethodInfo mi : invokers) {
-                if (mi.getMethodParameterCount() <= 1) {
+                if (mi.getMethodParameterCount() <= 2) {
                     invoker = mi;
                     if (mi.getMethodParameterCount() > 0) {
                         invokerParameterType = mi.getMethodParameterTypes()[0];
