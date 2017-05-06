@@ -38,14 +38,14 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/open_main_activity_button"
                 itemTemplate="@layout/activity_listview_listitem"
-                binding="{ItemsSource @= ExampleListLinear}"/>
+                binding="{ItemsSource @= ExampleListLinear}; { OnItemClickListener @- OnItemClickListener  }"/>
 
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_staggered"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/recyclerview_linear"
-                binding="{ItemsSource @= ExampleListStaggered}"/>
+                binding="{ItemsSource @= ExampleListStaggered}; { OnItemClickListener @- OnItemClickListenerView  } "/>
 
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_normal"

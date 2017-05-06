@@ -6,6 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,10 +23,11 @@ import solutions.alterego.androidbound.android.adapters.PageDescriptor;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.android.ui.resources.BindingResources;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 @Accessors(prefix = "m")
-public class BindableRecyclerView extends RecyclerView implements IBindableView, INotifyPropertyChanged {
+public class BindableRecyclerView extends RecyclerView implements IBindableView, INotifyPropertyChanged, RecyclerView.OnItemTouchListener {
 
     @Accessors(prefix = "m")
     private final class PageScrollListener extends OnScrollListener {
@@ -95,6 +98,10 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
     private PageScrollListener mPageScrollListener;
 
     private PageDescriptor mDefaultPageDescriptor;
+
+    private GestureDetector mGestureDetector;
+
+    private RecyclerViewGestureListener mRecyclerViewGestureListener;
 
     public BindableRecyclerView(Context context) {
         this(context, null);
@@ -220,6 +227,34 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
     }
 
     @Override
+    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+        return mGestureDetector != null && mGestureDetector.onTouchEvent(e);
+    }
+
+    @Override
+    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+    }
+
+    @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+    }
+
+    public ICommand getOnItemClickListener() {
+        return mRecyclerViewGestureListener == null ? null : mRecyclerViewGestureListener.getRecyclerViewClickListener();
+    }
+
+    public void setOnItemClickListener(ICommand l) {
+        if (l == null) {
+            return;
+        }
+        mGestureDetector = new GestureDetector(getContext(),
+                mRecyclerViewGestureListener = new RecyclerViewGestureListener(this));
+        mRecyclerViewGestureListener.setRecyclerViewClickListener(l);
+    }
+
+    @Override
     public void dispose() {
         if (disposed) {
             return;
@@ -242,5 +277,17 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
         }
 
         return propertyChanged;
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        addOnItemTouchListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        removeOnItemTouchListener(this);
     }
 }

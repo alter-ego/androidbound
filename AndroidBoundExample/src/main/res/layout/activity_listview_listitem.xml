@@ -13,7 +13,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            binding="{Source @= ImageUrl}"
+            binding="{Source @= ImageUrl}; {Click @- ImageClicked }"
             android:layout_margin="4dp"
             android:gravity="left"/>
 
