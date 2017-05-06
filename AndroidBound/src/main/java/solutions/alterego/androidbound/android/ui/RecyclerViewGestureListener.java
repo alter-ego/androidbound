@@ -29,13 +29,18 @@ public class RecyclerViewGestureListener extends GestureDetector.SimpleOnGesture
         mRecyclerView = new WeakReference<>(bindableRecyclerView);
     }
 
+    protected View getChildAt(MotionEvent event) {
+        final BindableRecyclerView recyclerView = getRecyclerView();
+        return recyclerView == null ? null :  recyclerView.findChildViewUnder(event.getX(), event.getY());
+    }
+
     @Override
     public boolean onSingleTapConfirmed(MotionEvent event) {
         final BindableRecyclerView recyclerView = getRecyclerView();
         if (recyclerView == null) {
             return false;
         }
-        View childView = recyclerView.findChildViewUnder(event.getX(), event.getY());
+        View childView = getChildAt(event);
         if (childView == null) {
             return false;
         }
@@ -66,20 +71,20 @@ public class RecyclerViewGestureListener extends GestureDetector.SimpleOnGesture
         return false;
     }
 
-    private View getChildOfAt(View view, int x, int y) {
+    protected View getChildOfAt(View view, int x, int y) {
         return hit(view, x - ViewCompat.getX(view), y - ViewCompat.getY(view));
     }
 
-    private boolean pointInView(View view, float localX, float localY) {
+    protected boolean pointInView(View view, float localX, float localY) {
         return localX >= 0 && localX < (view.getRight() - view.getLeft())
                 && localY >= 0 && localY < (view.getBottom() - view.getTop());
     }
 
-    private boolean isHittable(View view) {
+    protected boolean isHittable(View view) {
         return view.getVisibility() == View.VISIBLE && ViewCompat.getAlpha(view) >= 0.001f;
     }
 
-    private boolean isTransformedPointInView(
+    protected boolean isTransformedPointInView(
             ViewGroup parent,
             View child,
             float x,
@@ -99,7 +104,7 @@ public class RecyclerViewGestureListener extends GestureDetector.SimpleOnGesture
         return isInView;
     }
 
-    private View hit(
+    protected View hit(
             View view,
             float x,
             float y) {
@@ -141,7 +146,7 @@ public class RecyclerViewGestureListener extends GestureDetector.SimpleOnGesture
         return viewGroup;
     }
 
-    private BindableRecyclerView getRecyclerView() {
+    protected BindableRecyclerView getRecyclerView() {
         if (mRecyclerView == null) {
             return null;
         }

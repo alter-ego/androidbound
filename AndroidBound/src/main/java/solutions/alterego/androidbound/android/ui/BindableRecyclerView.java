@@ -250,8 +250,12 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
             return;
         }
         mGestureDetector = new GestureDetector(getContext(),
-                mRecyclerViewGestureListener = new RecyclerViewGestureListener(this));
+                mRecyclerViewGestureListener = getRecyclerViewGestureListener());
         mRecyclerViewGestureListener.setRecyclerViewClickListener(l);
+    }
+
+    protected RecyclerViewGestureListener getRecyclerViewGestureListener() {
+        return new RecyclerViewGestureListener(this);
     }
 
     @Override
