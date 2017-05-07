@@ -210,11 +210,11 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
         return mDefaultPageDescriptor;
     }
 
-    public void setPageDescriptor(PageDescriptor pageDescritor) {
+    public void setPageDescriptor(PageDescriptor pageDescriptor) {
         if (mPageScrollListener != null) {
             removeOnScrollListener(mPageScrollListener);
         }
-        mPageScrollListener = new PageScrollListener(pageDescritor);
+        mPageScrollListener = new PageScrollListener(pageDescriptor);
         addOnScrollListener(mPageScrollListener);
         propertyChanged.onNext("NextPage");
     }
@@ -228,11 +228,12 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
         disposed = true;
         if (propertyChanged != null) {
             propertyChanged.onCompleted();
-            propertyChanged = null;
         }
 
         propertyChanged = null;
-
+        mViewBinder = null;
+        mAdapter = null;
+        mTemplatesForObjects = new HashMap<>();
     }
 
     @Override

@@ -1,36 +1,30 @@
 package solutions.alterego.androidbound.android.ui;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
-import android.support.v7.widget.AppCompatTextView;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.TextView;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-public class BindableTextView extends AppCompatTextView implements INotifyPropertyChanged {
+public class BindableSwipeRefreshLayout extends SwipeRefreshLayout implements INotifyPropertyChanged, SwipeRefreshLayout.OnRefreshListener {
 
     private BindableViewDelegate mDelegate;
 
-    public BindableTextView(Context context) {
+    ICommand onRefresh = ICommand.empty;
+
+    public BindableSwipeRefreshLayout(Context context) {
         this(context, null);
     }
 
-    public BindableTextView(Context context, AttributeSet attrs) {
+    public BindableSwipeRefreshLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        mDelegate = createDelegate(this);
-    }
-
-    public BindableTextView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
         mDelegate = createDelegate(this);
     }
 
@@ -92,30 +86,6 @@ public class BindableTextView extends AppCompatTextView implements INotifyProper
         super.setBackgroundDrawable(res);
     }
 
-    public Typeface getTypeface() {
-        return super.getTypeface();
-    }
-
-    public void setTypeface(Typeface font) {
-        super.setTypeface(font);
-    }
-
-    public ColorStateList getTextColor() {
-        return super.getTextColors();
-    }
-
-    public void setTextColor(int color) {
-        super.setTextColor(color);
-    }
-
-    public ColorStateList getTextColorState() {
-        return super.getTextColors();
-    }
-
-    public void setTextColorState(ColorStateList colors) {
-        super.setTextColor(colors);
-    }
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -138,8 +108,31 @@ public class BindableTextView extends AppCompatTextView implements INotifyProper
     @Override
     public void dispose() {
         mDelegate.dispose();
+        onRefresh = ICommand.empty;
     }
 
     /****** end of the delegated methods, to be copy/pasted in every bindable view ******/
 
+    public ICommand getOnRefresh() {
+        return onRefresh;
+    }
+
+    public void setOnRefresh(ICommand value) {
+        if (value == null) {
+            setEnabled(false);
+            setOnRefreshListener(null);
+            onRefresh = ICommand.empty;
+            return;
+        }
+        setEnabled(true);
+        setOnRefreshListener(this);
+        onRefresh = value;
+    }
+
+    @Override
+    public void onRefresh() {
+        if (onRefresh.canExecute(null)) {
+            onRefresh.execute(null);
+        }
+    }
 }

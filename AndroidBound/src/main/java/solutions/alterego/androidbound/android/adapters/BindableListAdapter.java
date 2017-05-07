@@ -36,10 +36,11 @@ public class BindableListAdapter extends BaseAdapter {
 
     private ILogger mLogger;
 
-    public BindableListAdapter(Context ctx, IViewBinder vb, int itemTemplate) {
+    public BindableListAdapter(Context ctx, IViewBinder vb, int itemTemplate, List<?> items) {
         context = ctx;
         viewBinder = vb;
         mItemTemplate = itemTemplate;
+        itemsSource = items;
 
         if (viewBinder == null) {
             if (context instanceof IBindableView) {
@@ -54,14 +55,14 @@ public class BindableListAdapter extends BaseAdapter {
 
     public void setItemsSource(List<?> value) {
         itemsSource = value;
-        notifyDataSetInvalidated();
+        notifyDataSetChanged();
     }
 
     public void setTemplatesForObjects(Map<Class<?>, Integer> templatesForObjects) {
         mTemplatesForObjects = templatesForObjects;
 
         if (itemsSource != null) {
-            notifyDataSetInvalidated(); //TODO test this?
+            notifyDataSetChanged(); //TODO test this?
         }
     }
 

@@ -1,35 +1,33 @@
 package solutions.alterego.androidbound.android.ui;
 
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
-import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.FrameLayout;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-public class BindableTextView extends AppCompatTextView implements INotifyPropertyChanged {
+public class BindableFrameLayout extends FrameLayout implements INotifyPropertyChanged {
 
     private BindableViewDelegate mDelegate;
 
-    public BindableTextView(Context context) {
+    public BindableFrameLayout(Context context) {
         this(context, null);
     }
 
-    public BindableTextView(Context context, AttributeSet attrs) {
+    public BindableFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         mDelegate = createDelegate(this);
     }
 
-    public BindableTextView(Context context, AttributeSet attrs, int defStyle) {
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public BindableFrameLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mDelegate = createDelegate(this);
     }
@@ -90,30 +88,6 @@ public class BindableTextView extends AppCompatTextView implements INotifyProper
 
     public void setBackgroundDrawable(Drawable res) {
         super.setBackgroundDrawable(res);
-    }
-
-    public Typeface getTypeface() {
-        return super.getTypeface();
-    }
-
-    public void setTypeface(Typeface font) {
-        super.setTypeface(font);
-    }
-
-    public ColorStateList getTextColor() {
-        return super.getTextColors();
-    }
-
-    public void setTextColor(int color) {
-        super.setTextColor(color);
-    }
-
-    public ColorStateList getTextColorState() {
-        return super.getTextColors();
-    }
-
-    public void setTextColorState(ColorStateList colors) {
-        super.setTextColor(colors);
     }
 
     @Override

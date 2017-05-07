@@ -1,15 +1,19 @@
 package solutions.alterego.androidbound.android.ui;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
+import android.os.Build;
+import android.support.v7.widget.AppCompatSeekBar;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.SeekBar;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
-import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.interfaces.ICommand;
 
-public class BindableSeekbar extends SeekBar implements INotifyPropertyChanged {
+public class BindableSeekbar extends AppCompatSeekBar implements INotifyPropertyChanged {
 
     private ICommand progressTrackBegin = ICommand.empty;
 
@@ -17,21 +21,112 @@ public class BindableSeekbar extends SeekBar implements INotifyPropertyChanged {
 
     private ICommand progressTrackChanged = ICommand.empty;
 
-    private boolean disposed;
-
-    private PublishSubject<String> propertyChanged = PublishSubject.create();
+    private BindableViewDelegate mDelegate;
 
     public BindableSeekbar(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public BindableSeekbar(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mDelegate = createDelegate(this);
+        setOnSeekBarChangeListener(internalSeekbarListener);
     }
 
     public BindableSeekbar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mDelegate = createDelegate(this);
+        setOnSeekBarChangeListener(internalSeekbarListener);
     }
+
+    /****** beginning of the delegated methods, to be copy/pasted in every bindable view ******/
+
+    protected BindableViewDelegate createDelegate(View view) {
+        return new BindableViewDelegate(view);
+    }
+
+    public ICommand getClick() {
+        return mDelegate.getClick();
+    }
+
+    public void setClick(ICommand value) {
+        mDelegate.setClick(value);
+    }
+
+    public ICommand getLongClick() {
+        return mDelegate.getClick();
+    }
+
+    public void setLongClick(ICommand value) {
+        mDelegate.setClick(value);
+    }
+
+    public int getBackgroundColor() {
+        return mDelegate.getBackgroundColor();
+    }
+
+    public void setBackgroundColor(int color) {
+        mDelegate.setBackgroundColor(color);
+        super.setBackgroundColor(color);
+    }
+
+    public StateListDrawable getBackgroundDrawableState() {
+        return mDelegate.getBackgroundDrawableState();
+    }
+
+    public void setBackgroundDrawableState(StateListDrawable colors) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            super.setBackground(colors);
+            mDelegate.setBackgroundDrawableState(colors);
+        }
+    }
+
+    public int getBackgroundResource() {
+        return 0;
+    }
+
+    public void setBackgroundResource(int res) {
+        super.setBackgroundResource(res);
+    }
+
+    public int getBackgroundDrawable() {
+        return 0;
+    }
+
+    public void setBackgroundDrawable(Drawable res) {
+        super.setBackgroundDrawable(res);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mDelegate.onSizeChanged(w, h, oldw, oldh);
+    }
+
+    public void setWidth(int width) {
+        mDelegate.setWidth(width);
+    }
+
+    public void setHeight(int height) {
+        mDelegate.setHeight(height);
+    }
+
+    @Override
+    public Observable<String> onPropertyChanged() {
+        return mDelegate.onPropertyChanged();
+    }
+
+    @Override
+    public void dispose() {
+        mDelegate.dispose();
+
+        progressTrackBegin = null;
+        progressTrackChanged = null;
+        progressTrackEnd = null;
+        setOnSeekBarChangeListener(null);
+    }
+
+    /****** end of the delegated methods, to be copy/pasted in every bindable view ******/
 
     public ICommand getProgressTrackBegin() {
         return progressTrackBegin;
@@ -68,68 +163,28 @@ public class BindableSeekbar extends SeekBar implements INotifyPropertyChanged {
         progressTrackChanged = cmd;
     }
 
-    @Override
-    public Observable<String> onPropertyChanged() {
-        if (propertyChanged == null || disposed) {
-            propertyChanged = PublishSubject.create();
-            setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                    if (BindableSeekbar.this.disposed) {
-                        return;
-                    }
-
-                    if (BindableSeekbar.this.progressTrackEnd.canExecute(null)) {
-                        BindableSeekbar.this.progressTrackEnd.execute(null);
-                    }
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                    if (BindableSeekbar.this.disposed) {
-                        return;
-                    }
-
-                    if (BindableSeekbar.this.progressTrackBegin.canExecute(null)) {
-                        BindableSeekbar.this.progressTrackBegin.execute(null);
-                    }
-                }
-
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress,
-                        boolean fromUser) {
-                    if (BindableSeekbar.this.disposed) {
-                        return;
-                    }
-
-                    if (BindableSeekbar.this.progressTrackChanged.canExecute(null)) {
-                        BindableSeekbar.this.progressTrackChanged.execute(null);
-                    }
-
-                    if (BindableSeekbar.this.propertyChanged != null) {
-                        BindableSeekbar.this.propertyChanged.onNext("Progress");
-                    }
-                }
-            });
-        }
-        return propertyChanged;
-    }
-
-    @Override
-    public void dispose() {
-        if (disposed) {
-            return;
+    OnSeekBarChangeListener internalSeekbarListener = new OnSeekBarChangeListener() {
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            if (!mDelegate.isDisposed() && progressTrackEnd.canExecute(null)) {
+                progressTrackEnd.execute(null);
+            }
         }
 
-        disposed = true;
-        if (propertyChanged != null) {
-            propertyChanged.onCompleted();
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            if (!mDelegate.isDisposed() && progressTrackBegin.canExecute(null)) {
+                progressTrackBegin.execute(null);
+            }
         }
 
-        propertyChanged = null;
-        progressTrackBegin = null;
-        progressTrackChanged = null;
-        progressTrackEnd = null;
-    }
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if (!mDelegate.isDisposed() && progressTrackChanged.canExecute(null)) {
+                progressTrackChanged.execute(null);
+                mDelegate.notifyPropertyChanged("Progress");
+            }
+        }
+    };
+
 }

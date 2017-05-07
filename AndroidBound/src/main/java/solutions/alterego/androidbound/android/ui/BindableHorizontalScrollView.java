@@ -1,108 +1,117 @@
 package solutions.alterego.androidbound.android.ui;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
+import android.os.Build;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
+import android.view.View;
 import android.widget.HorizontalScrollView;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
+import solutions.alterego.androidbound.interfaces.ICommand;
 
 public class BindableHorizontalScrollView extends HorizontalScrollView implements INotifyPropertyChanged {
 
-    private boolean disposed;
-
-    private PublishSubject<String> propertyChanged = PublishSubject.create();
+    private BindableViewDelegate mDelegate;
 
     public BindableHorizontalScrollView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public BindableHorizontalScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mDelegate = createDelegate(this);
     }
 
-    public BindableHorizontalScrollView(Context context, AttributeSet attrs,
-            int defStyle) {
+    public BindableHorizontalScrollView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mDelegate = createDelegate(this);
     }
 
-    @Override
-    public Observable<String> onPropertyChanged() {
-        if (propertyChanged == null) {
-            propertyChanged = PublishSubject.create();
-        }
+    /****** beginning of the delegated methods, to be copy/pasted in every bindable view ******/
 
-        return propertyChanged;
+    protected BindableViewDelegate createDelegate(View view) {
+        return new BindableViewDelegate(view);
     }
 
-    @Override
-    public void dispose() {
-        if (disposed) {
-            return;
-        }
+    public ICommand getClick() {
+        return mDelegate.getClick();
+    }
 
-        disposed = true;
-        if (propertyChanged != null) {
-            propertyChanged.onCompleted();
-            propertyChanged = null;
-        }
+    public void setClick(ICommand value) {
+        mDelegate.setClick(value);
+    }
 
-        propertyChanged = null;
+    public ICommand getLongClick() {
+        return mDelegate.getClick();
+    }
+
+    public void setLongClick(ICommand value) {
+        mDelegate.setClick(value);
+    }
+
+    public int getBackgroundColor() {
+        return mDelegate.getBackgroundColor();
+    }
+
+    public void setBackgroundColor(int color) {
+        mDelegate.setBackgroundColor(color);
+        super.setBackgroundColor(color);
+    }
+
+    public StateListDrawable getBackgroundDrawableState() {
+        return mDelegate.getBackgroundDrawableState();
+    }
+
+    public void setBackgroundDrawableState(StateListDrawable colors) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            super.setBackground(colors);
+            mDelegate.setBackgroundDrawableState(colors);
+        }
+    }
+
+    public int getBackgroundResource() {
+        return 0;
+    }
+
+    public void setBackgroundResource(int res) {
+        super.setBackgroundResource(res);
+    }
+
+    public int getBackgroundDrawable() {
+        return 0;
+    }
+
+    public void setBackgroundDrawable(Drawable res) {
+        super.setBackgroundDrawable(res);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
-        if (disposed || propertyChanged == null) {
-            return;
-        }
-
-        if (w != oldw) {
-            propertyChanged.onNext("Width");
-        }
-
-        if (h != oldh) {
-            propertyChanged.onNext("Height");
-        }
-    }
-
-    @Override
-    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-        super.onScrollChanged(l, t, oldl, oldt);
-
-        if (disposed || propertyChanged == null) {
-            return;
-        }
-
-        if (l != oldl) {
-            propertyChanged.onNext("ScrollX");
-        }
-
-        if (t != oldt) {
-            propertyChanged.onNext("ScrollY");
-        }
+        mDelegate.onSizeChanged(w, h, oldw, oldh);
     }
 
     public void setWidth(int width) {
-        if (width == getWidth()) {
-            return;
-        }
-
-        ViewGroup.LayoutParams p = getLayoutParams();
-        p.width = width;
-        setLayoutParams(p);
+        mDelegate.setWidth(width);
     }
 
     public void setHeight(int height) {
-        if (height == getHeight()) {
-            return;
-        }
-
-        ViewGroup.LayoutParams p = getLayoutParams();
-        p.height = height;
-        setLayoutParams(p);
+        mDelegate.setHeight(height);
     }
+
+    @Override
+    public Observable<String> onPropertyChanged() {
+        return mDelegate.onPropertyChanged();
+    }
+
+    @Override
+    public void dispose() {
+        mDelegate.dispose();
+    }
+
+    /****** end of the delegated methods, to be copy/pasted in every bindable view ******/
+
 }

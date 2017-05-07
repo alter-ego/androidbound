@@ -1,35 +1,34 @@
 package solutions.alterego.androidbound.android.ui;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
-import android.support.v7.widget.AppCompatTextView;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ProgressBar;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-public class BindableTextView extends AppCompatTextView implements INotifyPropertyChanged {
+public class BindableProgressBar extends ProgressBar implements INotifyPropertyChanged {
+
+    private int mDrawableId;
 
     private BindableViewDelegate mDelegate;
 
-    public BindableTextView(Context context) {
+    public BindableProgressBar(Context context) {
         this(context, null);
     }
 
-    public BindableTextView(Context context, AttributeSet attrs) {
+    public BindableProgressBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         mDelegate = createDelegate(this);
     }
 
-    public BindableTextView(Context context, AttributeSet attrs, int defStyle) {
+    public BindableProgressBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mDelegate = createDelegate(this);
     }
@@ -92,30 +91,6 @@ public class BindableTextView extends AppCompatTextView implements INotifyProper
         super.setBackgroundDrawable(res);
     }
 
-    public Typeface getTypeface() {
-        return super.getTypeface();
-    }
-
-    public void setTypeface(Typeface font) {
-        super.setTypeface(font);
-    }
-
-    public ColorStateList getTextColor() {
-        return super.getTextColors();
-    }
-
-    public void setTextColor(int color) {
-        super.setTextColor(color);
-    }
-
-    public ColorStateList getTextColorState() {
-        return super.getTextColors();
-    }
-
-    public void setTextColorState(ColorStateList colors) {
-        super.setTextColor(colors);
-    }
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -138,8 +113,22 @@ public class BindableTextView extends AppCompatTextView implements INotifyProper
     @Override
     public void dispose() {
         mDelegate.dispose();
+        mDrawableId = 0;
     }
 
     /****** end of the delegated methods, to be copy/pasted in every bindable view ******/
+
+    public int getProgressDrawableId() {
+        return mDrawableId;
+    }
+
+    public void setProgressDrawableId(final int drawableId) {
+        if (drawableId == mDrawableId || drawableId <= 0) {
+            return;
+        }
+
+        mDrawableId = drawableId;
+        setProgressDrawable(ContextCompat.getDrawable(getContext(), drawableId));
+    }
 
 }

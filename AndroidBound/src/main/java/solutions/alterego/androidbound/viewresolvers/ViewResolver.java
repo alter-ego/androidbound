@@ -9,19 +9,23 @@ import java.util.Map;
 
 import solutions.alterego.androidbound.android.ui.BindableButton;
 import solutions.alterego.androidbound.android.ui.BindableEditText;
+import solutions.alterego.androidbound.android.ui.BindableFrameLayout;
 import solutions.alterego.androidbound.android.ui.BindableGridView;
 import solutions.alterego.androidbound.android.ui.BindableHorizontalScrollView;
 import solutions.alterego.androidbound.android.ui.BindableImageView;
 import solutions.alterego.androidbound.android.ui.BindableLinearLayout;
 import solutions.alterego.androidbound.android.ui.BindableListView;
+import solutions.alterego.androidbound.android.ui.BindableProgressBar;
 import solutions.alterego.androidbound.android.ui.BindableRecyclerView;
 import solutions.alterego.androidbound.android.ui.BindableRelativeLayout;
 import solutions.alterego.androidbound.android.ui.BindableScrollView;
 import solutions.alterego.androidbound.android.ui.BindableSeekbar;
+import solutions.alterego.androidbound.android.ui.BindableSwipeRefreshLayout;
 import solutions.alterego.androidbound.android.ui.BindableSwitch;
 import solutions.alterego.androidbound.android.ui.BindableTextView;
 import solutions.alterego.androidbound.android.ui.BindableToggleButton;
 import solutions.alterego.androidbound.android.ui.BindableVideoView;
+import solutions.alterego.androidbound.android.ui.BindableView;
 import solutions.alterego.androidbound.helpers.Reflector;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
@@ -39,6 +43,7 @@ public class ViewResolver implements IViewResolver {
     @SuppressWarnings("serial")
     private static final Map<String, Class<?>> mappings = new HashMap<String, Class<?>>() {
         {
+            put("android.widget.View", BindableView.class);
             put("android.widget.TextView", BindableTextView.class);
             put("android.widget.ListView", BindableListView.class);
             put("android.widget.ImageView", BindableImageView.class);
@@ -56,6 +61,15 @@ public class ViewResolver implements IViewResolver {
             put("android.widget.ToggleButton", BindableToggleButton.class);
             put("android.widget.EditText", BindableEditText.class);
             put("android.support.v7.widget.RecyclerView", BindableRecyclerView.class);
+            put("android.widget.ProgressBar", BindableProgressBar.class);
+            put("android.widget.FrameLayout", BindableFrameLayout.class);
+            put("android.support.v4.widget.SwipeRefreshLayout", BindableSwipeRefreshLayout.class);
+
+            put("android.support.v7.widget.AppCompatButton", BindableButton.class);
+            put("android.support.v7.widget.AppCompatEditText", BindableEditText.class);
+            put("android.support.v7.widget.AppCompatImageView", BindableImageView.class);
+            put("android.support.v7.widget.AppCompatSeekBar", BindableSeekbar.class);
+            put("android.support.v7.widget.AppCompatTextView", BindableTextView.class);
         }
     };
 

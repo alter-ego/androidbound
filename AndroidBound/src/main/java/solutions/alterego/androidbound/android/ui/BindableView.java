@@ -1,36 +1,38 @@
 package solutions.alterego.androidbound.android.ui;
 
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
-import android.support.v7.widget.AppCompatTextView;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.TextView;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-public class BindableTextView extends AppCompatTextView implements INotifyPropertyChanged {
+public class BindableView extends View implements INotifyPropertyChanged {
 
     private BindableViewDelegate mDelegate;
 
-    public BindableTextView(Context context) {
-        this(context, null);
+    public BindableView(Context context) {
+        this(context, null, 0);
     }
 
-    public BindableTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public BindableView(Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public BindableView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         mDelegate = createDelegate(this);
     }
 
-    public BindableTextView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public BindableView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
         mDelegate = createDelegate(this);
     }
 
@@ -92,30 +94,6 @@ public class BindableTextView extends AppCompatTextView implements INotifyProper
         super.setBackgroundDrawable(res);
     }
 
-    public Typeface getTypeface() {
-        return super.getTypeface();
-    }
-
-    public void setTypeface(Typeface font) {
-        super.setTypeface(font);
-    }
-
-    public ColorStateList getTextColor() {
-        return super.getTextColors();
-    }
-
-    public void setTextColor(int color) {
-        super.setTextColor(color);
-    }
-
-    public ColorStateList getTextColorState() {
-        return super.getTextColors();
-    }
-
-    public void setTextColorState(ColorStateList colors) {
-        super.setTextColor(colors);
-    }
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -141,5 +119,4 @@ public class BindableTextView extends AppCompatTextView implements INotifyProper
     }
 
     /****** end of the delegated methods, to be copy/pasted in every bindable view ******/
-
 }

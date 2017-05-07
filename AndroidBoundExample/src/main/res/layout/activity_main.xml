@@ -29,7 +29,7 @@
             android:layout_margin="16dp"
             tools:text="open bindable activity"
             binding="{ Click @- OpenBindableActivity }; {Text @= OpenBindableActivityText }; { Typeface @- ToFont(this, &apos;missing&apos;) };
-            { BackgroundColor @= ButtonBackgroundColor }; { TextColor @= MainActivityTitleColor }" />
+            { BackgroundColor @= ButtonBackgroundColor }; { TextColor @= MainActivityTitleColor }; {ContentDescription @= OpenActivityButtonContentDescription}" />
 
     <TextView
             android:id="@+id/edittext_textview"
