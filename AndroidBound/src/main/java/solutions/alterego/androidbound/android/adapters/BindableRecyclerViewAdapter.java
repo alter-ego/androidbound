@@ -1,6 +1,5 @@
 package solutions.alterego.androidbound.android.adapters;
 
-import android.os.Handler;
 import android.support.v4.util.Pair;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
@@ -47,8 +46,6 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Getter
     @Setter
     private RecyclerView.LayoutManager mLayoutManager;
-
-    private Handler mHandler = new Handler();
 
     private Subscription mSetValuesSubscription = Subscriptions.unsubscribed();
 
@@ -170,7 +167,7 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     & layout pass where you cannot change the RecyclerView data. Any method call that might change the structure
     of the RecyclerView or the adapter contents should be postponed to the next frame.*/
     private void postNotifyItemRangeRemoved(final int start, final int itemCount) {
-        mHandler.post(() -> notifyItemRangeRemoved(start, itemCount));
+        AndroidSchedulers.mainThread().createWorker().schedule(() -> notifyItemRangeRemoved(start, itemCount));
     }
 
 
