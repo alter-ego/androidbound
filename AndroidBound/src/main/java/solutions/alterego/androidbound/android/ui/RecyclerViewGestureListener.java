@@ -49,7 +49,6 @@ public class RecyclerViewGestureListener extends GestureDetector.SimpleOnGesture
         View childAt = getChildOfAt(childView, (int) event.getX(), (int) event.getY());
 
         if (childAt != null && ViewCompat.hasOnClickListeners(childAt)) {
-            childAt.playSoundEffect(SoundEffectConstants.CLICK);
             return true;
         }
 
@@ -61,8 +60,7 @@ public class RecyclerViewGestureListener extends GestureDetector.SimpleOnGesture
             // Adapter is not BindableRecyclerViewAdapter or setItemSource hasn't been called
             return true;
         }
-
-        childView.playSoundEffect(SoundEffectConstants.CLICK);
+        
         final Object object = recyclerView.getItemsSource().get(position);
         if (mRecyclerViewClickListener.canExecute(object)) {
             mRecyclerViewClickListener.execute(object);
