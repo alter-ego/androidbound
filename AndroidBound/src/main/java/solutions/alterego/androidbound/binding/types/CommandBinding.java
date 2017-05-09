@@ -1,5 +1,7 @@
 package solutions.alterego.androidbound.binding.types;
 
+import android.view.View;
+
 import solutions.alterego.androidbound.helpers.Reflector;
 import solutions.alterego.androidbound.helpers.reflector.CommandInfo;
 import solutions.alterego.androidbound.interfaces.ICommand;
@@ -47,6 +49,34 @@ public class CommandBinding extends BindingBase {
                         mInfo.invoke(getSubject(), parameter);
                     } catch (Exception ex) {
                         getLogger().error("Error while raising command " + mInfo.getCommandName() + ": " + ex.getMessage());
+                    }
+                }
+
+                @Override
+                public boolean canExecute(View view, Object parameter) {
+                    try {
+                        return mInfo.check(getSubject(), view, parameter);
+                    } catch (Exception ex) {
+                        getLogger().error("Error while checking command " + mInfo.getCommandName() + ": " + ex.getMessage());
+                    }
+                    return true;
+                }
+
+                @Override
+                public void execute(View view, Object parameter) {
+                    try {
+                        mInfo.invoke(getSubject(), view, parameter);
+                    } catch (Exception ex) {
+                        getLogger().error("Error while raising command " + mInfo.getCommandName() + ": " + ex.getMessage());
+                        retryExecute(view, parameter);
+                    }
+                }
+
+                private void retryExecute(View parameter, Object parameter2) {
+                    try {
+                        mInfo.invoke(getSubject(), parameter2);
+                    } catch (Exception e) {
+                        execute(parameter);
                     }
                 }
             };
