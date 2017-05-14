@@ -33,31 +33,15 @@
                 binding="{ Text @= OpenMainActivityText }; { Click @- OpenMainActivity }"/>
 
         <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerview_linear"
+                android:id="@+id/recyclerview_staggered"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/open_main_activity_button"
-                itemTemplate="@layout/activity_listview_listitem"
-                layoutManager="linear"
+                android:nestedScrollingEnabled="false"
+                layoutManager="staggered"
                 layoutManagerOrientation="vertical"
-                layoutManagerReverse="false"
-                binding="{ItemsSource @= ExampleListLinear}; {OnItemClickListener @- OnItemClickListener}"/>
-
-        <TextView
-                android:id="@+id/rv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/recyclerview_linear"
-                android:textSize="20sp"
-                android:layout_margin="10dp"
-                android:text="regular RV"/>
-
-        <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerview_normal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rv_title"/>
+                layoutManagerSpanCount="2"
+                binding="{ItemsSource @= ExampleListStaggered}; {TemplatesForObjects @- StaggeredTemplatesForObjects}; {OnItemClickListener @- OnItemClickListenerView}"/>
 
     </RelativeLayout>
 

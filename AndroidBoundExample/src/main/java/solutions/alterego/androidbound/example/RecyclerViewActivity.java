@@ -4,16 +4,19 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.codemonkeylabs.fpslibrary.TinyDancer;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
 
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.android.BindingAppCompatActivity;
 import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
-import solutions.alterego.androidbound.example.viewmodels.RecyclerViewWithObjectsActivityViewModel;
+import solutions.alterego.androidbound.example.viewmodels.RecyclerViewActivityViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
-public class RecyclerViewWithObjectsActivity extends BindingAppCompatActivity {
+public class RecyclerViewActivity extends BindingAppCompatActivity {
 
     public static final String LOGGING_TAG = "TEST_APP";
 
@@ -31,7 +34,14 @@ public class RecyclerViewWithObjectsActivity extends BindingAppCompatActivity {
         viewBinder.setImageLoader(new UILImageLoader(this, null));
         setViewBinder(viewBinder);
 
-        setContentView(R.layout.activity_recyclerview_with_objects, new RecyclerViewWithObjectsActivityViewModel(this, logger));
+        setContentView(R.layout.activity_recyclerview, new RecyclerViewActivityViewModel(this, logger));
+
+        //to test that the normal recycler view still works without any problems
+        RecyclerView recyclerViewNormal = (RecyclerView) findViewById(R.id.recyclerview_normal);
+        recyclerViewNormal.setNestedScrollingEnabled(false);
+        LinearLayoutManager layoutManagerLinearNormal = new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
+        recyclerViewNormal.setLayoutManager(layoutManagerLinearNormal);
+        recyclerViewNormal.setAdapter(new RecyclerViewNormalAdapter(this));
     }
 
     @Override

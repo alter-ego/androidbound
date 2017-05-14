@@ -2,26 +2,22 @@ package solutions.alterego.androidbound.example.viewmodels;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.example.ListItemDetailActivity;
 import solutions.alterego.androidbound.example.MainActivity;
-import solutions.alterego.androidbound.example.R;
 import solutions.alterego.androidbound.example.listviewitems.ListViewItem;
 import solutions.alterego.androidbound.example.listviewitems.ListViewItem2;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
-public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
+public class RecyclerViewActivityViewModel extends ViewModel {
 
     private static final int listSize = 10;
 
@@ -32,9 +28,9 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
     private String mOpenMainActivityText = "Open main activity";
 
     @Getter
-    private List<Object> mExampleListStaggered = new ArrayList<Object>();
+    private List<Object> mExampleListLinear = new ArrayList<Object>();
 
-    public RecyclerViewWithObjectsActivityViewModel(Activity activity, ILogger logger) {
+    public RecyclerViewActivityViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
         setParentActivity(activity);
 
@@ -42,20 +38,13 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
 
         for (int i = 0; i < listSize; i++) {
             if (i % 2 == 0) {
-                mExampleListStaggered.add(new ListViewItem(Integer.toString(i)));
+                mExampleListLinear.add(new ListViewItem(Integer.toString(i)));
             } else {
-                mExampleListStaggered.add(new ListViewItem2(Integer.toString(i)));
+                mExampleListLinear.add(new ListViewItem2(Integer.toString(i)));
             }
         }
 
-        raisePropertyChanged("ExampleListStaggered");
-    }
-
-    public Map<Class<?>, Integer> getStaggeredTemplatesForObjects() {
-        Map<Class<?>, Integer> objectTemplates = new HashMap<Class<?>, Integer>();
-        objectTemplates.put(ListViewItem.class, R.layout.activity_listview_listitem);
-        objectTemplates.put(ListViewItem2.class, R.layout.activity_listview_listitem2);
-        return objectTemplates;
+        raisePropertyChanged("ExampleListLinear");
     }
 
     public void setListViewActivityTitle(String title) {
@@ -84,7 +73,13 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
         }
     }
 
-    public void doOnItemClickListenerView(View view, Object object) {
-        Toast.makeText(getParentActivity(), "ID " + view.getId() + " " + object, Toast.LENGTH_SHORT).show();
+    public void doOnItemClickListener(Object object) {
+        if (object instanceof ListViewItem) {
+            Toast.makeText(getParentActivity(), "clicked ListViewItem = " + ((ListViewItem) object).getTitle(), Toast.LENGTH_SHORT).show();
+            openDetail((ListViewItem) object);
+        } else if (object instanceof ListViewItem2) {
+            Toast.makeText(getParentActivity(), "clicked ListViewItem2 = " + ((ListViewItem2) object).getTitle(), Toast.LENGTH_SHORT).show();
+        }
     }
+
 }
