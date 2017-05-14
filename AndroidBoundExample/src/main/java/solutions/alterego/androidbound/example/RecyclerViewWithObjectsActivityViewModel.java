@@ -6,7 +6,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -17,7 +19,7 @@ import solutions.alterego.androidbound.interfaces.ILogger;
 @Accessors(prefix = "m")
 public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
 
-    private static final int listSize = 20;
+    private static final int listSize = 10;
 
     @Getter
     private String mListViewActivityTitle;
@@ -49,6 +51,13 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
 
         raisePropertyChanged("ExampleListLinear");
         raisePropertyChanged("ExampleListStaggered");
+    }
+
+    public Map<Class<?>, Integer> getStaggeredTemplatesForObjects() {
+        Map<Class<?>, Integer> objectTemplates = new HashMap<Class<?>, Integer>();
+        objectTemplates.put(RecyclerViewWithObjectsActivityViewModel.ListViewItem.class, R.layout.activity_listview_listitem);
+        objectTemplates.put(RecyclerViewWithObjectsActivityViewModel.ListViewItem2.class, R.layout.activity_listview_listitem2);
+        return objectTemplates;
     }
 
     public void setListViewActivityTitle(String title) {

@@ -6,7 +6,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -42,6 +44,14 @@ public class ListViewWithObjectsActivityViewModel extends ViewModel {
             }
         }
         raisePropertyChanged("ExampleList");
+    }
+
+    //populating map with object-layout relationships
+    // we're not adding ListViewItem layout because that will use the default layout declared in XML
+    public Map<Class<?>, Integer> getLVTemplatesForObjects() {
+        Map<Class<?>, Integer> objectTemplates = new HashMap<Class<?>, Integer>();
+        objectTemplates.put(ListViewWithObjectsActivityViewModel.ListViewItem2.class, R.layout.activity_listview_listitem2);
+        return objectTemplates;
     }
 
     public void setListViewActivityTitle(String title) {
