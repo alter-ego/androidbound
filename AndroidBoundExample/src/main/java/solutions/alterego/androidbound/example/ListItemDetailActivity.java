@@ -4,9 +4,7 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.os.Bundle;
 
-import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.android.BindingAppCompatActivity;
-import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.example.viewmodels.ListItemDetailActivityViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
@@ -23,8 +21,6 @@ public class ListItemDetailActivity extends BindingAppCompatActivity {
 
     private static final IAndroidLogger.LoggingLevel LOGGING_LEVEL = IAndroidLogger.LoggingLevel.VERBOSE;
 
-    private IViewBinder mViewBinder;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,9 +29,7 @@ public class ListItemDetailActivity extends BindingAppCompatActivity {
         String title = getIntent().getStringExtra(EXTRA_ITEM_TITLE);
         String imageUrl = getIntent().getStringExtra(EXTRA_ITEM_IMAGE_URL);
 
-        ViewBinder viewBinder = new ViewBinder(this, logger);
-        viewBinder.setImageLoader(new UILImageLoader(this, null));
-        setViewBinder(viewBinder);
+        setLogger(logger);
 
         setContentView(R.layout.activity_item_detail, new ListItemDetailActivityViewModel(this, logger, title, imageUrl));
 
@@ -44,19 +38,11 @@ public class ListItemDetailActivity extends BindingAppCompatActivity {
 
     @Override
     public IViewBinder getViewBinder() {
-        return mViewBinder;
+        return ExampleApplication.getViewBinder();
     }
 
     @Override
     public void setViewBinder(IViewBinder viewBinder) {
-        mViewBinder = viewBinder;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (getViewBinder() != null) {
-            getViewBinder().dispose();
-        }
-    }
 }
