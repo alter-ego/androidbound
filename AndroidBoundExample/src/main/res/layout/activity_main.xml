@@ -1,136 +1,79 @@
 <!-- A DrawerLayout is intended to be used as the top-level content view using match_parent for both width and height to consume the full space available. -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/drawer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity"
-        tools:ignore="MissingPrefix"
-        android:padding="16dp"
-        binding="{{ BackgroundColor @= MainActivityBackgroundColor }}">//these double {{ and }} are just here for testing the parser - don't do this!
-
-    <TextView
-            android:id="@+id/activity_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:textSize="20sp"
-            tools:text="title"
-            binding="{ Text @= MainActivityTitle }; { TextColor @= MainActivityTitleColor }; { Typeface @- ToFont(this, &apos;bold&apos;) }" />
-
-    <Button
-            android:id="@+id/open_bindable_activity_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/activity_title"
-            android:textSize="16sp"
-            android:layout_margin="16dp"
-            tools:text="open bindable activity"
-            binding="{ Click @- OpenBindableActivity }; {Text @= OpenBindableActivityText }; { Typeface @- ToFont(this, &apos;missing&apos;) };
-            { BackgroundColor @= ButtonBackgroundColor }; { TextColor @= MainActivityTitleColor }; {ContentDescription @= OpenActivityButtonContentDescription}" />
-
-    <TextView
-            android:id="@+id/edittext_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/edittext"
-            android:textSize="20sp"
-            tools:text="bound to edittext"
-            binding="{ Text @= TextViewBoundToEditText }; { Click @- TextViewClick }; { LongClick @- TextViewLongClick }; { Typeface @- ToFont(this) }" />
-
-    <ImageView
-            android:id="@+id/imageview"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/drawer_layout"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_below="@+id/edittext_textview"
-            android:layout_marginTop="10dp"
-            android:background="@android:color/white"
-            binding="{ Resource @= ImageViewResource }; { Click @- ImageViewClick }; { LongClick @- ImageViewLongClick }" />
-
-    <ScrollView
-            android:layout_below="@+id/imageview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center">
-
-            <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_margin="10dp"
-                    android:text="open fragment activity"
-                    binding="{ Click @- OpenFragmentActivity }" />
-
-            <Button
-                    android:id="@+id/open_listview_activity_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_margin="10dp"
-                    android:text="open listview activity"
-                    binding="{ Click @- OpenListViewActivity }" />
-
-            <Button
-                    android:id="@+id/open_listviewwithobjects_activity_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:text="open lv with objects activity"
-                    binding="{ Click @- OpenListViewWithObjectsActivity }" />
-
-            <Button
-                    android:id="@+id/open_rvwithobjects_activity_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_margin="10dp"
-                    android:text="open rv with objects activity"
-                    binding="{ Click @- OpenRecyclerViewWithObjectsActivity }" />
-
-            <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_margin="10dp"
-                    android:text="open paginated RV"
-                    binding="{ Click @- OpenPaginatedRecyclerViewActivity }" />
-
-        </LinearLayout>
-
-    </ScrollView>
+            android:layout_height="match_parent"
+            tools:context=".MainActivity"
+            tools:ignore="MissingPrefix"
+            android:padding="16dp"
+            binding="{{ BackgroundColor @= MainActivityBackgroundColor }}"><!-- these double {{ and }} are just here for testing the parser - don't do this! -->
 
     <LinearLayout
-            android:id="@+id/edittext"
-            android:layout_below="@+id/open_bindable_activity_button"
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        <EditText
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                tools:text="edittext"
-                binding="{ TextString =@ EditTextText };
-             { EditTextCharSequence @= BoundEditTextText }
-             { TextColor @= EditTextColor }; { Typeface @- ToFont(this, &apos;italic&apos;) }" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
 
         <Button
-                binding="{ Click @= ClearEditTextText }; "
-                android:text="clear"
+                android:id="@+id/open_bindable_activity_button"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                tools:text="open bindable activity"
+                binding="{Click @- OpenBindableActivity};
+                    {Text @= OpenBindableActivityText };
+                    {Typeface @- ToFont(this, &apos;missing&apos;)};
+                    {BackgroundColor @= ButtonBackgroundColor};
+                    {TextColor @= MainActivityTitleColor};
+                    {ContentDescription @= OpenActivityButtonContentDescription}"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open fragment activity"
+                binding="{ Click @- OpenFragmentActivity }"/>
+
+        <Button
+                android:id="@+id/open_listview_activity_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open listview activity"
+                binding="{ Click @- OpenListViewActivity }"/>
+
+        <Button
+                android:id="@+id/open_listviewwithobjects_activity_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open lv with objects activity"
+                binding="{ Click @- OpenListViewWithObjectsActivity }"/>
+
+        <Button
+                android:id="@+id/open_rvwithobjects_activity_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open rv with objects activity"
+                binding="{ Click @- OpenRecyclerViewWithObjectsActivity }"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open paginated RV"
+                binding="{ Click @- OpenPaginatedRecyclerViewActivity }"/>
 
     </LinearLayout>
 
-</RelativeLayout>
+</ScrollView>

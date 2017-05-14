@@ -18,7 +18,7 @@
             android:layout_centerHorizontal="true"
             android:textSize="20sp"
             tools:text="title"
-            binding="{ Text @= MainActivityTitle }; { Typeface @- ToFont(this, &apos;bold&apos;) }"/>
+            binding="{ Text @= MainActivityTitle }; { TextColor @= MainActivityTitleColor }; { Typeface @- ToFont(this, &apos;bold&apos;) }"/>
 
     <Button
             android:id="@+id/open_normal_activity_button"
@@ -27,7 +27,7 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/activity_title"
             android:textSize="16sp"
-            android:layout_margin="16dp"
+            android:layout_margin="10dp"
             tools:text="open normal activity"
             binding="{ Click @- OpenNormalActivity }; {Text @= OpenNormalActivityText }; { Typeface @- ToFont(this, &apos;italic&apos;) }"/>
 
@@ -48,29 +48,75 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/visibility_text"
             android:textSize="16sp"
-            android:layout_margin="16dp"
+            android:layout_margin="10dp"
             android:text="toggle visibility"
             binding="{ Click @- ToggleTextViewVisibility }"/>
 
     <ImageView
-            android:id="@+id/imageview"
+            android:id="@+id/imageview_remote"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="80dp"
             android:layout_below="@+id/visibility_button"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="20dp"
             android:background="@android:color/white"
             binding="{ Source @= ImageViewSourceUrl }"/>
+
+    <ImageView
+            android:id="@+id/imageview_resource"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/imageview_remote"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/white"
+            binding="{ Resource @= ImageViewResource }; { Click @- ImageViewClick }; { LongClick @- ImageViewLongClick }"/>
 
     <TextView
             android:id="@+id/prettify_custom_converter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageview"
+            android:layout_below="@+id/imageview_resource"
             android:layout_centerHorizontal="true"
             android:textSize="20sp"
             tools:text="custom date"
             android:layout_marginTop="20dp"
             binding="{ Text @= PrettifyDateTime(CurrentDate, 'longdate') }"/>
 
+
+    <LinearLayout
+            android:id="@+id/edittext"
+            android:layout_below="@+id/prettify_custom_converter"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <EditText
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                tools:text="edittext"
+                binding="{ TextString =@ EditTextText };
+             { EditTextCharSequence @= BoundEditTextText };
+             { TextColor @= EditTextColor };
+             { Typeface @- ToFont(this, &apos;italic&apos;) }"/>
+
+        <Button
+                binding="{ Click @= ClearEditTextText }"
+                android:text="clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/edittext_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/edittext"
+            android:textSize="20sp"
+            tools:text="bound to edittext"
+            binding="{ Text @= TextViewBoundToEditText }; { Click @- TextViewClick }; { LongClick @- TextViewLongClick }; { Typeface @- ToFont(this) }"/>
 
 </RelativeLayout>
