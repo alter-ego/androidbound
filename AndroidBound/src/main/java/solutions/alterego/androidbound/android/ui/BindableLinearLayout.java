@@ -47,11 +47,11 @@ public class BindableLinearLayout extends LinearLayout implements INotifyPropert
     }
 
     public ICommand getLongClick() {
-        return mDelegate.getClick();
+        return mDelegate.getLongClick();
     }
 
     public void setLongClick(ICommand value) {
-        mDelegate.setClick(value);
+        mDelegate.setLongClick(value);
     }
 
     public int getBackgroundColor() {

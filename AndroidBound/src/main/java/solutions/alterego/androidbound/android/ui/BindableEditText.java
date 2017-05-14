@@ -78,11 +78,11 @@ public class BindableEditText extends AppCompatEditText implements INotifyProper
     }
 
     public ICommand getLongClick() {
-        return mDelegate.getClick();
+        return mDelegate.getLongClick();
     }
 
     public void setLongClick(ICommand value) {
-        mDelegate.setClick(value);
+        mDelegate.setLongClick(value);
     }
 
     public int getBackgroundColor() {
