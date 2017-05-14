@@ -23,7 +23,7 @@ public class ListViewWithObjectsActivityViewModel extends ViewModel {
     private String mListViewActivityTitle;
 
     @Getter
-    private String mOpenMainActivityText;
+    private String mOpenMainActivityText = "Open main activity";
 
     @Getter
     private List<Object> mExampleList = new ArrayList<Object>();

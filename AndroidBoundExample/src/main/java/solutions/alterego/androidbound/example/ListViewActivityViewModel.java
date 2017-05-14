@@ -21,7 +21,7 @@ public class ListViewActivityViewModel extends ViewModel {
     private String mListViewActivityTitle;
 
     @Getter
-    private String mOpenMainActivityText;
+    private String mOpenMainActivityText = "Open main activity";
 
     @Getter
     private List<ListViewItem> mExampleList = new ArrayList<ListViewItem>();

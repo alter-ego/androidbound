@@ -23,7 +23,7 @@ public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
     private String mListViewActivityTitle;
 
     @Getter
-    private String mOpenMainActivityText;
+    private String mOpenMainActivityText = "Open main activity";
 
     @Getter
     private List<Object> mExampleListLinear = new ArrayList<Object>();
