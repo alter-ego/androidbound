@@ -12,7 +12,7 @@ import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
-public class MainBindableActivityViewModel extends ViewModel {
+public class MainBindingActivityViewModel extends ViewModel {
 
     @Getter
     private String mMainActivityTitle;
@@ -23,7 +23,7 @@ public class MainBindableActivityViewModel extends ViewModel {
     @Getter
     private boolean mTextViewVisible = false;
 
-    public MainBindableActivityViewModel(Activity activity, ILogger logger) {
+    public MainBindingActivityViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
         setParentActivity(activity);
 
