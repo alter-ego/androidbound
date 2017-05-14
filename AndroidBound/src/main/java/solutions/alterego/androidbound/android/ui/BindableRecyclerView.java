@@ -3,6 +3,7 @@ package solutions.alterego.androidbound.android.ui;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
@@ -28,6 +29,12 @@ import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 @Accessors(prefix = "m")
 public class BindableRecyclerView extends RecyclerView implements IBindableView, INotifyPropertyChanged, RecyclerView.OnItemTouchListener {
+
+    public static final String LAYOUTMANAGER_LINEAR ="linear";
+
+    public static final String LAYOUTMANAGER_STAGGERED = "staggered";
+
+    public static final String LAYOUTMANAGER_ORIENTATION_HORIZONTAL = "horizontal";
 
     @Accessors(prefix = "m")
     private final class PageScrollListener extends OnScrollListener {
@@ -120,12 +127,36 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
                         .setStartPage(1)
                         .setThreshold(5).build();
 
-        mItemTemplate = getItemTemplate(context, attrs);
+        mItemTemplate = getItemTemplate(attrs);
         mTemplatesForObjects = new HashMap<>();
+        setLayoutManager(getLayoutManager(attrs));
+        setNestedScrollingEnabled(false);
     }
 
-    private int getItemTemplate(Context context, AttributeSet attrs) {
+    private int getItemTemplate(AttributeSet attrs) {
         return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableListView.itemTemplate, 0);
+    }
+
+    private LayoutManager getLayoutManager(AttributeSet attrs) {
+        LayoutManager layoutManager = new LinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false); //default
+
+        String managerType = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManager);
+        String managerOrientationString = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerOrientation);
+        boolean reverseLayout = attrs.getAttributeBooleanValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerReverse, false);
+        int spanCount = attrs.getAttributeIntValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerSpanCount, 1);
+
+        int managerOrientation = OrientationHelper.VERTICAL;
+        if ((LAYOUTMANAGER_ORIENTATION_HORIZONTAL).equalsIgnoreCase(managerOrientationString)) {
+            managerOrientation = OrientationHelper.HORIZONTAL;
+        }
+
+        if ((LAYOUTMANAGER_LINEAR).equalsIgnoreCase(managerType)) {
+            layoutManager = new LinearLayoutManager(getContext(), managerOrientation, reverseLayout);
+        } else if ((LAYOUTMANAGER_STAGGERED).equalsIgnoreCase(managerType)) {
+            layoutManager = new StaggeredGridLayoutManager(spanCount, managerOrientation);
+        }
+
+        return layoutManager;
     }
 
     public List<?> getItemsSource() {

@@ -15,6 +15,18 @@ public final class BindingResources {
 
         }
 
+        public static final class BindableRecyclerView {
+
+            public static final String layoutManager = "layoutManager";
+
+            public static final String layoutManagerOrientation = "layoutManagerOrientation";
+
+            public static final String layoutManagerReverse = "layoutManagerReverse";
+
+            public static final String layoutManagerSpanCount = "layoutManagerSpanCount";
+
+        }
+
     }
 }
 
