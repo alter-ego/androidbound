@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.example;
+package solutions.alterego.androidbound.example.util;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;

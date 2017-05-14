@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.example;
+package solutions.alterego.androidbound.example.util;
 
 import com.alterego.advancedandroidlogger.implementations.DetailedAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;

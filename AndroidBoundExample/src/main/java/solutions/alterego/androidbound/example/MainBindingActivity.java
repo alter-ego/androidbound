@@ -8,6 +8,8 @@ import android.os.Bundle;
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.android.BindingAppCompatActivity;
 import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
+import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
+import solutions.alterego.androidbound.example.util.CustomValueConverters;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
