@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
@@ -242,17 +239,6 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
                 }
             }
         }
-
-        if (getBoundActivity() instanceof AppCompatActivity) {
-            List<Fragment> fragments = ((AppCompatActivity) getBoundActivity()).getSupportFragmentManager().getFragments();
-            if (fragments != null) {
-                for (Fragment fragment : fragments) {
-                    if (fragment instanceof INeedsNewIntent) {
-                        ((INeedsNewIntent) fragment).onNewIntent(newIntent);
-                    }
-                }
-            }
-        }
     }
 
     @Override
@@ -273,23 +259,11 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
 
     @Override
     public void setLogger(ILogger logger) {
-
         mLogger = logger;
 
         if (getViewModels() != null) {
             for (ViewModel viewModel : getViewModels().values()) {
                 viewModel.setLogger(getLogger());
-            }
-        }
-
-        if (getBoundActivity() instanceof AppCompatActivity) {
-            List<Fragment> fragments = ((AppCompatActivity) getBoundActivity()).getSupportFragmentManager().getFragments();
-            if (fragments != null) {
-                for (Fragment fragment : fragments) {
-                    if (fragment instanceof INeedsLogger) {
-                        ((INeedsLogger) fragment).setLogger(logger);
-                    }
-                }
             }
         }
     }
