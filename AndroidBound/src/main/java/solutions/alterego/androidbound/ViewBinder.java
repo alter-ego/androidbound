@@ -73,6 +73,8 @@ public class ViewBinder implements IViewBinder {
 
     private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
 
+    @Getter
+    private boolean mDebugMode;
 
     public ViewBinder(Context ctx) {
         setContext(ctx);
@@ -101,6 +103,11 @@ public class ViewBinder implements IViewBinder {
         setFontManager(new FontManager(getLogger()));
 
         registerDefaultConverters();
+    }
+
+    @Override
+    public void setDebug(boolean debugMode) {
+        mDebugMode = debugMode;
     }
 
     @Override
@@ -248,6 +255,15 @@ public class ViewBinder implements IViewBinder {
         mBoundViews.remove(view);
 
         mLogger.verbose("clearBindingsFor finished for view = " + view + ", remaining bound views size = " + mBoundViews.size());
+
+        if (isDebugMode()) {
+            for (View remainingview : mBoundViews.keySet()) {
+                if (remainingview.getContext() == view.getContext()) {
+                    mLogger.verbose(
+                            "clearBindingsFor found another remaining view with the same context as " + view + ", context = " + view.getContext() + ", found remaining view = " + remainingview);
+                }
+            }
+        }
     }
 
     @Override

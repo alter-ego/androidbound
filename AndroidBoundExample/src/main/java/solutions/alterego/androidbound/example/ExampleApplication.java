@@ -37,6 +37,7 @@ public class ExampleApplication extends Application {
         LeakCanary.install(this);
 
         mViewBinder = new ViewBinder(this, new AdvancedAndroidLoggerAdapter(LOGGING_TAG, LOGGING_LEVEL));
+        mViewBinder.setDebug(true); //TODO for testing!
         mViewBinder.setImageLoader(new UILImageLoader(this, null));
         mViewBinder.getFontManager().setDefaultFont(Typeface.createFromAsset(getAssets(), "Roboto-Regular.ttf"));
         mViewBinder.getFontManager().registerFont("light", Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf"));
