@@ -2,7 +2,6 @@ package solutions.alterego.androidbound.example;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -13,7 +12,8 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
-import solutions.alterego.androidbound.android.interfaces.INeedsBoundView;
+import solutions.alterego.androidbound.example.listviewitems.ListViewItem;
+import solutions.alterego.androidbound.example.listviewitems.ListViewItem2;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
@@ -50,7 +50,7 @@ public class ListViewWithObjectsActivityViewModel extends ViewModel {
     // we're not adding ListViewItem layout because that will use the default layout declared in XML
     public Map<Class<?>, Integer> getLVTemplatesForObjects() {
         Map<Class<?>, Integer> objectTemplates = new HashMap<Class<?>, Integer>();
-        objectTemplates.put(ListViewWithObjectsActivityViewModel.ListViewItem2.class, R.layout.activity_listview_listitem2);
+        objectTemplates.put(ListViewItem2.class, R.layout.activity_listview_listitem2);
         return objectTemplates;
     }
 
@@ -90,37 +90,6 @@ public class ListViewWithObjectsActivityViewModel extends ViewModel {
 
         if (getParentActivity() != null) {
             getParentActivity().startActivity(activityIntent);
-        }
-    }
-
-    public static class ListViewItem implements INeedsBoundView {
-
-        @Getter
-        private String mTitle;
-
-        @Getter
-        private String mImageUrl = "https://www.google.co.uk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
-
-        public ListViewItem(String title) {
-            mTitle = title;
-        }
-
-        @Override
-        public void setBoundView(View view) {
-            android.util.Log.i(MainActivity.LOGGING_TAG, "setBoundView = " + view);
-        }
-    }
-
-    public static class ListViewItem2 {
-
-        @Getter
-        private String mTitle;
-
-        @Getter
-        private String mImageUrl = "http://icons.iconarchive.com/icons/danleech/simple/128/android-icon.png";
-
-        public ListViewItem2(String title) {
-            mTitle = title;
         }
     }
 
