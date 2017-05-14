@@ -27,8 +27,8 @@
             android:layout_below="@+id/activity_title"
             android:textSize="16sp"
             android:layout_margin="16dp"
-            android:text="open main activity"
-            binding="{ Click @- OpenMainActivity }"/>
+            tools:text="open main activity"
+            binding="{ Text @= OpenMainActivityText }; { Click @- OpenMainActivity }"/>
 
     <ListView
             android:id="@+id/listview"
@@ -40,6 +40,6 @@
             android:listSelector="@android:color/transparent"
             android:dividerHeight="1dp"
             itemTemplate="@layout/activity_listview_listitem"
-            binding="{Click @- SelectListItem}; {ItemsSource @= ExampleList}"/>
+            binding="{Click @- SelectListItem}; {TemplatesForObjects @- LVTemplatesForObjects}; {ItemsSource @= ExampleList}"/>
 
 </RelativeLayout>

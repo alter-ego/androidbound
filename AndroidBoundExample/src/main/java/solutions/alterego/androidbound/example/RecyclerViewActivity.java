@@ -4,18 +4,19 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.codemonkeylabs.fpslibrary.TinyDancer;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
 
-import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.android.BindingAppCompatActivity;
 import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
-import solutions.alterego.androidbound.example.viewmodels.ListViewActivityViewModel;
+import solutions.alterego.androidbound.example.viewmodels.RecyclerViewActivityViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
-
-public class ListViewActivity extends BindingAppCompatActivity {
+public class RecyclerViewActivity extends BindingAppCompatActivity {
 
     public static final String LOGGING_TAG = "TEST_APP";
 
@@ -29,13 +30,18 @@ public class ListViewActivity extends BindingAppCompatActivity {
         ILogger logger = new AdvancedAndroidLoggerAdapter(LOGGING_TAG, LOGGING_LEVEL);
         TinyDancer.create().show(this);
 
-        ViewBinder viewBinder = new ViewBinder(this, NullLogger.instance);
+        ViewBinder viewBinder = new ViewBinder(this, logger);
         viewBinder.setImageLoader(new UILImageLoader(this, null));
         setViewBinder(viewBinder);
 
-        setContentView(R.layout.activity_listview, new ListViewActivityViewModel(this, logger));
+        setContentView(R.layout.activity_recyclerview, new RecyclerViewActivityViewModel(this, logger));
 
-        setTitle("ListViewActivity");
+        //to test that the normal recycler view still works without any problems
+        RecyclerView recyclerViewNormal = (RecyclerView) findViewById(R.id.recyclerview_normal);
+        recyclerViewNormal.setNestedScrollingEnabled(false);
+        LinearLayoutManager layoutManagerLinearNormal = new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
+        recyclerViewNormal.setLayoutManager(layoutManagerLinearNormal);
+        recyclerViewNormal.setAdapter(new RecyclerViewNormalAdapter(this));
     }
 
     @Override

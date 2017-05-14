@@ -37,6 +37,10 @@
                 android:label="@string/title_activity_LVWithObjects"/>
 
         <activity
+                android:name=".RecyclerViewActivity"
+                android:label="@string/title_activity_RV"/>
+
+        <activity
                 android:name=".RecyclerViewWithObjectsActivity"
                 android:label="@string/title_activity_RVWithObjects"/>
         <activity

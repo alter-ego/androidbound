@@ -3,17 +3,14 @@ package solutions.alterego.androidbound.example;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.codemonkeylabs.fpslibrary.TinyDancer;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.android.BindingAppCompatActivity;
-import solutions.alterego.androidbound.android.ui.BindableListView;
 import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
+import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
+import solutions.alterego.androidbound.example.viewmodels.ListViewWithObjectsActivityViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
@@ -36,14 +33,6 @@ public class ListViewWithObjectsActivity extends BindingAppCompatActivity {
         setViewBinder(viewBinder);
 
         setContentView(R.layout.activity_listview, new ListViewWithObjectsActivityViewModel(this, logger));
-
-        //populating map with object-layout relationships
-        // we're not adding ListViewItem layout because that will use the default layout declared in XML
-        @SuppressLint("WrongViewCast") BindableListView lv = (BindableListView) findViewById(R.id.listview);
-        Map<Class<?>, Integer> objectTemplates = new HashMap<Class<?>, Integer>();
-        objectTemplates.put(ListViewWithObjectsActivityViewModel.ListViewItem2.class, R.layout.activity_listview_listitem2);
-
-        lv.setTemplatesForObjects(objectTemplates);
     }
 
     @Override

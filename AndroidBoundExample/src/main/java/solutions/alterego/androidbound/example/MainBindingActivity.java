@@ -1,6 +1,5 @@
 package solutions.alterego.androidbound.example;
 
-import com.alterego.advancedandroidlogger.implementations.DetailedAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.graphics.Typeface;
@@ -9,6 +8,9 @@ import android.os.Bundle;
 import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.android.BindingAppCompatActivity;
 import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
+import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
+import solutions.alterego.androidbound.example.util.CustomValueConverters;
+import solutions.alterego.androidbound.example.viewmodels.MainBindingActivityViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
@@ -37,7 +39,7 @@ public class MainBindingActivity extends BindingAppCompatActivity {
 
         setViewBinder(viewBinder);
 
-        setContentView(R.layout.activity_bindable_main, new MainBindableActivityViewModel(this, logger));
+        setContentView(R.layout.activity_bindable_main, new MainBindingActivityViewModel(this, logger));
 
         setTitle("MainBindingActivity");
     }

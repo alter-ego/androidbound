@@ -11,20 +11,21 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import solutions.alterego.androidbound.example.listviewitems.ListViewItem;
+
 public class RecyclerViewNormalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int listSize = 10;
 
     private Context mContext;
 
-    private List<RecyclerViewWithObjectsActivityViewModel.ListViewItem> mListViewItems
-            = new ArrayList<RecyclerViewWithObjectsActivityViewModel.ListViewItem>();
+    private List<ListViewItem> mListViewItems = new ArrayList<ListViewItem>();
 
     public RecyclerViewNormalAdapter(@NonNull Context context) {
         mContext = context;
 
         for (int i = 0; i < listSize; i++) {
-            mListViewItems.add(new RecyclerViewWithObjectsActivityViewModel.ListViewItem(Integer.toString(i)));
+            mListViewItems.add(new ListViewItem(Integer.toString(i)));
         }
     }
 
@@ -55,7 +56,7 @@ public class RecyclerViewNormalAdapter extends RecyclerView.Adapter<RecyclerView
             textView = (TextView) itemView.findViewById(R.id.text);
         }
 
-        public void onBindViewHolder(@NonNull RecyclerViewWithObjectsActivityViewModel.ListViewItem item) {
+        public void onBindViewHolder(@NonNull ListViewItem item) {
             textView.setText(item.getTitle());
         }
     }

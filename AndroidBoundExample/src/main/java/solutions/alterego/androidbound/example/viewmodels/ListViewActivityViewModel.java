@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.example;
+package solutions.alterego.androidbound.example.viewmodels;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,9 @@ import java.util.List;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.example.ListItemDetailActivity;
+import solutions.alterego.androidbound.example.MainActivity;
+import solutions.alterego.androidbound.example.listviewitems.ListViewItem;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
@@ -21,7 +24,7 @@ public class ListViewActivityViewModel extends ViewModel {
     private String mListViewActivityTitle;
 
     @Getter
-    private String mOpenMainActivityText;
+    private String mOpenMainActivityText = "Open main activity";
 
     @Getter
     private List<ListViewItem> mExampleList = new ArrayList<ListViewItem>();
@@ -67,18 +70,6 @@ public class ListViewActivityViewModel extends ViewModel {
 
         if (getParentActivity() != null) {
             getParentActivity().startActivity(activityIntent);
-        }
-    }
-
-    public static class ListViewItem {
-        @Getter
-        private String mTitle;
-
-        @Getter
-        private String mImageUrl = "https://www.google.co.uk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
-
-        public ListViewItem(String title) {
-            mTitle = title;
         }
     }
 

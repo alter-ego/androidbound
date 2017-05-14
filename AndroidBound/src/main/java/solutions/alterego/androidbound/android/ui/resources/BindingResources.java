@@ -9,36 +9,22 @@ public final class BindingResources {
             public static final String binding = "binding";
         }
 
-        public static final class BindableTextView {
-
-            public static final String textSize = "textSize";
-
-            public static final String textColor = "textColor";
-        }
-
         public static final class BindableListView {
 
             public static final String itemTemplate = "itemTemplate";
 
-            public static final String listHeaderTemplate = "listHeaderTemplate";
-
-            public static final String listFooterTemplate = "listFooterTemplate";
         }
 
-        public static final class BindableSectionListView {
+        public static final class BindableRecyclerView {
 
-            public static final String itemTemplate = "itemTemplate";
+            public static final String layoutManager = "layoutManager";
 
-            public static final String headerTemplate = "headerTemplate";
-        }
+            public static final String layoutManagerOrientation = "layoutManagerOrientation";
 
-        public static final class BindableSectionGridView {
+            public static final String layoutManagerReverse = "layoutManagerReverse";
 
-            public static final String itemTemplate = "itemTemplate";
+            public static final String layoutManagerSpanCount = "layoutManagerSpanCount";
 
-            public static final String gridTemplate = "gridTemplate";
-
-            public static final String numberOfItemsInRow = "numberOfItemsInRow";
         }
 
     }
