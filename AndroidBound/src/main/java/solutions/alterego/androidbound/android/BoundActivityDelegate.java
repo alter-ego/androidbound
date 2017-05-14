@@ -204,6 +204,7 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
                 && boundActivityRef.getWindow() != null
                 && boundActivityRef.getWindow().getDecorView() != null) {
             getViewBinder().clearBindingForViewAndChildren(getBoundActivity().getWindow().getDecorView().getRootView());
+            getViewBinder().disposeOf(mBoundActivity.get());
         }
 
         if (getViewModels() != null) {

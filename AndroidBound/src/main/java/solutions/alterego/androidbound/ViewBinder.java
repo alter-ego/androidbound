@@ -111,6 +111,17 @@ public class ViewBinder implements IViewBinder {
     }
 
     @Override
+    public void disposeOf(Context ctx) {
+        getLogger().verbose("disposing of context = " + ctx);
+
+        for (View view : mBoundViews.keySet()) {
+            if (view.getContext() == ctx) {
+                clearBindingsFor(view); //it doesn't go deep because we're gonna get all of them anyway
+            }
+        }
+    }
+
+    @Override
     public void setContext(Context ctx) {
         if (getContext() != ctx) {
             getLogger().verbose("old context = " + mContext + ", new context = " + ctx);

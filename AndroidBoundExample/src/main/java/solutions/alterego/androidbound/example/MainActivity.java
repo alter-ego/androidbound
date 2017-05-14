@@ -23,12 +23,14 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewModel mViewModel;
 
+    private IViewBinder mViewBinder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ILogger logger = new AdvancedAndroidLoggerAdapter(LOGGING_TAG, LOGGING_LEVEL);
 
-        IViewBinder mViewBinder = ExampleApplication.getViewBinder();
+        mViewBinder = ExampleApplication.getViewBinder();
 
         mViewBinder.getFontManager().setDefaultFont(Typeface.createFromAsset(getAssets(), "Roboto-Bold.ttf"));
         mViewBinder.getFontManager().registerFont("light", Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf"));
@@ -67,5 +69,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mViewModel.dispose();
+        mViewBinder.disposeOf(this);
     }
 }
