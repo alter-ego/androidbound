@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -64,9 +64,9 @@ public class ViewBinder implements IViewBinder {
 
     private TextSpecificationBinder mBinder;
 
-    private Map<View, List<IBindingAssociationEngine>> mBoundViews = new HashMap<View, List<IBindingAssociationEngine>>();
+    private Map<View, List<IBindingAssociationEngine>> mBoundViews = new ConcurrentHashMap<>();
 
-    private Map<View, String> mLazyBoundViews = new HashMap<>();
+    private Map<View, String> mLazyBoundViews = new ConcurrentHashMap<>();
 
     @Getter
     private IFontManager mFontManager;
