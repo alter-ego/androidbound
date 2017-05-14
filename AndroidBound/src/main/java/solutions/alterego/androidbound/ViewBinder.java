@@ -73,9 +73,6 @@ public class ViewBinder implements IViewBinder {
 
     private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
 
-    public ViewBinder() {
-        init();
-    }
 
     public ViewBinder(Context ctx) {
         setContext(ctx);
