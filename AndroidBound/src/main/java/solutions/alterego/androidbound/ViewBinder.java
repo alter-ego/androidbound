@@ -105,12 +105,16 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public void setContext(Context ctx) {
-        if (mContext != null) {
-            mContext.clear();
-        }
+        if (getContext() != ctx) {
+            getLogger().verbose("old context = " + mContext + ", new context = " + ctx);
 
-        if (ctx != null) {
-            mContext = new WeakReference<>(ctx);
+            if (mContext != null) {
+                mContext.clear();
+            }
+
+            if (ctx != null) {
+                mContext = new WeakReference<>(ctx);
+            }
         }
     }
 
@@ -220,7 +224,7 @@ public class ViewBinder implements IViewBinder {
             return;
         }
 
-        mLogger.verbose("clearBindingsFor view = " + view);
+        mLogger.verbose("clearBindingsFor view = " + view + ", current bound views size = " + mBoundViews.size());
 
         if (mLazyBoundViews.containsKey(view)) {
             mLazyBoundViews.remove(view);
@@ -242,6 +246,8 @@ public class ViewBinder implements IViewBinder {
 
         bindings.clear();
         mBoundViews.remove(view);
+
+        mLogger.verbose("clearBindingsFor finished for view = " + view + ", remaining bound views size = " + mBoundViews.size());
     }
 
     @Override
