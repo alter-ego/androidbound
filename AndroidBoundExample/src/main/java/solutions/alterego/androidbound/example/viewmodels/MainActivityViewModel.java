@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.example;
+package solutions.alterego.androidbound.example.viewmodels;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.example.ListViewActivity;
+import solutions.alterego.androidbound.example.ListViewWithObjectsActivity;
+import solutions.alterego.androidbound.example.MainBindingActivity;
+import solutions.alterego.androidbound.example.PaginatedRecyclerViewActivity;
+import solutions.alterego.androidbound.example.R;
+import solutions.alterego.androidbound.example.RecyclerViewWithObjectsActivity;
 import solutions.alterego.androidbound.example.fragment.TestFragmentActivity;
 import solutions.alterego.androidbound.interfaces.ILogger;
 

@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.example;
+package solutions.alterego.androidbound.example.viewmodels;
 
 import android.app.Activity;
 

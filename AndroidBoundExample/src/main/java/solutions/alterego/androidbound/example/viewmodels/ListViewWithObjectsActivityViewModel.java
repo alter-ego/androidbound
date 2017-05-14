@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.example;
+package solutions.alterego.androidbound.example.viewmodels;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,6 +12,9 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.example.ListItemDetailActivity;
+import solutions.alterego.androidbound.example.MainActivity;
+import solutions.alterego.androidbound.example.R;
 import solutions.alterego.androidbound.example.listviewitems.ListViewItem;
 import solutions.alterego.androidbound.example.listviewitems.ListViewItem2;
 import solutions.alterego.androidbound.interfaces.ILogger;

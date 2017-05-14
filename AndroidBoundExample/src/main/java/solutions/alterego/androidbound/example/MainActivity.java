@@ -11,6 +11,7 @@ import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
+import solutions.alterego.androidbound.example.viewmodels.MainActivityViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 
