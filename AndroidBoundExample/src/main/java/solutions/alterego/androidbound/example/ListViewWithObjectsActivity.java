@@ -5,10 +5,7 @@ import com.codemonkeylabs.fpslibrary.TinyDancer;
 
 import android.os.Bundle;
 
-import solutions.alterego.androidbound.NullLogger;
-import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.android.BindingAppCompatActivity;
-import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.example.viewmodels.ListViewWithObjectsActivityViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
@@ -20,36 +17,23 @@ public class ListViewWithObjectsActivity extends BindingAppCompatActivity {
 
     private static final IAndroidLogger.LoggingLevel LOGGING_LEVEL = IAndroidLogger.LoggingLevel.VERBOSE;
 
-    private IViewBinder mViewBinder;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ILogger logger = new AdvancedAndroidLoggerAdapter(LOGGING_TAG, LOGGING_LEVEL);
         TinyDancer.create().show(this);
 
-        ViewBinder viewBinder = new ViewBinder(this, NullLogger.instance);
-        viewBinder.setImageLoader(new UILImageLoader(this, null));
-        setViewBinder(viewBinder);
+        setLogger(logger);
 
         setContentView(R.layout.activity_listview, new ListViewWithObjectsActivityViewModel(this, logger));
     }
 
     @Override
     public IViewBinder getViewBinder() {
-        return mViewBinder;
+        return ExampleApplication.getViewBinder();
     }
 
     @Override
     public void setViewBinder(IViewBinder viewBinder) {
-        mViewBinder = viewBinder;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (getViewBinder() != null) {
-            getViewBinder().dispose();
-        }
     }
 }

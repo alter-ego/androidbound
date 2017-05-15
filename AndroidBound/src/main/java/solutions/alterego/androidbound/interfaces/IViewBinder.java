@@ -50,4 +50,8 @@ public interface IViewBinder extends IResourceRegistry, IValueConverterRegistry,
     void setContext(Context context);
 
     IFontManager getFontManager();
+
+    void setDebug(boolean debugMode);
+
+    void disposeOf(Context context);
 }

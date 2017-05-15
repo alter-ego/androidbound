@@ -256,7 +256,7 @@ public class BoundFragmentDelegate
                 && getViewBinder() != null
                 && boundActivityRef.getWindow() != null
                 && boundActivityRef.getWindow().getDecorView() != null) {
-            getViewBinder().clearBindingForViewAndChildren(getBoundActivity().getWindow().getDecorView().getRootView());
+            getViewBinder().clearBindingForViewAndChildren(getBoundActivity().getWindow().getDecorView());
         }
 
         if (getViewModels() != null) {

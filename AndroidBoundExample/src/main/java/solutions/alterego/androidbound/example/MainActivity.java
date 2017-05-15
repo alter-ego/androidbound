@@ -7,12 +7,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.example.viewmodels.MainActivityViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
+import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -21,15 +21,16 @@ public class MainActivity extends AppCompatActivity {
 
     private static final IAndroidLogger.LoggingLevel LOGGING_LEVEL = IAndroidLogger.LoggingLevel.VERBOSE;
 
-    private ViewBinder mViewBinder;
-
     private ViewModel mViewModel;
+
+    private IViewBinder mViewBinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ILogger logger = new AdvancedAndroidLoggerAdapter(LOGGING_TAG, LOGGING_LEVEL);
-        mViewBinder = new ViewBinder(this, logger);
+
+        mViewBinder = ExampleApplication.getViewBinder();
 
         mViewBinder.getFontManager().setDefaultFont(Typeface.createFromAsset(getAssets(), "Roboto-Bold.ttf"));
         mViewBinder.getFontManager().registerFont("light", Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf"));
@@ -68,11 +69,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mViewModel.dispose();
-
-        //you shouldn't actually dispose of the view binder, it should be global (injected via Dagger maybe)!
-        //this is just for demonstration purposes
-        if (mViewBinder != null) {
-            mViewBinder.dispose();
-        }
+        mViewBinder.disposeOf(this);
     }
 }

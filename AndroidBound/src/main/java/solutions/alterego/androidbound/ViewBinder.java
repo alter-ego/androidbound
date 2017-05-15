@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -64,18 +64,17 @@ public class ViewBinder implements IViewBinder {
 
     private TextSpecificationBinder mBinder;
 
-    private Map<View, List<IBindingAssociationEngine>> mBoundViews = new HashMap<View, List<IBindingAssociationEngine>>();
+    private Map<View, List<IBindingAssociationEngine>> mBoundViews = new ConcurrentHashMap<>();
 
-    private Map<View, String> mLazyBoundViews = new HashMap<>();
+    private Map<View, String> mLazyBoundViews = new ConcurrentHashMap<>();
 
     @Getter
     private IFontManager mFontManager;
 
     private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
 
-    public ViewBinder() {
-        init();
-    }
+    @Getter
+    private boolean mDebugMode;
 
     public ViewBinder(Context ctx) {
         setContext(ctx);
@@ -107,13 +106,33 @@ public class ViewBinder implements IViewBinder {
     }
 
     @Override
-    public void setContext(Context ctx) {
-        if (mContext != null) {
-            mContext.clear();
-        }
+    public void setDebug(boolean debugMode) {
+        mDebugMode = debugMode;
+    }
 
-        if (ctx != null) {
-            mContext = new WeakReference<>(ctx);
+    @Override
+    public void disposeOf(Context ctx) {
+        getLogger().verbose("disposing of context = " + ctx);
+
+        for (View view : mBoundViews.keySet()) {
+            if (view.getContext() == ctx) {
+                clearBindingsFor(view); //it doesn't go deep because we're gonna get all of them anyway
+            }
+        }
+    }
+
+    @Override
+    public void setContext(Context ctx) {
+        if (getContext() != ctx) {
+            getLogger().verbose("old context = " + mContext + ", new context = " + ctx);
+
+            if (mContext != null) {
+                mContext.clear();
+            }
+
+            if (ctx != null) {
+                mContext = new WeakReference<>(ctx);
+            }
         }
     }
 
@@ -223,7 +242,7 @@ public class ViewBinder implements IViewBinder {
             return;
         }
 
-        mLogger.verbose("clearBindingsFor view = " + view);
+        mLogger.verbose("clearBindingsFor view = " + view + ", current bound views size = " + mBoundViews.size());
 
         if (mLazyBoundViews.containsKey(view)) {
             mLazyBoundViews.remove(view);
@@ -245,6 +264,17 @@ public class ViewBinder implements IViewBinder {
 
         bindings.clear();
         mBoundViews.remove(view);
+
+        mLogger.verbose("clearBindingsFor finished for view = " + view + ", remaining bound views size = " + mBoundViews.size());
+
+        if (isDebugMode()) {
+            for (View remainingview : mBoundViews.keySet()) {
+                if (remainingview.getContext() == view.getContext()) {
+                    mLogger.verbose(
+                            "clearBindingsFor found another remaining view with the same context as " + view + ", context = " + view.getContext() + ", found remaining view = " + remainingview);
+                }
+            }
+        }
     }
 
     @Override

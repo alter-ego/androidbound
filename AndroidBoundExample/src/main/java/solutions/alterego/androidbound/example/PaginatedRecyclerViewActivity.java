@@ -8,10 +8,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 
-import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.android.BindingAppCompatActivity;
 import solutions.alterego.androidbound.android.ui.BindableRecyclerView;
-import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.example.viewmodels.PaginatedViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
@@ -21,8 +19,6 @@ public class PaginatedRecyclerViewActivity extends BindingAppCompatActivity {
 
     private static final IAndroidLogger.LoggingLevel LOGGING_LEVEL = IAndroidLogger.LoggingLevel.VERBOSE;
 
-    private IViewBinder mViewBinder;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,9 +26,7 @@ public class PaginatedRecyclerViewActivity extends BindingAppCompatActivity {
         ILogger logger = new AdvancedAndroidLoggerAdapter(PaginatedRecyclerViewActivity.class.getSimpleName(), LOGGING_LEVEL);
         TinyDancer.create().show(this);
 
-        ViewBinder viewBinder = new ViewBinder(this, logger);
-        viewBinder.setImageLoader(new UILImageLoader(this, null));
-        setViewBinder(viewBinder);
+        setLogger(logger);
 
         setContentView(R.layout.activity_paginated_recyclerview, new PaginatedViewModel(this, logger));
 
@@ -49,11 +43,10 @@ public class PaginatedRecyclerViewActivity extends BindingAppCompatActivity {
 
     @Override
     public IViewBinder getViewBinder() {
-        return mViewBinder;
+        return ExampleApplication.getViewBinder();
     }
 
     @Override
     public void setViewBinder(IViewBinder viewBinder) {
-        mViewBinder = viewBinder;
     }
 }
