@@ -21,7 +21,7 @@ android {
     defaultConfig {
         applicationId "solutions.alterego.androidbound.example"
         minSdkVersion 9
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
     }
