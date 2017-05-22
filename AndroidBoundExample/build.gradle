@@ -5,11 +5,9 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.3'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 
 repositories {
     jcenter()
@@ -48,7 +46,7 @@ android {
 dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:support-v4:25.1.0'
-    apt "org.projectlombok:lombok:1.16.2"
+    annotationProcessor "org.projectlombok:lombok:1.16.2"
     provided "org.projectlombok:lombok:1.16.2"
     compile 'net.danlew:android.joda:2.9.0'
     compile 'com.github.brianPlummer:tinydancer:0.0.9'
