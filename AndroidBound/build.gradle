@@ -83,10 +83,10 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.0'
 
     compile 'io.reactivex:rxandroid:1.2.1'
-    compile 'io.reactivex:rxjava:1.2.5'
+    compile 'io.reactivex:rxjava:1.2.9'
 
     provided 'javax.annotation:jsr250-api:1.0'
-    compile 'org.projectlombok:lombok:1.16.2'
+    compile 'org.projectlombok:lombok:1.16.12'
 
     // Testing
     testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
