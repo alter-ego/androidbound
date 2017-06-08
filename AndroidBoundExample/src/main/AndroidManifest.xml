@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="solutions.alterego.androidbound.example">
+        xmlns:tools="http://schemas.android.com/tools"
+        package="solutions.alterego.androidbound.example">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
-    <uses-sdk tools:overrideLibrary="com.codemonkeylabs.fpslibrary"/>
+    <uses-sdk tools:overrideLibrary="com.codemonkeylabs.fpslibrary" />
 
     <application
             android:name=".ExampleApplication"
@@ -17,41 +17,39 @@
                 android:name=".MainActivity"
                 android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
                 android:name=".MainBindingActivity"
-                android:label="@string/app_name">
-        </activity>
+                android:label="@string/app_name"/>
 
         <activity
                 android:name=".ListViewActivity"
-                android:label="@string/app_name">
-        </activity>
+                android:label="@string/app_name"></activity>
 
         <activity
                 android:name=".ListViewWithObjectsActivity"
-                android:label="@string/title_activity_LVWithObjects"/>
+                android:label="@string/title_activity_LVWithObjects" />
 
         <activity
                 android:name=".RecyclerViewActivity"
-                android:label="@string/title_activity_RV"/>
+                android:label="@string/title_activity_RV" />
 
         <activity
                 android:name=".RecyclerViewWithObjectsActivity"
-                android:label="@string/title_activity_RVWithObjects"/>
+                android:label="@string/title_activity_RVWithObjects" />
         <activity
                 android:name=".ListItemDetailActivity"
-                android:label="@string/app_name">
-        </activity>
+                android:label="@string/app_name"></activity>
 
         <activity
                 android:name=".PaginatedRecyclerViewActivity"
-                android:label="@string/app_name">
-        </activity>
+                android:label="@string/app_name"></activity>
+
+        <activity android:name=".nestedrvs.NestedRecyclerViewActivity" />
 
         <activity android:name=".fragment.TestFragmentActivity" />
 

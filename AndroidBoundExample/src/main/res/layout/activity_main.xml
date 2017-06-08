@@ -83,6 +83,14 @@
                 android:text="open paginated RV"
                 binding="{ Click @- OpenPaginatedRecyclerViewActivity }"/>
 
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open NESTED RV"
+                binding="{ Click @- OpenNestedRecyclerViewActivity }"/>
+
     </LinearLayout>
 
 </ScrollView>

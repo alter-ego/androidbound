@@ -3,11 +3,13 @@ package solutions.alterego.androidbound;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.LayoutInflater.Factory;
 import android.view.LayoutInflater.Factory2;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -194,6 +196,7 @@ public class ViewBinder implements IViewBinder {
             for (int childIndex = 0; childIndex < ((ViewGroup) view).getChildCount(); childIndex++) {
                 checkAndBindView(((ViewGroup) view).getChildAt(childIndex), source);
             }
+            bindViewToSource(source, view, mLazyBoundViews.get(view));
         } else if (mLazyBoundViews.containsKey(view)) {
             bindViewToSource(source, view, mLazyBoundViews.get(view));
             mLazyBoundViews.remove(view);
@@ -411,7 +414,11 @@ public class ViewBinder implements IViewBinder {
         ViewGroup vg = (ViewGroup) rootView;
 
         for (int i = 0; i < vg.getChildCount(); i++) {
-            getBindingsForViewAndChildrenRecursive(vg.getChildAt(i), bindings);
+            View view = vg.getChildAt(i);
+            if (view instanceof RecyclerView || view instanceof AbsListView) {
+                continue;
+            }
+            getBindingsForViewAndChildrenRecursive(view, bindings);
         }
         return bindings;
     }
