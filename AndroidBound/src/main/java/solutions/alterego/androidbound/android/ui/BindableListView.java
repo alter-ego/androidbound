@@ -28,7 +28,7 @@ import solutions.alterego.androidbound.interfaces.IViewBinder;
 @Accessors(prefix = "m")
 public class BindableListView extends ListView implements OnItemClickListener, OnItemLongClickListener, IBindableView, INotifyPropertyChanged {
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     private int itemTemplate;
 

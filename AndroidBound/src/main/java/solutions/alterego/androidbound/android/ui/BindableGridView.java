@@ -25,7 +25,7 @@ public class BindableGridView extends GridView implements OnItemClickListener, O
 
     private int itemTemplate;
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     private BindableListAdapter mAdapter;
 

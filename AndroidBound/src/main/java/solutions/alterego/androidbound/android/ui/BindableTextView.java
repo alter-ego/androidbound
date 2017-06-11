@@ -16,7 +16,7 @@ import solutions.alterego.androidbound.interfaces.ICommand;
 
 public class BindableTextView extends AppCompatTextView implements INotifyPropertyChanged {
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     public BindableTextView(Context context) {
         this(context, null);

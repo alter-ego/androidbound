@@ -15,7 +15,7 @@ import solutions.alterego.androidbound.interfaces.ICommand;
 
 public class BindableButton extends android.support.v7.widget.AppCompatButton implements INotifyPropertyChanged {
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     public BindableButton(Context context) {
         this(context, null);

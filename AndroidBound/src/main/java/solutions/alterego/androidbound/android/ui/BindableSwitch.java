@@ -18,7 +18,7 @@ import solutions.alterego.androidbound.interfaces.ICommand;
 @SuppressLint("NewApi")
 public class BindableSwitch extends Switch implements INotifyPropertyChanged {
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     public BindableSwitch(Context context) {
         this(context, null);

@@ -14,7 +14,7 @@ import solutions.alterego.androidbound.interfaces.ICommand;
 
 public class BindableHorizontalScrollView extends HorizontalScrollView implements INotifyPropertyChanged {
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     public BindableHorizontalScrollView(Context context) {
         this(context, null);

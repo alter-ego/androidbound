@@ -14,7 +14,7 @@ import solutions.alterego.androidbound.interfaces.ICommand;
 
 public class BindableScrollView extends ScrollView implements INotifyPropertyChanged {
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     public BindableScrollView(Context context) {
         this(context, null);

@@ -19,7 +19,7 @@ import solutions.alterego.androidbound.interfaces.ICommand;
 
 public class BindableImageView extends AppCompatImageView implements INotifyPropertyChanged, INeedsImageLoader {
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     private int currentResId;
 

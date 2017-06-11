@@ -15,7 +15,7 @@ import solutions.alterego.androidbound.interfaces.ICommand;
 
 public class BindableFrameLayout extends FrameLayout implements INotifyPropertyChanged {
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     public BindableFrameLayout(Context context) {
         this(context, null);

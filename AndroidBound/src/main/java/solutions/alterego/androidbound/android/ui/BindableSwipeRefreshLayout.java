@@ -15,7 +15,7 @@ import solutions.alterego.androidbound.interfaces.ICommand;
 
 public class BindableSwipeRefreshLayout extends SwipeRefreshLayout implements INotifyPropertyChanged, SwipeRefreshLayout.OnRefreshListener {
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     ICommand onRefresh = ICommand.empty;
 
