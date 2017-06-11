@@ -130,7 +130,6 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
         mItemTemplate = getItemTemplate(attrs);
         mTemplatesForObjects = new HashMap<>();
         setLayoutManager(getLayoutManager(attrs));
-        setNestedScrollingEnabled(false);
     }
 
     private int getItemTemplate(AttributeSet attrs) {
