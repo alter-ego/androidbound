@@ -14,7 +14,7 @@ import solutions.alterego.androidbound.interfaces.ICommand;
 
 public class BindableRelativeLayout extends RelativeLayout implements INotifyPropertyChanged {
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     public BindableRelativeLayout(Context context) {
         this(context, null);

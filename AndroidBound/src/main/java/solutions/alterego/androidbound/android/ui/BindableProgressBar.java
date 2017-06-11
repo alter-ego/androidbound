@@ -17,7 +17,7 @@ public class BindableProgressBar extends ProgressBar implements INotifyPropertyC
 
     private int mDrawableId;
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     public BindableProgressBar(Context context) {
         this(context, null);

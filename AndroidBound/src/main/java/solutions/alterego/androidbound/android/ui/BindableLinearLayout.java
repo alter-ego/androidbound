@@ -15,7 +15,7 @@ import solutions.alterego.androidbound.interfaces.ICommand;
 
 public class BindableLinearLayout extends LinearLayout implements INotifyPropertyChanged {
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     public BindableLinearLayout(Context context) {
         this(context, null);

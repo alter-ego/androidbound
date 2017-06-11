@@ -21,7 +21,7 @@ public class BindableSeekbar extends AppCompatSeekBar implements INotifyProperty
 
     private ICommand progressTrackChanged = ICommand.empty;
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     public BindableSeekbar(Context context) {
         this(context, null);

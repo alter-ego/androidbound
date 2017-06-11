@@ -15,7 +15,7 @@ import solutions.alterego.androidbound.interfaces.ICommand;
 
 public class BindableView extends View implements INotifyPropertyChanged {
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     public BindableView(Context context) {
         this(context, null, 0);

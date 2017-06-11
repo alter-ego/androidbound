@@ -16,7 +16,7 @@ import solutions.alterego.androidbound.interfaces.ICommand;
 
 public class BindableToggleButton extends ToggleButton implements INotifyPropertyChanged {
 
-    private BindableViewDelegate mDelegate;
+    protected BindableViewDelegate mDelegate;
 
     public BindableToggleButton(Context context) {
         this(context, null);
