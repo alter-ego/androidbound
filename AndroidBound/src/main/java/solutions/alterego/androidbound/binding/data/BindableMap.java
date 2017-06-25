@@ -133,7 +133,9 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
     }
 
     protected void raisePropertyChanged(String property) {
-        mPropertySubject.onNext(property);
+        if (property != null) {
+            mPropertySubject.onNext(property);
+        }
     }
 
     public static interface IValidator<K, V> {

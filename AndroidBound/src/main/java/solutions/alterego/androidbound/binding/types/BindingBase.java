@@ -43,7 +43,9 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
         if (mChanges == null) {
             return;
         }
-        mChanges.onNext(value);
+        if (value != null) {
+            mChanges.onNext(value);
+        }
     }
 
     protected void setupChanges(boolean hasChanges) {
