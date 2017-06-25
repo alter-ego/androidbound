@@ -13,7 +13,7 @@ import android.widget.GridView;
 
 import java.util.List;
 
-import rx.Observable;
+import io.reactivex.Observable;
 import solutions.alterego.androidbound.android.adapters.BindableListAdapter;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.android.ui.resources.BindingResources;

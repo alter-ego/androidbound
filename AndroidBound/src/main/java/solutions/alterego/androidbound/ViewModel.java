@@ -5,10 +5,10 @@ import android.os.Bundle;
 
 import java.lang.ref.WeakReference;
 
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import rx.Observable;
-import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.android.interfaces.IActivityLifecycle;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.IDisposable;
@@ -73,7 +73,7 @@ public class ViewModel implements INeedsLogger, INotifyPropertyChanged, IDisposa
         mCreated = false;
 
         if (propertyChanges != null) {
-            propertyChanges.onCompleted();
+            propertyChanges.onComplete();
         }
 
         if (mParentActivity != null && mParentActivity.get() != null) {

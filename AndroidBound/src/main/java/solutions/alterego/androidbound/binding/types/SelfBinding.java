@@ -2,13 +2,13 @@ package solutions.alterego.androidbound.binding.types;
 
 import java.security.InvalidParameterException;
 
-import rx.Subscription;
+import io.reactivex.disposables.Disposable;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class SelfBinding extends BindingBase {
 
-    private Subscription mSubscription;
+    private Disposable mDisposable;
 
     public SelfBinding(Object subject, ILogger logger) {
         super(subject, logger);
@@ -24,7 +24,7 @@ public class SelfBinding extends BindingBase {
             setupChanges(true);
             getLogger().debug("Subject implements INotifyPropertyChanged. Subscribing...");
 
-            mSubscription = ((INotifyPropertyChanged) subject)
+            mDisposable = ((INotifyPropertyChanged) subject)
                     .onPropertyChanged()
                     .filter(member -> member.equals("this"))
                     .subscribe(s -> {
@@ -66,9 +66,9 @@ public class SelfBinding extends BindingBase {
 
     @Override
     public void dispose() {
-        if (mSubscription != null) {
-            mSubscription.unsubscribe();
-            mSubscription = null;
+        if (mDisposable != null) {
+            mDisposable.dispose();
+            mDisposable = null;
         }
         super.dispose();
     }

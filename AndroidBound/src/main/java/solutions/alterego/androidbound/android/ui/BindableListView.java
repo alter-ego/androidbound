@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Observable;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import rx.Observable;
 import solutions.alterego.androidbound.android.adapters.BindableListAdapter;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.android.ui.resources.BindingResources;

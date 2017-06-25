@@ -2,10 +2,9 @@ package solutions.alterego.androidbound.binding;
 
 import java.util.Locale;
 
-import rx.Subscription;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.Subscriptions;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.disposables.Disposables;
+import io.reactivex.schedulers.Schedulers;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.binding.data.BindingMode;
 import solutions.alterego.androidbound.binding.data.BindingRequest;
@@ -27,13 +26,13 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
     private IBinding mTargetBinding;
 
-    private Subscription mSourceSubscription;
+    private Disposable mSourceDisposable;
 
-    private Subscription mTargetSubscription;
+    private Disposable mTargetDisposable;
 
-    private Subscription mSourceAccumulateSubscription = Subscriptions.unsubscribed();
+    private Disposable mSourceAccumulateDisposable = Disposables.disposed();
 
-    private Subscription mTargetAccumulateSubscription = Subscriptions.unsubscribed();
+    private Disposable mTargetAccumulateDisposable = Disposables.disposed();
 
     private ILogger mLogger = NullLogger.instance;
 
@@ -90,11 +89,11 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         if (mSourceBinding != null) {
             mSourceBinding.dispose();
         }
-        if (mSourceSubscription != null) {
-            mSourceSubscription.unsubscribe();
+        if (mSourceDisposable != null) {
+            mSourceDisposable.dispose();
         }
-        if (mSourceAccumulateSubscription != null) {
-            mSourceAccumulateSubscription.unsubscribe();
+        if (mSourceAccumulateDisposable != null) {
+            mSourceAccumulateDisposable.dispose();
         }
 
         createAccumulateSourceBinding(value);
@@ -109,23 +108,18 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
     }
 
     private void createSourceBinding(Object source) {
-        boolean needsSubs = needsSourceSubscription();
+        boolean needsSubs = needsSourceDisposable();
 
         mSourceBinding = mSourceFactory.create(source, mBindingSpecification.getPath(), needsSubs);
 
         if (needsSubs) {
             if (mSourceBinding.hasChanges()) {
-                mSourceSubscription = mSourceBinding.getChanges()
+                mSourceDisposable = mSourceBinding.getChanges()
                         .subscribeOn(Schedulers.computation())
-                        .subscribe(new Action1<Object>() {
-                            @Override
-                            public void call(Object obj) {
-                                updateTargetFromSource(obj);
-                            }
-                        });
+                        .subscribe(this::updateTargetFromSource);
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getPath()
-                        + " needs subscription, but changes were not available");
+                        + " needs Disposable, but changes were not available");
             }
         }
     }
@@ -135,36 +129,29 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         mTargetBinding = mTargetFactory.create(target, mBindingSpecification.getTarget(), needsSubs);
         if (needsSubs) {
             if (mTargetBinding.hasChanges()) {
-                mTargetSubscription = mTargetBinding.getChanges()
+                mTargetDisposable = mTargetBinding.getChanges()
                         .subscribeOn(Schedulers.computation())
-                        .subscribe(obj -> {
-                            removeItems(obj);
-                        });
+                        .subscribe(this::removeItems);
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getTarget()
-                        + " needs subscription, but changes were not available.");
+                        + " needs Disposable, but changes were not available.");
             }
         }
     }
 
     private void createTargetBinding(Object target) {
-        boolean needsSubs = needsTargetSubscription();
+        boolean needsSubs = needsTargetDisposable();
 
         mTargetBinding = mTargetFactory.create(target, mBindingSpecification.getTarget(), needsSubs);
 
         if (needsSubs) {
             if (mTargetBinding.hasChanges()) {
-                mTargetSubscription = mTargetBinding.getChanges()
+                mTargetDisposable = mTargetBinding.getChanges()
                         .subscribeOn(Schedulers.computation())
-                        .subscribe(new Action1<Object>() {
-                            @Override
-                            public void call(Object obj) {
-                                updateSourceFromTarget(obj);
-                            }
-                        });
+                        .subscribe(this::updateSourceFromTarget);
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getTarget()
-                        + " needs subscription, but changes were not available.");
+                        + " needs Disposable, but changes were not available.");
             }
         }
     }
@@ -177,14 +164,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
         if (needsSubs) {
             if (mSourceBinding.hasChanges()) {
-                mSourceAccumulateSubscription = mSourceBinding.getChanges()
+                mSourceAccumulateDisposable = mSourceBinding.getChanges()
                         .subscribeOn(Schedulers.computation())
-                        .subscribe(obj -> {
-                            accumulateItems(obj);
-                        });
+                        .subscribe(this::accumulateItems);
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getPath()
-                        + " needs subscription, but changes were not available");
+                        + " needs Disposable, but changes were not available");
             }
         }
     }
@@ -194,17 +179,17 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         mTargetBinding = mTargetFactory.create(target, mBindingSpecification.getTarget(), needsSubs);
         if (needsSubs) {
             if (mTargetBinding.hasChanges()) {
-                mTargetAccumulateSubscription = mTargetBinding.getChanges()
+                mTargetAccumulateDisposable = mTargetBinding.getChanges()
                         .subscribeOn(Schedulers.computation())
                         .subscribe(this::accumulateItemsToSource);
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getTarget()
-                        + " needs subscription, but changes were not available.");
+                        + " needs Disposable, but changes were not available.");
             }
         }
     }
 
-    private boolean needsSourceSubscription() {
+    private boolean needsSourceDisposable() {
         switch (mMode) {
             case Default:
             case OneWay:
@@ -215,7 +200,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
-    private boolean needsTargetSubscription() {
+    private boolean needsTargetDisposable() {
         switch (mMode) {
             case Default:
             case OneWayToSource:
@@ -358,11 +343,11 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
     }
 
     public void dispose() {
-        if (mSourceSubscription != null) {
-            mSourceSubscription.unsubscribe();
+        if (mSourceDisposable != null) {
+            mSourceDisposable.dispose();
         }
-        if (mTargetSubscription != null) {
-            mTargetSubscription.unsubscribe();
+        if (mTargetDisposable != null) {
+            mTargetDisposable.dispose();
         }
         if (mSourceBinding != null) {
             mSourceBinding.dispose();
@@ -371,7 +356,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             mTargetBinding.dispose();
         }
 
-        mTargetAccumulateSubscription.unsubscribe();
-        mSourceAccumulateSubscription.unsubscribe();
+        mTargetAccumulateDisposable.dispose();
+        mSourceAccumulateDisposable.dispose();
     }
 }

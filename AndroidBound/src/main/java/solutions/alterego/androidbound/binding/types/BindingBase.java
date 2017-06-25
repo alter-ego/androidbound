@@ -1,7 +1,7 @@
 package solutions.alterego.androidbound.binding.types;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.binding.interfaces.IBinding;
 import solutions.alterego.androidbound.interfaces.ILogger;
@@ -32,7 +32,7 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
         if (mChanges == null) {
             return NO_CHANGES;
         }
-        return mChanges.asObservable();
+        return mChanges.hide();
     }
 
     public boolean hasChanges() {
@@ -53,7 +53,7 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
             }
         } else {
             if (mChanges != null) {
-                mChanges.onCompleted();
+                mChanges.onComplete();
                 mChanges = null;
             }
         }
@@ -73,7 +73,7 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
 
     public void dispose() {
         if (mChanges != null) {
-            mChanges.onCompleted();
+            mChanges.onComplete();
         }
         mChanges = null;
     }

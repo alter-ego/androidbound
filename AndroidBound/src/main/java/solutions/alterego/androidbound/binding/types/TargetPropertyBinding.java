@@ -1,6 +1,6 @@
 package solutions.alterego.androidbound.binding.types;
 
-import rx.android.schedulers.AndroidSchedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class TargetPropertyBinding extends PropertyBinding {

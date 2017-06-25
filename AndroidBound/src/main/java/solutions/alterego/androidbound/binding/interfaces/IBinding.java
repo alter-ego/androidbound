@@ -1,6 +1,6 @@
 package solutions.alterego.androidbound.binding.interfaces;
 
-import rx.Observable;
+import io.reactivex.Observable;
 import solutions.alterego.androidbound.interfaces.IDisposable;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 

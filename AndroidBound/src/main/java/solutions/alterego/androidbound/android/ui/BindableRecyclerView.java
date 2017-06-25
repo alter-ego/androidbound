@@ -14,11 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import rx.Observable;
-import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.android.adapters.BindableRecyclerViewAdapter;
 import solutions.alterego.androidbound.android.adapters.PageDescriptor;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
@@ -297,7 +297,7 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
         disposed = true;
         if (propertyChanged != null) {
-            propertyChanged.onCompleted();
+            propertyChanged.onComplete();
         }
 
         propertyChanged = null;

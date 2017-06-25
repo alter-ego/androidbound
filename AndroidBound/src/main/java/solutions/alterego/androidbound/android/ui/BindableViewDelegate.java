@@ -5,10 +5,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import rx.Observable;
-import rx.subjects.PublishSubject;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
@@ -38,7 +38,7 @@ public class BindableViewDelegate implements INotifyPropertyChanged, View.OnClic
     }
 
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
-        if (mDisposed || mPropertyChanged == null || mPropertyChanged.hasCompleted()) {
+        if (mDisposed || mPropertyChanged == null || mPropertyChanged.hasComplete()) {
             return;
         }
 
@@ -142,8 +142,8 @@ public class BindableViewDelegate implements INotifyPropertyChanged, View.OnClic
 
         mDisposed = true;
 
-        if (mPropertyChanged != null && !mPropertyChanged.hasCompleted() && mPropertyChanged.hasObservers()) {
-            mPropertyChanged.onCompleted();
+        if (mPropertyChanged != null && !mPropertyChanged.hasComplete() && mPropertyChanged.hasObservers()) {
+            mPropertyChanged.onComplete();
             mPropertyChanged = null;
         }
 
