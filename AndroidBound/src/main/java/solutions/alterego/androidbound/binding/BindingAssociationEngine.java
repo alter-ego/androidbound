@@ -13,6 +13,7 @@ import solutions.alterego.androidbound.binding.interfaces.IBinding;
 import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
 import solutions.alterego.androidbound.factories.IBindingFactory;
 import solutions.alterego.androidbound.interfaces.ILogger;
+import solutions.alterego.androidbound.utils.Exceptional;
 
 public class BindingAssociationEngine implements IBindingAssociationEngine {
 
@@ -253,7 +254,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             if (obj != IBinding.noValue) {
                 result = mBindingSpecification
                         .getValueConverter()
-                        .convert(obj, mTargetBinding.getType(), mBindingSpecification.getConverterParameter(),
+                        .convert(unwrap(obj), mTargetBinding.getType(), mBindingSpecification.getConverterParameter(),
                                 Locale.getDefault());
 
             } else {
@@ -272,8 +273,9 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         try {
             Object result = mBindingSpecification
                     .getValueConverter()
-                    .convertBack(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
+                    .convertBack(unwrap(obj), mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
                             Locale.getDefault());
+
             mSourceBinding.setValue(result);
         } catch (Exception e) {
             mLogger.error("Error occurred while binding " + mBindingSpecification.getTarget() + " to source "
@@ -282,13 +284,20 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
+    private Object unwrap(Object obj) {
+        if (obj instanceof Exceptional) {
+            return ((Exceptional) obj).value();
+        }
+        return obj;
+    }
+
     private void removeItems(Object obj) {
         Object result;
         try {
             if (obj != IBinding.noValue) {
                 result = mBindingSpecification
                         .getValueConverter()
-                        .convert(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
+                        .convert(unwrap(obj), mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
                                 Locale.getDefault());
 
             } else {
@@ -309,7 +318,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             if (obj != IBinding.noValue) {
                 result = mBindingSpecification
                         .getValueConverter()
-                        .convert(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
+                        .convert(unwrap(obj), mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
                                 Locale.getDefault());
 
             } else {
@@ -328,7 +337,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         try {
             Object result = mBindingSpecification
                     .getValueConverter()
-                    .convertBack(obj, mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
+                    .convertBack(unwrap(obj), mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
                             Locale.getDefault());
             mSourceBinding.addValue(result);
         } catch (Exception e) {

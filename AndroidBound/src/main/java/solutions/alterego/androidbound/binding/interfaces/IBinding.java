@@ -3,6 +3,7 @@ package solutions.alterego.androidbound.binding.interfaces;
 import io.reactivex.Observable;
 import solutions.alterego.androidbound.interfaces.IDisposable;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
+import solutions.alterego.androidbound.utils.Exceptional;
 
 public interface IBinding extends IDisposable, INeedsLogger {
 
@@ -18,7 +19,7 @@ public interface IBinding extends IDisposable, INeedsLogger {
 
     boolean hasChanges();
 
-    Observable<Object> getChanges();
+    Observable<Exceptional<Object>> getChanges();
 
     void removeValue(Object result);
 }

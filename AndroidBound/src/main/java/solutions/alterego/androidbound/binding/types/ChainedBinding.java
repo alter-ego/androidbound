@@ -44,7 +44,7 @@ public class ChainedBinding extends PropertyBinding {
         }
 
         mCurrentBinding = mBindingFactory.create(currentValue, mTokens, this.mNeedChangesIfPossible);
-        mCurrentBindingChanged = mCurrentBinding.getChanges().subscribe(object -> notifyChange(object));
+        mCurrentBindingChanged = mCurrentBinding.getChanges().subscribe(this::notifyChange);
     }
 
     @Override
