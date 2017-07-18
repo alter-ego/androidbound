@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
-import rx.Observable;
+import io.reactivex.Observable;
 import solutions.alterego.androidbound.android.interfaces.IImageLoader;
 import solutions.alterego.androidbound.android.interfaces.INeedsImageLoader;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;

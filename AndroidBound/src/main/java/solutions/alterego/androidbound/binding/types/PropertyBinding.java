@@ -1,6 +1,6 @@
 package solutions.alterego.androidbound.binding.types;
 
-import rx.Subscription;
+import io.reactivex.disposables.Disposable;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.helpers.Reflector;
 import solutions.alterego.androidbound.helpers.reflector.PropertyInfo;
@@ -8,7 +8,7 @@ import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class PropertyBinding extends BindingBase {
 
-    private Subscription mMemberSubscription;
+    private Disposable mMemberDisposable;
 
     private PropertyInfo mPropertyInfo;
 
@@ -28,7 +28,7 @@ public class PropertyBinding extends BindingBase {
             setupChanges(true);
             getLogger().debug(propertyName + " implements INotifyPropertyChanged. Subscribing...");
 
-            mMemberSubscription = ((INotifyPropertyChanged) subject).onPropertyChanged()
+            mMemberDisposable = ((INotifyPropertyChanged) subject).onPropertyChanged()
                     .filter(member -> member.equals(propertyName))
                     .subscribe(s -> {
                         onBoundPropertyChanged();
@@ -110,9 +110,9 @@ public class PropertyBinding extends BindingBase {
 
     @Override
     public void dispose() {
-        if (mMemberSubscription != null) {
-            mMemberSubscription.unsubscribe();
-            mMemberSubscription = null;
+        if (mMemberDisposable != null) {
+            mMemberDisposable.dispose();
+            mMemberDisposable = null;
         }
         super.dispose();
     }

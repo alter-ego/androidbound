@@ -7,7 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import rx.functions.Func1;
+import io.reactivex.functions.Predicate;
+import io.reactivex.functions.Function;
+
 
 public class Iterables {
 
@@ -27,16 +29,16 @@ public class Iterables {
         return new MonoidIterableBuilder<T>(Arrays.asList(source));
     }
 
-    public static interface ToLongResolver<T, S> {
+    interface ToLongResolver<T, S> {
 
-        public abstract long convertPositionToLong(T position);
+        long convertPositionToLong(T position);
 
-        public abstract long convertDeltaToLong(S delta);
+        long convertDeltaToLong(S delta);
 
-        public abstract T convertLongToPosition(long position);
+        T convertLongToPosition(long position);
     }
 
-    public static class NullIterator<T> implements Iterator<T> {
+    private static class NullIterator<T> implements Iterator<T> {
 
         @Override
         public boolean hasNext() {
@@ -226,24 +228,32 @@ public class Iterables {
 
         private Iterator<T> baseIterator;
 
-        private Func1<T, Boolean> filter;
+        private Predicate<T> filter;
 
         private T lastValue;
 
         private boolean lastValueAdvanced;
 
-        public FilterIterator(Iterator<T> baseIterator, Func1<T, Boolean> filter) {
+        public FilterIterator(Iterator<T> baseIterator, Predicate<T> filter) {
             this.baseIterator = baseIterator;
             this.filter = filter;
             this.lastValueAdvanced = true;
         }
 
         public boolean hasNext() {
-            return this.nextValue(false);
+            try {
+                return this.nextValue(false);
+            } catch (Exception e) {
+                return false;
+            }
         }
 
         public T next() {
-            if (!this.nextValue(true)) {
+            try {
+                if (!this.nextValue(true)) {
+                    throw new NoSuchElementException();
+                }
+            } catch (Exception e) {
                 throw new NoSuchElementException();
             }
 
@@ -255,7 +265,7 @@ public class Iterables {
             throw new UnsupportedOperationException();
         }
 
-        private boolean nextValue(boolean advance) {
+        private boolean nextValue(boolean advance) throws Exception {
             if (!this.lastValueAdvanced) {
                 this.lastValueAdvanced = advance;
                 return true;
@@ -267,7 +277,7 @@ public class Iterables {
             boolean hasvalue = false;
             while (this.baseIterator.hasNext()) {
                 this.lastValue = this.baseIterator.next();
-                if (this.filter.call(lastValue)) {
+                if (this.filter.test(lastValue)) {
                     hasvalue = true;
                     break;
                 }
@@ -284,7 +294,7 @@ public class Iterables {
 
         private Iterator<T> baseIterator;
 
-        private Func1<T, Boolean> filter;
+        private Predicate<T> filter;
 
         private T lastValue;
 
@@ -292,7 +302,7 @@ public class Iterables {
 
         private boolean ended;
 
-        public WhileIterator(Iterator<T> baseIterator, Func1<T, Boolean> filter) {
+        public WhileIterator(Iterator<T> baseIterator, Predicate<T> filter) {
             this.baseIterator = baseIterator;
             this.filter = filter;
             this.lastValueAdvanced = true;
@@ -300,11 +310,19 @@ public class Iterables {
         }
 
         public boolean hasNext() {
-            return this.nextValue(false);
+            try {
+                return this.nextValue(false);
+            } catch (Exception e) {
+                return false;
+            }
         }
 
         public T next() {
-            if (!this.nextValue(true)) {
+            try {
+                if (!this.nextValue(true)) {
+                    throw new NoSuchElementException();
+                }
+            } catch (Exception e) {
                 throw new NoSuchElementException();
             }
             return this.lastValue;
@@ -315,7 +333,7 @@ public class Iterables {
             throw new UnsupportedOperationException();
         }
 
-        private boolean nextValue(boolean advance) {
+        private boolean nextValue(boolean advance) throws Exception {
             if (this.ended) {
                 return false;
             }
@@ -331,7 +349,7 @@ public class Iterables {
             if (this.baseIterator.hasNext()) {
                 this.lastValue = this.baseIterator.next();
                 this.lastValueAdvanced = this.lastValue != null ? this.lastValueAdvanced : false;
-                if (!this.filter.call(lastValue)) {
+                if (!this.filter.test(lastValue)) {
                     this.ended = true;
                     this.lastValue = null;
                     this.lastValueAdvanced = true;
@@ -449,7 +467,7 @@ public class Iterables {
             this.source = source;
         }
 
-        public AnonymousIterable<T> filter(final Func1<T, Boolean> predicate) {
+        public AnonymousIterable<T> filter(final Predicate<T> predicate) {
             return new AnonymousIterable<T>() {
 
                 public Iterator<T> iterator() {
@@ -464,9 +482,13 @@ public class Iterables {
                             }
                             while (iterator.hasNext()) {
                                 T value = iterator.next();
-                                if (predicate.call(value)) {
-                                    store.set(value);
-                                    return true;
+                                try {
+                                    if (predicate.test(value)) {
+                                        store.set(value);
+                                        return true;
+                                    }
+                                } catch (Exception e) {
+                                    return false;
                                 }
                             }
                             return false;
@@ -488,10 +510,10 @@ public class Iterables {
         }
 
 
-        public <TKey> GroupingList<TKey, T> groupBy(final Func1<T, TKey> keyFunction) {
+        public <TKey> GroupingList<TKey, T> groupBy(final Function<T, TKey> keyFunction) throws Exception {
             GroupingList<TKey, T> result = new GroupingList<TKey, T>();
             for (T item : source) {
-                TKey key = keyFunction.call(item);
+                TKey key = keyFunction.apply(item);
                 if (result.get(key) == null) {
                     result.add(new GroupedList<TKey, T>(key));
                 }
@@ -509,7 +531,7 @@ public class Iterables {
             this.source = source;
         }
 
-        public MonoidIterableBuilder<T> filter(final Func1<T, Boolean> predicate) {
+        public MonoidIterableBuilder<T> filter(final Predicate<T> predicate) {
             final Iterable<T> baseSource = this.source;
 
             return new MonoidIterableBuilder<T>(() -> new FilterIterator<T>(baseSource.iterator(), predicate));
@@ -527,7 +549,7 @@ public class Iterables {
             return new MonoidIterableBuilder<T>(() -> new TakeIterator<T>(baseSource.iterator(), count));
         }
 
-        public MonoidIterableBuilder<T> takeWhile(final Func1<T, Boolean> predicate) {
+        public MonoidIterableBuilder<T> takeWhile(final Predicate<T> predicate) {
             final Iterable<T> baseSource = this.source;
 
             return new MonoidIterableBuilder<T>(() -> new WhileIterator<T>(baseSource.iterator(), predicate));
@@ -539,7 +561,7 @@ public class Iterables {
             return new MonoidIterableBuilder<T>(() -> new SampleIterator<T>(baseSource.iterator(), samplingSize));
         }
 
-        public <TResult> MonoidIterableBuilder<TResult> select(final Func1<T, TResult> selector) {
+        public <TResult> MonoidIterableBuilder<TResult> select(final Function<T, TResult> selector) {
             return new MonoidIterableBuilder<>(
                     new Iterable<TResult>() {
                         @Override
@@ -560,7 +582,11 @@ public class Iterables {
                                 }
 
                                 public TResult next() {
-                                    return selector.call(this.sourceIterator().next());
+                                    try {
+                                        return selector.apply(this.sourceIterator().next());
+                                    } catch (Exception e) {
+                                        return null;
+                                    }
                                 }
 
                                 public void remove() {
@@ -590,12 +616,12 @@ public class Iterables {
             return null;
         }
 
-        public <TKey> GroupingList<TKey, T> groupBy(final Func1<T, TKey> keyFunction) {
+        public <TKey> GroupingList<TKey, T> groupBy(final Function<T, TKey> keyFunction) throws Exception {
             GroupingList<TKey, T> result = new GroupingList<TKey, T>();
             Iterator<T> iter = source.iterator();
             while (iter.hasNext()) {
                 T item = iter.next();
-                TKey key = keyFunction.call(item);
+                TKey key = keyFunction.apply(item);
                 if (result.get(key) == null) {
                     result.add(new GroupedList<TKey, T>(key));
                 }

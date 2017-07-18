@@ -2,8 +2,7 @@ package solutions.alterego.androidbound.binding.types;
 
 import java.util.List;
 
-import rx.Subscription;
-import rx.functions.Action1;
+import io.reactivex.disposables.Disposable;
 import solutions.alterego.androidbound.binding.interfaces.IBinding;
 import solutions.alterego.androidbound.factories.IBindingFactory;
 import solutions.alterego.androidbound.interfaces.ILogger;
@@ -18,7 +17,7 @@ public class ChainedBinding extends PropertyBinding {
 
     private IBinding mCurrentBinding;
 
-    private Subscription mCurrentBindingChanged;
+    private Disposable mCurrentBindingChanged;
 
     private String mMemberName;
 
@@ -34,7 +33,7 @@ public class ChainedBinding extends PropertyBinding {
 
     protected void updateChildBinding() {
         if (mCurrentBinding != null) {
-            mCurrentBindingChanged.unsubscribe();
+            mCurrentBindingChanged.dispose();
             mCurrentBinding.dispose();
             mCurrentBindingChanged = null;
         }
@@ -45,12 +44,7 @@ public class ChainedBinding extends PropertyBinding {
         }
 
         mCurrentBinding = mBindingFactory.create(currentValue, mTokens, this.mNeedChangesIfPossible);
-        mCurrentBindingChanged = mCurrentBinding.getChanges().subscribe(new Action1<Object>() {
-            @Override
-            public void call(Object obj) {
-                notifyChange(obj);
-            }
-        });
+        mCurrentBindingChanged = mCurrentBinding.getChanges().subscribe(this::notifyChange);
     }
 
     @Override
@@ -91,7 +85,7 @@ public class ChainedBinding extends PropertyBinding {
     public void dispose() {
         super.dispose();
         if (mCurrentBindingChanged != null) {
-            mCurrentBindingChanged.unsubscribe();
+            mCurrentBindingChanged.dispose();
             mCurrentBindingChanged = null;
         }
         if (mCurrentBinding != null) {

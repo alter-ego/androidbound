@@ -14,15 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.disposables.Disposables;
+import io.reactivex.schedulers.Schedulers;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
-import rx.subscriptions.Subscriptions;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 import static android.support.v7.util.DiffUtil.calculateDiff;
@@ -47,14 +46,14 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Setter
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private Subscription mSetValuesSubscription = Subscriptions.unsubscribed();
+    private Disposable mSetValuesDisposable = Disposables.disposed();
 
-    private Subscription mRemoveItemsSubscription = Subscriptions.unsubscribed();
-
-    private CompositeSubscription mPageSubscriptions = new CompositeSubscription();
+    private Disposable mRemoveItemsDisposable = Disposables.disposed();
 
     private Queue<List<?>> pendingUpdates =
             new ArrayDeque<>();
+
+    private Disposable mAddValueDisposable = Disposables.disposed();
 
     public BindableRecyclerViewAdapter(IViewBinder vb, int itemTemplate) {
         mViewBinder = vb;
@@ -113,8 +112,8 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public void setItemsSource(final List<?> value) {
         final List<?> oldItems = new ArrayList<>(mItemsSource);
-        mSetValuesSubscription.unsubscribe();
-        mSetValuesSubscription = Observable.just(value)
+        mSetValuesDisposable.dispose();
+        mSetValuesDisposable = Observable.just(value)
                 .subscribeOn(Schedulers.computation())
                 .map(newList -> new Pair<List<?>, DiffUtil.DiffResult>(newList, calculateDiff(new ItemSourceDiffCallback(oldItems, value))))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -134,7 +133,8 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             mItemsSource = new ArrayList<>();
         }
 
-        Subscription s = Observable.from(values)
+        mAddValueDisposable.dispose();
+        mAddValueDisposable = Observable.fromIterable(values)
                 .filter(value -> value != null)
                 .subscribe(value -> {
                     boolean contains = mItemsSource.contains(value);
@@ -146,7 +146,6 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                         notifyItemInserted(mItemsSource.size() - 1);
                     }
                 });
-        mPageSubscriptions.add(s);
     }
 
     private void applyDiffResult(Pair<List<?>, DiffUtil.DiffResult> resultPair) {
@@ -195,8 +194,8 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             return;
         }
         List<?> tmp = new ArrayList<>(mItemsSource);
-        mRemoveItemsSubscription.unsubscribe();
-        mRemoveItemsSubscription = Observable.just(tmp)
+        mRemoveItemsDisposable.dispose();
+        mRemoveItemsDisposable = Observable.just(tmp)
                 .subscribeOn(Schedulers.computation())
                 .map(list -> {
                     list.removeAll(value);
@@ -219,8 +218,8 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
-        mRemoveItemsSubscription.unsubscribe();
-        mSetValuesSubscription.unsubscribe();
-        mPageSubscriptions.unsubscribe();
+        mRemoveItemsDisposable.dispose();
+        mSetValuesDisposable.dispose();
+        mAddValueDisposable.dispose();
     }
 }

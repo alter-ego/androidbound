@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.utils.Iterables;
 
@@ -125,7 +125,7 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
     @Override
     public void dispose() {
         if (mPropertySubject != null) {
-            mPropertySubject.onCompleted();
+            mPropertySubject.onComplete();
             mPropertySubject = null;
         }
 
@@ -133,7 +133,9 @@ public class BindableMap<K, V> extends HashMap<K, V> implements INotifyPropertyC
     }
 
     protected void raisePropertyChanged(String property) {
-        mPropertySubject.onNext(property);
+        if (property != null) {
+            mPropertySubject.onNext(property);
+        }
     }
 
     public static interface IValidator<K, V> {

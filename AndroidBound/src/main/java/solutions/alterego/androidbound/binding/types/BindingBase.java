@@ -1,17 +1,18 @@
 package solutions.alterego.androidbound.binding.types;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.binding.interfaces.IBinding;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
+import solutions.alterego.androidbound.utils.Exceptional;
 
 public abstract class BindingBase implements IBinding, INeedsLogger {
 
-    private static final Observable<Object> NO_CHANGES = Observable.empty();
+    private static final Observable<Exceptional<Object>> NO_CHANGES = Observable.empty();
 
-    private PublishSubject<Object> mChanges = PublishSubject.create();
+    private PublishSubject<Exceptional<Object>> mChanges = PublishSubject.create();
 
     private Object mSubject;
 
@@ -28,11 +29,11 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
 
     public abstract void setValue(Object value);
 
-    public Observable<Object> getChanges() {
+    public Observable<Exceptional<Object>> getChanges() {
         if (mChanges == null) {
             return NO_CHANGES;
         }
-        return mChanges.asObservable();
+        return mChanges.hide();
     }
 
     public boolean hasChanges() {
@@ -43,7 +44,7 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
         if (mChanges == null) {
             return;
         }
-        mChanges.onNext(value);
+        mChanges.onNext(Exceptional.right(value));
     }
 
     protected void setupChanges(boolean hasChanges) {
@@ -53,7 +54,7 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
             }
         } else {
             if (mChanges != null) {
-                mChanges.onCompleted();
+                mChanges.onComplete();
                 mChanges = null;
             }
         }
@@ -73,7 +74,7 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
 
     public void dispose() {
         if (mChanges != null) {
-            mChanges.onCompleted();
+            mChanges.onComplete();
         }
         mChanges = null;
     }

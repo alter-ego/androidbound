@@ -12,7 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import rx.functions.Func1;
+import io.reactivex.Observable;
+import io.reactivex.functions.Predicate;
 import solutions.alterego.androidbound.helpers.reflector.CommandInfo;
 import solutions.alterego.androidbound.helpers.reflector.ConstructorInfo;
 import solutions.alterego.androidbound.helpers.reflector.FieldInfo;
@@ -466,7 +467,7 @@ public class Reflector {
         return constructors;
     }
 
-    private static Func1<MethodInfo, Boolean> matchMethodParameter(final Class<?>[] parameterTypes) {
+    private static Predicate<MethodInfo> matchMethodParameter(final Class<?>[] parameterTypes) {
         return obj -> {
             if (parameterTypes == null) {
                 return true;
@@ -485,22 +486,21 @@ public class Reflector {
         };
     }
 
-    private static Func1<ConstructorInfo, Boolean> matchConstructorParameter(final Class<?>[] parameterTypes) {
-        return obj -> {
+    private static Predicate<ConstructorInfo> matchConstructorParameter(final Class<?>[] parameterTypes) {
+        return constructorInfo -> {
             Class<?>[] pts = parameterTypes;
             if (pts == null) {
                 pts = new Class<?>[0];
             }
-            if (obj.getConstructorParameterCount() != pts.length) {
+            if (constructorInfo.getConstructorParameterCount() != pts.length) {
                 return false;
             }
 
             for (int i = 0; i < pts.length; i++) {
-                if (!obj.getConstructorParameterTypes()[i].equals(pts[i])) {
+                if (!constructorInfo.getConstructorParameterTypes()[i].equals(pts[i])) {
                     return false;
                 }
             }
-
             return true;
         };
     }
