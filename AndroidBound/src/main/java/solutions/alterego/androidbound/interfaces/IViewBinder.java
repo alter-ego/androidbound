@@ -9,7 +9,7 @@ import solutions.alterego.androidbound.android.interfaces.INeedsFontManager;
 import solutions.alterego.androidbound.android.interfaces.INeedsImageLoader;
 import solutions.alterego.androidbound.converters.interfaces.IValueConverterRegistry;
 import solutions.alterego.androidbound.resources.interfaces.IResourceRegistry;
-import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
+import solutions.alterego.androidbound.android.interfaces.IViewResolver;
 
 
 public interface IViewBinder extends IResourceRegistry, IValueConverterRegistry, IDisposable, INeedsImageLoader, IHasLogger, INeedsFontManager,

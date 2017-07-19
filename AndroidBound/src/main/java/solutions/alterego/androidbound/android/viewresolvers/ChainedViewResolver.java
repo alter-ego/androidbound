@@ -1,21 +1,22 @@
-package solutions.alterego.androidbound.viewresolvers;
+package solutions.alterego.androidbound.android.viewresolvers;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import solutions.alterego.androidbound.interfaces.ILogger;
-import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
+import solutions.alterego.androidbound.android.interfaces.IViewResolver;
 
 public class ChainedViewResolver implements IViewResolver {
 
     private List<IViewResolver> mBaseViewResolvers;
 
     public ChainedViewResolver() {
-        mBaseViewResolvers = new ArrayList<IViewResolver>();
+        mBaseViewResolvers = new ArrayList<>();
     }
 
     public ChainedViewResolver(IViewResolver... initialViewResolvers) {
@@ -24,9 +25,7 @@ public class ChainedViewResolver implements IViewResolver {
             return;
         }
 
-        for (IViewResolver r : initialViewResolvers) {
-            mBaseViewResolvers.add(r);
-        }
+        mBaseViewResolvers.addAll(Arrays.asList(initialViewResolvers));
     }
 
     @Override
@@ -55,5 +54,10 @@ public class ChainedViewResolver implements IViewResolver {
 
     public void removeResolver(IViewResolver resolver) {
         mBaseViewResolvers.remove(resolver);
+    }
+
+    @Override
+    public void dispose() {
+        mBaseViewResolvers.clear();
     }
 }

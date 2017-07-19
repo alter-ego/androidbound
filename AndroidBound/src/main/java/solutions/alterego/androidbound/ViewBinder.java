@@ -23,15 +23,16 @@ import solutions.alterego.androidbound.android.converters.FontConverter;
 import solutions.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.interfaces.IFontManager;
 import solutions.alterego.androidbound.android.interfaces.IImageLoader;
+import solutions.alterego.androidbound.android.viewresolvers.NullViewResolver;
 import solutions.alterego.androidbound.binding.NullViewBindingEngine;
 import solutions.alterego.androidbound.binding.ViewBindingEngine;
 import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 import solutions.alterego.androidbound.interfaces.IViewBindingEngine;
-import solutions.alterego.androidbound.viewresolvers.ChainedViewResolver;
-import solutions.alterego.androidbound.viewresolvers.ViewResolver;
-import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
+import solutions.alterego.androidbound.android.viewresolvers.ChainedViewResolver;
+import solutions.alterego.androidbound.android.viewresolvers.ViewResolver;
+import solutions.alterego.androidbound.android.interfaces.IViewResolver;
 
 @Accessors(prefix = "m")
 public class ViewBinder implements IViewBinder {
@@ -44,7 +45,7 @@ public class ViewBinder implements IViewBinder {
 
     private IBindableLayoutInflaterFactory mInflaterFactory = NullBindableLayoutInflaterFactory.instance;
 
-    private ChainedViewResolver mViewResolver;
+    private IViewResolver mViewResolver = NullViewResolver.instance;
 
     @Getter
     private IFontManager mFontManager;
@@ -134,12 +135,16 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public void registerViewResolver(IViewResolver resolver) {
-        mViewResolver.addResolverToFront(resolver);
+        if (mViewResolver instanceof ChainedViewResolver) {
+            ((ChainedViewResolver) mViewResolver).addResolverToFront(resolver);
+        }
     }
 
     @Override
     public void unregisterViewResolver(IViewResolver resolver) {
-        mViewResolver.removeResolver(resolver);
+        if (mViewResolver instanceof ChainedViewResolver) {
+            ((ChainedViewResolver) mViewResolver).removeResolver(resolver);
+        }
     }
 
     @Override
@@ -160,9 +165,13 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup, IViewResolver resolver) {
-        mViewResolver.addResolverToFront(resolver);
-        View view = inflate(context, source, layoutResID, viewGroup);
-        mViewResolver.removeResolver(resolver);
+        View view = null;
+
+        if (mViewResolver instanceof ChainedViewResolver) {
+            ((ChainedViewResolver) mViewResolver).addResolverToFront(resolver);
+            view = inflate(context, source, layoutResID, viewGroup);
+            ((ChainedViewResolver) mViewResolver).removeResolver(resolver);
+        }
 
         return view;
     }
@@ -235,10 +244,14 @@ public class ViewBinder implements IViewBinder {
             mContext.clear();
         }
 
+        mViewBindingEngine.dispose();
         mViewBindingEngine = NullViewBindingEngine.instance;
+
+        mViewResolver.dispose();
+        mViewResolver = NullViewResolver.instance;
+
         mInflaterFactory = NullBindableLayoutInflaterFactory.instance;
-        mViewResolver = null;
-        mFontManager = null;
         mLogger = NullLogger.instance;
+        mFontManager = null;
     }
 }
