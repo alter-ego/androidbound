@@ -18,7 +18,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.disposables.Disposables;
-import io.reactivex.schedulers.Schedulers;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -114,10 +113,37 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         final List<?> oldItems = new ArrayList<>(mItemsSource);
         mSetValuesDisposable.dispose();
         mSetValuesDisposable = Observable.just(value)
-                .subscribeOn(Schedulers.computation())
-                .map(newList -> new Pair<List<?>, DiffUtil.DiffResult>(newList, calculateDiff(new ItemSourceDiffCallback(oldItems, value))))
                 .observeOn(AndroidSchedulers.mainThread())
+                .map(newList -> new Pair<List<?>, DiffUtil.DiffResult>(newList, calculateDiff(new ItemSourceDiffCallback(oldItems, value))))
                 .subscribe(this::applyDiffResult, Throwable::printStackTrace);
+    }
+
+    private void applyDiffResult(Pair<List<?>, DiffUtil.DiffResult> resultPair) {
+        boolean firstStart = true;
+
+        if (!pendingUpdates.isEmpty()) {
+            pendingUpdates.remove();
+        }
+
+        if (mItemsSource.size() > 0) {
+            mItemsSource.clear();
+            firstStart = false;
+        }
+
+        if (resultPair.first != null) {
+            mItemsSource.addAll(new ArrayList<>(resultPair.first));
+        }
+
+        //if we call DiffUtil.DiffResult.dispatchUpdatesTo() on an empty adapter, it will crash - we have to call notifyDataSetChanged()!
+        if (firstStart) {
+            notifyDataSetChanged();
+        } else {
+            resultPair.second.dispatchUpdatesTo(this);
+        }
+
+        if (pendingUpdates.size() > 0) {
+            setItemsSource(pendingUpdates.peek());
+        }
     }
 
     public void addItemsSource(List<?> values) {
@@ -146,20 +172,6 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                         notifyItemInserted(mItemsSource.size() - 1);
                     }
                 });
-    }
-
-    private void applyDiffResult(Pair<List<?>, DiffUtil.DiffResult> resultPair) {
-        if (!pendingUpdates.isEmpty()) {
-            pendingUpdates.remove();
-        }
-        mItemsSource.clear();
-        if (resultPair.first != null) {
-            mItemsSource.addAll(new ArrayList<>(resultPair.first));
-        }
-        resultPair.second.dispatchUpdatesTo(this);
-        if (pendingUpdates.size() > 0) {
-            setItemsSource(pendingUpdates.peek());
-        }
     }
 
     /* to prevent Cannot call this method in a scroll callback. Scroll callbacks might be run during a measure
@@ -196,14 +208,13 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         List<?> tmp = new ArrayList<>(mItemsSource);
         mRemoveItemsDisposable.dispose();
         mRemoveItemsDisposable = Observable.just(tmp)
-                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
                 .map(list -> {
                     list.removeAll(value);
                     return list;
                 })
                 .map(list -> new Pair<List, DiffUtil.DiffResult>(list,
                         calculateDiff(new ItemSourceDiffCallback(mItemsSource, list), true)))
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pair -> {
                     if (pair.first != null && mItemsSource != null) {
                         mItemsSource.clear();
