@@ -63,7 +63,7 @@ public class BindableRecyclerViewItemViewHolder extends RecyclerView.ViewHolder 
             return;
         }
 
-        List<IBindingAssociationEngine> bindings = mViewBinder.getBindingsForViewAndChildren(itemView);
+        List<IBindingAssociationEngine> bindings = mViewBinder.getBindingsForView(itemView);
 
         if (bindings == null || bindings.size() < 1) {
             mLogger.verbose("BindableListItemView bindTo bindings == null or 0, doing lazy binding");

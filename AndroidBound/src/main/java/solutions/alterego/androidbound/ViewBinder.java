@@ -388,16 +388,7 @@ public class ViewBinder implements IViewBinder {
     }
 
     @Override
-    public List<IBindingAssociationEngine> getBindingsFor(View view) {
-        if (mBoundViews.containsKey(view)) {
-            return mBoundViews.get(view);
-        }
-
-        return new ArrayList<IBindingAssociationEngine>();
-    }
-
-    @Override
-    public List<IBindingAssociationEngine> getBindingsForViewAndChildren(View rootView) {
+    public List<IBindingAssociationEngine> getBindingsForView(View rootView) {
         return getBindingsForViewAndChildrenRecursive(rootView, new ArrayList<IBindingAssociationEngine>());
     }
 

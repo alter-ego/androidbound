@@ -31,9 +31,7 @@ public interface IViewBinder extends IResourceRegistry, IValueConverterRegistry,
 
     void registerBindingsFor(View view, List<IBindingAssociationEngine> bindings);
 
-    List<IBindingAssociationEngine> getBindingsForViewAndChildren(View rootView);
-
-    List<IBindingAssociationEngine> getBindingsFor(View view);
+    List<IBindingAssociationEngine> getBindingsForView(View rootView);
 
     void registerViewResolver(IViewResolver resolver);
 
