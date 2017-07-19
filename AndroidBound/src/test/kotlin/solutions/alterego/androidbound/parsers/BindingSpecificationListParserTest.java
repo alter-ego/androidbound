@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import solutions.alterego.androidbound.NullLogger;
+import solutions.alterego.androidbound.TestUtils;
 import solutions.alterego.androidbound.binding.data.BindingSpecification;
 import solutions.alterego.androidbound.converters.ValueConverterService;
 import solutions.alterego.androidbound.resources.ResourceService;
@@ -45,23 +46,12 @@ public class BindingSpecificationListParserTest {
 
     private static BindingSpecificationListParser mListParser;
 
-    private static long tickTime;
-
     public BindingSpecificationListParserTest() {
         ValueConverterService converterService = new ValueConverterService(NullLogger.instance);
         ResourceService resourceService = new ResourceService(NullLogger.instance);
 
         BindingSpecificationParser bindingParser = new BindingSpecificationParser(converterService, resourceService, NullLogger.instance);
         mListParser = new BindingSpecificationListParser(bindingParser, NullLogger.instance);
-    }
-
-    private static void tick() {
-        tickTime = System.nanoTime();
-    }
-
-    private static void tock(String action) {
-        long mstime = (System.nanoTime() - tickTime) / 1000000;
-        System.out.println(action + ": " + mstime + "ms");
     }
 
     @Before
@@ -128,7 +118,7 @@ public class BindingSpecificationListParserTest {
     }
 
     static void parseWithStringBuilder(List<String> items) {
-        tick();
+        TestUtils.tick();
 
         List<BindingSpecification> specList;
 
@@ -136,7 +126,7 @@ public class BindingSpecificationListParserTest {
             specList = mListParser.parse(item);
         }
 
-        tock("parseWithStringBuilder finished");
+        TestUtils.tock("parseWithStringBuilder finished");
     }
 
 }
