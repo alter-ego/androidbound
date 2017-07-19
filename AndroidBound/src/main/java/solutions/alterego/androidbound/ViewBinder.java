@@ -22,18 +22,11 @@ import solutions.alterego.androidbound.android.converters.FontConverter;
 import solutions.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.interfaces.IFontManager;
 import solutions.alterego.androidbound.android.interfaces.IImageLoader;
-import solutions.alterego.androidbound.binding.TextSpecificationBinder;
 import solutions.alterego.androidbound.binding.ViewBindingEngine;
-import solutions.alterego.androidbound.converters.ValueConverterService;
 import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
-import solutions.alterego.androidbound.factories.SourceBindingFactory;
-import solutions.alterego.androidbound.factories.TargetBindingFactory;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 import solutions.alterego.androidbound.interfaces.IViewBindingEngine;
-import solutions.alterego.androidbound.parsers.BindingSpecificationListParser;
-import solutions.alterego.androidbound.parsers.BindingSpecificationParser;
-import solutions.alterego.androidbound.resources.ResourceService;
 import solutions.alterego.androidbound.viewresolvers.ChainedViewResolver;
 import solutions.alterego.androidbound.viewresolvers.ViewResolver;
 import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
@@ -46,10 +39,6 @@ public class ViewBinder implements IViewBinder {
     private ILogger mLogger = NullLogger.instance;
 
     private WeakReference<Context> mContext;
-
-    private ValueConverterService mConverterService;
-
-    private ResourceService mResourceService;
 
     private IBindableLayoutInflaterFactory mInflaterFactory;
 
@@ -76,16 +65,7 @@ public class ViewBinder implements IViewBinder {
     }
 
     private void init() {
-        mConverterService = new ValueConverterService(getLogger());
-        mResourceService = new ResourceService(getLogger());
-
-        SourceBindingFactory sourceFactory = new SourceBindingFactory(getLogger());
-        TargetBindingFactory targetFactory = new TargetBindingFactory(getLogger());
-        BindingSpecificationParser bindingParser = new BindingSpecificationParser(mConverterService, mResourceService, getLogger());
-        BindingSpecificationListParser listParser = new BindingSpecificationListParser(bindingParser, getLogger());
-
-        TextSpecificationBinder mBinder = new TextSpecificationBinder(listParser, sourceFactory, targetFactory, getLogger());
-        mViewBindingEngine = new ViewBindingEngine(mBinder);
+        mViewBindingEngine = new ViewBindingEngine(getLogger());
 
         mViewResolver = new ChainedViewResolver(new ViewResolver(getLogger()));
         mInflaterFactory = new BindableLayoutInflaterFactory(this, mViewResolver);
@@ -130,12 +110,12 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public void registerConverter(String name, IValueConverter converter) {
-        mConverterService.registerConverter(name, converter);
+        mViewBindingEngine.registerConverter(name, converter);
     }
 
     @Override
     public void registerResource(String name, Object resource) {
-        mResourceService.registerResource(name, resource);
+        mViewBindingEngine.registerResource(name, resource);
     }
 
     @Override

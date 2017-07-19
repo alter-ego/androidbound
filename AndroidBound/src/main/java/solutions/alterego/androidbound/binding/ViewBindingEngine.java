@@ -20,10 +20,17 @@ import solutions.alterego.androidbound.android.interfaces.INeedsBoundView;
 import solutions.alterego.androidbound.android.interfaces.INeedsImageLoader;
 import solutions.alterego.androidbound.binding.interfaces.IBinder;
 import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
+import solutions.alterego.androidbound.converters.ValueConverterService;
+import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
+import solutions.alterego.androidbound.factories.SourceBindingFactory;
+import solutions.alterego.androidbound.factories.TargetBindingFactory;
 import solutions.alterego.androidbound.interfaces.IDisposable;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.IViewBindingEngine;
+import solutions.alterego.androidbound.parsers.BindingSpecificationListParser;
+import solutions.alterego.androidbound.parsers.BindingSpecificationParser;
+import solutions.alterego.androidbound.resources.ResourceService;
 
 @Accessors(prefix="m")
 public class ViewBindingEngine implements IViewBindingEngine {
@@ -39,14 +46,37 @@ public class ViewBindingEngine implements IViewBindingEngine {
     @Setter
     private boolean mDebugMode;
 
+    private ValueConverterService mConverterService;
+
+    private ResourceService mResourceService;
+
     private IBinder mBinder; //TODO should be NullBinder?
 
     private Map<View, List<IBindingAssociationEngine>> mBoundViews = new ConcurrentHashMap<>();
 
     private Map<View, String> mLazyBoundViews = new ConcurrentHashMap<>();
 
-    public ViewBindingEngine(IBinder binder) {
-        mBinder = binder;
+    public ViewBindingEngine(ILogger logger) {
+        setLogger(logger);
+        mConverterService = new ValueConverterService(getLogger());
+        mResourceService = new ResourceService(getLogger());
+
+        SourceBindingFactory sourceFactory = new SourceBindingFactory(getLogger());
+        TargetBindingFactory targetFactory = new TargetBindingFactory(getLogger());
+        BindingSpecificationParser bindingParser = new BindingSpecificationParser(mConverterService, mResourceService, getLogger());
+        BindingSpecificationListParser listParser = new BindingSpecificationListParser(bindingParser, getLogger());
+
+        mBinder = new TextSpecificationBinder(listParser, sourceFactory, targetFactory, getLogger());
+    }
+
+    @Override
+    public void registerConverter(String name, IValueConverter converter) {
+        mConverterService.registerConverter(name, converter);
+    }
+
+    @Override
+    public void registerResource(String name, Object resource) {
+        mResourceService.registerResource(name, resource);
     }
 
     @Override
@@ -226,6 +256,8 @@ public class ViewBindingEngine implements IViewBindingEngine {
         clearAllBindings();
 
         mBinder = null;
+        mConverterService = null;
+        mResourceService = null;
         mImageLoader = IImageLoader.nullImageLoader;
         mLogger = NullLogger.instance;
     }
