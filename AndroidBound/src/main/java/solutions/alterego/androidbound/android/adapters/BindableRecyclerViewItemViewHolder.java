@@ -63,11 +63,11 @@ public class BindableRecyclerViewItemViewHolder extends RecyclerView.ViewHolder 
             return;
         }
 
-        List<IBindingAssociationEngine> bindings = mViewBinder.getBindingsForView(itemView);
+        List<IBindingAssociationEngine> bindings = mViewBinder.getViewBindingEngine().getBindingsForView(itemView);
 
         if (bindings == null || bindings.size() < 1) {
             mLogger.verbose("BindableListItemView bindTo bindings == null or 0, doing lazy binding");
-            mViewBinder.lazyBindView(itemView, source);
+            mViewBinder.getViewBindingEngine().lazyBindView(itemView, source);
         } else {
             mLogger.verbose("BindableListItemView bindTo continue with binding");
             for (IBindingAssociationEngine binding : bindings) {
@@ -80,6 +80,6 @@ public class BindableRecyclerViewItemViewHolder extends RecyclerView.ViewHolder 
         if (mViewBinder == null) {
             return;
         }
-        mViewBinder.clearBindingForViewAndChildren(itemView);
+        mViewBinder.getViewBindingEngine().clearBindingForViewAndChildren(itemView);
     }
 }

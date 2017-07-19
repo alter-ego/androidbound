@@ -101,7 +101,7 @@ public class BindableListAdapter extends BaseAdapter {
             return;
         }
 
-        List<IBindingAssociationEngine> bindings = viewBinder.getBindingsForView(convertView);
+        List<IBindingAssociationEngine> bindings = viewBinder.getViewBindingEngine().getBindingsForView(convertView);
         if (bindings == null || bindings.size() < 1) {
             mLogger.verbose("BindableListItemView bindTo bindings == null or 0");
             return;
