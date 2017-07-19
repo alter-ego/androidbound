@@ -22,6 +22,7 @@ import solutions.alterego.androidbound.android.converters.FontConverter;
 import solutions.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.interfaces.IFontManager;
 import solutions.alterego.androidbound.android.interfaces.IImageLoader;
+import solutions.alterego.androidbound.binding.NullViewBindingEngine;
 import solutions.alterego.androidbound.binding.ViewBindingEngine;
 import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
 import solutions.alterego.androidbound.interfaces.ILogger;
@@ -51,7 +52,7 @@ public class ViewBinder implements IViewBinder {
     private boolean mDebugMode;
 
     @Getter
-    private IViewBindingEngine mViewBindingEngine;
+    private IViewBindingEngine mViewBindingEngine = NullViewBindingEngine.instance;
 
     public ViewBinder(Context ctx) {
         setContext(ctx);
@@ -231,10 +232,8 @@ public class ViewBinder implements IViewBinder {
             mContext.clear();
         }
 
-        mViewBindingEngine = null; //TODO should be Empty?
-        mConverterService = null;
-        mResourceService = null;
         mInflaterFactory = null;
+        mViewBindingEngine = NullViewBindingEngine.instance;
         mViewResolver = null;
         mFontManager = null;
         mLogger = NullLogger.instance;
