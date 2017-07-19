@@ -13,14 +13,11 @@ import android.view.View;
 import solutions.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.android.ui.resources.BindingResources;
-import solutions.alterego.androidbound.binding.interfaces.IBinder;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 import solutions.alterego.androidbound.interfaces.IViewBindingEngine;
 import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
 
 public class BindableLayoutInflaterFactory implements IBindableLayoutInflaterFactory {
-
-    private IBinder mBinder;
 
     private IViewResolver mViewResolver;
 

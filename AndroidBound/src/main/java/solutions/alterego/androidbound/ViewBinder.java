@@ -17,6 +17,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.BindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.FontManager;
+import solutions.alterego.androidbound.android.NullBindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.converters.BooleanToVisibilityConverter;
 import solutions.alterego.androidbound.android.converters.FontConverter;
 import solutions.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
@@ -41,7 +42,7 @@ public class ViewBinder implements IViewBinder {
 
     private WeakReference<Context> mContext;
 
-    private IBindableLayoutInflaterFactory mInflaterFactory;
+    private IBindableLayoutInflaterFactory mInflaterFactory = NullBindableLayoutInflaterFactory.instance;
 
     private ChainedViewResolver mViewResolver;
 
@@ -53,6 +54,18 @@ public class ViewBinder implements IViewBinder {
 
     @Getter
     private IViewBindingEngine mViewBindingEngine = NullViewBindingEngine.instance;
+
+    /**
+     * For APIs >= 11 && < 21, there was a framework bug that prevented a LayoutInflater's
+     * Factory2 from being merged properly if set after a cloneInContext from a LayoutInflater
+     * that already had a Factory2 registered. We work around that bug here. If we can't we
+     * log an error.
+     */
+    @Getter
+    private boolean mCheckedField = false;
+
+    @Getter
+    private Field mLayoutInflaterFactory2Field = null;
 
     public ViewBinder(Context ctx) {
         setContext(ctx);
@@ -193,31 +206,21 @@ public class ViewBinder implements IViewBinder {
         }
     }
 
-    /**
-     * For APIs >= 11 && < 21, there was a framework bug that prevented a LayoutInflater's
-     * Factory2 from being merged properly if set after a cloneInContext from a LayoutInflater
-     * that already had a Factory2 registered. We work around that bug here. If we can't we
-     * log an error.
-     */
-    private boolean sCheckedField;
-
-    private Field sLayoutInflaterFactory2Field;
-
     //code from android.support.v4.view.LayoutInflaterCompatHC
     private void forceSetFactory2(LayoutInflater inflater, LayoutInflater.Factory2 factory) {
-        if (!sCheckedField) {
+        if (!mCheckedField) {
             try {
-                sLayoutInflaterFactory2Field = LayoutInflater.class.getDeclaredField("mFactory2");
-                sLayoutInflaterFactory2Field.setAccessible(true);
+                mLayoutInflaterFactory2Field = LayoutInflater.class.getDeclaredField("mFactory2");
+                mLayoutInflaterFactory2Field.setAccessible(true);
             } catch (NoSuchFieldException e) {
                 mLogger.error("forceSetFactory2 Could not find field 'mFactory2' on class " + LayoutInflater.class.getName()
                         + "; inflation may have unexpected results." + e.getMessage());
             }
-            sCheckedField = true;
+            mCheckedField = true;
         }
-        if (sLayoutInflaterFactory2Field != null) {
+        if (mLayoutInflaterFactory2Field != null) {
             try {
-                sLayoutInflaterFactory2Field.set(inflater, factory);
+                mLayoutInflaterFactory2Field.set(inflater, factory);
             } catch (IllegalAccessException e) {
                 mLogger.error(
                         "forceSetFactory2 could not set the Factory2 on LayoutInflater " + inflater + "; inflation may have unexpected results." + e
@@ -232,8 +235,8 @@ public class ViewBinder implements IViewBinder {
             mContext.clear();
         }
 
-        mInflaterFactory = null;
         mViewBindingEngine = NullViewBindingEngine.instance;
+        mInflaterFactory = NullBindableLayoutInflaterFactory.instance;
         mViewResolver = null;
         mFontManager = null;
         mLogger = NullLogger.instance;
