@@ -107,7 +107,6 @@ public class BindingSpecificationListParserTest {
         List<String> items = new ArrayList<>();
 
         for (int n = 0; n < itemCount; ++n) {
-            StringBuilder s = new StringBuilder();
             int bindingStringIndex = random.nextInt(9);
             items.add(bindingStringList.get(bindingStringIndex));
         }
@@ -117,7 +116,7 @@ public class BindingSpecificationListParserTest {
         return items;
     }
 
-    static void parseWithStringBuilder(List<String> items) {
+    private static void parseWithStringBuilder(List<String> items) {
         TestUtils.tick();
 
         List<BindingSpecification> specList;
