@@ -1,0 +1,20 @@
+apply plugin: 'java'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+dependencies {
+    compile deps.lint.api
+    compile deps.lint.checks
+
+    testCompile deps.junit
+    testCompile deps.fest
+    testCompile deps.lint.core
+    testCompile deps.lint.tests
+}
+
+jar {
+    manifest {
+        attributes 'Lint-Registry': 'solutions.alterego.androidbound.lint.LintRegistry'
+    }
+}
