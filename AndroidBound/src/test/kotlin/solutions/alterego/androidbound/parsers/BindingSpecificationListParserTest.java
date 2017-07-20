@@ -96,7 +96,7 @@ public class BindingSpecificationListParserTest {
     @Test
     public void parseBenchmark() throws Exception {
 
-        List<String> items = generateParsingData(1000000);
+        List<String> items = generateParsingData(100000);
         parseWithStringBuilder(items);
 
         assert true;

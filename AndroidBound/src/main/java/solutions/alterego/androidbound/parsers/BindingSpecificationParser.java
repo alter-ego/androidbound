@@ -26,7 +26,7 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
 
     private ILogger mLogger = NullLogger.instance;
 
-    private IValueConverterProvider mValueConverterProvider;
+    protected IValueConverterProvider mValueConverterProvider;
 
     private IResourceProvider mResourceProvider;
 
