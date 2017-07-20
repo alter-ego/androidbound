@@ -120,6 +120,34 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                 .subscribe(this::applyDiffResult, Throwable::printStackTrace);
     }
 
+    private void applyDiffResult(Pair<List<?>, DiffUtil.DiffResult> resultPair) {
+        boolean firstStart = true;
+
+        if (!pendingUpdates.isEmpty()) {
+            pendingUpdates.remove();
+        }
+
+        if (mItemsSource.size() > 0) {
+            mItemsSource.clear();
+            firstStart = false;
+        }
+
+        if (resultPair.first != null) {
+            mItemsSource.addAll(new ArrayList<>(resultPair.first));
+        }
+
+        //if we call DiffUtil.DiffResult.dispatchUpdatesTo() on an empty adapter, it will crash - we have to call notifyDataSetChanged()!
+        if (firstStart) {
+            notifyDataSetChanged();
+        } else {
+            resultPair.second.dispatchUpdatesTo(this);
+        }
+
+        if (pendingUpdates.size() > 0) {
+            setItemsSource(pendingUpdates.peek());
+        }
+    }
+
     public void addItemsSource(List<?> values) {
         if (values == null) {
             if (mItemsSource != null) {
@@ -146,20 +174,6 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                         notifyItemInserted(mItemsSource.size() - 1);
                     }
                 });
-    }
-
-    private void applyDiffResult(Pair<List<?>, DiffUtil.DiffResult> resultPair) {
-        if (!pendingUpdates.isEmpty()) {
-            pendingUpdates.remove();
-        }
-        mItemsSource.clear();
-        if (resultPair.first != null) {
-            mItemsSource.addAll(new ArrayList<>(resultPair.first));
-        }
-        resultPair.second.dispatchUpdatesTo(this);
-        if (pendingUpdates.size() > 0) {
-            setItemsSource(pendingUpdates.peek());
-        }
     }
 
     /* to prevent Cannot call this method in a scroll callback. Scroll callbacks might be run during a measure
