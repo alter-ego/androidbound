@@ -112,7 +112,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
     private void createSourceBinding(Object source) {
         boolean needsSubs = needsSourceDisposable();
 
-        mSourceBinding = mSourceFactory.create(source, mBindingSpecification.getPath(), needsSubs);
+        mSourceBinding = mSourceFactory.create(source, mBindingSpecification.getSource(), needsSubs);
 
         if (needsSubs) {
             if (mSourceBinding.hasChanges()) {
@@ -125,7 +125,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getPath()
+                mLogger.warning("Binding " + mBindingSpecification.getSource()
                         + " needs Disposable, but changes were not available");
             }
         }
@@ -177,7 +177,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
     private void createAccumulateSourceBinding(Object source) {
         boolean needsSubs = needsTargetAccumulate();
 
-        mSourceBinding = mSourceFactory.create(source, mBindingSpecification.getPath(), needsSubs);
+        mSourceBinding = mSourceFactory.create(source, mBindingSpecification.getSource(), needsSubs);
 
         if (needsSubs) {
             if (mSourceBinding.hasChanges()) {
@@ -190,7 +190,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getPath()
+                mLogger.warning("Binding " + mBindingSpecification.getSource()
                         + " needs Disposable, but changes were not available");
             }
         }
@@ -284,12 +284,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                                 Locale.getDefault());
 
             } else {
-                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getPath());
+                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getSource());
                 result = mBindingSpecification.getFallbackValue();
             }
             mTargetBinding.setValue(result);
         } catch (Exception e) {
-            mLogger.error("Error occurred while binding " + mBindingSpecification.getPath() + " to target "
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getSource() + " to target "
                     + mBindingSpecification.getTarget()
                     + ": " + e.getMessage());
         }
@@ -305,7 +305,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             mSourceBinding.setValue(result);
         } catch (Exception e) {
             mLogger.error("Error occurred while binding " + mBindingSpecification.getTarget() + " to source "
-                    + mBindingSpecification.getPath()
+                    + mBindingSpecification.getSource()
                     + ": " + e.getMessage());
         }
     }
@@ -327,12 +327,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                                 Locale.getDefault());
 
             } else {
-                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getPath());
+                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getSource());
                 result = mBindingSpecification.getFallbackValue();
             }
             mTargetBinding.removeValue(result);
         } catch (Exception e) {
-            mLogger.error("Error occurred while binding " + mBindingSpecification.getPath() + " to target "
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getSource() + " to target "
                     + mBindingSpecification.getTarget()
                     + ": " + e.getMessage());
         }
@@ -348,12 +348,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                                 Locale.getDefault());
 
             } else {
-                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getPath());
+                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getSource());
                 result = mBindingSpecification.getFallbackValue();
             }
             mTargetBinding.addValue(result);
         } catch (Exception e) {
-            mLogger.error("Error occurred while binding " + mBindingSpecification.getPath() + " to target "
+            mLogger.error("Error occurred while binding " + mBindingSpecification.getSource() + " to target "
                     + mBindingSpecification.getTarget()
                     + ": " + e.getMessage());
         }
@@ -368,7 +368,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             mSourceBinding.addValue(result);
         } catch (Exception e) {
             mLogger.error("Error occurred while binding " + mBindingSpecification.getTarget() + " to source "
-                    + mBindingSpecification.getPath()
+                    + mBindingSpecification.getSource()
                     + ": " + e.getMessage());
         }
     }

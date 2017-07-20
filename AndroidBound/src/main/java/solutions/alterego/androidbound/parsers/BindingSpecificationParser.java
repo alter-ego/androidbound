@@ -17,7 +17,7 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
             .compile("\\s*(?<target>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z][a-zA-Z0-9]*)*)*)" +
                     "\\s*(?<mode>@=@|@-|-@|=@|=|@=|@\\+@|(@\\+)|(\\+@)|\\!@)" +
                     "\\s*(?:(?<converter>[a-zA-Z][a-zA-Z0-9]*)\\" +
-                    "s*\\()?\\s*(?<path>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z][a-zA-Z0-9]*)*)*)" +
+                    "s*\\()?\\s*(?<source>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z][a-zA-Z0-9]*)*)*)" +
                     "\\s*(?:,\\s*(?:(?<parameterName>[a-zA-Z][a-zA-Z0-9]*)" +
                     "+?|(?:'(?<parameterString>(?:[^'\\\\]|\\\\.)*)')+?))?\\s*\\)?" +
                     "(?:\\s*\\|\\|\\s*(?:(?:(?<fallbackName>[a-zA-Z][a-zA-Z0-9]*)" +
@@ -100,7 +100,7 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
 
         BindingSpecification result = new BindingSpecification();
         result.setTarget(groups.get("target"));
-        result.setPath(groups.get("path"));
+        result.setSource(groups.get("source"));
         result.setMode(parseMode(groups.get("mode")));
         result.setValueConverter(mValueConverterProvider.find(groups.get("converter")));
         result.setConverterParameter(resolveResource(groups.get("parameterString"), groups.get("parameterName")));
