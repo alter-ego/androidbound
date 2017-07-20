@@ -1,1 +1,84 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    ext.versions = [
+            'minSdk'        : 9,
+            'compileSdk'    : 26,
+            'buildTools'    : '26.0.0',
+
+            'supportLibrary': '25.3.0',
+            'androidPlugin' : '2.3.3',
+            'androidTools'  : '25.3.0',
+            'kotlin'        : '1.1.2-4',
+    ]
+    ext.deps = [
+            android       : [
+                    'runtime'     : 'com.google.android:android:4.1.1.4',
+                    'gradlePlugin': "com.android.tools.build:gradle:${versions.androidPlugin}",
+            ],
+            'support'     : [
+                    'compat'      : "com.android.support:support-compat:${versions.supportLibrary}",
+                    'appcompat'   : "com.android.support:appcompat-v7:${versions.supportLibrary}",
+                    'annotations' : "com.android.support:support-annotations:${versions.supportLibrary}",
+                    'recyclerview': "com.android.support:recyclerview-v7:${versions.supportLibrary}",
+                    'test'        : [
+                            'runner': 'com.android.support.test:runner:0.5',
+                    ],
+            ],
+            'lint'        : [
+                    'core'  : "com.android.tools.lint:lint:${versions.androidTools}",
+                    'api'   : "com.android.tools.lint:lint-api:${versions.androidTools}",
+                    'checks': "com.android.tools.lint:lint-checks:${versions.androidTools}",
+                    'tests' : "com.android.tools.lint:lint-tests:${versions.androidTools}",
+            ],
+            rx2           : [
+                    'java'   : 'io.reactivex.rxjava2:rxjava:2.1.0',
+                    'android': "io.reactivex.rxjava2:rxandroid:2.0.1",
+            ],
+            annotation    : 'javax.annotation:jsr250-api:1.0',
+            javapoet      : 'com.squareup:javapoet:1.9.0',
+            javaparser    : 'com.github.javaparser:javaparser-core:3.2.8',
+            junit         : 'junit:junit:4.12',
+            truth         : 'com.google.truth:truth:0.34',
+            robolectric   : 'org.robolectric:robolectric:3.4-rc2',
+            fest          : 'org.easytesting:fest-assert-core:2.0M10',
+            lombok        : "org.projectlombok:lombok:1.16.12",
+            mockito       : 'org.mockito:mockito-core:1.9.5',
+            aaloger       : 'solutions.alterego:advancedandroidlogger:1.0.9@aar',
+            compiletesting: 'com.google.testing.compile:compile-testing:0.11',
+            'auto'        : [
+                    'service': 'com.google.auto.service:auto-service:1.0-rc3',
+                    'common' : 'com.google.auto:auto-common:0.8',
+            ],
+            'kotlin'      : [
+                    'stdLibJre8': "org.jetbrains.kotlin:kotlin-stdlib-jre8:${versions.kotlin}",
+                    'reflect'   : "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}",
+                    'testjunit' : "org.jetbrains.kotlin:kotlin-test-junit:${versions.kotlin}"
+            ]
+    ]
+}
+
+subprojects { project ->
+    repositories {
+        mavenCentral()
+        google()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
+    buildscript {
+        repositories {
+            mavenCentral()
+            google()
+            jcenter()
+            maven() { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+            maven() { url "https://plugins.gradle.org/m2/" }
+        }
+        dependencies {
+            classpath deps.android.gradlePlugin
+            classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+            classpath 'gradle.plugin.com.kageiit:lintrules:1.1.2'
+            classpath 'me.tatarka:gradle-retrolambda:3.4.0'
+            classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6"
+        }
+    }
+}
