@@ -1,7 +1,19 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.kageiit.lintrules'
+apply plugin: 'solutions.alterego.androidbound.plugin'
+
+androidbound {
+    stopOnMissingViewIds true
+}
+
+buildscript {
+    dependencies {
+        classpath 'gradle.plugin.com.kageiit:lintrules:1.1.3'
+        classpath 'solutions.alterego.androidbound:androidbound-gradle-plugin:0.0.1'
+    }
+}
 
 repositories {
-    jcenter()
     maven { url "https://github.com/alter-ego/advanced-android-logger/raw/develop/releases/" }
 }
 

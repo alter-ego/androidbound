@@ -1,1 +1,1 @@
-include ':AndroidBound', ':AndroidBoundExample'
+include ':AndroidBound', ':AndroidBoundExample', ':androidbound-gradle-plugin'
