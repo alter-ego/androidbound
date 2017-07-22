@@ -120,12 +120,12 @@ public class ViewBinder implements IViewBinder {
     }
 
     private void registerDefaultConverters() {
-        registerConverter(BooleanToVisibilityConverter.getConverterName(), new BooleanToVisibilityConverter());
+        registerConverter(new BooleanToVisibilityConverter());
     }
 
     @Override
-    public void registerConverter(String name, IValueConverter converter) {
-        mViewBindingEngine.registerConverter(name, converter);
+    public void registerConverter(IValueConverter converter) {
+        mViewBindingEngine.registerConverter(converter);
     }
 
     @Override
@@ -150,7 +150,7 @@ public class ViewBinder implements IViewBinder {
     @Override
     public void setFontManager(IFontManager fontManager) {
         mFontManager = fontManager;
-        registerConverter(FontConverter.getConverterName(), new FontConverter(getFontManager(), getLogger()));
+        registerConverter(new FontConverter(getFontManager(), getLogger()));
     }
 
     @Override

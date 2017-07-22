@@ -21,10 +21,15 @@ public class CustomValueConverters {
 
     public CustomValueConverters(Context ctx, IViewBinder viewBinder) {
         mContext = ctx;
-        viewBinder.registerConverter("PrettifyDateTime", PrettifyDateTime);
+        viewBinder.registerConverter(PrettifyDateTime);
     }
 
     public IValueConverter PrettifyDateTime = new IValueConverter() {
+        @Override
+        public String getBindingName() {
+            return "PrettifyDateTime";
+        }
+
         @Override
         public Object convert(Object value, Class<?> targetType, Object parameter, Locale locale) {
 

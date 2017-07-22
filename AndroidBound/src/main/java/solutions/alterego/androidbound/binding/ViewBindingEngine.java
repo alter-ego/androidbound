@@ -72,8 +72,8 @@ public class ViewBindingEngine implements IViewBindingEngine {
     }
 
     @Override
-    public void registerConverter(String name, IValueConverter converter) {
-        mConverterService.registerConverter(name, converter);
+    public void registerConverter(IValueConverter converter) {
+        mConverterService.registerConverter(converter);
     }
 
     @Override

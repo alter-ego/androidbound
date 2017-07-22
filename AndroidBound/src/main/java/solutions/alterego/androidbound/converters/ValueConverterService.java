@@ -19,9 +19,9 @@ public class ValueConverterService implements IValueConverterRegistry, IValueCon
         setLogger(logger);
     }
 
-    public void registerConverter(String name, IValueConverter converter) {
-        logger.debug("Registering converter " + name);
-        converters.put(name, converter);
+    public void registerConverter(IValueConverter converter) {
+        logger.debug("Registering converter " + converter.getBindingName());
+        converters.put(converter.getBindingName(), converter);
     }
 
     public IValueConverter find(String name) {

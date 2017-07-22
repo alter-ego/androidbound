@@ -13,7 +13,8 @@ public class BooleanToVisibilityConverter implements IValueConverter {
 
     public static final String PARAMETER_INVERT_TAG = "invert";
 
-    public static String getConverterName() {
+    @Override
+    public String getBindingName() {
         return CONVERTER_NAME;
     }
 

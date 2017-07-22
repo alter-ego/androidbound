@@ -207,6 +207,11 @@ public class DefaultConverter implements IValueConverter {
         });
     }
 
+    @Override
+    public String getBindingName() {
+        return "DefaultConverter";
+    }
+
     public Object convert(Object value, Class<?> targetType, Object parameter, Locale culture) {
         return convert(value, targetType);
     }

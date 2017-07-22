@@ -20,7 +20,8 @@ public class FontConverter implements IValueConverter {
         mLogger = logger;
     }
 
-    public static String getConverterName() {
+    @Override
+    public String getBindingName() {
         return CONVERTER_NAME;
     }
 
