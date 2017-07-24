@@ -27,8 +27,13 @@ public class FontConverter implements IValueConverter {
 
     @Override
     public Object convert(Object value, Class<?> targetType, Object parameter, Locale culture) {
-        mLogger.debug("ToFont convert, parameter = " + (String) parameter);
-        return mFontManager.getFont((String) parameter);
+        mLogger.debug("ToFont convert, parameter = " + parameter);
+
+        if (mFontManager != null) {
+            return mFontManager.getFont((String) parameter);
+        } else {
+            return null;
+        }
     }
 
     @Override
