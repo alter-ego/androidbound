@@ -6,6 +6,7 @@ import android.view.View;
 import java.util.List;
 
 import solutions.alterego.androidbound.android.interfaces.IImageLoader;
+import solutions.alterego.androidbound.binding.interfaces.IBinder;
 import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
 import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
 import solutions.alterego.androidbound.interfaces.ILogger;
@@ -46,6 +47,11 @@ public class NullViewBindingEngine implements IViewBindingEngine {
     }
 
     @Override
+    public IBinder getBinder() {
+        return null;
+    }
+
+    @Override
     public void lazyBindView(View view, Object source) {
 
     }
@@ -83,5 +89,10 @@ public class NullViewBindingEngine implements IViewBindingEngine {
     @Override
     public void disposeOf(Context context) {
 
+    }
+
+    @Override
+    public IImageLoader getImageLoader() {
+        return null;
     }
 }

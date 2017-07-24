@@ -40,6 +40,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
     private ILogger mLogger = NullLogger.instance;
 
     @Setter
+    @Getter
     private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
 
     @Getter
@@ -50,6 +51,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
 
     private ResourceService mResourceService;
 
+    @Getter
     private IBinder mBinder; //TODO should be NullBinder?
 
     private Map<View, List<IBindingAssociationEngine>> mBoundViews = new ConcurrentHashMap<>();
