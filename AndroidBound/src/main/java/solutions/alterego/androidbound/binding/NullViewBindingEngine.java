@@ -51,6 +51,10 @@ public class NullViewBindingEngine implements IViewBindingEngine {
         return null;
     }
 
+    public IValueConverter findConverter(String name) {
+        return null;
+    }
+
     @Override
     public void lazyBindView(View view, Object source) {
 

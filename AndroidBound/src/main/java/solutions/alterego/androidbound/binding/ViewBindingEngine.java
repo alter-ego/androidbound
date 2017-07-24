@@ -52,7 +52,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
     private ResourceService mResourceService;
 
     @Getter
-    private IBinder mBinder; //TODO should be NullBinder?
+    private IBinder mBinder;
 
     private Map<View, List<IBindingAssociationEngine>> mBoundViews = new ConcurrentHashMap<>();
 
@@ -74,6 +74,11 @@ public class ViewBindingEngine implements IViewBindingEngine {
     @Override
     public void registerConverter(IValueConverter converter) {
         mConverterService.registerConverter(converter);
+    }
+
+    @Override
+    public IValueConverter findConverter(String name) {
+        return mConverterService.findConverter(name);
     }
 
     @Override

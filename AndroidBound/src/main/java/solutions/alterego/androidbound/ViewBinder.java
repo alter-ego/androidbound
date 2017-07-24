@@ -129,6 +129,11 @@ public class ViewBinder implements IViewBinder {
     }
 
     @Override
+    public IValueConverter findConverter(String name) {
+        return mViewBindingEngine.findConverter(name);
+    }
+
+    @Override
     public void registerResource(String name, Object resource) {
         mViewBindingEngine.registerResource(name, resource);
     }

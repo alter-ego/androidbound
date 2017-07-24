@@ -5,11 +5,10 @@ import java.util.Map;
 
 import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
 import solutions.alterego.androidbound.converters.interfaces.IValueConverterProvider;
-import solutions.alterego.androidbound.converters.interfaces.IValueConverterRegistry;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
-public class ValueConverterService implements IValueConverterRegistry, IValueConverterProvider, INeedsLogger {
+public class ValueConverterService implements IValueConverterProvider, INeedsLogger {
 
     Map<String, IValueConverter> converters = new HashMap<String, IValueConverter>();
 
@@ -24,7 +23,7 @@ public class ValueConverterService implements IValueConverterRegistry, IValueCon
         converters.put(converter.getBindingName(), converter);
     }
 
-    public IValueConverter find(String name) {
+    public IValueConverter findConverter(String name) {
         if (name != null && converters.containsKey(name)) {
             logger.info("ValueConverterService using non-default converter " + name);
             return converters.get(name);

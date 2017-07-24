@@ -35,26 +35,26 @@ public class ValueConverterServiceTest {
 
     @Test
     public void registerConverter() {
-        Assertions.assertThat(mValueConverterService.find("test")).isInstanceOf(DefaultConverter.class);
+        Assertions.assertThat(mValueConverterService.findConverter("test")).isInstanceOf(DefaultConverter.class);
 
         mValueConverterService.registerConverter(testConverter);
 
-        Assertions.assertThat(mValueConverterService.find("test")).isNotInstanceOf(DefaultConverter.class);
-        Assertions.assertThat(mValueConverterService.find("test").getBindingName()).isEqualTo("test");
+        Assertions.assertThat(mValueConverterService.findConverter("test")).isNotInstanceOf(DefaultConverter.class);
+        Assertions.assertThat(mValueConverterService.findConverter("test").getBindingName()).isEqualTo("test");
     }
 
     @Test
     public void converts() {
         mValueConverterService.registerConverter(testConverter);
 
-        Assertions.assertThat(mValueConverterService.find("test").convert(null, null, null, null)).isEqualTo("converted");
+        Assertions.assertThat(mValueConverterService.findConverter("test").convert(null, null, null, null)).isEqualTo("converted");
     }
 
     @Test
     public void convertsBack() {
         mValueConverterService.registerConverter(testConverter);
 
-        Assertions.assertThat(mValueConverterService.find("test").convertBack(null, null, null, null)).isEqualTo("convertedBack");
+        Assertions.assertThat(mValueConverterService.findConverter("test").convertBack(null, null, null, null)).isEqualTo("convertedBack");
     }
 
 }
