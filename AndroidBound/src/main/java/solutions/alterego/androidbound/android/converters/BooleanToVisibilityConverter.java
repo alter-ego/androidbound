@@ -22,7 +22,7 @@ public class BooleanToVisibilityConverter implements IValueConverter {
     public Object convert(Object value, Class<?> targetType, Object parameter, Locale culture) {
         boolean result = false;
 
-        if (value instanceof Boolean) {
+        if (value != null && value instanceof Boolean) {
             result = ((Boolean) value);
         } else if (value != null) {
             result = true;
