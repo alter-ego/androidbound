@@ -3,6 +3,8 @@ package solutions.alterego.androidbound.binding.types;
 import java.security.InvalidParameterException;
 
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
@@ -26,9 +28,17 @@ public class SelfBinding extends BindingBase {
 
             mDisposable = ((INotifyPropertyChanged) subject)
                     .onPropertyChanged()
-                    .filter(member -> member.equals("this"))
-                    .subscribe(s -> {
-                        onBoundPropertyChanged();
+                    .filter(new Predicate<String>() {
+                        @Override
+                        public boolean test(String member) throws Exception {
+                            return member.equals("this");
+                        }
+                    })
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String s) throws Exception {
+                            onBoundPropertyChanged();
+                        }
                     });
         } else {
             setupChanges(false);

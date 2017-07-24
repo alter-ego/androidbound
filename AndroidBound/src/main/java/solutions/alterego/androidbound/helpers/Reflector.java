@@ -54,19 +54,34 @@ public class Reflector {
 
     public static boolean isCommand(Class<?> type, String name) {
         return Iterables.from(getMethods(type, COMMAND_PREFIX_DO + name))
-                .filter(methodInfo -> methodInfo.getMethodParameterCount() <= 2)
+                .filter(new Predicate<MethodInfo>() {
+                    @Override
+                    public boolean test(MethodInfo methodInfo) throws Exception {
+                        return methodInfo.getMethodParameterCount() <= 2;
+                    }
+                })
                 .iterator()
                 .hasNext();
     }
 
     public static boolean isProperty(Class<?> type, String name) {
         if (Iterables.from(getMethods(type, PROPERTY_PREFIX_GET + name))
-                .filter(methodInfo -> methodInfo.getMethodParameterCount() == 0)
+                .filter(new Predicate<MethodInfo>() {
+                    @Override
+                    public boolean test(MethodInfo methodInfo) throws Exception {
+                        return methodInfo.getMethodParameterCount() == 0;
+                    }
+                })
                 .iterator()
                 .hasNext()) {
             return true;
         } else if (Iterables.from(getMethods(type, PROPERTY_PREFIX_IS + name))
-                .filter(methodInfo -> methodInfo.getMethodParameterCount() == 0)
+                .filter(new Predicate<MethodInfo>() {
+                    @Override
+                    public boolean test(MethodInfo methodInfo) throws Exception {
+                        return methodInfo.getMethodParameterCount() == 0;
+                    }
+                })
                 .iterator()
                 .hasNext()) {
             return true;
@@ -481,40 +496,46 @@ public class Reflector {
     }
 
     private static Predicate<MethodInfo> matchMethodParameter(final Class<?>[] parameterTypes) {
-        return obj -> {
-            if (parameterTypes == null) {
-                return true;
-            }
-            if (obj.getMethodParameterCount() != parameterTypes.length) {
-                return false;
-            }
-
-            for (int i = 0; i < parameterTypes.length; i++) {
-                if (!obj.getMethodParameterTypes()[i].equals(parameterTypes[i])) {
+        return new Predicate<MethodInfo>() {
+            @Override
+            public boolean test(MethodInfo methodInfo) throws Exception {
+                if (parameterTypes == null) {
+                    return true;
+                }
+                if (methodInfo.getMethodParameterCount() != parameterTypes.length) {
                     return false;
                 }
-            }
 
-            return true;
+                for (int i = 0; i < parameterTypes.length; i++) {
+                    if (!methodInfo.getMethodParameterTypes()[i].equals(parameterTypes[i])) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
         };
     }
 
     private static Predicate<ConstructorInfo> matchConstructorParameter(final Class<?>[] parameterTypes) {
-        return constructorInfo -> {
-            Class<?>[] pts = parameterTypes;
-            if (pts == null) {
-                pts = new Class<?>[0];
-            }
-            if (constructorInfo.getConstructorParameterCount() != pts.length) {
-                return false;
-            }
-
-            for (int i = 0; i < pts.length; i++) {
-                if (!constructorInfo.getConstructorParameterTypes()[i].equals(pts[i])) {
+        return new Predicate<ConstructorInfo>() {
+            @Override
+            public boolean test(ConstructorInfo constructorInfo) throws Exception {
+                Class<?>[] pts = parameterTypes;
+                if (pts == null) {
+                    pts = new Class<?>[0];
+                }
+                if (constructorInfo.getConstructorParameterCount() != pts.length) {
                     return false;
                 }
+
+                for (int i = 0; i < pts.length; i++) {
+                    if (!constructorInfo.getConstructorParameterTypes()[i].equals(pts[i])) {
+                        return false;
+                    }
+                }
+                return true;
             }
-            return true;
         };
     }
 
