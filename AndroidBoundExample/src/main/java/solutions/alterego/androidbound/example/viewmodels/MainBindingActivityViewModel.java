@@ -6,6 +6,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.UnderlineSpan;
 import android.widget.Toast;
 
 import lombok.Getter;
@@ -20,7 +25,7 @@ import solutions.alterego.androidbound.interfaces.ILogger;
 public class MainBindingActivityViewModel extends ViewModel {
 
     @Getter
-    private String mMainActivityTitle;
+    private Spannable mMainActivityTitle;
 
     @Getter
     private String mOpenNormalActivityText;
@@ -32,7 +37,7 @@ public class MainBindingActivityViewModel extends ViewModel {
     private String mEditTextText = "empty edit text";
 
     @Getter
-    private String mTextViewBoundToEditText = "empty";
+    private SpannableString mTextViewBoundToEditText = new SpannableString("empty");
 
     @Getter
     @Setter
@@ -53,7 +58,11 @@ public class MainBindingActivityViewModel extends ViewModel {
     }
 
     public void setMainActivityTitle(String title) {
-        mMainActivityTitle = title;
+        SpannableStringBuilder builder = new SpannableStringBuilder()
+                .append(title);
+        builder.setSpan(new UnderlineSpan(), 0, title.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+        mMainActivityTitle = builder;
         raisePropertyChanged("MainActivityTitle");
     }
 
@@ -137,7 +146,7 @@ public class MainBindingActivityViewModel extends ViewModel {
 
     public void setEditTextText(String text) {
         mLogger.info("text = " + text);
-        mTextViewBoundToEditText = text;
+        mTextViewBoundToEditText = new SpannableString(text);
         raisePropertyChanged("TextViewBoundToEditText");
     }
 
