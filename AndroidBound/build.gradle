@@ -2,9 +2,9 @@ def siteUrl = 'https://github.com/alter-ego/androidbound'
 def gitUrl = 'https://github.com/alter-ego/androidbound.git'
 def artifactGroup = "solutions.alterego"
 def artifactName = "androidbound"
-def artifactVersion = "0.7.4"
+def artifactVersion = "0.7.5"
 def artifactDesc = "This library offers easy view bindings for Android."
-def artifactVersionCode = 34
+def artifactVersionCode = 35
 
 ext.bintrayuser = System.getenv("BINTRAY_USER")
 ext.bintraypwd = System.getenv("BINTRAY_PWD")
