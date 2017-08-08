@@ -1,5 +1,6 @@
 package solutions.alterego.androidbound.helpers;
 
+import android.util.Log;
 import android.util.SparseArray;
 
 import java.lang.reflect.Constructor;
@@ -12,7 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import io.reactivex.Observable;
 import io.reactivex.functions.Predicate;
 import solutions.alterego.androidbound.helpers.reflector.CommandInfo;
 import solutions.alterego.androidbound.helpers.reflector.ConstructorInfo;
@@ -436,21 +436,27 @@ public class Reflector {
     }
 
     private static SparseArray<List<MethodInfo>> getMethodsForClass(Class<?> type) {
-        //Method[] ms = type.getDeclaredMethods();
         Method[] typeMethods = type.getMethods();
 
         SparseArray<List<MethodInfo>> methods = new SparseArray<List<MethodInfo>>(typeMethods.length);
         for (Method method : typeMethods) {
-            method.setAccessible(true);
-            MethodInfo methodInfo = new MethodInfo(method);
-            int methodCode = methodInfo.getMethodName().hashCode();
+            try {
+                method.setAccessible(true);
+                MethodInfo methodInfo = MethodInfo.getMethodInfo(method);
 
-            List<MethodInfo> methodInfoList = methods.get(methodCode);
-            if (methodInfoList == null) {
-                methodInfoList = new LinkedList<MethodInfo>();
-                methods.put(methodCode, methodInfoList);
+                if (methodInfo != MethodInfo.EMPTY) {
+                    int methodCode = methodInfo.getMethodName().hashCode();
+
+                    List<MethodInfo> methodInfoList = methods.get(methodCode);
+                    if (methodInfoList == null) {
+                        methodInfoList = new LinkedList<MethodInfo>();
+                        methods.put(methodCode, methodInfoList);
+                    }
+                    methodInfoList.add(methodInfo);
+                }
+            } catch (Throwable e) {
+                Log.w("AndroidBound", "Error in Reflector.getMethodsForClass: ", e);
             }
-            methodInfoList.add(methodInfo);
         }
 
         return methods;
