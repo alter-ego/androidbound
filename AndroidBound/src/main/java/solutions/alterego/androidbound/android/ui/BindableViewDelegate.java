@@ -126,7 +126,7 @@ public class BindableViewDelegate implements INotifyPropertyChanged, View.OnClic
     }
 
     public void notifyPropertyChanged(String property) {
-        if (property != null) {
+        if (!mDisposed && !mPropertyChanged.hasComplete() && property != null) {
             mPropertyChanged.onNext(property);
         }
     }
