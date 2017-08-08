@@ -10,7 +10,7 @@ public class AdvancedAndroidLoggerAdapter implements ILogger {
     private final DetailedAndroidLogger mLogger;
 
     public AdvancedAndroidLoggerAdapter(String tag, IAndroidLogger.LoggingLevel level) {
-        mLogger = new DetailedAndroidLogger(tag, level);
+        mLogger = new DetailedAndroidLogger(tag, level, false, 5);
     }
 
     @Override

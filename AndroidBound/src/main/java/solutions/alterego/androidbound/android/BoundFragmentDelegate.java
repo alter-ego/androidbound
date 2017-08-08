@@ -42,6 +42,8 @@ public class BoundFragmentDelegate
 
     private ILogger mLogger = NullLogger.instance;
 
+    private transient View mBoundView;
+
     private transient WeakReference<Activity> mBoundActivity;
 
     private boolean mShouldCallCreate = false;
@@ -96,6 +98,10 @@ public class BoundFragmentDelegate
         mViewModels.put(id, viewModel);
 
         View view = getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, parent, false);
+
+        if (id.equalsIgnoreCase(TAG_VIEWMODEL_MAIN)) {
+            mBoundView = view;
+        }
 
         if (mShouldCallCreate) {
             onCreate(mCreateBundle);
@@ -249,14 +255,8 @@ public class BoundFragmentDelegate
 
     @Override
     public void onDestroyView() {
-        Activity boundActivityRef = getBoundActivity();
-
-        if (mBoundActivity != null
-                && boundActivityRef != null
-                && getViewBinder() != null
-                && boundActivityRef.getWindow() != null
-                && boundActivityRef.getWindow().getDecorView() != null) {
-            getViewBinder().clearBindingForViewAndChildren(getBoundActivity().getWindow().getDecorView());
+        if (mBoundView != null) {
+            getViewBinder().clearBindingForViewAndChildren(mBoundView);
         }
 
         if (getViewModels() != null) {
@@ -265,6 +265,7 @@ public class BoundFragmentDelegate
             }
         }
 
+        mBoundView = null;
         mViewModels = null;
         mShouldCallCreate = true; //this is here to balance it with onCreate not being called again when coming from background
     }
