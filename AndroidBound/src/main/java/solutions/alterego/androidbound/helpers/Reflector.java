@@ -443,7 +443,7 @@ public class Reflector {
             typeMethods = type.getMethods();
             methods = new SparseArray<>(typeMethods.length);
         } catch (Throwable e) {
-            Log.w("AndroidBound", "Error in Reflector.getMethodsForClass - couldn't get methods: ", e);
+            Log.w("AndroidBound", "Error in Reflector.getMethodsForClass - couldn't get methods for class: " + type, e);
         }
 
         for (Method method : typeMethods) {
@@ -462,7 +462,7 @@ public class Reflector {
                     methodInfoList.add(methodInfo);
                 }
             } catch (Throwable e) {
-                Log.w("AndroidBound", "Error in Reflector.getMethodsForClass - error getting method details for method = " + method, e);
+                Log.w("AndroidBound", "Error in Reflector.getMethodsForClass - error getting method details for class: " + type, e);
             }
         }
 
