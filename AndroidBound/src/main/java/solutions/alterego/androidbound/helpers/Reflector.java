@@ -436,9 +436,16 @@ public class Reflector {
     }
 
     private static SparseArray<List<MethodInfo>> getMethodsForClass(Class<?> type) {
-        Method[] typeMethods = type.getMethods();
+        Method[] typeMethods = new Method[]{};
+        SparseArray<List<MethodInfo>> methods = new SparseArray<>();
 
-        SparseArray<List<MethodInfo>> methods = new SparseArray<List<MethodInfo>>(typeMethods.length);
+        try {
+            typeMethods = type.getMethods();
+            methods = new SparseArray<>(typeMethods.length);
+        } catch (Throwable e) {
+            Log.w("AndroidBound", "Error in Reflector.getMethodsForClass - couldn't get methods: ", e);
+        }
+
         for (Method method : typeMethods) {
             try {
                 method.setAccessible(true);
@@ -455,7 +462,7 @@ public class Reflector {
                     methodInfoList.add(methodInfo);
                 }
             } catch (Throwable e) {
-                Log.w("AndroidBound", "Error in Reflector.getMethodsForClass: ", e);
+                Log.w("AndroidBound", "Error in Reflector.getMethodsForClass - error getting method details for method = " + method, e);
             }
         }
 
