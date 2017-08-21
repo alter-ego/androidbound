@@ -76,7 +76,6 @@ subprojects { project ->
         dependencies {
             classpath deps.android.gradlePlugin
             classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
-            classpath 'gradle.plugin.com.kageiit:lintrules:1.1.2'
             classpath 'me.tatarka:gradle-retrolambda:3.4.0'
             classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6"
         }
