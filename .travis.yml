@@ -1,7 +1,7 @@
 language: android
 
 jdk:
-  - oraclejdk7
+  - oraclejdk8
 
 env:
   global:
@@ -25,8 +25,8 @@ android:
     - addon-google_apis-google-26
 
 before_install:
-  - export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
-  - export JAVA_HOME=$JAVA7_HOME
+  - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
+  - export JAVA_HOME=$JAVA8_HOME
 
 notifications:
   email: false
