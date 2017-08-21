@@ -18,6 +18,9 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.disposables.Disposables;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 import lombok.Getter;
 import lombok.Setter;
@@ -115,9 +118,24 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         mSetValuesDisposable.dispose();
         mSetValuesDisposable = Observable.just(value)
                 .subscribeOn(Schedulers.computation())
-                .map(newList -> new Pair<List<?>, DiffUtil.DiffResult>(newList, calculateDiff(new ItemSourceDiffCallback(oldItems, value))))
+                .map(new Function<List<?>, Pair<List<?>, DiffUtil.DiffResult>>() {
+                    @Override
+                    public Pair<List<?>, DiffUtil.DiffResult> apply(List<?> newList) throws Exception {
+                        return new Pair<List<?>, DiffUtil.DiffResult>(newList, calculateDiff(new ItemSourceDiffCallback(oldItems, value)));
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::applyDiffResult, Throwable::printStackTrace);
+                .subscribe(new Consumer<Pair<List<?>, DiffUtil.DiffResult>>() {
+                    @Override
+                    public void accept(Pair<List<?>, DiffUtil.DiffResult> resultPair) throws Exception {
+                        applyDiffResult(resultPair);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
+                });
     }
 
     private void applyDiffResult(Pair<List<?>, DiffUtil.DiffResult> resultPair) {
@@ -163,15 +181,23 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
         mAddValueDisposable.dispose();
         mAddValueDisposable = Observable.fromIterable(values)
-                .filter(value -> value != null)
-                .subscribe(value -> {
-                    boolean contains = mItemsSource.contains(value);
-                    if (contains) {
-                        int index = mItemsSource.indexOf(value);
-                        mItemsSource.set(index, value);
-                        notifyItemChanged(index);
-                    } else if (mItemsSource.add(value)) {
-                        notifyItemInserted(mItemsSource.size() - 1);
+                .filter(new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object value) throws Exception {
+                        return value != null;
+                    }
+                })
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object value) throws Exception {
+                        boolean contains = mItemsSource.contains(value);
+                        if (contains) {
+                            int index = mItemsSource.indexOf(value);
+                            mItemsSource.set(index, value);
+                            notifyItemChanged(index);
+                        } else if (mItemsSource.add(value)) {
+                            notifyItemInserted(mItemsSource.size() - 1);
+                        }
                     }
                 });
     }
@@ -180,7 +206,12 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     & layout pass where you cannot change the RecyclerView data. Any method call that might change the structure
     of the RecyclerView or the adapter contents should be postponed to the next frame.*/
     private void postNotifyItemRangeRemoved(final int start, final int itemCount) {
-        AndroidSchedulers.mainThread().createWorker().schedule(() -> notifyItemRangeRemoved(start, itemCount));
+        AndroidSchedulers.mainThread().createWorker().schedule(new Runnable() {
+            @Override
+            public void run() {
+                notifyItemRangeRemoved(start, itemCount);
+            }
+        });
     }
 
 
@@ -211,21 +242,35 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         mRemoveItemsDisposable.dispose();
         mRemoveItemsDisposable = Observable.just(tmp)
                 .subscribeOn(Schedulers.computation())
-                .map(list -> {
-                    list.removeAll(value);
-                    return list;
-                })
-                .map(list -> new Pair<List, DiffUtil.DiffResult>(list,
-                        calculateDiff(new ItemSourceDiffCallback(mItemsSource, list), true)))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(pair -> {
-                    if (pair.first != null && mItemsSource != null) {
-                        mItemsSource.clear();
-                        mItemsSource.addAll(pair.first);
+                .map(new Function<List<?>, List<?>>() {
+                    @Override
+                    public List<?> apply(List<?> list) throws Exception {
+                        list.removeAll(value);
+                        return list;
                     }
-                    pair.second.dispatchUpdatesTo(this);
-                }, throwable -> {
-                    notifyDataSetChanged();
+                })
+                .map(new Function<List<?>, Pair<List, DiffUtil.DiffResult>>() {
+                    @Override
+                    public Pair<List, DiffUtil.DiffResult> apply(List<?> list) throws Exception {
+                        return new Pair<List, DiffUtil.DiffResult>(list,
+                                calculateDiff(new ItemSourceDiffCallback(mItemsSource, list), true));
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Pair<List, DiffUtil.DiffResult>>() {
+                    @Override
+                    public void accept(Pair<List, DiffUtil.DiffResult> pair) throws Exception {
+                        if (pair.first != null && mItemsSource != null) {
+                            mItemsSource.clear();
+                            mItemsSource.addAll(pair.first);
+                        }
+                        pair.second.dispatchUpdatesTo(BindableRecyclerViewAdapter.this);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        notifyDataSetChanged();
+                    }
                 });
     }
 

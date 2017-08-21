@@ -3,9 +3,11 @@ package solutions.alterego.androidbound.binding.types;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import solutions.alterego.androidbound.binding.interfaces.IBinding;
 import solutions.alterego.androidbound.factories.IBindingFactory;
 import solutions.alterego.androidbound.interfaces.ILogger;
+import solutions.alterego.androidbound.utils.Exceptional;
 
 public class ChainedBinding extends PropertyBinding {
 
@@ -44,7 +46,13 @@ public class ChainedBinding extends PropertyBinding {
         }
 
         mCurrentBinding = mBindingFactory.create(currentValue, mTokens, this.mNeedChangesIfPossible);
-        mCurrentBindingChanged = mCurrentBinding.getChanges().subscribe(this::notifyChange);
+        mCurrentBindingChanged = mCurrentBinding.getChanges()
+                .subscribe(new Consumer<Exceptional<Object>>() {
+                    @Override
+                    public void accept(Exceptional<Object> value) throws Exception {
+                        notifyChange(value);
+                    }
+                });
     }
 
     @Override

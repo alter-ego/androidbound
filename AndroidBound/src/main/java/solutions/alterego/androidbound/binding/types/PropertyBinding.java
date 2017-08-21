@@ -1,6 +1,8 @@
 package solutions.alterego.androidbound.binding.types;
 
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.helpers.Reflector;
 import solutions.alterego.androidbound.helpers.reflector.PropertyInfo;
@@ -29,9 +31,17 @@ public class PropertyBinding extends BindingBase {
             getLogger().debug(propertyName + " implements INotifyPropertyChanged. Subscribing...");
 
             mMemberDisposable = ((INotifyPropertyChanged) subject).onPropertyChanged()
-                    .filter(member -> member.equals(propertyName))
-                    .subscribe(s -> {
-                        onBoundPropertyChanged();
+                    .filter(new Predicate<String>() {
+                        @Override
+                        public boolean test(String member) throws Exception {
+                            return member.equals(propertyName);
+                        }
+                    })
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String s) throws Exception {
+                            onBoundPropertyChanged();
+                        }
                     });
         } else {
             setupChanges(false);
