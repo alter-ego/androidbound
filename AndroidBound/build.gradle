@@ -9,21 +9,6 @@ def artifactVersionCode = 38
 ext.bintrayuser = System.getenv("BINTRAY_USER")
 ext.bintraypwd = System.getenv("BINTRAY_PWD")
 
-buildscript {
-    ext.kotlin_version = '1.0.1'
-
-    repositories {
-        jcenter()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'me.tatarka:gradle-retrolambda:3.4.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6"
-    }
-}
-
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
@@ -32,19 +17,13 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
-repositories {
-    jcenter()
-    mavenCentral()
-    maven() { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-}
-
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
 
     defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 25
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.compileSdk
         versionCode artifactVersionCode
         versionName artifactName
     }
@@ -76,25 +55,23 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
+    compile deps.support.appcompat
+    compile deps.support.compat
+    compile deps.support.recyclerview
 
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile deps.rx2.android
+    compile deps.rx2.java
 
-    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    compile 'io.reactivex.rxjava2:rxjava:2.1.0'
-
-    provided 'javax.annotation:jsr250-api:1.0'
-    compile 'org.projectlombok:lombok:1.16.12'
+    provided deps.annotation
+    compile deps.lombok
 
     // Testing
-    testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
-    testCompile 'junit:junit:4.12'
-    testCompile "org.mockito:mockito-core:1.9.5"
-    testCompile 'org.easytesting:fest-assert-core:2.0M10'
+    testCompile deps.kotlin.stdLibJre8
+    testCompile deps.kotlin.reflect
+    testCompile deps.kotlin.testjunit
+    testCompile deps.junit
+    testCompile deps.fest
+    testCompile deps.mockito
 }
 
 // build a jar with source files

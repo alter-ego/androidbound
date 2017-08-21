@@ -1,12 +1,3 @@
-buildscript {
-    repositories {
-        jcenter()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-    }
-}
 apply plugin: 'com.android.application'
 
 repositories {
@@ -15,13 +6,13 @@ repositories {
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
 
     defaultConfig {
         applicationId "solutions.alterego.androidbound.example"
-        minSdkVersion 9
-        targetSdkVersion 25
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.compileSdk
         versionCode 1
         versionName "1.0"
     }
@@ -44,17 +35,17 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.3.0'
-    compile 'com.android.support:support-v4:25.3.0'
-    annotationProcessor "org.projectlombok:lombok:1.16.12"
-    provided "org.projectlombok:lombok:1.16.12"
+    compile deps.support.appcompat
+    compile deps.support.compat
+    annotationProcessor deps.lombok
+    provided deps.lombok
     compile 'net.danlew:android.joda:2.9.9'
     compile 'com.github.brianPlummer:tinydancer:0.0.9'
     compile project(':AndroidBound')
 
-    compile 'solutions.alterego:advancedandroidlogger:1.0.9@aar'
+    compile deps.aaloger
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
 }
