@@ -1,5 +1,7 @@
 package solutions.alterego.androidbound.binding;
 
+import android.view.View;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +35,7 @@ public class TextSpecificationBinder implements IBinder {
         setLogger(logger);
     }
 
-    public List<IBindingAssociationEngine> bind(Object source, Object target, String bindingSpecifications) {
+    public List<IBindingAssociationEngine> bind(Object source, View target, String bindingSpecifications) {
         final List<IBindingAssociationEngine> bindings = new ArrayList<IBindingAssociationEngine>();
 
         for (BindingSpecification specification : mParser.parse(bindingSpecifications)) {

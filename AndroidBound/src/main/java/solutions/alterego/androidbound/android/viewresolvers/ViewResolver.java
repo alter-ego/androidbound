@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.viewresolvers;
+package solutions.alterego.androidbound.android.viewresolvers;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -28,7 +28,7 @@ import solutions.alterego.androidbound.android.ui.BindableVideoView;
 import solutions.alterego.androidbound.android.ui.BindableView;
 import solutions.alterego.androidbound.helpers.Reflector;
 import solutions.alterego.androidbound.interfaces.ILogger;
-import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
+import solutions.alterego.androidbound.android.interfaces.IViewResolver;
 
 public class ViewResolver implements IViewResolver {
 
@@ -137,5 +137,10 @@ public class ViewResolver implements IViewResolver {
     @Override
     public void setLogger(ILogger logger) {
         this.logger = logger.getLogger(this);
+    }
+
+    @Override
+    public void dispose() {
+
     }
 }

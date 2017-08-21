@@ -3,49 +3,36 @@ package solutions.alterego.androidbound;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.LayoutInflater.Factory;
 import android.view.LayoutInflater.Factory2;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.BindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.FontManager;
+import solutions.alterego.androidbound.android.NullBindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.converters.BooleanToVisibilityConverter;
 import solutions.alterego.androidbound.android.converters.FontConverter;
 import solutions.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.interfaces.IFontManager;
 import solutions.alterego.androidbound.android.interfaces.IImageLoader;
-import solutions.alterego.androidbound.android.interfaces.INeedsBoundView;
-import solutions.alterego.androidbound.android.interfaces.INeedsImageLoader;
-import solutions.alterego.androidbound.binding.TextSpecificationBinder;
-import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
-import solutions.alterego.androidbound.converters.ValueConverterService;
+import solutions.alterego.androidbound.android.viewresolvers.NullViewResolver;
+import solutions.alterego.androidbound.binding.NullViewBindingEngine;
+import solutions.alterego.androidbound.binding.ViewBindingEngine;
 import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
-import solutions.alterego.androidbound.factories.SourceBindingFactory;
-import solutions.alterego.androidbound.factories.TargetBindingFactory;
-import solutions.alterego.androidbound.interfaces.IDisposable;
 import solutions.alterego.androidbound.interfaces.ILogger;
-import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
-import solutions.alterego.androidbound.parsers.BindingSpecificationListParser;
-import solutions.alterego.androidbound.parsers.BindingSpecificationParser;
-import solutions.alterego.androidbound.resources.ResourceService;
-import solutions.alterego.androidbound.viewresolvers.ChainedViewResolver;
-import solutions.alterego.androidbound.viewresolvers.ViewResolver;
-import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
+import solutions.alterego.androidbound.interfaces.IViewBindingEngine;
+import solutions.alterego.androidbound.android.viewresolvers.ChainedViewResolver;
+import solutions.alterego.androidbound.android.viewresolvers.ViewResolver;
+import solutions.alterego.androidbound.android.interfaces.IViewResolver;
 
 @Accessors(prefix = "m")
 public class ViewBinder implements IViewBinder {
@@ -56,27 +43,30 @@ public class ViewBinder implements IViewBinder {
 
     private WeakReference<Context> mContext;
 
-    private ValueConverterService mConverterService;
+    private IBindableLayoutInflaterFactory mInflaterFactory = NullBindableLayoutInflaterFactory.instance;
 
-    private ResourceService mResourceService;
-
-    private IBindableLayoutInflaterFactory mInflaterFactory;
-
-    private ChainedViewResolver mViewResolver;
-
-    private TextSpecificationBinder mBinder;
-
-    private Map<View, List<IBindingAssociationEngine>> mBoundViews = new ConcurrentHashMap<>();
-
-    private Map<View, String> mLazyBoundViews = new ConcurrentHashMap<>();
+    private IViewResolver mViewResolver = NullViewResolver.instance;
 
     @Getter
     private IFontManager mFontManager;
 
-    private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
-
     @Getter
     private boolean mDebugMode;
+
+    @Getter
+    private IViewBindingEngine mViewBindingEngine = NullViewBindingEngine.instance;
+
+    /**
+     * For APIs >= 11 && < 21, there was a framework bug that prevented a LayoutInflater's
+     * Factory2 from being merged properly if set after a cloneInContext from a LayoutInflater
+     * that already had a Factory2 registered. We work around that bug here. If we can't we
+     * log an error.
+     */
+    @Getter
+    private boolean mCheckedField = false;
+
+    @Getter
+    private Field mLayoutInflaterFactory2Field = null;
 
     public ViewBinder(Context ctx) {
         setContext(ctx);
@@ -90,15 +80,7 @@ public class ViewBinder implements IViewBinder {
     }
 
     private void init() {
-        mConverterService = new ValueConverterService(getLogger());
-        mResourceService = new ResourceService(getLogger());
-
-        SourceBindingFactory sourceFactory = new SourceBindingFactory(getLogger());
-        TargetBindingFactory targetFactory = new TargetBindingFactory(getLogger());
-        BindingSpecificationParser bindingParser = new BindingSpecificationParser(mConverterService, mResourceService, getLogger());
-        BindingSpecificationListParser listParser = new BindingSpecificationListParser(bindingParser, getLogger());
-
-        mBinder = new TextSpecificationBinder(listParser, sourceFactory, targetFactory, getLogger());
+        mViewBindingEngine = new ViewBindingEngine(getLogger());
 
         mViewResolver = new ChainedViewResolver(new ViewResolver(getLogger()));
         mInflaterFactory = new BindableLayoutInflaterFactory(this, mViewResolver);
@@ -108,19 +90,9 @@ public class ViewBinder implements IViewBinder {
     }
 
     @Override
-    public void setDebug(boolean debugMode) {
+    public void setDebugMode(boolean debugMode) {
         mDebugMode = debugMode;
-    }
-
-    @Override
-    public void disposeOf(Context ctx) {
-        getLogger().verbose("disposing of context = " + ctx);
-
-        for (View view : mBoundViews.keySet()) {
-            if (view.getContext() == ctx) {
-                clearBindingsFor(view); //it doesn't go deep because we're gonna get all of them anyway
-            }
-        }
+        mViewBindingEngine.setDebugMode(debugMode);
     }
 
     @Override
@@ -153,148 +125,60 @@ public class ViewBinder implements IViewBinder {
 
     @Override
     public void registerConverter(String name, IValueConverter converter) {
-        mConverterService.registerConverter(name, converter);
+        mViewBindingEngine.registerConverter(name, converter);
     }
 
     @Override
     public void registerResource(String name, Object resource) {
-        mResourceService.registerResource(name, resource);
+        mViewBindingEngine.registerResource(name, resource);
     }
 
     @Override
     public void registerViewResolver(IViewResolver resolver) {
-        mViewResolver.addResolverToFront(resolver);
+        if (mViewResolver instanceof ChainedViewResolver) {
+            ((ChainedViewResolver) mViewResolver).addResolverToFront(resolver);
+        }
     }
 
     @Override
     public void unregisterViewResolver(IViewResolver resolver) {
-        mViewResolver.removeResolver(resolver);
-    }
-
-    @Override
-    public void registerLazyBindingsFor(View view, String bindingString) {
-        mLazyBoundViews.put(view, bindingString);
-        if (mBoundViews.containsKey(view)) {
-            clearBindingForViewAndChildren(view);
+        if (mViewResolver instanceof ChainedViewResolver) {
+            ((ChainedViewResolver) mViewResolver).removeResolver(resolver);
         }
     }
 
     @Override
-    public void lazyBindView(View view, Object source) {
-        if (source == null) {
-            mLogger.error("ViewModel source cannot be null!");
-            return;
-        }
-
-        checkAndBindView(view, source);
-    }
-
-    private void checkAndBindView(View view, Object source) {
-        mLogger.verbose("checking bindings for view = " + view + " and source = " + source);
-
-        if (view instanceof ViewGroup) {
-            for (int childIndex = 0; childIndex < ((ViewGroup) view).getChildCount(); childIndex++) {
-                checkAndBindView(((ViewGroup) view).getChildAt(childIndex), source);
-            }
-            bindViewToSource(source, view, mLazyBoundViews.get(view));
-        } else if (mLazyBoundViews.containsKey(view)) {
-            bindViewToSource(source, view, mLazyBoundViews.get(view));
-            mLazyBoundViews.remove(view);
-        }
+    public void setFontManager(IFontManager fontManager) {
+        mFontManager = fontManager;
+        registerConverter(FontConverter.getConverterName(), new FontConverter(getFontManager(), getLogger()));
     }
 
     @Override
-    public void bindViewToSource(Object source, View view, String bindingString) {
-        if (bindingString != null && !bindingString.equals("")) {
-            mLogger.verbose("bindViewToSource binding view = " + view + " to source = " + source);
-
-            List<IBindingAssociationEngine> bindings = mBinder.bind(source, view, bindingString);
-            registerBindingsFor(view, bindings);
-        }
-
-        if (view != null) {
-            if (source instanceof INeedsBoundView) {
-                ((INeedsBoundView) source).setBoundView(view);
-            }
-            if (view instanceof INeedsImageLoader) {
-                ((INeedsImageLoader) view).setImageLoader(mImageLoader);
-            }
-            if (view instanceof INeedsLogger) {
-                ((INeedsLogger) view).setLogger(getLogger());
-            }
-        }
-    }
-
-    @Override
-    public void clearBindingForViewAndChildren(View rootView) {
-        clearBindingsFor(rootView);
-
-        if (rootView == null || !(rootView instanceof ViewGroup)) {
-            return;
-        }
-
-        ViewGroup viewGroup = (ViewGroup) rootView;
-        for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            clearBindingForViewAndChildren(viewGroup.getChildAt(i));
-        }
-    }
-
-    @Override
-    public void clearBindingsFor(View view) {
-        if (view == null) {
-            return;
-        }
-
-        mLogger.verbose("clearBindingsFor view = " + view + ", current bound views size = " + mBoundViews.size());
-
-        if (mLazyBoundViews.containsKey(view)) {
-            mLazyBoundViews.remove(view);
-        }
-
-        if (!mBoundViews.containsKey(view)) {
-            return;
-        }
-
-        List<IBindingAssociationEngine> bindings = mBoundViews.get(view);
-
-        for (IBindingAssociationEngine binding : bindings) {
-            binding.dispose();
-        }
-
-        if (view instanceof IDisposable) {
-            ((IDisposable) view).dispose();
-        }
-
-        bindings.clear();
-        mBoundViews.remove(view);
-
-        mLogger.verbose("clearBindingsFor finished for view = " + view + ", remaining bound views size = " + mBoundViews.size());
-
-        if (isDebugMode()) {
-            for (View remainingview : mBoundViews.keySet()) {
-                if (remainingview.getContext() == view.getContext()) {
-                    mLogger.verbose(
-                            "clearBindingsFor found another remaining view with the same context as " + view + ", context = " + view.getContext() + ", found remaining view = " + remainingview);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void clearAllBindings() {
-        for (List<IBindingAssociationEngine> bindings : mBoundViews.values()) {
-            for (IBindingAssociationEngine binding : bindings) {
-                binding.dispose();
-            }
-            bindings.clear();
-        }
-        mBoundViews.clear();
-        mLazyBoundViews.clear();
+    public void setImageLoader(IImageLoader imageLoader) {
+        mViewBindingEngine.setImageLoader(imageLoader);
     }
 
     @Override
     public View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup) {
         return inflate(context, source, layoutResID, viewGroup, viewGroup != null);
+    }
+
+    @Override
+    public View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup, IViewResolver resolver) {
+        View view = null;
+
+        if (mViewResolver instanceof ChainedViewResolver) {
+            ((ChainedViewResolver) mViewResolver).addResolverToFront(resolver);
+            view = inflate(context, source, layoutResID, viewGroup);
+            ((ChainedViewResolver) mViewResolver).removeResolver(resolver);
+        }
+
+        return view;
+    }
+
+    @Override
+    public void disposeOf(Context context) {
+        mViewBindingEngine.disposeOf(context);
     }
 
     @Override
@@ -310,16 +194,6 @@ public class ViewBinder implements IViewBinder {
         }
 
         return inflater.inflate(layoutResID, viewGroup, attachToRoot);
-    }
-
-    @Override
-    public View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup, IViewResolver resolver) {
-
-        mViewResolver.addResolverToFront(resolver);
-        View view = this.inflate(context, source, layoutResID, viewGroup);
-        mViewResolver.removeResolver(resolver);
-
-        return view;
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -341,31 +215,21 @@ public class ViewBinder implements IViewBinder {
         }
     }
 
-    /**
-     * For APIs >= 11 && < 21, there was a framework bug that prevented a LayoutInflater's
-     * Factory2 from being merged properly if set after a cloneInContext from a LayoutInflater
-     * that already had a Factory2 registered. We work around that bug here. If we can't we
-     * log an error.
-     */
-    private boolean sCheckedField;
-
-    private Field sLayoutInflaterFactory2Field;
-
     //code from android.support.v4.view.LayoutInflaterCompatHC
     private void forceSetFactory2(LayoutInflater inflater, LayoutInflater.Factory2 factory) {
-        if (!sCheckedField) {
+        if (!mCheckedField) {
             try {
-                sLayoutInflaterFactory2Field = LayoutInflater.class.getDeclaredField("mFactory2");
-                sLayoutInflaterFactory2Field.setAccessible(true);
+                mLayoutInflaterFactory2Field = LayoutInflater.class.getDeclaredField("mFactory2");
+                mLayoutInflaterFactory2Field.setAccessible(true);
             } catch (NoSuchFieldException e) {
                 mLogger.error("forceSetFactory2 Could not find field 'mFactory2' on class " + LayoutInflater.class.getName()
                         + "; inflation may have unexpected results." + e.getMessage());
             }
-            sCheckedField = true;
+            mCheckedField = true;
         }
-        if (sLayoutInflaterFactory2Field != null) {
+        if (mLayoutInflaterFactory2Field != null) {
             try {
-                sLayoutInflaterFactory2Field.set(inflater, factory);
+                mLayoutInflaterFactory2Field.set(inflater, factory);
             } catch (IllegalAccessException e) {
                 mLogger.error(
                         "forceSetFactory2 could not set the Factory2 on LayoutInflater " + inflater + "; inflation may have unexpected results." + e
@@ -375,79 +239,19 @@ public class ViewBinder implements IViewBinder {
     }
 
     @Override
-    public void registerBindingsFor(View view, List<IBindingAssociationEngine> bindings) {
-        if (view == null || bindings == null) {
-            return;
-        }
-
-        if (mBoundViews.containsKey(view)) {
-            mBoundViews.get(view).addAll(bindings);
-        } else {
-            mBoundViews.put(view, bindings);
-        }
-    }
-
-    @Override
-    public List<IBindingAssociationEngine> getBindingsFor(View view) {
-        if (mBoundViews.containsKey(view)) {
-            return mBoundViews.get(view);
-        }
-
-        return new ArrayList<IBindingAssociationEngine>();
-    }
-
-    @Override
-    public List<IBindingAssociationEngine> getBindingsForViewAndChildren(View rootView) {
-        return getBindingsForViewAndChildrenRecursive(rootView, new ArrayList<IBindingAssociationEngine>());
-    }
-
-    private List<IBindingAssociationEngine> getBindingsForViewAndChildrenRecursive(View rootView, List<IBindingAssociationEngine> bindings) {
-
-        if (mBoundViews.containsKey(rootView)) {
-            bindings.addAll(mBoundViews.get(rootView));
-        }
-
-        if (!(rootView instanceof ViewGroup)) {
-            return bindings;
-        }
-
-        ViewGroup vg = (ViewGroup) rootView;
-
-        for (int i = 0; i < vg.getChildCount(); i++) {
-            View view = vg.getChildAt(i);
-            if (view instanceof RecyclerView || view instanceof AbsListView) {
-                continue;
-            }
-            getBindingsForViewAndChildrenRecursive(view, bindings);
-        }
-        return bindings;
-    }
-
-    @Override
     public void dispose() {
-        clearAllBindings();
-
         if (mContext != null) {
             mContext.clear();
         }
 
-        mConverterService = null;
-        mResourceService = null;
-        mInflaterFactory = null;
-        mViewResolver = null;
-        mFontManager = null;
-        mImageLoader = IImageLoader.nullImageLoader;
+        mViewBindingEngine.dispose();
+        mViewBindingEngine = NullViewBindingEngine.instance;
+
+        mViewResolver.dispose();
+        mViewResolver = NullViewResolver.instance;
+
+        mInflaterFactory = NullBindableLayoutInflaterFactory.instance;
         mLogger = NullLogger.instance;
-    }
-
-    @Override
-    public void setFontManager(IFontManager fontManager) {
-        mFontManager = fontManager;
-        registerConverter(FontConverter.getConverterName(), new FontConverter(getFontManager(), getLogger()));
-    }
-
-    @Override
-    public void setImageLoader(IImageLoader imageLoader) {
-        mImageLoader = imageLoader;
+        mFontManager = null;
     }
 }

@@ -257,7 +257,7 @@ public class BoundFragmentDelegate
     @Override
     public void onDestroyView() {
         if (mBoundView != null) {
-            getViewBinder().clearBindingForViewAndChildren(mBoundView);
+            getViewBinder().getViewBindingEngine().clearBindingForViewAndChildren(mBoundView);
         }
 
         if (getViewModels() != null) {

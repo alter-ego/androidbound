@@ -12,14 +12,12 @@ import android.view.View;
 
 import solutions.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
+import solutions.alterego.androidbound.android.interfaces.IViewResolver;
 import solutions.alterego.androidbound.android.ui.resources.BindingResources;
-import solutions.alterego.androidbound.binding.interfaces.IBinder;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
-import solutions.alterego.androidbound.viewresolvers.interfaces.IViewResolver;
+import solutions.alterego.androidbound.interfaces.IViewBindingEngine;
 
 public class BindableLayoutInflaterFactory implements IBindableLayoutInflaterFactory {
-
-    private IBinder mBinder;
 
     private IViewResolver mViewResolver;
 
@@ -32,7 +30,7 @@ public class BindableLayoutInflaterFactory implements IBindableLayoutInflaterFac
 
     @Override
     public LayoutInflater.Factory inflaterFor(final Object source) {
-        return new InflaterFactoryBase(mViewBinder) {
+        return new InflaterFactoryBase(mViewBinder.getViewBindingEngine()) {
             public View onCreateView(String name, Context context, AttributeSet attrs) {
                 View view = mViewResolver.createView(name, context, attrs);
                 if (view instanceof IBindableView) {
@@ -52,7 +50,7 @@ public class BindableLayoutInflaterFactory implements IBindableLayoutInflaterFac
 
     @Override
     public Factory inflaterFor(final Object source, final Factory factory) {
-        return new InflaterFactoryBase(mViewBinder) {
+        return new InflaterFactoryBase(mViewBinder.getViewBindingEngine()) {
             public View onCreateView(String name, Context context, AttributeSet attrs) {
                 View view = mViewResolver.createView(name, context, attrs);
                 if (view == null && factory != null) {
@@ -76,7 +74,7 @@ public class BindableLayoutInflaterFactory implements IBindableLayoutInflaterFac
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public Factory2 inflaterFor(final Object source, final Factory2 factory2) {
-        return new InflaterFactory2Base(mViewBinder) {
+        return new InflaterFactory2Base(mViewBinder.getViewBindingEngine()) {
             @Override
             public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
                 View view = mViewResolver.createView(name, context, attrs);
@@ -118,9 +116,9 @@ public class BindableLayoutInflaterFactory implements IBindableLayoutInflaterFac
 
     private static abstract class InflaterFactoryBase implements LayoutInflater.Factory {
 
-        private IViewBinder mBaseViewBinder;
+        private IViewBindingEngine mBaseViewBinder;
 
-        InflaterFactoryBase(IViewBinder viewBinder) {
+        InflaterFactoryBase(IViewBindingEngine viewBinder) {
             mBaseViewBinder = viewBinder;
         }
 
@@ -140,9 +138,9 @@ public class BindableLayoutInflaterFactory implements IBindableLayoutInflaterFac
     @SuppressLint("NewApi")
     private static abstract class InflaterFactory2Base implements LayoutInflater.Factory2 {
 
-        private IViewBinder mBaseViewBinder;
+        private IViewBindingEngine mBaseViewBinder;
 
-        InflaterFactory2Base(IViewBinder viewBinder) {
+        InflaterFactory2Base(IViewBindingEngine viewBinder) {
             mBaseViewBinder = viewBinder;
         }
 
