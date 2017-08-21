@@ -1,0 +1,96 @@
+<!-- A DrawerLayout is intended to be used as the top-level content view using match_parent for both width and height to consume the full space available. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/drawer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".MainActivity"
+            tools:ignore="MissingPrefix"
+            android:padding="16dp"
+            binding="{{ BackgroundColor @= MainActivityBackgroundColor }}"><!-- these double {{ and }} are just here for testing the parser - don't do this! -->
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+        <solutions.alterego.androidbound.android.ui.BindableButton
+                android:id="@+id/open_bindable_activity_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                tools:text="open bindable activity"
+                binding="{Click @- OpenBindableActivity};
+                    {Text @= OpenBindableActivityText };
+                    {Typeface @- ToFont(this, &apos;missing&apos;)};
+                    {BackgroundColor @= ButtonBackgroundColor};
+                    {TextColor @= MainActivityTitleColor};
+                    {ContentDescription @= OpenActivityButtonContentDescription}"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open fragment activity"
+                binding="{ Click @- OpenFragmentActivity }"/>
+
+        <Button
+                android:id="@+id/open_listview_activity_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open listview activity"
+                binding="{ Click @- OpenListViewActivity }"/>
+
+        <Button
+                android:id="@+id/open_listviewwithobjects_activity_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open lv with objects activity"
+                binding="{ Click @- OpenListViewWithObjectsActivity }"/>
+
+        <Button
+                android:id="@+id/open_rv_activity_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open rv activity"
+                binding="{ Click @- OpenRecyclerViewActivity }"/>
+
+        <Button
+                android:id="@+id/open_rvwithobjects_activity_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open rv with objects activity"
+                binding="{ Click @- OpenRecyclerViewWithObjectsActivity }"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open paginated RV"
+                binding="{ Click @- OpenPaginatedRecyclerViewActivity }"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:text="open NESTED RV"
+                binding="{ Click @- OpenNestedRecyclerViewActivity }"/>
+
+    </LinearLayout>
+
+</ScrollView>
