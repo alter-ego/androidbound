@@ -10,6 +10,7 @@ import solutions.alterego.androidbound.helpers.Matcher;
 import solutions.alterego.androidbound.helpers.Pattern;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.resources.interfaces.IResourceProvider;
+import solutions.alterego.androidbound.utils.StringUtils;
 
 public class BindingSpecificationParser implements IParser<BindingSpecification> {
 
@@ -17,7 +18,7 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
             .compile("\\s*(?<target>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z][a-zA-Z0-9]*)*)*)" +
                     "\\s*(?<mode>@=@|@-|-@|=@|=|@=|@\\+@|(@\\+)|(\\+@)|\\!@)" +
                     "\\s*(?:(?<converter>[a-zA-Z][a-zA-Z0-9]*)\\" +
-                    "s*\\()?\\s*(?<path>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z][a-zA-Z0-9]*)*)*)" +
+                    "s*\\()?\\s*(?<source>(?:[a-zA-Z][a-zA-Z0-9]*(?:\\.[a-zA-Z][a-zA-Z0-9]*)*)*)" +
                     "\\s*(?:,\\s*(?:(?<parameterName>[a-zA-Z][a-zA-Z0-9]*)" +
                     "+?|(?:'(?<parameterString>(?:[^'\\\\]|\\\\.)*)')+?))?\\s*\\)?" +
                     "(?:\\s*\\|\\|\\s*(?:(?:(?<fallbackName>[a-zA-Z][a-zA-Z0-9]*)" +
@@ -25,7 +26,7 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
 
     private ILogger mLogger = NullLogger.instance;
 
-    private IValueConverterProvider mValueConverterProvider;
+    protected IValueConverterProvider mValueConverterProvider;
 
     private IResourceProvider mResourceProvider;
 
@@ -33,60 +34,6 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
         mValueConverterProvider = converterProvider;
         mResourceProvider = resourceProvider;
         setLogger(logger);
-    }
-
-    final static String unescape(String value) {
-        if (value == null) {
-            return null;
-        }
-        StringBuffer result = new StringBuffer(value.length());
-        boolean appendBackSlash = false;
-
-        for (int i = 0; i < value.length(); i++) {
-            int code = value.codePointAt(i);
-            if (value.codePointAt(i) > Character.MAX_VALUE) {
-                i++;
-            }
-
-            if (!appendBackSlash) {
-                if (code == '\\') {
-                    appendBackSlash = true;
-                } else {
-                    result.append(Character.toChars(code));
-                }
-                continue;
-            }
-
-            if (code == '\\') {
-                appendBackSlash = false;
-                result.append('\\');
-                result.append('\\');
-                continue;
-            }
-
-            switch (code) {
-                case 'r':
-                    result.append('\r');
-                    break;
-                case 'n':
-                    result.append('\n');
-                    break;
-                case 'f':
-                    result.append('\f');
-                    break;
-                case 't':
-                    result.append('\t');
-                    break;
-                default:
-                    result.append(Character.toChars(code));
-                    break;
-            }
-            appendBackSlash = false;
-        }
-        if (appendBackSlash) {
-            result.append('\\');
-        }
-        return result.toString();
     }
 
     public void setLogger(ILogger logger) {
@@ -100,7 +47,7 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
 
         BindingSpecification result = new BindingSpecification();
         result.setTarget(groups.get("target"));
-        result.setPath(groups.get("path"));
+        result.setSource(groups.get("source"));
         result.setMode(parseMode(groups.get("mode")));
         result.setValueConverter(mValueConverterProvider.find(groups.get("converter")));
         result.setConverterParameter(resolveResource(groups.get("parameterString"), groups.get("parameterName")));
@@ -112,7 +59,7 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
         if (namedValue != null) {
             return mResourceProvider.find(namedValue);
         }
-        return unescape(constValue);
+        return StringUtils.unescape(constValue);
     }
 
     private BindingMode parseMode(String value) {

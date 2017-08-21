@@ -10,7 +10,7 @@ public class BindingSpecification {
 
     private String mTarget;
 
-    private String mPath;
+    private String mSource;
 
     private IValueConverter mValueConverter;
 

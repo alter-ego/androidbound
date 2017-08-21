@@ -39,7 +39,7 @@ public class TextSpecificationBinder implements IBinder {
         final List<IBindingAssociationEngine> bindings = new ArrayList<IBindingAssociationEngine>();
 
         for (BindingSpecification specification : mParser.parse(bindingSpecifications)) {
-            if (specification.getPath() != null && !specification.getPath().equals("")) {
+            if (specification.getSource() != null && !specification.getSource().equals("")) {
                 BindingRequest request = new BindingRequest();
                 request.setSource(source);
                 request.setTarget(target);

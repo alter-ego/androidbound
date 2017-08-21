@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import solutions.alterego.androidbound.NullLogger;
+import solutions.alterego.androidbound.TestUtils;
 import solutions.alterego.androidbound.binding.data.BindingSpecification;
 import solutions.alterego.androidbound.converters.ValueConverterService;
 import solutions.alterego.androidbound.resources.ResourceService;
@@ -45,23 +46,12 @@ public class BindingSpecificationListParserTest {
 
     private static BindingSpecificationListParser mListParser;
 
-    private static long tickTime;
-
     public BindingSpecificationListParserTest() {
         ValueConverterService converterService = new ValueConverterService(NullLogger.instance);
         ResourceService resourceService = new ResourceService(NullLogger.instance);
 
         BindingSpecificationParser bindingParser = new BindingSpecificationParser(converterService, resourceService, NullLogger.instance);
         mListParser = new BindingSpecificationListParser(bindingParser, NullLogger.instance);
-    }
-
-    private static void tick() {
-        tickTime = System.nanoTime();
-    }
-
-    private static void tock(String action) {
-        long mstime = (System.nanoTime() - tickTime) / 1000000;
-        System.out.println(action + ": " + mstime + "ms");
     }
 
     @Before
@@ -106,7 +96,7 @@ public class BindingSpecificationListParserTest {
     @Test
     public void parseBenchmark() throws Exception {
 
-        List<String> items = generateParsingData(1000000);
+        List<String> items = generateParsingData(100000);
         parseWithStringBuilder(items);
 
         assert true;
@@ -117,7 +107,6 @@ public class BindingSpecificationListParserTest {
         List<String> items = new ArrayList<>();
 
         for (int n = 0; n < itemCount; ++n) {
-            StringBuilder s = new StringBuilder();
             int bindingStringIndex = random.nextInt(9);
             items.add(bindingStringList.get(bindingStringIndex));
         }
@@ -127,8 +116,8 @@ public class BindingSpecificationListParserTest {
         return items;
     }
 
-    static void parseWithStringBuilder(List<String> items) {
-        tick();
+    private static void parseWithStringBuilder(List<String> items) {
+        TestUtils.tick();
 
         List<BindingSpecification> specList;
 
@@ -136,7 +125,7 @@ public class BindingSpecificationListParserTest {
             specList = mListParser.parse(item);
         }
 
-        tock("parseWithStringBuilder finished");
+        TestUtils.tock("parseWithStringBuilder finished");
     }
 
 }
