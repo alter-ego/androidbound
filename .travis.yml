@@ -23,9 +23,8 @@ android:
     # Additional components
     - extra-android-m2repository
     - extra-google-m2repository
-    - addon-google_apis-google-23
-    - addon-google_apis-google-25
-    - sys-img-armeabi-v7a-android-21
+    - addon-google_apis-google-26
+    - sys-img-armeabi-v7a-android-26
 
 before_install:
   - export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
