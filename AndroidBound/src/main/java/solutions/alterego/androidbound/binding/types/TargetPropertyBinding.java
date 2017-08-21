@@ -23,7 +23,12 @@ public class TargetPropertyBinding extends PropertyBinding {
         getLogger().verbose("Receiving set state for type" + (value != null ? value.getClass() : "<null>"));
         try {
             currentState = UpdatingState.UpdatingTarget;
-            AndroidSchedulers.mainThread().createWorker().schedule(() -> TargetPropertyBinding.super.setValue(value));
+            AndroidSchedulers.mainThread().createWorker().schedule(new Runnable() {
+                @Override
+                public void run() {
+                    TargetPropertyBinding.super.setValue(value);
+                }
+            });
         } finally {
             currentState = UpdatingState.None;
         }
@@ -38,14 +43,19 @@ public class TargetPropertyBinding extends PropertyBinding {
         getLogger().verbose("Receiving set state for type" + (value != null ? value.getClass() : "<null>"));
         try {
             currentState = UpdatingState.UpdatingTarget;
-            AndroidSchedulers.mainThread().createWorker().schedule(() -> TargetPropertyBinding.super.addValue(value));
+            AndroidSchedulers.mainThread().createWorker().schedule(new Runnable() {
+                @Override
+                public void run() {
+                    TargetPropertyBinding.super.addValue(value);
+                }
+            });
         } finally {
             currentState = UpdatingState.None;
         }
     }
 
     @Override
-    public void removeValue(Object value) {
+    public void removeValue(final Object value) {
         if (currentState != UpdatingState.None) {
             return;
         }
@@ -53,7 +63,12 @@ public class TargetPropertyBinding extends PropertyBinding {
         getLogger().verbose("Receiving set state for type" + (value != null ? value.getClass() : "<null>"));
         try {
             currentState = UpdatingState.UpdatingTarget;
-            AndroidSchedulers.mainThread().createWorker().schedule(() -> TargetPropertyBinding.super.removeValue(value));
+            AndroidSchedulers.mainThread().createWorker().schedule(new Runnable() {
+                @Override
+                public void run() {
+                    TargetPropertyBinding.super.removeValue(value);
+                }
+            });
         } finally {
             currentState = UpdatingState.None;
         }

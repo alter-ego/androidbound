@@ -1,5 +1,7 @@
 package solutions.alterego.androidbound.utils;
 
+import android.support.annotation.NonNull;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -534,31 +536,61 @@ public class Iterables {
         public MonoidIterableBuilder<T> filter(final Predicate<T> predicate) {
             final Iterable<T> baseSource = this.source;
 
-            return new MonoidIterableBuilder<T>(() -> new FilterIterator<T>(baseSource.iterator(), predicate));
+            return new MonoidIterableBuilder<T>(new AnonymousIterable<T>() {
+                @NonNull
+                @Override
+                public Iterator<T> iterator() {
+                    return new FilterIterator<T>(baseSource.iterator(), predicate);
+                }
+            });
         }
 
         public MonoidIterableBuilder<T> skip(final int count) {
             final Iterable<T> baseSource = this.source;
 
-            return new MonoidIterableBuilder<T>(() -> new SkipIterator<T>(baseSource.iterator(), count));
+            return new MonoidIterableBuilder<T>(new AnonymousIterable<T>() {
+                @NonNull
+                @Override
+                public Iterator<T> iterator() {
+                    return new SkipIterator<T>(baseSource.iterator(), count);
+                }
+            });
         }
 
         public MonoidIterableBuilder<T> take(final int count) {
             final Iterable<T> baseSource = this.source;
 
-            return new MonoidIterableBuilder<T>(() -> new TakeIterator<T>(baseSource.iterator(), count));
+            return new MonoidIterableBuilder<T>(new AnonymousIterable<T>() {
+                @NonNull
+                @Override
+                public Iterator<T> iterator() {
+                    return new TakeIterator<T>(baseSource.iterator(), count);
+                }
+            });
         }
 
         public MonoidIterableBuilder<T> takeWhile(final Predicate<T> predicate) {
             final Iterable<T> baseSource = this.source;
 
-            return new MonoidIterableBuilder<T>(() -> new WhileIterator<T>(baseSource.iterator(), predicate));
+            return new MonoidIterableBuilder<T>(new AnonymousIterable<T>() {
+                @NonNull
+                @Override
+                public Iterator<T> iterator() {
+                    return new WhileIterator<T>(baseSource.iterator(), predicate);
+                }
+            });
         }
 
         public MonoidIterableBuilder<T> sample(final int samplingSize) {
             final Iterable<T> baseSource = this.source;
 
-            return new MonoidIterableBuilder<T>(() -> new SampleIterator<T>(baseSource.iterator(), samplingSize));
+            return new MonoidIterableBuilder<T>(new AnonymousIterable<T>() {
+                @NonNull
+                @Override
+                public Iterator<T> iterator() {
+                    return new SampleIterator<T>(baseSource.iterator(), samplingSize);
+                }
+            });
         }
 
         public <TResult> MonoidIterableBuilder<TResult> select(final Function<T, TResult> selector) {

@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.disposables.Disposables;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.binding.data.BindingMode;
@@ -117,7 +118,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             if (mSourceBinding.hasChanges()) {
                 mSourceDisposable = mSourceBinding.getChanges()
                         .subscribeOn(Schedulers.computation())
-                        .subscribe(this::updateTargetFromSource);
+                        .subscribe(new Consumer<Exceptional<Object>>() {
+                            @Override
+                            public void accept(Exceptional<Object> value) throws Exception {
+                                updateTargetFromSource(value);
+                            }
+                        });
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getPath()
                         + " needs Disposable, but changes were not available");
@@ -132,7 +138,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             if (mTargetBinding.hasChanges()) {
                 mTargetDisposable = mTargetBinding.getChanges()
                         .subscribeOn(Schedulers.computation())
-                        .subscribe(this::removeItems);
+                        .subscribe(new Consumer<Exceptional<Object>>() {
+                            @Override
+                            public void accept(Exceptional<Object> value) throws Exception {
+                                removeItems(value);
+                            }
+                        });
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getTarget()
                         + " needs Disposable, but changes were not available.");
@@ -149,7 +160,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             if (mTargetBinding.hasChanges()) {
                 mTargetDisposable = mTargetBinding.getChanges()
                         .subscribeOn(Schedulers.computation())
-                        .subscribe(this::updateSourceFromTarget);
+                        .subscribe(new Consumer<Exceptional<Object>>() {
+                            @Override
+                            public void accept(Exceptional<Object> value) throws Exception {
+                                updateSourceFromTarget(value);
+                            }
+                        });
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getTarget()
                         + " needs Disposable, but changes were not available.");
@@ -167,7 +183,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             if (mSourceBinding.hasChanges()) {
                 mSourceAccumulateDisposable = mSourceBinding.getChanges()
                         .subscribeOn(Schedulers.computation())
-                        .subscribe(this::accumulateItems);
+                        .subscribe(new Consumer<Exceptional<Object>>() {
+                            @Override
+                            public void accept(Exceptional<Object> value) throws Exception {
+                                accumulateItems(value);
+                            }
+                        });
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getPath()
                         + " needs Disposable, but changes were not available");
@@ -182,7 +203,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             if (mTargetBinding.hasChanges()) {
                 mTargetAccumulateDisposable = mTargetBinding.getChanges()
                         .subscribeOn(Schedulers.computation())
-                        .subscribe(this::accumulateItemsToSource);
+                        .subscribe(new Consumer<Exceptional<Object>>() {
+                            @Override
+                            public void accept(Exceptional<Object> value) throws Exception {
+                                accumulateItemsToSource(value);
+                            }
+                        });
             } else {
                 mLogger.warning("Binding " + mBindingSpecification.getTarget()
                         + " needs Disposable, but changes were not available.");
