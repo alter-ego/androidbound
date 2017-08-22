@@ -24,8 +24,12 @@ public abstract class BindingActivity extends Activity implements IBindableView,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBoundActivityDelegate = new BoundActivityDelegate(this);
+        mBoundActivityDelegate = createBoundActivityDelegate(this);
         mBoundActivityDelegate.onCreate(savedInstanceState);
+    }
+
+    protected BoundActivityDelegate createBoundActivityDelegate(Activity activity) {
+        return new BoundActivityDelegate(activity);
     }
 
     @Override
