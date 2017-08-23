@@ -1,8 +1,6 @@
 package solutions.alterego.androidbound;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.LayoutInflater.Factory;
 import android.view.LayoutInflater.Factory2;
@@ -192,7 +190,7 @@ public class ViewBinder implements IViewBinder {
     public View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup, boolean attachToRoot) {
         LayoutInflater inflater = LayoutInflater.from(context).cloneInContext(context);
 
-        if (android.os.Build.VERSION.SDK_INT >= 11 && context instanceof Factory2) {
+        if (context instanceof Factory2) {
             setFactory2(context, source, inflater);
         } else if (context instanceof Factory) {
             inflater.setFactory(mInflaterFactory.inflaterFor(source, (Factory) context));
@@ -203,7 +201,6 @@ public class ViewBinder implements IViewBinder {
         return inflater.inflate(layoutResID, viewGroup, attachToRoot);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void setFactory2(Context context, Object source, LayoutInflater inflater) {
         LayoutInflater.Factory2 factory2 = mInflaterFactory.inflaterFor(source, (Factory2) context);
         inflater.setFactory2(factory2);
