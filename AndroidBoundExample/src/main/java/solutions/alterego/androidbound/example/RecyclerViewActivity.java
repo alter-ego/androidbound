@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 
-import solutions.alterego.androidbound.android.BindingAppCompatActivity;
+import solutions.alterego.androidbound.android.support.BindingAppCompatActivity;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.example.viewmodels.RecyclerViewActivityViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;

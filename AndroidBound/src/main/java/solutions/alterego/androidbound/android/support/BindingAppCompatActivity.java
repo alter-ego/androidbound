@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.android;
+package solutions.alterego.androidbound.android.support;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -19,13 +19,13 @@ import solutions.alterego.androidbound.interfaces.INeedsLogger;
 @Accessors(prefix = "m")
 public abstract class BindingAppCompatActivity extends AppCompatActivity implements IBindableView, IBoundActivity, INeedsLogger, IHasLogger {
 
-    protected BoundActivityDelegate mBoundActivityDelegate;
+    protected BoundSupportActivityDelegate mBoundActivityDelegate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBoundActivityDelegate = new BoundActivityDelegate(this);
+        mBoundActivityDelegate = new BoundSupportActivityDelegate(this);
         mBoundActivityDelegate.onCreate(savedInstanceState);
     }
 
