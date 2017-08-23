@@ -4,21 +4,23 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 
+import java.lang.ref.WeakReference;
+
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.example.ListViewActivity;
 import solutions.alterego.androidbound.example.ListViewWithObjectsActivity;
 import solutions.alterego.androidbound.example.MainBindingActivity;
-import solutions.alterego.androidbound.example.nestedrvs.NestedRecyclerViewActivity;
 import solutions.alterego.androidbound.example.PaginatedRecyclerViewActivity;
 import solutions.alterego.androidbound.example.RecyclerViewActivity;
 import solutions.alterego.androidbound.example.RecyclerViewWithObjectsActivity;
 import solutions.alterego.androidbound.example.fragment.TestFragmentActivity;
+import solutions.alterego.androidbound.example.nestedrvs.NestedRecyclerViewActivity;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
-public class MainActivityViewModel extends ViewModel {
+public class MainActivityViewModel extends AndroidViewModel {
 
     @Getter
     private String mMainActivityTitle;
@@ -28,7 +30,7 @@ public class MainActivityViewModel extends ViewModel {
 
     public MainActivityViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
-        setParentActivity(activity);
+        setParentActivity(new WeakReference<Activity>(activity));
 
         setMainActivityTitle("Main Activity");
         setOpenBindableActivityText("Open Bindable Activity");

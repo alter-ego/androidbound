@@ -2,13 +2,15 @@ package solutions.alterego.androidbound.example.viewmodels;
 
 import android.app.Activity;
 
+import java.lang.ref.WeakReference;
+
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
-public class ListItemDetailActivityViewModel extends ViewModel {
+public class ListItemDetailActivityViewModel extends AndroidViewModel {
 
     private static final int listSize = 250;
 
@@ -20,7 +22,7 @@ public class ListItemDetailActivityViewModel extends ViewModel {
 
     public ListItemDetailActivityViewModel(Activity activity, ILogger logger, String title, String imageUrl) {
         setLogger(logger);
-        setParentActivity(activity);
+        setParentActivity(new WeakReference<Activity>(activity));
 
         setTitle(title);
         setImageUrl(imageUrl);

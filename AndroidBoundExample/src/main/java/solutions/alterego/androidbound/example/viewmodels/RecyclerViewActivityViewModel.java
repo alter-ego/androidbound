@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.example.ListItemDetailActivity;
 import solutions.alterego.androidbound.example.MainActivity;
 import solutions.alterego.androidbound.example.listviewitems.ListViewItem;
@@ -17,7 +18,7 @@ import solutions.alterego.androidbound.example.listviewitems.ListViewItem2;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
-public class RecyclerViewActivityViewModel extends ViewModel {
+public class RecyclerViewActivityViewModel extends AndroidViewModel {
 
     private static final int listSize = 10;
 
@@ -32,7 +33,7 @@ public class RecyclerViewActivityViewModel extends ViewModel {
 
     public RecyclerViewActivityViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
-        setParentActivity(activity);
+        setParentActivity(new WeakReference<Activity>(activity));
 
         setListViewActivityTitle("RecyclerView with objects activity");
 

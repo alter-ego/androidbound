@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.example.ListItemDetailActivity;
 import solutions.alterego.androidbound.example.MainActivity;
 import solutions.alterego.androidbound.example.R;
@@ -20,7 +21,7 @@ import solutions.alterego.androidbound.example.listviewitems.ListViewItem2;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
-public class ListViewWithObjectsActivityViewModel extends ViewModel {
+public class ListViewWithObjectsActivityViewModel extends AndroidViewModel {
 
     private static final int listSize = 250;
 
@@ -35,7 +36,7 @@ public class ListViewWithObjectsActivityViewModel extends ViewModel {
 
     public ListViewWithObjectsActivityViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
-        setParentActivity(activity);
+        setParentActivity(new WeakReference<Activity>(activity));
 
         setListViewActivityTitle("ListView with objects activity");
 
