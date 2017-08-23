@@ -42,12 +42,16 @@ public class NullViewBindingEngine implements IViewBindingEngine {
     }
 
     @Override
-    public void registerConverter(String name, IValueConverter converter) {
+    public void registerConverter(IValueConverter converter) {
 
     }
 
     @Override
     public IBinder getBinder() {
+        return null;
+    }
+
+    public IValueConverter findConverter(String name) {
         return null;
     }
 

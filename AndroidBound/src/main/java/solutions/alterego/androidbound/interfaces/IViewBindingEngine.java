@@ -9,10 +9,11 @@ import solutions.alterego.androidbound.android.interfaces.IHasImageLoader;
 import solutions.alterego.androidbound.android.interfaces.INeedsImageLoader;
 import solutions.alterego.androidbound.binding.interfaces.IBinder;
 import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
-import solutions.alterego.androidbound.converters.interfaces.IValueConverterRegistry;
+import solutions.alterego.androidbound.converters.interfaces.IValueConverterProvider;
 import solutions.alterego.androidbound.resources.interfaces.IResourceRegistry;
 
-public interface IViewBindingEngine extends IDisposable, INeedsImageLoader, IHasImageLoader, IHasLogger, IHasDebugMode, IResourceRegistry, IValueConverterRegistry {
+public interface IViewBindingEngine extends IDisposable, INeedsImageLoader, IHasImageLoader, IHasLogger, IHasDebugMode, IResourceRegistry,
+        IValueConverterProvider {
 
     IBinder getBinder();
 

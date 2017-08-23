@@ -18,21 +18,22 @@ import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.BindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.FontManager;
 import solutions.alterego.androidbound.android.NullBindableLayoutInflaterFactory;
+import solutions.alterego.androidbound.android.converters.BooleanToInvisibilityConverter;
 import solutions.alterego.androidbound.android.converters.BooleanToVisibilityConverter;
 import solutions.alterego.androidbound.android.converters.FontConverter;
 import solutions.alterego.androidbound.android.interfaces.IBindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.interfaces.IFontManager;
 import solutions.alterego.androidbound.android.interfaces.IImageLoader;
+import solutions.alterego.androidbound.android.interfaces.IViewResolver;
+import solutions.alterego.androidbound.android.viewresolvers.ChainedViewResolver;
 import solutions.alterego.androidbound.android.viewresolvers.NullViewResolver;
+import solutions.alterego.androidbound.android.viewresolvers.ViewResolver;
 import solutions.alterego.androidbound.binding.NullViewBindingEngine;
 import solutions.alterego.androidbound.binding.ViewBindingEngine;
 import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 import solutions.alterego.androidbound.interfaces.IViewBindingEngine;
-import solutions.alterego.androidbound.android.viewresolvers.ChainedViewResolver;
-import solutions.alterego.androidbound.android.viewresolvers.ViewResolver;
-import solutions.alterego.androidbound.android.interfaces.IViewResolver;
 
 @Accessors(prefix = "m")
 public class ViewBinder implements IViewBinder {
@@ -120,12 +121,18 @@ public class ViewBinder implements IViewBinder {
     }
 
     private void registerDefaultConverters() {
-        registerConverter(BooleanToVisibilityConverter.getConverterName(), new BooleanToVisibilityConverter());
+        registerConverter(new BooleanToVisibilityConverter());
+        registerConverter(new BooleanToInvisibilityConverter());
     }
 
     @Override
-    public void registerConverter(String name, IValueConverter converter) {
-        mViewBindingEngine.registerConverter(name, converter);
+    public void registerConverter(IValueConverter converter) {
+        mViewBindingEngine.registerConverter(converter);
+    }
+
+    @Override
+    public IValueConverter findConverter(String name) {
+        return mViewBindingEngine.findConverter(name);
     }
 
     @Override
@@ -150,7 +157,7 @@ public class ViewBinder implements IViewBinder {
     @Override
     public void setFontManager(IFontManager fontManager) {
         mFontManager = fontManager;
-        registerConverter(FontConverter.getConverterName(), new FontConverter(getFontManager(), getLogger()));
+        registerConverter(new FontConverter(getFontManager(), getLogger()));
     }
 
     @Override
