@@ -44,7 +44,7 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
         if (mChanges == null) {
             return;
         }
-        mChanges.onNext(Exceptional.right(value));
+        mChanges.onNext(wrap(value));
     }
 
     protected void setupChanges(boolean hasChanges) {
@@ -77,5 +77,16 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
             mChanges.onComplete();
         }
         mChanges = null;
+    }
+
+    private Exceptional wrap(Object value) {
+        if (value instanceof Exceptional) {
+            mLogger.verbose("no wrapping, already have an exceptional");
+            return (Exceptional) value;
+        } else {
+            mLogger.verbose("wrapping value in exceptional");
+            return Exceptional.right(value);
+        }
+
     }
 }
