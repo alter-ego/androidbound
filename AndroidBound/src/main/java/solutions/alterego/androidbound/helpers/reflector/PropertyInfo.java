@@ -45,8 +45,7 @@ public class PropertyInfo {
     private final MethodInfo mRemover;
 
     public PropertyInfo(String name, boolean canRead, boolean canWrite, boolean canAdd, boolean canRemove, Class<?> type,
-            MethodInfo getter, MethodInfo setter, MethodInfo adder, MethodInfo remover, FieldInfo field,
-            ILogger logger) {
+            MethodInfo getter, MethodInfo setter, MethodInfo adder, MethodInfo remover, FieldInfo field, ILogger logger) {
         mPropertyType = type;
         mPropertyName = name;
         mCanRead = canRead;
@@ -59,12 +58,6 @@ public class PropertyInfo {
         mField = field;
         mAdder = adder;
         mLogger = logger;
-    }
-
-    public PropertyInfo(String name, boolean canRead, boolean canWrite, Class<?> type, MethodInfo getter,
-            MethodInfo setter, FieldInfo field,
-            ILogger logger) {
-        this(name, canRead, canWrite, false, false, type, getter, setter, null, null, field, logger);
     }
 
     public Object getValue(Object obj) {
