@@ -12,6 +12,7 @@ import solutions.alterego.androidbound.binding.data.BindingRequest;
 import solutions.alterego.androidbound.binding.data.BindingSpecification;
 import solutions.alterego.androidbound.binding.interfaces.IBinding;
 import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEngine;
+import solutions.alterego.androidbound.converters.interfaces.IValueConverter;
 import solutions.alterego.androidbound.factories.IBindingFactory;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.utils.Exceptional;
@@ -42,8 +43,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
     private IBindingFactory mTargetFactory;
 
-    public BindingAssociationEngine(BindingRequest request, IBindingFactory sourceFactory,
-            IBindingFactory targetFactory, ILogger logger) {
+    public BindingAssociationEngine(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, ILogger logger) {
         mMode = request.getSpecification().getMode();
         mSourceFactory = sourceFactory;
         mTargetFactory = targetFactory;
@@ -145,8 +145,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getTarget()
-                        + " needs Disposable, but changes were not available.");
+                mLogger.warning("Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.");
             }
         }
     }
@@ -167,8 +166,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getTarget()
-                        + " needs Disposable, but changes were not available.");
+                mLogger.warning("Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.");
             }
         }
     }
@@ -190,8 +188,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getSource()
-                        + " needs Disposable, but changes were not available");
+                mLogger.warning("Binding " + mBindingSpecification.getSource() + " needs Disposable, but changes were not available");
             }
         }
     }
@@ -210,8 +207,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getTarget()
-                        + " needs Disposable, but changes were not available.");
+                mLogger.warning("Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.");
             }
         }
     }
@@ -269,72 +265,77 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         return mMode == BindingMode.RemoveSource;
     }
 
-
     public boolean needsSourceAccumulate() {
         return mMode == BindingMode.AccumulateToSource || mMode == BindingMode.AccumulateTwoWay;
     }
 
-    protected void updateTargetFromSource(Object obj) {
+    protected void updateTargetFromSource(Object source) {
         Object result;
         try {
-            if (obj != IBinding.noValue) {
-                result = mBindingSpecification
-                        .getValueConverter()
-                        .convert(unwrap(obj), mTargetBinding.getType(), mBindingSpecification.getConverterParameter(),
-                                Locale.getDefault());
-
+            if (source != IBinding.noValue) {
+                IValueConverter converter = mBindingSpecification.getValueConverter();
+                result = converter
+                        .convert(unwrap(source), mTargetBinding.getType(), mBindingSpecification.getConverterParameter(), Locale.getDefault());
+                mLogger.verbose(
+                        "updating target type = " + mTargetBinding.getType() + " with unwrapped source = " + unwrap(source) + ", result = " + result
+                                + " using converter = " + converter);
             } else {
                 mLogger.warning("Switching to fallback value for " + mBindingSpecification.getSource());
                 result = mBindingSpecification.getFallbackValue();
             }
+
             mTargetBinding.setValue(result);
         } catch (Exception e) {
-            mLogger.error("Error occurred while binding " + mBindingSpecification.getSource() + " to target "
-                    + mBindingSpecification.getTarget()
-                    + ": " + e.getMessage());
+            mLogger.error(
+                    "Error occurred while binding " + mBindingSpecification.getSource() + " to target " + mBindingSpecification.getTarget() + ": " + e
+                            .getMessage());
         }
     }
 
-    protected void updateSourceFromTarget(Object obj) {
+    protected void updateSourceFromTarget(Object target) {
         try {
-            Object result = mBindingSpecification
-                    .getValueConverter()
-                    .convertBack(unwrap(obj), mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
-                            Locale.getDefault());
+            IValueConverter converter = mBindingSpecification.getValueConverter();
+            Object result = converter
+                    .convertBack(unwrap(target), mSourceBinding.getType(), mBindingSpecification.getConverterParameter(), Locale.getDefault());
+            mLogger.verbose(
+                    "updating source type = " + mSourceBinding.getType() + " with unwrapped target = " + unwrap(target) + ", result = " + result
+                            + " using converter = " + converter);
 
             mSourceBinding.setValue(result);
         } catch (Exception e) {
-            mLogger.error("Error occurred while binding " + mBindingSpecification.getTarget() + " to source "
-                    + mBindingSpecification.getSource()
-                    + ": " + e.getMessage());
+            mLogger.error(
+                    "Error occurred while binding " + mBindingSpecification.getTarget() + " to source " + mBindingSpecification.getSource() + ": " + e
+                            .getMessage());
         }
     }
 
     private Object unwrap(Object obj) {
         if (obj instanceof Exceptional) {
             return ((Exceptional) obj).value();
+        } else {
+            return obj;
         }
-        return obj;
     }
 
     private void removeItems(Object obj) {
         Object result;
         try {
             if (obj != IBinding.noValue) {
-                result = mBindingSpecification
-                        .getValueConverter()
-                        .convert(unwrap(obj), mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
-                                Locale.getDefault());
-
+                IValueConverter converter = mBindingSpecification.getValueConverter();
+                result = converter
+                        .convert(unwrap(obj), mSourceBinding.getType(), mBindingSpecification.getConverterParameter(), Locale.getDefault());
+                mLogger.verbose(
+                        "removing, source type = " + mSourceBinding.getType() + " with unwrapped obj = " + unwrap(obj) + ", result = " + result
+                                + " using converter = " + converter);
             } else {
                 mLogger.warning("Switching to fallback value for " + mBindingSpecification.getSource());
                 result = mBindingSpecification.getFallbackValue();
             }
             mTargetBinding.removeValue(result);
         } catch (Exception e) {
-            mLogger.error("Error occurred while binding " + mBindingSpecification.getSource() + " to target "
-                    + mBindingSpecification.getTarget()
-                    + ": " + e.getMessage());
+            mLogger.error(
+                    "Error occurred while binding " + mBindingSpecification.getSource() + " to target " + mBindingSpecification.getTarget() + ": " + e
+                            .getMessage());
         }
     }
 
@@ -342,10 +343,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         Object result;
         try {
             if (obj != IBinding.noValue) {
-                result = mBindingSpecification
-                        .getValueConverter()
-                        .convert(unwrap(obj), mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
-                                Locale.getDefault());
+                IValueConverter converter = mBindingSpecification.getValueConverter();
+                result = converter
+                        .convert(unwrap(obj), mSourceBinding.getType(), mBindingSpecification.getConverterParameter(), Locale.getDefault());
+                mLogger.verbose(
+                        "accumulating, source type = " + mSourceBinding.getType() + " with unwrapped obj = " + unwrap(obj) + ", result = " + result
+                                + " using converter = " + converter);
 
             } else {
                 mLogger.warning("Switching to fallback value for " + mBindingSpecification.getSource());
@@ -353,23 +356,28 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             }
             mTargetBinding.addValue(result);
         } catch (Exception e) {
-            mLogger.error("Error occurred while binding " + mBindingSpecification.getSource() + " to target "
-                    + mBindingSpecification.getTarget()
-                    + ": " + e.getMessage());
+            mLogger.error(
+                    "Error occurred while binding " + mBindingSpecification.getSource() + " to target " + mBindingSpecification.getTarget() + ": " + e
+                            .getMessage());
         }
     }
 
     private void accumulateItemsToSource(Object obj) {
         try {
-            Object result = mBindingSpecification
-                    .getValueConverter()
+            IValueConverter converter = mBindingSpecification.getValueConverter();
+            Object result = converter
                     .convertBack(unwrap(obj), mSourceBinding.getType(), mBindingSpecification.getConverterParameter(),
                             Locale.getDefault());
+            mLogger.verbose(
+                    "accumulating to source, source type = " + mSourceBinding.getType() + " with unwrapped obj = " + unwrap(obj) + ", result = "
+                            + result
+                            + " using converter = " + converter);
+
             mSourceBinding.addValue(result);
         } catch (Exception e) {
-            mLogger.error("Error occurred while binding " + mBindingSpecification.getTarget() + " to source "
-                    + mBindingSpecification.getSource()
-                    + ": " + e.getMessage());
+            mLogger.error(
+                    "Error occurred while binding " + mBindingSpecification.getTarget() + " to source " + mBindingSpecification.getSource() + ": " + e
+                            .getMessage());
         }
     }
 
