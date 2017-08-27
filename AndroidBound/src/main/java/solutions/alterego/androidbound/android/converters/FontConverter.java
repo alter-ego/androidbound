@@ -20,14 +20,20 @@ public class FontConverter implements IValueConverter {
         mLogger = logger;
     }
 
-    public static String getConverterName() {
+    @Override
+    public String getBindingName() {
         return CONVERTER_NAME;
     }
 
     @Override
     public Object convert(Object value, Class<?> targetType, Object parameter, Locale culture) {
-        mLogger.debug("ToFont convert, parameter = " + (String) parameter);
-        return mFontManager.getFont((String) parameter);
+        mLogger.debug("ToFont convert, parameter = " + parameter);
+
+        if (mFontManager != null) {
+            return mFontManager.getFont((String) parameter);
+        } else {
+            return null;
+        }
     }
 
     @Override

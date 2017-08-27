@@ -7,12 +7,12 @@ import android.view.ViewGroup;
 import solutions.alterego.androidbound.android.interfaces.IFontManager;
 import solutions.alterego.androidbound.android.interfaces.INeedsFontManager;
 import solutions.alterego.androidbound.android.interfaces.INeedsImageLoader;
-import solutions.alterego.androidbound.converters.interfaces.IValueConverterRegistry;
-import solutions.alterego.androidbound.resources.interfaces.IResourceRegistry;
 import solutions.alterego.androidbound.android.interfaces.IViewResolver;
+import solutions.alterego.androidbound.converters.interfaces.IValueConverterProvider;
+import solutions.alterego.androidbound.resources.interfaces.IResourceRegistry;
 
 
-public interface IViewBinder extends IResourceRegistry, IValueConverterRegistry, IDisposable, INeedsImageLoader, IHasLogger, INeedsFontManager,
+public interface IViewBinder extends IResourceRegistry, IValueConverterProvider, IDisposable, INeedsImageLoader, IHasLogger, INeedsFontManager,
         IHasDebugMode {
 
     void registerViewResolver(IViewResolver resolver);

@@ -100,7 +100,7 @@ public class BindingSpecificationParserTest {
 
     @Test
     public void parseCorrectlyParsesSimpleConverter() throws Exception {
-        mValueConverterService.registerConverter(BooleanToVisibilityConverter.getConverterName(), new BooleanToVisibilityConverter());
+        mValueConverterService.registerConverter(new BooleanToVisibilityConverter());
         BindingSpecification Default = mParser.parse(binding_converter_simple);
 
         Assertions.assertThat(Default.getTarget()).isEqualTo("Visibility");
@@ -110,7 +110,7 @@ public class BindingSpecificationParserTest {
 
     @Test
     public void parseCorrectlyParsesConverterWithParams() throws Exception {
-        mValueConverterService.registerConverter(BooleanToVisibilityConverter.getConverterName(), new BooleanToVisibilityConverter());
+        mValueConverterService.registerConverter(new BooleanToVisibilityConverter());
         BindingSpecification Default = mParser.parse(binding_converter_with_params);
 
         Assertions.assertThat(Default.getTarget()).isEqualTo("SourceUriWithDynamicRatio");
@@ -121,7 +121,7 @@ public class BindingSpecificationParserTest {
 
     @Test
     public void parseHasConverterDefaultFallbackValueAsNull() throws Exception {
-        mValueConverterService.registerConverter(BooleanToVisibilityConverter.getConverterName(), new BooleanToVisibilityConverter());
+        mValueConverterService.registerConverter(new BooleanToVisibilityConverter());
         BindingSpecification Default = mParser.parse(binding_converter_simple);
 
         Assertions.assertThat(Default.getTarget()).isEqualTo("Visibility");

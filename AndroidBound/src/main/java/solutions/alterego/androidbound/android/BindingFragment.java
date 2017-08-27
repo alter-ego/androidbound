@@ -24,18 +24,18 @@ public class BindingFragment extends Fragment implements IFragmentLifecycle, IBo
 
     private ILogger mLogger = NullLogger.instance;
 
-    private BoundFragmentDelegate mBoundFragmentDelegate;
+    protected BoundFragmentDelegate mBoundFragmentDelegate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBoundFragmentDelegate = getBoundFragmentDelegate();
+        mBoundFragmentDelegate = createBoundFragmentDelegate();
         mBoundFragmentDelegate.onCreate(savedInstanceState);
         mBoundFragmentDelegate.setLogger(mLogger);
     }
 
-    protected BoundFragmentDelegate getBoundFragmentDelegate() {
+    protected BoundFragmentDelegate createBoundFragmentDelegate() {
         return new BoundFragmentDelegate(this);
     }
 

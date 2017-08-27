@@ -18,12 +18,26 @@ public class DefaultConverter implements IValueConverter {
 
     private static final Map<String, Method> converters = new HashMap<String, Method>();
 
+    @Override
+    public String getBindingName() {
+        return "DefaultConverter";
+    }
+
+    @Override
+    public Object convert(Object value, Class<?> targetType, Object parameter, Locale culture) {
+        return convert(value, targetType);
+    }
+
+    @Override
+    public Object convertBack(Object value, Class<?> targetType, Object parameter, Locale culture) {
+        return convert(value, targetType);
+    }
+
     static {
         Method[] methods = DefaultConverter.class.getDeclaredMethods();
         for (Method method : methods) {
             if (method.getParameterTypes().length == 1) {
-                converters.put(method.getParameterTypes()[0].getName() + "_"
-                        + method.getReturnType().getName(), method);
+                converters.put(method.getParameterTypes()[0].getName() + "_" + method.getReturnType().getName(), method);
             }
         }
     }
@@ -41,53 +55,28 @@ public class DefaultConverter implements IValueConverter {
         String converterId = from.getClass().getName() + "_" + to.getName();
         Method converter = converters.get(converterId);
         if (converter == null) {
-            throw new UnsupportedOperationException("Cannot convert from "
-                    + from.getClass().getName() + " to " + to.getName()
-                    + ". Requested converter does not exist.");
+            throw new UnsupportedOperationException(
+                    "Cannot convert from " + from.getClass().getName() + " to " + to.getName() + ". Requested converter does not exist.");
         }
 
         try {
             return converter.invoke(to, from); //return to.cast();
         } catch (Exception e) {
-            throw new RuntimeException("Cannot convert from "
-                    + from.getClass().getName() + " to " + to.getName()
-                    + ". Conversion failed with " + e.getMessage(), e);
+            throw new RuntimeException(
+                    "Cannot convert from " + from.getClass().getName() + " to " + to.getName() + ". Conversion failed with " + e.getMessage(), e);
         }
     }
 
-    public static boolean unbox(Boolean val) {
-        return val;
-    }
-
-    public static int unbox(Integer val) {
-        return val;
-    }
-
-    public static long unbox(Long val) {
-        return val;
-    }
-
-    public static float unbox(Float val) {
-        return val;
-    }
-
-    public static double unbox(Double val) {
-        return val;
-    }
-
-    public static char unbox(Character val) {
-        return val;
-    }
-
-    public static byte unbox(Byte val) {
-        return val;
-    }
-
-    public static short unbox(Short val) {
-        return val;
-    }
-
+    //boxing converters
     public static Boolean box(boolean val) {
+        return val;
+    }
+
+    public static Short box(short val) {
+        return val;
+    }
+
+    public static Byte box(byte val) {
         return val;
     }
 
@@ -111,14 +100,40 @@ public class DefaultConverter implements IValueConverter {
         return val;
     }
 
-    public static Byte box(byte val) {
+    //unboxing converters
+    public static boolean unbox(Boolean val) {
         return val;
     }
 
-    public static Short box(short val) {
+    public static short unbox(Short val) {
         return val;
     }
 
+    public static byte unbox(Byte val) {
+        return val;
+    }
+
+    public static int unbox(Integer val) {
+        return val;
+    }
+
+    public static long unbox(Long val) {
+        return val;
+    }
+
+    public static float unbox(Float val) {
+        return val;
+    }
+
+    public static double unbox(Double val) {
+        return val;
+    }
+
+    public static char unbox(Character val) {
+        return val;
+    }
+
+    //boolean conversion
     public static Boolean integerToBoolean(Integer value) {
         return value.intValue() == 0 ? Boolean.FALSE : Boolean.TRUE;
     }
@@ -135,32 +150,21 @@ public class DefaultConverter implements IValueConverter {
         return value.booleanValue() ? Double.valueOf(1) : Double.valueOf(0);
     }
 
-    public static BigDecimal doubleToBigDecimal(Double value) {
-        return new BigDecimal(value.doubleValue());
+    public static String booleanToString(Boolean value) {
+        return value.toString();
     }
 
-    public static Double bigDecimalToDouble(BigDecimal value) {
-        return Double.valueOf(value.doubleValue());
+    public static Boolean stringToBoolean(String value) {
+        return Boolean.valueOf(value);
     }
 
+    //integer conversion
     public static String integerToString(Integer value) {
         return value.toString();
     }
 
     public static Integer stringToInteger(String value) {
         return Integer.valueOf(value);
-    }
-
-    public static String longToString(Long value) {
-        return value.toString();
-    }
-
-    public static Long stringToLong(String value) {
-        return Long.valueOf(value);
-    }
-
-    public static String booleanToString(Boolean value) {
-        return value.toString();
     }
 
     public static CharSequence integerToCharSequence(Integer value) {
@@ -171,16 +175,21 @@ public class DefaultConverter implements IValueConverter {
         return stringToInteger(value.toString());
     }
 
-    public static CharSequence longToCharSequence(Long value) {
-        return longToString(value);
+    public static ColorStateList integerToColorStateList(Integer value) { //TODO move to AndroidConverters?
+        return new ColorStateList(new int[][]{
+                new int[]{}
+        }, new int[]{
+                value
+        });
     }
 
-    public static Long charSequenceToLong(CharSequence value) {
-        return stringToLong(value.toString());
+    //double conversion
+    public static BigDecimal doubleToBigDecimal(Double value) {
+        return new BigDecimal(value.doubleValue());
     }
 
-    public static Boolean stringToBoolean(String value) {
-        return Boolean.valueOf(value);
+    public static Double bigDecimalToDouble(BigDecimal value) {
+        return Double.valueOf(value.doubleValue());
     }
 
     public static String doubleToString(Double value) {
@@ -191,27 +200,39 @@ public class DefaultConverter implements IValueConverter {
         return Double.valueOf(value);
     }
 
-    public static String spannableToString(Spannable value) {
+    //long conversion
+    public static String longToString(Long value) {
         return value.toString();
     }
 
+    public static Long stringToLong(String value) {
+        return Long.valueOf(value);
+    }
+
+    public static CharSequence longToCharSequence(Long value) {
+        return longToString(value);
+    }
+
+    public static Long charSequenceToLong(CharSequence value) {
+        return stringToLong(value.toString());
+    }
+
+    //spannable conversion
+    public static String spannableToString(Spannable value) {
+        return value.toString();
+    } //TODO move to AndroidConverters?
+
     public static Spannable stringToSpannable(String value) {
+        return (Spannable) new SpannableString(value);
+    } //TODO move to AndroidConverters?
+
+    //spannable conversion
+    public static String spannableStringToString(SpannableString value) {
+        return value.toString();
+    } //TODO move to AndroidConverters?
+
+    public static SpannableString stringToSpannableString(String value) {
         return new SpannableString(value);
-    }
+    } //TODO move to AndroidConverters?
 
-    public static ColorStateList integerToColorStateList(Integer value) {
-        return new ColorStateList(new int[][]{
-                new int[]{}
-        }, new int[]{
-                value
-        });
-    }
-
-    public Object convert(Object value, Class<?> targetType, Object parameter, Locale culture) {
-        return convert(value, targetType);
-    }
-
-    public Object convertBack(Object value, Class<?> targetType, Object parameter, Locale culture) {
-        return convert(value, targetType);
-    }
 }

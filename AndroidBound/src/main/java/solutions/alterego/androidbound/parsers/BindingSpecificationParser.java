@@ -49,7 +49,7 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
         result.setTarget(groups.get("target"));
         result.setSource(groups.get("source"));
         result.setMode(parseMode(groups.get("mode")));
-        result.setValueConverter(mValueConverterProvider.find(groups.get("converter")));
+        result.setValueConverter(mValueConverterProvider.findConverter(groups.get("converter")));
         result.setConverterParameter(resolveResource(groups.get("parameterString"), groups.get("parameterName")));
         result.setFallbackValue(resolveResource(groups.get("fallbackString"), groups.get("fallbackName")));
         return result;
