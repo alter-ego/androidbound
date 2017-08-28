@@ -26,7 +26,7 @@ public class TestFragment extends BindingFragment {
     private static final IAndroidLogger.LoggingLevel LOGGING_LEVEL = IAndroidLogger.LoggingLevel.VERBOSE;
 
     @Override
-    protected BoundFragmentDelegate getBoundFragmentDelegate() {
+    protected BoundFragmentDelegate createBoundFragmentDelegate() {
         IViewBinder viewBinder = new ViewBinder(getActivity(), new AdvancedAndroidLoggerAdapter(LOGGING_TAG, LOGGING_LEVEL));
         viewBinder.setImageLoader(new UILImageLoader(getActivity(), null));
         return new BoundFragmentDelegate(this, viewBinder);
