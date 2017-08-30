@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -30,7 +31,7 @@ import solutions.alterego.androidbound.interfaces.IViewBinder;
 @Accessors(prefix = "m")
 public class BindableRecyclerView extends RecyclerView implements IBindableView, INotifyPropertyChanged, RecyclerView.OnItemTouchListener {
 
-    public static final String LAYOUTMANAGER_LINEAR ="linear";
+    public static final String LAYOUTMANAGER_LINEAR = "linear";
 
     public static final String LAYOUTMANAGER_STAGGERED = "staggered";
 
@@ -129,7 +130,11 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
         mItemTemplate = getItemTemplate(attrs);
         mTemplatesForObjects = new HashMap<>();
-        setLayoutManager(getLayoutManager(attrs));
+
+        LayoutManager layoutManagerFromXml = getLayoutManager(attrs);
+        if (layoutManagerFromXml != null) {
+            setLayoutManager(layoutManagerFromXml);
+        }
     }
 
     private int getItemTemplate(AttributeSet attrs) {
@@ -137,22 +142,28 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
     }
 
     private LayoutManager getLayoutManager(AttributeSet attrs) {
-        LayoutManager layoutManager = new LinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false); //default
-
+        LayoutManager layoutManager = null;
         String managerType = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManager);
-        String managerOrientationString = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerOrientation);
-        boolean reverseLayout = attrs.getAttributeBooleanValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerReverse, false);
-        int spanCount = attrs.getAttributeIntValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerSpanCount, 1);
 
-        int managerOrientation = OrientationHelper.VERTICAL;
-        if ((LAYOUTMANAGER_ORIENTATION_HORIZONTAL).equalsIgnoreCase(managerOrientationString)) {
-            managerOrientation = OrientationHelper.HORIZONTAL;
-        }
+        if (!TextUtils.isEmpty(managerType)) {
+            String managerOrientationString = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerOrientation);
+            boolean reverseLayout = attrs.getAttributeBooleanValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerReverse, false);
+            int spanCount = attrs.getAttributeIntValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerSpanCount, 1);
+            int initialPrefetchCount = attrs.getAttributeIntValue(null, BindingResources.attr.BindableRecyclerView.initialPrefetchCount, 0);
 
-        if ((LAYOUTMANAGER_LINEAR).equalsIgnoreCase(managerType)) {
-            layoutManager = new LinearLayoutManager(getContext(), managerOrientation, reverseLayout);
-        } else if ((LAYOUTMANAGER_STAGGERED).equalsIgnoreCase(managerType)) {
-            layoutManager = new StaggeredGridLayoutManager(spanCount, managerOrientation);
+            int managerOrientation = OrientationHelper.VERTICAL;
+            if ((LAYOUTMANAGER_ORIENTATION_HORIZONTAL).equalsIgnoreCase(managerOrientationString)) {
+                managerOrientation = OrientationHelper.HORIZONTAL;
+            }
+
+            if ((LAYOUTMANAGER_LINEAR).equalsIgnoreCase(managerType)) {
+                layoutManager = new LinearLayoutManager(getContext(), managerOrientation, reverseLayout);
+                if (initialPrefetchCount != 0) {
+                    ((LinearLayoutManager) layoutManager).setInitialPrefetchItemCount(initialPrefetchCount);
+                }
+            } else if ((LAYOUTMANAGER_STAGGERED).equalsIgnoreCase(managerType)) {
+                layoutManager = new StaggeredGridLayoutManager(spanCount, managerOrientation);
+            }
         }
 
         return layoutManager;

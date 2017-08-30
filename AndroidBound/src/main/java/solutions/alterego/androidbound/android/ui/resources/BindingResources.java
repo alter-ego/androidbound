@@ -25,6 +25,8 @@ public final class BindingResources {
 
             public static final String layoutManagerSpanCount = "layoutManagerSpanCount";
 
+            public static final String initialPrefetchCount = "initialPrefetchCount";
+
         }
 
     }
