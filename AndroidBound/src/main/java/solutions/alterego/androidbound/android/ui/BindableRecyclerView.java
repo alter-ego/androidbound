@@ -169,6 +169,14 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
         return layoutManager;
     }
 
+    @Override
+    public void setLayoutManager(LayoutManager layout) {
+        super.setLayoutManager(layout);
+        if (mAdapter != null) {
+            mAdapter.setLayoutManager(getLayoutManager());
+        }
+    }
+
     public List<?> getItemsSource() {
         if (mAdapter != null) {
             return mAdapter.getItemsSource();
@@ -177,7 +185,7 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
     }
 
     private void createAdapterChecked() {
-        if (mAdapter == null) {
+        if (mAdapter == null && getViewBinder() != null) {
             mAdapter = new BindableRecyclerViewAdapter(getViewBinder(), mItemTemplate);
             mAdapter.setTemplatesForObjects(mTemplatesForObjects);
             setAdapter(mAdapter);
