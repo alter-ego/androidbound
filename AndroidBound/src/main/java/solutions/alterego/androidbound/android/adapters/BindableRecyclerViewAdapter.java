@@ -87,7 +87,7 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof BindableRecyclerViewItemViewHolder) {
-            if (getLayoutManager() instanceof StaggeredGridLayoutManager) {
+            if (getLayoutManager() != null) {
                 ((BindableRecyclerViewItemViewHolder) holder)
                         .onBindViewHolder(getItemsSource().get(position), getLayoutManager());
             } else {
