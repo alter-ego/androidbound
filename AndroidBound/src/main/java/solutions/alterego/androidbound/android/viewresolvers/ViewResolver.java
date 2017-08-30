@@ -105,7 +105,7 @@ public class ViewResolver implements IViewResolver {
 
             throw new Exception("constructor not found");
         } catch (Exception e) {
-            logger.warning("failed creating instance of class " + resolvedClass + ", message: " + e.getMessage());
+            logger.warning("failed creating instance of class " + resolvedClass + ", exception: " + e);
         }
 
         return null;

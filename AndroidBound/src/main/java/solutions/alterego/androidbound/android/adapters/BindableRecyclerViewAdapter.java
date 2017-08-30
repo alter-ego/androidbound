@@ -81,8 +81,7 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     + ": did you call setTemplatesForObjects or set itemTemplate in XML?");
         }
         return new BindableRecyclerViewItemViewHolder(
-                mViewBinder.inflate(parent.getContext(), null, layoutRes, parent, false),
-                mViewBinder, parent);
+                mViewBinder.inflate(parent.getContext(), null, layoutRes, parent, false), mViewBinder, parent);
     }
 
     @Override
@@ -108,8 +107,7 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         int viewType = mObjectIndex.indexOfValue(obj.getClass());
         mViewBinder.getLogger().verbose(
                 "BindableRecyclerViewAdapter getItemViewType viewType = " + viewType + " i.e. class = " + obj.getClass()
-                        .toString()
-                        + " for position = " + position);
+                        .toString() + " for position = " + position);
         return viewType;
     }
 
