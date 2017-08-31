@@ -3,6 +3,7 @@ package solutions.alterego.androidbound.android.adapters;
 import android.support.v4.util.Pair;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
@@ -22,6 +23,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
@@ -42,6 +44,10 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private List mItemsSource = new ArrayList<>();
 
     private SparseArray<Class<?>> mObjectIndex;
+
+    @Getter
+    @Setter
+    private RecyclerView.LayoutManager mLayoutManager;
 
     private Disposable mSetValuesDisposable = Disposables.disposed();
 
@@ -81,7 +87,12 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof BindableRecyclerViewItemViewHolder) {
-            ((BindableRecyclerViewItemViewHolder) holder).onBindViewHolder(getItemsSource().get(position));
+            if (getLayoutManager() != null) {
+                ((BindableRecyclerViewItemViewHolder) holder)
+                        .onBindViewHolder(getItemsSource().get(position), getLayoutManager());
+            } else {
+                ((BindableRecyclerViewItemViewHolder) holder).onBindViewHolder(getItemsSource().get(position));
+            }
         }
     }
 

@@ -172,6 +172,9 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
     @Override
     public void setLayoutManager(LayoutManager layout) {
         super.setLayoutManager(layout);
+        if (mAdapter != null) {
+            mAdapter.setLayoutManager(getLayoutManager());
+        }
     }
 
     public List<?> getItemsSource() {
@@ -191,11 +194,19 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     public void setItemsSource(List<?> value) {
         createAdapterChecked();
+
+        if (getLayoutManager() != null) {
+            mAdapter.setLayoutManager(getLayoutManager());
+        }
+
         mAdapter.setItemsSource(value);
     }
 
     public void addItems(List<?> value) {
         createAdapterChecked();
+        if (getLayoutManager() != null) {
+            mAdapter.setLayoutManager(getLayoutManager());
+        }
         mAdapter.addItemsSource(value);
     }
 
@@ -219,6 +230,9 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
         if (adapter instanceof BindableRecyclerViewAdapter) {
             mAdapter = (BindableRecyclerViewAdapter) adapter;
+            if (getLayoutManager() != null) {
+                mAdapter.setLayoutManager(getLayoutManager());
+            }
         }
     }
 
