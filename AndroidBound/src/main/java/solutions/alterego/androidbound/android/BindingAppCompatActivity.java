@@ -3,6 +3,7 @@ package solutions.alterego.androidbound.android;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -147,6 +148,15 @@ public abstract class BindingAppCompatActivity extends AppCompatActivity impleme
 
         if (mBoundActivityDelegate != null) {
             mBoundActivityDelegate.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (mBoundActivityDelegate != null) {
+            mBoundActivityDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -26,6 +27,7 @@ import solutions.alterego.androidbound.android.interfaces.IFragmentLifecycle;
 import solutions.alterego.androidbound.android.interfaces.INeedsConfigurationChange;
 import solutions.alterego.androidbound.android.interfaces.INeedsNewIntent;
 import solutions.alterego.androidbound.android.interfaces.INeedsOnActivityResult;
+import solutions.alterego.androidbound.android.interfaces.INeedsOnRequestPermissionResult;
 import solutions.alterego.androidbound.interfaces.IHasLogger;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
@@ -33,7 +35,7 @@ import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 @Accessors(prefix = "m")
 public class BoundFragmentDelegate
-        implements IActivityLifecycle, IFragmentLifecycle, IBoundFragment, INeedsOnActivityResult, INeedsNewIntent, INeedsConfigurationChange,
+        implements IActivityLifecycle, IFragmentLifecycle, IBoundFragment, INeedsOnActivityResult, INeedsOnRequestPermissionResult, INeedsNewIntent, INeedsConfigurationChange,
         INeedsLogger, IHasLogger {
 
     public static final String TAG_VIEWMODEL_MAIN = "androidbound_viewmodel_main";
@@ -249,6 +251,17 @@ public class BoundFragmentDelegate
             for (ViewModel viewModel : getViewModels().values()) {
                 if (viewModel instanceof INeedsOnActivityResult) {
                     ((INeedsOnActivityResult) viewModel).onActivityResult(requestCode, resultCode, data);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (getViewModels() != null) {
+            for (ViewModel viewModel : getViewModels().values()) {
+                if (viewModel instanceof INeedsOnRequestPermissionResult) {
+                    ((INeedsOnRequestPermissionResult) viewModel).onRequestPermissionsResult(requestCode, permissions, grantResults);
                 }
             }
         }
