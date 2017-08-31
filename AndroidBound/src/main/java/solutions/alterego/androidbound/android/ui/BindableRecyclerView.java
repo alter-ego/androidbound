@@ -39,14 +39,6 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     public static final String LAYOUTMANAGER_ORIENTATION_VERTICAL = "vertical";
 
-    private String mLayoutManagerOrientationString = LAYOUTMANAGER_ORIENTATION_VERTICAL;
-
-    private String mLayoutManagerType = null;
-
-    private int mSpanCount = 1;
-
-    private int mInitialPrefetchCount = 0;
-
     @Accessors(prefix = "m")
     private final class PageScrollListener extends OnScrollListener {
 
@@ -115,10 +107,18 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     @Getter
     @Setter
-    private boolean mUseParentLayoutParams = true;
+    private boolean mUseParentLayoutParams = false;
 
     @Getter
     private boolean mRtlLayout = false;
+
+    private String mLayoutManagerOrientationString = LAYOUTMANAGER_ORIENTATION_VERTICAL;
+
+    private String mLayoutManagerType = null;
+
+    private int mSpanCount = 1;
+
+    private int mInitialPrefetchCount = 0;
 
     private PageScrollListener mPageScrollListener;
 
@@ -172,7 +172,7 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
             mInitialPrefetchCount = attrs.getAttributeIntValue(null, BindingResources.attr.BindableRecyclerView.initialPrefetchCount, 0);
             mLayoutManagerType = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManager);
 
-            Boolean nestedScrollingEnabled = attrs
+            boolean nestedScrollingEnabled = attrs
                     .getAttributeBooleanValue(null, BindingResources.attr.BindableRecyclerView.nestedScrollingEnabled, isNestedScrollingEnabled());
             if (nestedScrollingEnabled != isNestedScrollingEnabled()) {
                 setNestedScrollingEnabled(nestedScrollingEnabled);
