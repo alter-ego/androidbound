@@ -37,6 +37,16 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     public static final String LAYOUTMANAGER_ORIENTATION_HORIZONTAL = "horizontal";
 
+    public static final String LAYOUTMANAGER_ORIENTATION_VERTICAL = "vertical";
+
+    private String mLayoutManagerOrientationString = LAYOUTMANAGER_ORIENTATION_VERTICAL;
+
+    private String mLayoutManagerType = null;
+
+    private int mSpanCount = 1;
+
+    private int mInitialPrefetchCount = 0;
+
     @Accessors(prefix = "m")
     private final class PageScrollListener extends OnScrollListener {
 
@@ -107,6 +117,9 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
     @Setter
     private boolean mUseParentLayoutParams = true;
 
+    @Getter
+    private boolean mRtlLayout = false;
+
     private PageScrollListener mPageScrollListener;
 
     private PageDescriptor mDefaultPageDescriptor;
@@ -136,9 +149,13 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
         mTemplatesForObjects = new HashMap<>();
 
         processAttrs(attrs);
-        LayoutManager layoutManagerFromXml = getLayoutManager(attrs);
-        if (layoutManagerFromXml != null) {
-            setLayoutManager(layoutManagerFromXml);
+        createLayoutManagerFromXmlParams();
+    }
+
+    public void setRtlLayout(boolean isRtlLayout) {
+        if (isRtlLayout != mRtlLayout) {
+            mRtlLayout = isRtlLayout;
+            createLayoutManagerFromXmlParams();
         }
     }
 
@@ -149,39 +166,36 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
     private void processAttrs(AttributeSet attrs) {
         if (attrs != null) {
             mUseParentLayoutParams = attrs.getAttributeBooleanValue(null, BindingResources.attr.BindableRecyclerView.useParentLayoutParams, true);
+            mLayoutManagerOrientationString = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerOrientation);
+            mRtlLayout = attrs.getAttributeBooleanValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerReverse, mRtlLayout);
+            mSpanCount = attrs.getAttributeIntValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerSpanCount, 1);
+            mInitialPrefetchCount = attrs.getAttributeIntValue(null, BindingResources.attr.BindableRecyclerView.initialPrefetchCount, 0);
+            mLayoutManagerType = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManager);
         }
     }
 
-    private LayoutManager getLayoutManager(AttributeSet attrs) {
+    private void createLayoutManagerFromXmlParams() {
         LayoutManager layoutManager = null;
-        String managerType = null;
 
-        if (attrs != null) {
-            managerType = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManager);
-        }
-
-        if (!TextUtils.isEmpty(managerType)) {
-            String managerOrientationString = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerOrientation);
-            boolean reverseLayout = attrs.getAttributeBooleanValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerReverse, false);
-            int spanCount = attrs.getAttributeIntValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerSpanCount, 1);
-            int initialPrefetchCount = attrs.getAttributeIntValue(null, BindingResources.attr.BindableRecyclerView.initialPrefetchCount, 0);
-
+        if (!TextUtils.isEmpty(mLayoutManagerType)) {
             int managerOrientation = OrientationHelper.VERTICAL;
-            if ((LAYOUTMANAGER_ORIENTATION_HORIZONTAL).equalsIgnoreCase(managerOrientationString)) {
+            if ((LAYOUTMANAGER_ORIENTATION_HORIZONTAL).equalsIgnoreCase(mLayoutManagerOrientationString)) {
                 managerOrientation = OrientationHelper.HORIZONTAL;
             }
 
-            if ((LAYOUTMANAGER_LINEAR).equalsIgnoreCase(managerType)) {
-                layoutManager = new LinearLayoutManager(getContext(), managerOrientation, reverseLayout);
-                if (initialPrefetchCount != 0) {
-                    ((LinearLayoutManager) layoutManager).setInitialPrefetchItemCount(initialPrefetchCount);
+            if ((LAYOUTMANAGER_LINEAR).equalsIgnoreCase(mLayoutManagerType)) {
+                layoutManager = new LinearLayoutManager(getContext(), managerOrientation, mRtlLayout);
+                if (mInitialPrefetchCount != 0) {
+                    ((LinearLayoutManager) layoutManager).setInitialPrefetchItemCount(mInitialPrefetchCount);
                 }
-            } else if ((LAYOUTMANAGER_STAGGERED).equalsIgnoreCase(managerType)) {
-                layoutManager = new StaggeredGridLayoutManager(spanCount, managerOrientation);
+            } else if ((LAYOUTMANAGER_STAGGERED).equalsIgnoreCase(mLayoutManagerType)) {
+                layoutManager = new StaggeredGridLayoutManager(mSpanCount, managerOrientation);
             }
         }
 
-        return layoutManager;
+        if (layoutManager != null) {
+            setLayoutManager(layoutManager);
+        }
     }
 
     @Override

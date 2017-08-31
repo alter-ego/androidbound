@@ -6,7 +6,7 @@
 
 
     <solutions.alterego.androidbound.android.ui.BindableRecyclerView
-            binding="{ ItemsSource @= NestedDataSet }"
+            binding="{ RtlLayout @= IsRtl }; { ItemsSource @= NestedDataSet }"
             layoutManager="linear"
             layoutManagerOrientation="horizontal"
             useParentLayoutParams="false"
