@@ -29,6 +29,8 @@ public final class BindingResources {
 
             public static final String useParentLayoutParams = "useParentLayoutParams";
 
+            public static final String nestedScrollingEnabled = "nestedScrollingEnabled";
+
         }
 
     }

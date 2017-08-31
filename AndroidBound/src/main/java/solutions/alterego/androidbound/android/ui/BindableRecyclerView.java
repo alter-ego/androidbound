@@ -171,6 +171,12 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
             mSpanCount = attrs.getAttributeIntValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerSpanCount, 1);
             mInitialPrefetchCount = attrs.getAttributeIntValue(null, BindingResources.attr.BindableRecyclerView.initialPrefetchCount, 0);
             mLayoutManagerType = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManager);
+
+            Boolean nestedScrollingEnabled = attrs
+                    .getAttributeBooleanValue(null, BindingResources.attr.BindableRecyclerView.nestedScrollingEnabled, isNestedScrollingEnabled());
+            if (nestedScrollingEnabled != isNestedScrollingEnabled()) {
+                setNestedScrollingEnabled(nestedScrollingEnabled);
+            }
         }
     }
 
