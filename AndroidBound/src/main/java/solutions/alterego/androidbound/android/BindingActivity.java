@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import lombok.experimental.Accessors;
@@ -151,6 +152,15 @@ public abstract class BindingActivity extends Activity implements IBindableView,
 
         if (mBoundActivityDelegate != null) {
             mBoundActivityDelegate.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (mBoundActivityDelegate != null) {
+            mBoundActivityDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import java.lang.ref.WeakReference;
@@ -20,13 +21,14 @@ import solutions.alterego.androidbound.android.interfaces.IBoundActivity;
 import solutions.alterego.androidbound.android.interfaces.INeedsConfigurationChange;
 import solutions.alterego.androidbound.android.interfaces.INeedsNewIntent;
 import solutions.alterego.androidbound.android.interfaces.INeedsOnActivityResult;
+import solutions.alterego.androidbound.android.interfaces.INeedsOnRequestPermissionResult;
 import solutions.alterego.androidbound.interfaces.IHasLogger;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 @Accessors(prefix = "m")
-public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity, INeedsOnActivityResult, INeedsNewIntent, INeedsConfigurationChange,
+public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity, INeedsOnActivityResult, INeedsOnRequestPermissionResult, INeedsNewIntent, INeedsConfigurationChange,
         INeedsLogger, IHasLogger {
 
     public static final String TAG_VIEWMODEL_MAIN = "androidbound_viewmodel_main";
@@ -254,6 +256,17 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (getViewModels() != null) {
+            for (ViewModel viewModel : getViewModels().values()) {
+                if (viewModel instanceof INeedsOnRequestPermissionResult) {
+                    ((INeedsOnRequestPermissionResult) viewModel).onRequestPermissionsResult(requestCode, permissions, grantResults);
+                }
+            }
+        }
+    }
+
+    @Override
     public ILogger getLogger() {
         return mLogger != null ? mLogger : NullLogger.instance;
     }
@@ -268,4 +281,5 @@ public class BoundActivityDelegate implements IActivityLifecycle, IBoundActivity
             }
         }
     }
+
 }
