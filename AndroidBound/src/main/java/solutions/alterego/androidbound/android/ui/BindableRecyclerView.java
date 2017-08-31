@@ -37,8 +37,6 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     public static final String LAYOUTMANAGER_ORIENTATION_HORIZONTAL = "horizontal";
 
-    private boolean mUseParentLayoutParams = true;
-
     @Accessors(prefix = "m")
     private final class PageScrollListener extends OnScrollListener {
 
@@ -104,6 +102,10 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     @Getter
     private BindableRecyclerViewAdapter mAdapter;
+
+    @Getter
+    @Setter
+    private boolean mUseParentLayoutParams = true;
 
     private PageScrollListener mPageScrollListener;
 
