@@ -1,6 +1,7 @@
 package solutions.alterego.androidbound.android.adapters;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
@@ -32,19 +33,20 @@ public class BindableRecyclerViewItemViewHolder extends RecyclerView.ViewHolder 
 
     public void onBindViewHolder(@NonNull Object objectForLayout) {
         bindTo(objectForLayout);
-        if (mParent != null && itemView != null) {
-            itemView.setLayoutParams(mParent.getLayoutParams());
-        }
     }
 
-    public void onBindViewHolder(@NonNull Object objectForLayout, RecyclerView.LayoutManager layoutManager) {
+    public void onBindViewHolderWithParentLayoutParams(@NonNull Object objectForLayout, RecyclerView.LayoutManager layoutManager) {
         bindTo(objectForLayout);
+
         if (itemView != null && mParent != null) {
             ViewGroup.LayoutParams layoutParams = mParent.getLayoutParams();
             if (layoutManager instanceof StaggeredGridLayoutManager) {
                 StaggeredGridLayoutManager.LayoutParams newLayoutParams = (StaggeredGridLayoutManager.LayoutParams) layoutManager
                         .generateLayoutParams(layoutParams);
                 mLogger.debug("viewholder for StaggeredGridLayoutManager, full span");
+                itemView.setLayoutParams(newLayoutParams);
+            } else if (layoutManager instanceof LinearLayoutManager) {
+                RecyclerView.LayoutParams newLayoutParams = layoutManager.generateLayoutParams(layoutParams);
                 itemView.setLayoutParams(newLayoutParams);
             } else {
                 itemView.setLayoutParams(mParent.getLayoutParams());
