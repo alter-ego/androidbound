@@ -41,6 +41,7 @@
                 layoutManager="linear"
                 layoutManagerOrientation="vertical"
                 layoutManagerReverse="false"
+                useParentLayoutParams="false"
                 binding="{ItemsSource @= ExampleListLinear}; {OnItemClickListener @- OnItemClickListener}"/>
 
         <TextView

@@ -33,13 +33,11 @@ public class BindableRecyclerViewItemViewHolder extends RecyclerView.ViewHolder 
 
     public void onBindViewHolder(@NonNull Object objectForLayout) {
         bindTo(objectForLayout);
-        if (mParent != null && itemView != null) {
-            itemView.setLayoutParams(mParent.getLayoutParams());
-        }
     }
 
-    public void onBindViewHolder(@NonNull Object objectForLayout, RecyclerView.LayoutManager layoutManager) {
+    public void onBindViewHolderWithParentLayoutParams(@NonNull Object objectForLayout, RecyclerView.LayoutManager layoutManager) {
         bindTo(objectForLayout);
+
         if (itemView != null && mParent != null) {
             ViewGroup.LayoutParams layoutParams = mParent.getLayoutParams();
             if (layoutManager instanceof StaggeredGridLayoutManager) {

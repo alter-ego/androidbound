@@ -37,6 +37,8 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     public static final String LAYOUTMANAGER_ORIENTATION_HORIZONTAL = "horizontal";
 
+    private boolean mUseParentLayoutParams = true;
+
     @Accessors(prefix = "m")
     private final class PageScrollListener extends OnScrollListener {
 
@@ -131,6 +133,7 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
         mItemTemplate = getItemTemplate(attrs);
         mTemplatesForObjects = new HashMap<>();
 
+        processAttrs(attrs);
         LayoutManager layoutManagerFromXml = getLayoutManager(attrs);
         if (layoutManagerFromXml != null) {
             setLayoutManager(layoutManagerFromXml);
@@ -141,9 +144,19 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
         return attrs.getAttributeResourceValue(null, BindingResources.attr.BindableListView.itemTemplate, 0);
     }
 
+    private void processAttrs(AttributeSet attrs) {
+        if (attrs != null) {
+            mUseParentLayoutParams = attrs.getAttributeBooleanValue(null, BindingResources.attr.BindableRecyclerView.useParentLayoutParams, true);
+        }
+    }
+
     private LayoutManager getLayoutManager(AttributeSet attrs) {
         LayoutManager layoutManager = null;
-        String managerType = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManager);
+        String managerType = null;
+
+        if (attrs != null) {
+            managerType = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManager);
+        }
 
         if (!TextUtils.isEmpty(managerType)) {
             String managerOrientationString = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerOrientation);
@@ -186,7 +199,7 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     private void createAdapterChecked() {
         if (mAdapter == null && getViewBinder() != null) {
-            mAdapter = new BindableRecyclerViewAdapter(getViewBinder(), mItemTemplate);
+            mAdapter = new BindableRecyclerViewAdapter(getViewBinder(), mItemTemplate, mUseParentLayoutParams);
             mAdapter.setTemplatesForObjects(mTemplatesForObjects);
             setAdapter(mAdapter);
         }
