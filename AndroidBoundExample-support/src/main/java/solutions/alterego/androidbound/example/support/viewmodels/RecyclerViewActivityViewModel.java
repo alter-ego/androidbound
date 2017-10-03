@@ -8,8 +8,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.example.support.ListItemDetailActivity;
 import solutions.alterego.androidbound.example.support.MainActivity;
@@ -17,18 +15,14 @@ import solutions.alterego.androidbound.example.support.listviewitems.ListViewIte
 import solutions.alterego.androidbound.example.support.listviewitems.ListViewItem2;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
-@Accessors(prefix = "m")
 public class RecyclerViewActivityViewModel extends AndroidViewModel {
 
     private static final int listSize = 10;
 
-    @Getter
     private String mListViewActivityTitle;
 
-    @Getter
     private String mOpenMainActivityText = "Open main activity";
 
-    @Getter
     private List<Object> mExampleListLinear = new ArrayList<Object>();
 
     public RecyclerViewActivityViewModel(Activity activity, ILogger logger) {
@@ -83,4 +77,15 @@ public class RecyclerViewActivityViewModel extends AndroidViewModel {
         }
     }
 
+    public String getListViewActivityTitle() {
+        return this.mListViewActivityTitle;
+    }
+
+    public String getOpenMainActivityText() {
+        return this.mOpenMainActivityText;
+    }
+
+    public List<Object> getExampleListLinear() {
+        return this.mExampleListLinear;
+    }
 }

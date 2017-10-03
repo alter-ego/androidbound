@@ -4,20 +4,15 @@ import android.app.Activity;
 
 import java.lang.ref.WeakReference;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
-@Accessors(prefix = "m")
 public class ListItemDetailActivityViewModel extends AndroidViewModel {
 
     private static final int listSize = 250;
 
-    @Getter
     private String mImageUrl;
 
-    @Getter
     private String mTitle;
 
     public ListItemDetailActivityViewModel(Activity activity, ILogger logger, String title, String imageUrl) {
@@ -38,4 +33,11 @@ public class ListItemDetailActivityViewModel extends AndroidViewModel {
         raisePropertyChanged("ImageUrl");
     }
 
+    public String getImageUrl() {
+        return this.mImageUrl;
+    }
+
+    public String getTitle() {
+        return this.mTitle;
+    }
 }

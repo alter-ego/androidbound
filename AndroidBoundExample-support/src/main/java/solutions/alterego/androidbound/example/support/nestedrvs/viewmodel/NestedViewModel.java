@@ -4,14 +4,10 @@ package solutions.alterego.androidbound.example.support.nestedrvs.viewmodel;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
 
-@Accessors(prefix = "m")
 public class NestedViewModel extends ViewModel {
 
-    @Getter
     private List<MainNestedViewModel.RecyclerViewItem> mNestedDataSet;
 
     public NestedViewModel() {
@@ -26,4 +22,7 @@ public class NestedViewModel extends ViewModel {
         return true;
     }
 
+    public List<MainNestedViewModel.RecyclerViewItem> getNestedDataSet() {
+        return this.mNestedDataSet;
+    }
 }

@@ -11,28 +11,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.AndroidViewModel;
+import solutions.alterego.androidbound.example.R;
 import solutions.alterego.androidbound.example.support.ListItemDetailActivity;
 import solutions.alterego.androidbound.example.support.MainActivity;
-import solutions.alterego.androidbound.example.R;
 import solutions.alterego.androidbound.example.support.listviewitems.ListViewItem;
 import solutions.alterego.androidbound.example.support.listviewitems.ListViewItem2;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
-@Accessors(prefix = "m")
 public class RecyclerViewWithObjectsActivityViewModel extends AndroidViewModel {
 
     private static final int listSize = 10;
 
-    @Getter
     private String mListViewActivityTitle;
 
-    @Getter
     private String mOpenMainActivityText = "Open main activity";
 
-    @Getter
     private List<Object> mExampleListStaggered = new ArrayList<Object>();
 
     public RecyclerViewWithObjectsActivityViewModel(Activity activity, ILogger logger) {
@@ -87,5 +81,17 @@ public class RecyclerViewWithObjectsActivityViewModel extends AndroidViewModel {
 
     public void doOnItemClickListenerView(View view, Object object) {
         Toast.makeText(getParentActivity(), "ID " + view.getId() + " " + object, Toast.LENGTH_SHORT).show();
+    }
+
+    public String getListViewActivityTitle() {
+        return this.mListViewActivityTitle;
+    }
+
+    public String getOpenMainActivityText() {
+        return this.mOpenMainActivityText;
+    }
+
+    public List<Object> getExampleListStaggered() {
+        return this.mExampleListStaggered;
     }
 }

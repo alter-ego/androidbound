@@ -15,34 +15,23 @@ import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.AndroidViewModel;
-import solutions.alterego.androidbound.example.support.MainActivity;
 import solutions.alterego.androidbound.example.R;
+import solutions.alterego.androidbound.example.support.MainActivity;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
-@Accessors(prefix = "m")
 public class MainBindingActivityViewModel extends AndroidViewModel {
 
-    @Getter
     private Spannable mMainActivityTitle;
 
-    @Getter
     private String mOpenNormalActivityText;
 
-    @Getter
     private boolean mTextViewVisible = false;
 
-    @Getter
     private String mEditTextText = "empty edit text";
 
-    @Getter
     private SpannableString mTextViewBoundToEditText = new SpannableString("empty");
 
-    @Getter
-    @Setter
     private String mBoundEditTextText = mEditTextText;
 
     public MainBindingActivityViewModel(Activity activity, ILogger logger) {
@@ -170,5 +159,33 @@ public class MainBindingActivityViewModel extends AndroidViewModel {
 
     public void doTextViewLongClick() {
         Toast.makeText(getParentActivity(), "long clicked text view!", Toast.LENGTH_SHORT).show();
+    }
+
+    public Spannable getMainActivityTitle() {
+        return this.mMainActivityTitle;
+    }
+
+    public String getOpenNormalActivityText() {
+        return this.mOpenNormalActivityText;
+    }
+
+    public boolean isTextViewVisible() {
+        return this.mTextViewVisible;
+    }
+
+    public String getEditTextText() {
+        return this.mEditTextText;
+    }
+
+    public SpannableString getTextViewBoundToEditText() {
+        return this.mTextViewBoundToEditText;
+    }
+
+    public String getBoundEditTextText() {
+        return this.mBoundEditTextText;
+    }
+
+    public void setBoundEditTextText(String mBoundEditTextText) {
+        this.mBoundEditTextText = mBoundEditTextText;
     }
 }

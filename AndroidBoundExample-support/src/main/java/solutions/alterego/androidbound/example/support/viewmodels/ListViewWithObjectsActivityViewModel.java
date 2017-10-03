@@ -10,28 +10,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.AndroidViewModel;
+import solutions.alterego.androidbound.example.R;
 import solutions.alterego.androidbound.example.support.ListItemDetailActivity;
 import solutions.alterego.androidbound.example.support.MainActivity;
-import solutions.alterego.androidbound.example.R;
 import solutions.alterego.androidbound.example.support.listviewitems.ListViewItem;
 import solutions.alterego.androidbound.example.support.listviewitems.ListViewItem2;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
-@Accessors(prefix = "m")
 public class ListViewWithObjectsActivityViewModel extends AndroidViewModel {
 
     private static final int listSize = 250;
 
-    @Getter
     private String mListViewActivityTitle;
 
-    @Getter
     private String mOpenMainActivityText = "Open main activity";
 
-    @Getter
     private List<Object> mExampleList = new ArrayList<Object>();
 
     public ListViewWithObjectsActivityViewModel(Activity activity, ILogger logger) {
@@ -97,4 +91,15 @@ public class ListViewWithObjectsActivityViewModel extends AndroidViewModel {
         }
     }
 
+    public String getListViewActivityTitle() {
+        return this.mListViewActivityTitle;
+    }
+
+    public String getOpenMainActivityText() {
+        return this.mOpenMainActivityText;
+    }
+
+    public List<Object> getExampleList() {
+        return this.mExampleList;
+    }
 }

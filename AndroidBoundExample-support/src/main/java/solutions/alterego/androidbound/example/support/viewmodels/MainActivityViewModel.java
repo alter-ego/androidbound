@@ -6,8 +6,6 @@ import android.graphics.Color;
 
 import java.lang.ref.WeakReference;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.example.support.ListViewActivity;
 import solutions.alterego.androidbound.example.support.ListViewWithObjectsActivity;
@@ -19,13 +17,10 @@ import solutions.alterego.androidbound.example.support.fragment.TestFragmentActi
 import solutions.alterego.androidbound.example.support.nestedrvs.NestedRecyclerViewActivity;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
-@Accessors(prefix = "m")
 public class MainActivityViewModel extends AndroidViewModel {
 
-    @Getter
     private String mMainActivityTitle;
 
-    @Getter
     private String mOpenBindableActivityText;
 
     public MainActivityViewModel(Activity activity, ILogger logger) {
@@ -134,5 +129,13 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     public String getOpenActivityButtonContentDescription() {
         return "opens main activity";
+    }
+
+    public String getMainActivityTitle() {
+        return this.mMainActivityTitle;
+    }
+
+    public String getOpenBindableActivityText() {
+        return this.mOpenBindableActivityText;
     }
 }
