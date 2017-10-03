@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.android.support;
+package solutions.alterego.androidbound.support.android;
 
 import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
@@ -11,6 +11,7 @@ import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.BoundActivityDelegate;
 import solutions.alterego.androidbound.android.interfaces.INeedsActivity;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
+import solutions.alterego.androidbound.support.android.interfaces.INeedsSupportFragmentManager;
 
 @Accessors(prefix = "m")
 public class BoundSupportActivityDelegate extends BoundActivityDelegate {

@@ -1,0 +1,143 @@
+def artifactName = "androidbound-support"
+
+ext.bintrayuser = System.getenv("BINTRAY_USER")
+ext.bintraypwd = System.getenv("BINTRAY_PWD")
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
+
+android {
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+
+    defaultConfig {
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.compileSdk
+        versionCode maven.artifactVersionCode
+        versionName artifactName
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/java'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+    compile project(':AndroidBound')
+
+    compile deps.support.appcompat
+    compile deps.support.recyclerview
+
+    compile deps.rx2.android
+    compile deps.rx2.java
+
+    provided deps.annotation
+    compile deps.lombok
+
+    // Testing
+    testCompile deps.kotlin.stdLibJre8
+    testCompile deps.kotlin.reflect
+    testCompile deps.kotlin.testjunit
+    testCompile deps.junit
+    testCompile deps.fest
+    testCompile deps.mockito
+}
+
+// build a jar with source files
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    failOnError false
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+// build a jar with javadoc
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        def deployPath = file(getProperty('aar.deployPath'))
+        repository(url: "file://${deployPath.absolutePath}")
+        pom.project {
+            groupId maven.artifactGroup
+            version maven.artifactVersion
+            artifactId artifactName
+        }
+    }
+}
+
+bintray {
+    user = bintrayuser
+    key = bintraypwd
+    dryRun = false
+
+    publications = ['Publication']
+    pkg {
+        repo = maven.repo
+        userOrg = maven.userOrg
+        websiteUrl = maven.siteUrl
+        vcsUrl = maven.gitUrl
+        issueTrackerUrl = maven.issueTrackerUrl
+        licenses = maven.licenses
+        name = artifactName
+        publish = true
+
+        version {
+            name = maven.artifactVersion
+            desc = maven.artifactDesc
+            vcsTag = maven.artifactVersion
+            released = new Date()
+        }
+    }
+}
+
+publishing {
+    publications {
+        Publication(MavenPublication) {
+            artifact("$buildDir/outputs/aar/AndroidBound-release.aar")
+            artifact sourcesJar
+            artifact javadocJar
+            groupId maven.artifactGroup
+            version maven.artifactVersion
+            artifactId artifactName
+        }
+    }
+}
+

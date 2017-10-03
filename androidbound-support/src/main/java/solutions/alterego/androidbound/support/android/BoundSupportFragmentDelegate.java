@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.android.support;
+package solutions.alterego.androidbound.support.android;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -33,6 +33,7 @@ import solutions.alterego.androidbound.interfaces.IHasLogger;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
+import solutions.alterego.androidbound.support.android.interfaces.INeedsSupportFragmentManager;
 
 @Accessors(prefix = "m")
 public class BoundSupportFragmentDelegate

@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.android.support;
+package solutions.alterego.androidbound.support.android;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import solutions.alterego.androidbound.android.interfaces.IActivityFocus;
 import solutions.alterego.androidbound.android.interfaces.IActivityLifecycle;
 import solutions.alterego.androidbound.android.interfaces.IHasActivity;
 import solutions.alterego.androidbound.android.interfaces.INeedsActivity;
+import solutions.alterego.androidbound.support.android.interfaces.IHasSupportFragmentManager;
+import solutions.alterego.androidbound.support.android.interfaces.INeedsSupportFragmentManager;
 
 @Accessors(prefix = "m")
 public class SupportAndroidViewModel extends ViewModel
