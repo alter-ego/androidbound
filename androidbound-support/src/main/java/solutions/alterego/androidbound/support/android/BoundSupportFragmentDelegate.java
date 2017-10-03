@@ -15,7 +15,6 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewModel;
@@ -42,7 +41,6 @@ public class BoundSupportFragmentDelegate
 
     public static final String TAG_VIEWMODEL_MAIN = "androidbound_viewmodel_main";
 
-    @Getter
     private Map<String, ViewModel> mViewModels;
 
     private ILogger mLogger = NullLogger.instance;
@@ -323,5 +321,9 @@ public class BoundSupportFragmentDelegate
                 }
             }
         }
+    }
+
+    public Map<String, ViewModel> getViewModels() {
+        return this.mViewModels;
     }
 }
