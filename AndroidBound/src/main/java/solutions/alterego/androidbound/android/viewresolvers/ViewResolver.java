@@ -103,7 +103,7 @@ public class ViewResolver implements IViewResolver {
         return null;
     }
 
-    private Class<?> resolveName(String name) {
+    protected Class<?> resolveName(String name) {
         String result;
 
         if (name.contains(".")) {
@@ -114,8 +114,8 @@ public class ViewResolver implements IViewResolver {
             result = "android.widget." + name;
         }
 
-        if (getMappings().containsKey(result)) {
-            return getMappings().get(result);
+        if (mappings.containsKey(result)) {
+            return mappings.get(result);
         }
 
         try {
@@ -124,10 +124,6 @@ public class ViewResolver implements IViewResolver {
         } catch (ClassNotFoundException e) {
             return null;
         }
-    }
-
-    protected Map<String, Class<?>> getMappings() {
-        return mappings;
     }
 
     @Override

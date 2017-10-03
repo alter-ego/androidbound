@@ -15,7 +15,7 @@ import solutions.alterego.androidbound.support.android.ui.BindableCompatTextView
 public class SupportViewResolver extends ViewResolver {
 
     @SuppressWarnings("serial")
-    private static final Map<String, Class<?>> mappings = new HashMap<String, Class<?>>() {
+    private static final Map<String, Class<?>> supportMappings = new HashMap<String, Class<?>>() {
         {
             put("android.widget.Button", BindableCompatButton.class);
             put("android.widget.EditText", BindableCompatEditText.class);
@@ -36,7 +36,12 @@ public class SupportViewResolver extends ViewResolver {
     }
 
     @Override
-    protected Map<String, Class<?>> getMappings() {
-        return mappings;
+    protected Class<?> resolveName(String name) {
+        if (supportMappings.containsKey(name)) {
+            logger.debug("Resolved " + name);
+            return supportMappings.get(name);
+        } else {
+            return null;
+        }
     }
 }
