@@ -50,13 +50,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mViewModel.onResume();
+        mViewModel.onGotFocus();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mViewModel.onPause();
+        mViewModel.onLostFocus();
     }
 
     @Override

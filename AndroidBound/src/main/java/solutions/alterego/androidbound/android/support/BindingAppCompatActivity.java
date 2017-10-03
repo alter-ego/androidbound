@@ -52,7 +52,7 @@ public abstract class BindingAppCompatActivity extends AppCompatActivity impleme
         super.onResume();
 
         if (mBoundActivityDelegate != null) {
-            mBoundActivityDelegate.onResume();
+            mBoundActivityDelegate.onGotFocus();
         }
     }
 
@@ -61,7 +61,7 @@ public abstract class BindingAppCompatActivity extends AppCompatActivity impleme
         super.onPause();
 
         if (mBoundActivityDelegate != null) {
-            mBoundActivityDelegate.onPause();
+            mBoundActivityDelegate.onLostFocus();
         }
     }
 

@@ -72,7 +72,7 @@ public class BindingSupportFragment extends Fragment implements IFragmentLifecyc
         super.onResume();
 
         if (mBoundFragmentDelegate != null) {
-            mBoundFragmentDelegate.onResume();
+            mBoundFragmentDelegate.onGotFocus();
         }
     }
 
@@ -81,7 +81,7 @@ public class BindingSupportFragment extends Fragment implements IFragmentLifecyc
         super.onPause();
 
         if (mBoundFragmentDelegate != null) {
-            mBoundFragmentDelegate.onPause();
+            mBoundFragmentDelegate.onLostFocus();
         }
     }
 

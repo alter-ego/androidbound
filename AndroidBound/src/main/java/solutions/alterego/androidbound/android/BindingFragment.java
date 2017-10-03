@@ -73,7 +73,7 @@ public class BindingFragment extends Fragment implements IFragmentLifecycle, IBo
         super.onResume();
 
         if (mBoundFragmentDelegate != null) {
-            mBoundFragmentDelegate.onResume();
+            mBoundFragmentDelegate.onGotFocus();
         }
     }
 
@@ -82,7 +82,7 @@ public class BindingFragment extends Fragment implements IFragmentLifecycle, IBo
         super.onPause();
 
         if (mBoundFragmentDelegate != null) {
-            mBoundFragmentDelegate.onPause();
+            mBoundFragmentDelegate.onLostFocus();
         }
     }
 

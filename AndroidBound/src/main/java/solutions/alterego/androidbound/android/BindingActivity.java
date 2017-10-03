@@ -56,7 +56,7 @@ public abstract class BindingActivity extends Activity implements IBindableView,
         super.onResume();
 
         if (mBoundActivityDelegate != null) {
-            mBoundActivityDelegate.onResume();
+            mBoundActivityDelegate.onGotFocus();
         }
     }
 
@@ -65,7 +65,7 @@ public abstract class BindingActivity extends Activity implements IBindableView,
         super.onPause();
 
         if (mBoundActivityDelegate != null) {
-            mBoundActivityDelegate.onPause();
+            mBoundActivityDelegate.onLostFocus();
         }
     }
 

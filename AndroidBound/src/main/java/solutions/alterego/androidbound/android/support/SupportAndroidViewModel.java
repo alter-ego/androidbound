@@ -8,12 +8,13 @@ import java.lang.ref.WeakReference;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.android.interfaces.IActivityFocus;
 import solutions.alterego.androidbound.android.interfaces.IActivityLifecycle;
 import solutions.alterego.androidbound.android.interfaces.IHasActivity;
 import solutions.alterego.androidbound.android.interfaces.INeedsActivity;
 
 @Accessors(prefix = "m")
-public class SupportAndroidViewModel extends ViewModel implements IActivityLifecycle, INeedsActivity, IHasActivity, INeedsSupportFragmentManager,
+public class SupportAndroidViewModel extends ViewModel implements IActivityLifecycle, IActivityFocus, INeedsActivity, IHasActivity, INeedsSupportFragmentManager,
         IHasSupportFragmentManager {
 
     private transient WeakReference<Activity> mParentActivity;
@@ -54,16 +55,6 @@ public class SupportAndroidViewModel extends ViewModel implements IActivityLifec
     }
 
     @Override
-    public void onResume() {
-        //do nothing, to be overridden
-    }
-
-    @Override
-    public void onPause() {
-        //do nothing, to be overridden
-    }
-
-    @Override
     public void onStop() {
         //do nothing, to be overridden
     }
@@ -96,5 +87,15 @@ public class SupportAndroidViewModel extends ViewModel implements IActivityLifec
     @Override
     public void setFragmentManager(android.support.v4.app.FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
+    }
+
+    @Override
+    public void onGotFocus() {
+        //do nothing, to be overridden
+    }
+
+    @Override
+    public void onLostFocus() {
+        //do nothing, to be overridden
     }
 }

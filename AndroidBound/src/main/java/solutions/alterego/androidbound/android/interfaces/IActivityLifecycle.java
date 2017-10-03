@@ -12,10 +12,6 @@ public interface IActivityLifecycle {
 
     void onRestart();
 
-    void onResume();
-
-    void onPause();
-
     void onStop();
 
     void onSaveInstanceState(Bundle outState);
