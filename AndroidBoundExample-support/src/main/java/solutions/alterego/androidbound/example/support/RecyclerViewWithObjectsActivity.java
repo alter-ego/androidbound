@@ -5,7 +5,6 @@ import com.codemonkeylabs.fpslibrary.TinyDancer;
 
 import android.os.Bundle;
 
-import solutions.alterego.androidbound.example.R;
 import solutions.alterego.androidbound.example.support.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.example.support.viewmodels.RecyclerViewWithObjectsActivityViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;

@@ -16,8 +16,8 @@ import android.widget.Toast;
 import java.lang.ref.WeakReference;
 
 import solutions.alterego.androidbound.android.AndroidViewModel;
-import solutions.alterego.androidbound.example.R;
 import solutions.alterego.androidbound.example.support.MainActivity;
+import solutions.alterego.androidbound.example.support.R;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class MainBindingActivityViewModel extends AndroidViewModel {

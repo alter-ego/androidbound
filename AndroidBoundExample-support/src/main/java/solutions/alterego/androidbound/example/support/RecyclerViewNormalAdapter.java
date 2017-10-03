@@ -11,7 +11,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import solutions.alterego.androidbound.example.R;
 import solutions.alterego.androidbound.example.support.listviewitems.ListViewItem;
 
 public class RecyclerViewNormalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

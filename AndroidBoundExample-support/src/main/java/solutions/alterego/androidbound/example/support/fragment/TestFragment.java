@@ -10,14 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import solutions.alterego.androidbound.android.ui.BindableRecyclerView;
-import solutions.alterego.androidbound.example.R;
+import solutions.alterego.androidbound.example.support.R;
 import solutions.alterego.androidbound.example.support.fragment.viewmodel.FragmentViewModel;
 import solutions.alterego.androidbound.example.support.imageloader.UILImageLoader;
 import solutions.alterego.androidbound.example.support.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
+import solutions.alterego.androidbound.support.SupportViewBinder;
 import solutions.alterego.androidbound.support.android.BindingSupportFragment;
 import solutions.alterego.androidbound.support.android.BoundSupportFragmentDelegate;
-import solutions.alterego.androidbound.support.SupportViewBinder;
 
 import static solutions.alterego.androidbound.example.support.MainActivity.LOGGING_TAG;
 

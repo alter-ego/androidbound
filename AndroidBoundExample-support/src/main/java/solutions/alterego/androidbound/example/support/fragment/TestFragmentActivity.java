@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import solutions.alterego.androidbound.example.R;
+import solutions.alterego.androidbound.example.support.R;
 
 public class TestFragmentActivity extends AppCompatActivity {
 

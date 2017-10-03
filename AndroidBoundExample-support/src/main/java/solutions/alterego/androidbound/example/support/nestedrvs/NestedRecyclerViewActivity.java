@@ -17,7 +17,7 @@ import java.util.Map;
 import solutions.alterego.androidbound.android.ui.BindableRecyclerView;
 import solutions.alterego.androidbound.example.support.ExampleApplication;
 import solutions.alterego.androidbound.example.support.PaginatedRecyclerViewActivity;
-import solutions.alterego.androidbound.example.R;
+import solutions.alterego.androidbound.example.support.R;
 import solutions.alterego.androidbound.example.support.nestedrvs.viewmodel.MainNestedViewModel;
 import solutions.alterego.androidbound.example.support.nestedrvs.viewmodel.NestedViewModel;
 import solutions.alterego.androidbound.example.support.util.AdvancedAndroidLoggerAdapter;

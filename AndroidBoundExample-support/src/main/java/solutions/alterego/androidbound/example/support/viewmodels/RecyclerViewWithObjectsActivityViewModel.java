@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 import solutions.alterego.androidbound.android.AndroidViewModel;
-import solutions.alterego.androidbound.example.R;
 import solutions.alterego.androidbound.example.support.ListItemDetailActivity;
 import solutions.alterego.androidbound.example.support.MainActivity;
+import solutions.alterego.androidbound.example.support.R;
 import solutions.alterego.androidbound.example.support.listviewitems.ListViewItem;
 import solutions.alterego.androidbound.example.support.listviewitems.ListViewItem2;
 import solutions.alterego.androidbound.interfaces.ILogger;

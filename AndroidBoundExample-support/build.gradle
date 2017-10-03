@@ -10,7 +10,7 @@ android {
     buildToolsVersion versions.buildTools
 
     defaultConfig {
-        applicationId "solutions.alterego.androidbound.example"
+        applicationId "solutions.alterego.androidbound.example.support"
         minSdkVersion versions.minSdk
         targetSdkVersion versions.compileSdk
         versionCode 1
