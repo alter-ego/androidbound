@@ -1,8 +1,4 @@
-package solutions.alterego.androidbound.android.viewresolvers;
-
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.View;
+package solutions.alterego.androidbound.support.android.viewresolvers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,19 +22,10 @@ import solutions.alterego.androidbound.android.ui.BindableTextView;
 import solutions.alterego.androidbound.android.ui.BindableToggleButton;
 import solutions.alterego.androidbound.android.ui.BindableVideoView;
 import solutions.alterego.androidbound.android.ui.BindableView;
-import solutions.alterego.androidbound.helpers.Reflector;
+import solutions.alterego.androidbound.android.viewresolvers.ViewResolver;
 import solutions.alterego.androidbound.interfaces.ILogger;
-import solutions.alterego.androidbound.android.interfaces.IViewResolver;
 
-public class ViewResolver implements IViewResolver {
-
-    private static final Class<?>[] oneArg = new Class<?>[]{
-            Context.class
-    };
-
-    private static final Class<?>[] twoArgs = new Class<?>[]{
-            Context.class, AttributeSet.class
-    };
+public class SupportViewResolver extends ViewResolver {
 
     @SuppressWarnings("serial")
     private static final Map<String, Class<?>> mappings = new HashMap<String, Class<?>>() {
@@ -71,78 +58,12 @@ public class ViewResolver implements IViewResolver {
         }
     };
 
-    protected ILogger logger;
-
-    public ViewResolver(ILogger logger) {
-        setLogger(logger);
+    public SupportViewResolver(ILogger logger) {
+        super(logger);
     }
 
     @Override
-    public View createView(String name, Context context, AttributeSet attrs) {
-        Class<?> resolvedClass = resolveName(name);
-        if (resolvedClass == null) {
-            logger.warning("View not found for name " + name);
-            return null;
-        }
-        try {
-            if (Reflector.canCreateInstance(resolvedClass, twoArgs)) {
-                return Reflector.createInstance(resolvedClass, twoArgs, new Object[]{
-                        context, attrs
-                });
-            }
-
-            if (Reflector.canCreateInstance(resolvedClass, oneArg)) {
-                return Reflector.createInstance(resolvedClass, oneArg, new Object[]{
-                        context
-                });
-            }
-
-            if (Reflector.canCreateInstance(resolvedClass, null)) {
-                return Reflector.createInstance(resolvedClass, null, null);
-            }
-
-            throw new Exception("constructor not found");
-        } catch (Exception e) {
-            logger.warning("failed creating instance of class " + resolvedClass + ", exception: " + e);
-        }
-
-        return null;
-    }
-
-    private Class<?> resolveName(String name) {
-        String result;
-
-        if (name.contains(".")) {
-            result = name;
-        } else if (name.equals("View") || name.equals("ViewGroup")) {
-            result = "android.view." + name;
-        } else {
-            result = "android.widget." + name;
-        }
-
-        if (getMappings().containsKey(result)) {
-            return getMappings().get(result);
-        }
-
-        try {
-            logger.debug("Resolving " + name + " with " + result);
-            return Class.forName(result);
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-
     protected Map<String, Class<?>> getMappings() {
         return mappings;
-    }
-
-    @Override
-    public void setLogger(ILogger logger) {
-        this.logger = logger.getLogger(this);
-    }
-
-    @Override
-    public void dispose() {
-
     }
 }
