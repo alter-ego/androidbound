@@ -1,10 +1,4 @@
-def siteUrl = 'https://github.com/alter-ego/androidbound'
-def gitUrl = 'https://github.com/alter-ego/androidbound.git'
-def artifactGroup = "solutions.alterego"
 def artifactName = "androidbound"
-def artifactVersion = "0.8.0"
-def artifactDesc = "This library offers easy view bindings for Android."
-def artifactVersionCode = 40
 
 ext.bintrayuser = System.getenv("BINTRAY_USER")
 ext.bintraypwd = System.getenv("BINTRAY_PWD")
@@ -23,7 +17,7 @@ android {
     defaultConfig {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.compileSdk
-        versionCode artifactVersionCode
+        versionCode maven.artifactVersionCode
         versionName artifactName
     }
 
@@ -101,9 +95,9 @@ uploadArchives {
         def deployPath = file(getProperty('aar.deployPath'))
         repository(url: "file://${deployPath.absolutePath}")
         pom.project {
-            groupId artifactGroup
+            groupId maven.artifactGroup
+            version maven.artifactVersion
             artifactId artifactName
-            version artifactVersion
         }
     }
 }
@@ -115,20 +109,20 @@ bintray {
 
     publications = ['Publication']
     pkg {
-        repo = "android"
+        repo = maven.repo
+        userOrg = maven.userOrg
+        websiteUrl = maven.siteUrl
+        vcsUrl = maven.gitUrl
+        issueTrackerUrl = maven.issueTrackerUrl
+        licenses = maven.licenses
         name = artifactName
-        userOrg = 'alterego-solutions'
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = ["Apache-2.0"]
         publish = true
-        issueTrackerUrl = 'https://github.com/alter-ego/androidbound/issues'
 
         version {
-            name = artifactVersion
-            desc = artifactDesc
+            name = maven.artifactVersion
+            desc = maven.artifactDesc
+            vcsTag = maven.artifactVersion
             released = new Date()
-            vcsTag = artifactVersion
         }
     }
 }
@@ -139,9 +133,9 @@ publishing {
             artifact("$buildDir/outputs/aar/AndroidBound-release.aar")
             artifact sourcesJar
             artifact javadocJar
-            groupId artifactGroup
+            groupId maven.artifactGroup
+            version maven.artifactVersion
             artifactId artifactName
-            version artifactVersion
         }
     }
 }

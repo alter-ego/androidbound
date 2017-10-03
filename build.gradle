@@ -1,4 +1,16 @@
 buildscript {
+    ext.maven = [
+            'siteUrl': 'https://github.com/alter-ego/androidbound',
+            'gitUrl': 'https://github.com/alter-ego/androidbound.git',
+            'issueTrackerUrl': 'https://github.com/alter-ego/androidbound/issues',
+            'repo': 'android',
+            'userOrg': 'alterego-solutions',
+            'artifactGroup': 'solutions.alterego',
+            'licenses': ["Apache-2.0"],
+            'artifactVersion': '0.8.0',
+            'artifactDesc': 'This library offers easy view bindings for Android.',
+            'artifactVersionCode': 40
+    ]
     ext.versions = [
             'minSdk'        : 14,
             'compileSdk'    : 26,
