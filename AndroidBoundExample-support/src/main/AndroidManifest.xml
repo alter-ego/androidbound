@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        package="solutions.alterego.androidbound.example">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-sdk tools:overrideLibrary="com.codemonkeylabs.fpslibrary" />
+
+    <application
+            android:name=".support.ExampleApplication"
+            android:allowBackup="true"
+            android:icon="@drawable/ic_android_white_48dp"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme">
+        <activity
+                android:name=".support.MainActivity"
+                android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+                android:name=".support.MainBindingActivity"
+                android:label="@string/app_name"/>
+
+        <activity
+                android:name=".support.ListViewActivity"
+                android:label="@string/app_name"></activity>
+
+        <activity
+                android:name=".support.ListViewWithObjectsActivity"
+                android:label="@string/title_activity_LVWithObjects" />
+
+        <activity
+                android:name=".support.RecyclerViewActivity"
+                android:label="@string/title_activity_RV" />
+
+        <activity
+                android:name=".support.RecyclerViewWithObjectsActivity"
+                android:label="@string/title_activity_RVWithObjects" />
+        <activity
+                android:name=".support.ListItemDetailActivity"
+                android:label="@string/app_name"></activity>
+
+        <activity
+                android:name=".support.PaginatedRecyclerViewActivity"
+                android:label="@string/app_name"></activity>
+
+        <activity android:name=".support.nestedrvs.NestedRecyclerViewActivity" />
+
+        <activity android:name=".support.fragment.TestFragmentActivity" />
+
+    </application>
+</manifest>
