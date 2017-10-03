@@ -8,12 +8,13 @@ import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Button;
 
 import io.reactivex.Observable;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-public class BindableButton extends android.support.v7.widget.AppCompatButton implements INotifyPropertyChanged {
+public class BindableButton extends Button implements INotifyPropertyChanged {
 
     protected BindableViewDelegate mDelegate;
 

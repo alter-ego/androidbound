@@ -6,10 +6,10 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 
 import io.reactivex.Observable;
 import solutions.alterego.androidbound.android.interfaces.IImageLoader;
@@ -17,7 +17,7 @@ import solutions.alterego.androidbound.android.interfaces.INeedsImageLoader;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-public class BindableImageView extends AppCompatImageView implements INotifyPropertyChanged, INeedsImageLoader {
+public class BindableImageView extends ImageView implements INotifyPropertyChanged, INeedsImageLoader {
 
     protected BindableViewDelegate mDelegate;
 

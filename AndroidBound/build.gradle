@@ -48,8 +48,6 @@ android {
 }
 
 dependencies {
-    compile deps.support.appcompat
-    compile deps.support.compat
     compile deps.support.recyclerview
 
     compile deps.rx2.android
