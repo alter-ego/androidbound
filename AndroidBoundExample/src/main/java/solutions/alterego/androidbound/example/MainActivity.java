@@ -2,9 +2,9 @@ package solutions.alterego.androidbound.example;
 
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
+import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import solutions.alterego.androidbound.android.AndroidViewModel;
@@ -15,7 +15,7 @@ import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     public static final String LOGGING_TAG = "TEST_APP";
 

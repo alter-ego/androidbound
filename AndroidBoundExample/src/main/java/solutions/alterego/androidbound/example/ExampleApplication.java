@@ -8,12 +8,12 @@ import android.graphics.Typeface;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import solutions.alterego.androidbound.ViewBinder;
 import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.example.util.CustomValueConverters;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
-import solutions.alterego.androidbound.support.SupportViewBinder;
 
 @Accessors(prefix="m")
 public class ExampleApplication extends Application {
@@ -37,7 +37,7 @@ public class ExampleApplication extends Application {
 
         LeakCanary.install(this);
         ILogger logger = new AdvancedAndroidLoggerAdapter(LOGGING_TAG, LOGGING_LEVEL); //use for testing
-        mViewBinder = new SupportViewBinder(this, logger);
+        mViewBinder = new ViewBinder(this, logger);
 //        mViewBinder.setDebug(true); //use for testing!
         mViewBinder.setImageLoader(new UILImageLoader(this, null));
         mViewBinder.getFontManager().setDefaultFont(Typeface.createFromAsset(getAssets(), "Roboto-Regular.ttf"));

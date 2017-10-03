@@ -8,13 +8,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 
+import solutions.alterego.androidbound.android.BindingActivity;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.example.viewmodels.RecyclerViewActivityViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
-import solutions.alterego.androidbound.support.android.BindingAppCompatActivity;
 
-public class RecyclerViewActivity extends BindingAppCompatActivity {
+public class RecyclerViewActivity extends BindingActivity {
 
     public static final String LOGGING_TAG = "TEST_APP";
 

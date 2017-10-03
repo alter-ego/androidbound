@@ -5,13 +5,13 @@ import com.codemonkeylabs.fpslibrary.TinyDancer;
 
 import android.os.Bundle;
 
+import solutions.alterego.androidbound.android.BindingActivity;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.example.viewmodels.RecyclerViewWithObjectsActivityViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
-import solutions.alterego.androidbound.support.android.BindingAppCompatActivity;
 
-public class RecyclerViewWithObjectsActivity extends BindingAppCompatActivity {
+public class RecyclerViewWithObjectsActivity extends BindingActivity {
 
     public static final String LOGGING_TAG = "TEST_APP";
 
