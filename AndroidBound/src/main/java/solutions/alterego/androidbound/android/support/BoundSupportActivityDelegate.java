@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 import lombok.experimental.Accessors;
@@ -43,7 +42,7 @@ public class BoundSupportActivityDelegate extends BoundActivityDelegate {
         }
 
         if (viewModel instanceof INeedsActivity) {
-            ((INeedsActivity) viewModel).setParentActivity(new WeakReference<>(getBoundActivity()));
+            ((INeedsActivity) viewModel).setParentActivity(getBoundActivity());
         }
 
         if (viewModel instanceof INeedsSupportFragmentManager && getBoundActivity() instanceof FragmentActivity) {

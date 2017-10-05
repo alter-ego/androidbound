@@ -103,7 +103,7 @@ public class BoundActivityDelegate
         }
 
         if (viewModel instanceof INeedsActivity) {
-            ((INeedsActivity) viewModel).setParentActivity(new WeakReference<>(getBoundActivity()));
+            ((INeedsActivity) viewModel).setParentActivity(getBoundActivity());
         }
 
         if (viewModel instanceof INeedsFragmentManager) {

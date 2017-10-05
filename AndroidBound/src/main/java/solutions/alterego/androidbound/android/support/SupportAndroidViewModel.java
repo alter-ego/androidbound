@@ -14,7 +14,8 @@ import solutions.alterego.androidbound.android.interfaces.IHasActivity;
 import solutions.alterego.androidbound.android.interfaces.INeedsActivity;
 
 @Accessors(prefix = "m")
-public class SupportAndroidViewModel extends ViewModel implements IActivityLifecycle, IActivityFocus, INeedsActivity, IHasActivity, INeedsSupportFragmentManager,
+public class SupportAndroidViewModel extends ViewModel
+        implements IActivityLifecycle, IActivityFocus, INeedsActivity, IHasActivity, INeedsSupportFragmentManager,
         IHasSupportFragmentManager {
 
     private transient WeakReference<Activity> mParentActivity;
@@ -26,8 +27,10 @@ public class SupportAndroidViewModel extends ViewModel implements IActivityLifec
     private android.support.v4.app.FragmentManager mFragmentManager;
 
     @Override
-    public void setParentActivity(WeakReference<Activity> activityRef) {
-        mParentActivity = activityRef;
+    public void setParentActivity(Activity activity) {
+        if (activity != null) {
+            mParentActivity = new WeakReference<>(activity);
+        }
     }
 
     @Override

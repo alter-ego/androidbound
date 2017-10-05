@@ -29,8 +29,10 @@ public class AndroidViewModel extends ViewModel
     private FragmentManager mFragmentManager;
 
     @Override
-    public void setParentActivity(WeakReference<Activity> activityRef) {
-        mParentActivity = activityRef;
+    public void setParentActivity(Activity activity) {
+        if (activity != null) {
+            mParentActivity = new WeakReference<>(activity);
+        }
     }
 
     @Override

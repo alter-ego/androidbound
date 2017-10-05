@@ -98,7 +98,7 @@ public class BoundSupportFragmentDelegate
         }
 
         if (viewModel instanceof INeedsActivity) {
-            ((INeedsActivity) viewModel).setParentActivity(new WeakReference<>(getBoundActivity()));
+            ((INeedsActivity) viewModel).setParentActivity(getBoundActivity());
         }
 
         if (viewModel instanceof INeedsFragmentManager) {

@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 
-import java.lang.ref.WeakReference;
-
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.AndroidViewModel;
@@ -30,7 +28,7 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     public MainActivityViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
-        setParentActivity(new WeakReference<Activity>(activity));
+        setParentActivity(activity);
 
         setMainActivityTitle("Main Activity");
         setOpenBindableActivityText("Open Bindable Activity");

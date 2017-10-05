@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.widget.Toast;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class RecyclerViewActivityViewModel extends AndroidViewModel {
 
     public RecyclerViewActivityViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
-        setParentActivity(new WeakReference<Activity>(activity));
+        setParentActivity(activity);
 
         setListViewActivityTitle("RecyclerView with objects activity");
 

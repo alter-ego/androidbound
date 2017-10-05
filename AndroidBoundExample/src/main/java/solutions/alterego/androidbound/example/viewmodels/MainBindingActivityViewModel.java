@@ -13,8 +13,6 @@ import android.text.Spanned;
 import android.text.style.UnderlineSpan;
 import android.widget.Toast;
 
-import java.lang.ref.WeakReference;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -47,7 +45,7 @@ public class MainBindingActivityViewModel extends AndroidViewModel {
 
     public MainBindingActivityViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
-        setParentActivity(new WeakReference<Activity>(activity));
+        setParentActivity(activity);
 
         setMainActivityTitle("Bindable Activity");
         setOpenNormalActivityText("Open Normal Activity");
