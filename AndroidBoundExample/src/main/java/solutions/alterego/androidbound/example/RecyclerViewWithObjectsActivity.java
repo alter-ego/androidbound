@@ -5,7 +5,7 @@ import com.codemonkeylabs.fpslibrary.TinyDancer;
 
 import android.os.Bundle;
 
-import solutions.alterego.androidbound.android.BindingAppCompatActivity;
+import solutions.alterego.androidbound.android.support.BindingAppCompatActivity;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.example.viewmodels.RecyclerViewWithObjectsActivityViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;

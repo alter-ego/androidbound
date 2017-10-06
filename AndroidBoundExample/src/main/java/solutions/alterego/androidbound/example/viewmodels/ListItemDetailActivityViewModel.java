@@ -4,11 +4,11 @@ import android.app.Activity;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
-public class ListItemDetailActivityViewModel extends ViewModel {
+public class ListItemDetailActivityViewModel extends AndroidViewModel {
 
     private static final int listSize = 250;
 

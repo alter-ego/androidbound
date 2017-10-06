@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.example.viewmodels.MainActivityViewModel;
@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final IAndroidLogger.LoggingLevel LOGGING_LEVEL = IAndroidLogger.LoggingLevel.VERBOSE;
 
-    private ViewModel mViewModel;
+    private AndroidViewModel mViewModel;
 
     private IViewBinder mViewBinder;
 
@@ -50,13 +50,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mViewModel.onResume();
+        mViewModel.onGotFocus();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mViewModel.onPause();
+        mViewModel.onLostFocus();
     }
 
     @Override

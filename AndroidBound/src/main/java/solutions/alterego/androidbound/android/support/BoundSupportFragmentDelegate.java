@@ -1,11 +1,15 @@
-package solutions.alterego.androidbound.android;
+package solutions.alterego.androidbound.android.support;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -18,50 +22,50 @@ import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IActivityFocus;
 import solutions.alterego.androidbound.android.interfaces.IActivityLifecycle;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
-import solutions.alterego.androidbound.android.interfaces.IBoundActivity;
+import solutions.alterego.androidbound.android.interfaces.IBoundFragment;
+import solutions.alterego.androidbound.android.interfaces.IFragmentLifecycle;
 import solutions.alterego.androidbound.android.interfaces.INeedsActivity;
 import solutions.alterego.androidbound.android.interfaces.INeedsConfigurationChange;
 import solutions.alterego.androidbound.android.interfaces.INeedsFragmentManager;
 import solutions.alterego.androidbound.android.interfaces.INeedsNewIntent;
 import solutions.alterego.androidbound.android.interfaces.INeedsOnActivityResult;
-import solutions.alterego.androidbound.android.interfaces.INeedsOnRequestPermissionResult;
 import solutions.alterego.androidbound.interfaces.IHasLogger;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 @Accessors(prefix = "m")
-public class BoundActivityDelegate
-        implements IActivityLifecycle, IActivityFocus, IBoundActivity, INeedsOnActivityResult, INeedsOnRequestPermissionResult, INeedsNewIntent,
-        INeedsConfigurationChange, INeedsLogger, IHasLogger {
+public class BoundSupportFragmentDelegate
+        implements IActivityLifecycle, IActivityFocus, IFragmentLifecycle, IBoundFragment, INeedsOnActivityResult, INeedsNewIntent, INeedsConfigurationChange,
+        INeedsLogger, IHasLogger {
 
     public static final String TAG_VIEWMODEL_MAIN = "androidbound_viewmodel_main";
 
     @Getter
-    protected Map<String, ViewModel> mViewModels;
+    private Map<String, ViewModel> mViewModels;
 
-    private ILogger mLogger = null;
+    private ILogger mLogger = NullLogger.instance;
+
+    private transient View mBoundView;
 
     private transient WeakReference<Activity> mBoundActivity;
 
-    @Getter
     private boolean mShouldCallCreate = false;
 
-    @Getter
     private Bundle mCreateBundle;
 
-    protected IViewBinder mViewBinder;
+    private IViewBinder mViewBinder;
 
-    public BoundActivityDelegate(Activity activity) {
-        this(activity, null);
+    public BoundSupportFragmentDelegate(Fragment fragment) {
+        this(fragment, null);
     }
 
-    public BoundActivityDelegate(Activity activity, IViewBinder viewBinder) {
-        mBoundActivity = new WeakReference<>(activity);
+    public BoundSupportFragmentDelegate(Fragment fragment, IViewBinder viewBinder) {
+        mBoundActivity = new WeakReference<>((Activity) fragment.getActivity());
         mViewBinder = viewBinder;
     }
 
-    protected IViewBinder getViewBinder() {
+    private IViewBinder getViewBinder() {
         if (mViewBinder != null) {
             return mViewBinder;
         } else if (getBoundActivity() instanceof IBindableView) {
@@ -71,21 +75,12 @@ public class BoundActivityDelegate
         }
     }
 
-    protected Activity getBoundActivity() {
+    private Activity getBoundActivity() {
         return mBoundActivity != null ? mBoundActivity.get() : null;
     }
 
     @Override
-    public void setContentView(int layoutResID, ViewModel viewModel) {
-        if (mBoundActivity == null || getBoundActivity() == null) {
-            throw new RuntimeException("Bound Activity is null!");
-        }
-
-        getBoundActivity().setContentView(addViewModel(layoutResID, viewModel, TAG_VIEWMODEL_MAIN));
-    }
-
-    @Override
-    public View addViewModel(int layoutResID, ViewModel viewModel, String id) {
+    public View addViewModel(int layoutResID, ViewModel viewModel, String id, @Nullable ViewGroup parent) {
         if (getBoundActivity() == null) {
             throw new RuntimeException("Bound Activity is null!");
         }
@@ -110,12 +105,20 @@ public class BoundActivityDelegate
             ((INeedsFragmentManager) viewModel).setFragmentManager(getBoundActivity().getFragmentManager());
         }
 
+        if (viewModel instanceof INeedsSupportFragmentManager && getBoundActivity() instanceof FragmentActivity) {
+            ((INeedsSupportFragmentManager) viewModel).setFragmentManager(((FragmentActivity) getBoundActivity()).getSupportFragmentManager());
+        }
+
         viewModel.setLogger(getLogger());
         mViewModels.put(id, viewModel);
 
-        View view = getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, null);
+        View view = getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, parent, false);
 
-        if (isShouldCallCreate()) {
+        if (id.equalsIgnoreCase(TAG_VIEWMODEL_MAIN)) {
+            mBoundView = view;
+        }
+
+        if (mShouldCallCreate) {
             onCreate(mCreateBundle);
         }
 
@@ -161,6 +164,20 @@ public class BoundActivityDelegate
         return true;
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState, int layoutResID, ViewModel viewModel) {
+        if (mBoundActivity == null || getBoundActivity() == null) {
+            throw new RuntimeException("Bound Activity is null!");
+        }
+
+        if (mShouldCallCreate) {
+            onCreate(mCreateBundle);
+        }
+
+        return addViewModel(layoutResID, viewModel, TAG_VIEWMODEL_MAIN, container);
+    }
+
     @Override
     public void onStart() {
         if (getViewModels() != null) {
@@ -174,13 +191,7 @@ public class BoundActivityDelegate
 
     @Override
     public void onRestart() {
-        if (getViewModels() != null) {
-            for (ViewModel viewModel : getViewModels().values()) {
-                if (viewModel instanceof IActivityLifecycle) {
-                    ((IActivityLifecycle) viewModel).onRestart();
-                }
-            }
-        }
+        //is not used in fragments
     }
 
     @Override
@@ -196,46 +207,29 @@ public class BoundActivityDelegate
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        mShouldCallCreate = false;
-        mCreateBundle = null;
-
         if (getViewModels() != null) {
             for (ViewModel viewModel : getViewModels().values()) {
                 if (viewModel instanceof IActivityLifecycle) {
                     ((IActivityLifecycle) viewModel).onSaveInstanceState(outState);
                 }
             }
+
+            //we reset this only if we have non-null VMs
+            //otherwise it's possible that this was called after onDestroyView which saved the state in these, so we shouldn't destroy it
+            //like for example in the ViewPager
+            mShouldCallCreate = false;
+            mCreateBundle = null;
         }
     }
 
     @Override
     public void onDestroy() {
-        Activity boundActivityRef = getBoundActivity();
-
-        if (mBoundActivity != null
-                && boundActivityRef != null
-                && boundActivityRef instanceof IBindableView
-                && boundActivityRef.getWindow() != null
-                && boundActivityRef.getWindow().getDecorView() != null) {
-            getViewBinder().getViewBindingEngine().clearBindingForViewAndChildren(getBoundActivity().getWindow().getDecorView());
-            getViewBinder().disposeOf(mBoundActivity.get());
+        if (mBoundActivity != null) {
+            mBoundActivity.clear();
+            mBoundActivity = null;
         }
 
-        if (getViewModels() != null) {
-            for (ViewModel viewModel : getViewModels().values()) {
-                if (viewModel instanceof IActivityLifecycle) {
-                    ((IActivityLifecycle) viewModel).onDestroy();
-                } else {
-                    viewModel.dispose();
-                }
-            }
-        }
-
-        mViewModels = null;
-        mBoundActivity.clear();
-        mBoundActivity = null;
         mViewBinder = null;
-        mLogger = null;
     }
 
     @Override
@@ -272,14 +266,24 @@ public class BoundActivityDelegate
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onDestroyView() {
+        if (mBoundView != null) {
+            getViewBinder().getViewBindingEngine().clearBindingForViewAndChildren(mBoundView);
+        }
+
         if (getViewModels() != null) {
             for (ViewModel viewModel : getViewModels().values()) {
-                if (viewModel instanceof INeedsOnRequestPermissionResult) {
-                    ((INeedsOnRequestPermissionResult) viewModel).onRequestPermissionsResult(requestCode, permissions, grantResults);
+                if (viewModel instanceof IActivityLifecycle) {
+                    ((IActivityLifecycle) viewModel).onDestroy();
+                } else {
+                    viewModel.dispose();
                 }
             }
         }
+
+        mBoundView = null;
+        mViewModels = null;
+        mShouldCallCreate = true; //this is here to balance it with onCreate not being called again when coming from background
     }
 
     @Override

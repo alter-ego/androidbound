@@ -16,13 +16,13 @@ import android.widget.Toast;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.example.MainActivity;
 import solutions.alterego.androidbound.example.R;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
-public class MainBindingActivityViewModel extends ViewModel {
+public class MainBindingActivityViewModel extends AndroidViewModel {
 
     @Getter
     private Spannable mMainActivityTitle;

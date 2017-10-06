@@ -1,11 +1,10 @@
-package solutions.alterego.androidbound.android;
+package solutions.alterego.androidbound.android.support;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,23 +20,23 @@ import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
 @Accessors(prefix = "m")
-public class BindingFragment extends Fragment implements IFragmentLifecycle, IBoundFragment, INeedsNewIntent, INeedsLogger, IHasLogger {
+public class BindingSupportFragment extends Fragment implements IFragmentLifecycle, IBoundFragment, INeedsNewIntent, INeedsLogger, IHasLogger {
 
     private ILogger mLogger = NullLogger.instance;
 
-    protected BoundFragmentDelegate mBoundFragmentDelegate;
+    private BoundSupportFragmentDelegate mBoundFragmentDelegate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBoundFragmentDelegate = createBoundFragmentDelegate();
+        mBoundFragmentDelegate = getBoundFragmentDelegate();
         mBoundFragmentDelegate.onCreate(savedInstanceState);
         mBoundFragmentDelegate.setLogger(mLogger);
     }
 
-    protected BoundFragmentDelegate createBoundFragmentDelegate() {
-        return new BoundFragmentDelegate(this);
+    protected BoundSupportFragmentDelegate getBoundFragmentDelegate() {
+        return new BoundSupportFragmentDelegate(this);
     }
 
     @Nullable
@@ -163,15 +162,6 @@ public class BindingFragment extends Fragment implements IFragmentLifecycle, IBo
 
         if (mBoundFragmentDelegate != null) {
             mBoundFragmentDelegate.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (mBoundFragmentDelegate != null) {
-            mBoundFragmentDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 

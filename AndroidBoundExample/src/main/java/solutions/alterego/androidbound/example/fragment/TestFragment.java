@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import solutions.alterego.androidbound.ViewBinder;
-import solutions.alterego.androidbound.android.BindingFragment;
-import solutions.alterego.androidbound.android.BoundFragmentDelegate;
+import solutions.alterego.androidbound.android.support.BindingSupportFragment;
+import solutions.alterego.androidbound.android.support.BoundSupportFragmentDelegate;
 import solutions.alterego.androidbound.android.ui.BindableRecyclerView;
 import solutions.alterego.androidbound.example.R;
 import solutions.alterego.androidbound.example.fragment.viewmodel.FragmentViewModel;
@@ -21,15 +21,15 @@ import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 import static solutions.alterego.androidbound.example.MainActivity.LOGGING_TAG;
 
-public class TestFragment extends BindingFragment {
+public class TestFragment extends BindingSupportFragment {
 
     private static final IAndroidLogger.LoggingLevel LOGGING_LEVEL = IAndroidLogger.LoggingLevel.VERBOSE;
 
     @Override
-    protected BoundFragmentDelegate createBoundFragmentDelegate() {
+    protected BoundSupportFragmentDelegate getBoundFragmentDelegate() {
         IViewBinder viewBinder = new ViewBinder(getActivity(), new AdvancedAndroidLoggerAdapter(LOGGING_TAG, LOGGING_LEVEL));
         viewBinder.setImageLoader(new UILImageLoader(getActivity(), null));
-        return new BoundFragmentDelegate(this, viewBinder);
+        return new BoundSupportFragmentDelegate(this, viewBinder);
     }
 
     @Nullable

@@ -12,7 +12,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import solutions.alterego.androidbound.ViewModel;
+import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.example.ListItemDetailActivity;
 import solutions.alterego.androidbound.example.MainActivity;
 import solutions.alterego.androidbound.example.R;
@@ -21,7 +21,7 @@ import solutions.alterego.androidbound.example.listviewitems.ListViewItem2;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
-public class RecyclerViewWithObjectsActivityViewModel extends ViewModel {
+public class RecyclerViewWithObjectsActivityViewModel extends AndroidViewModel {
 
     private static final int listSize = 10;
 

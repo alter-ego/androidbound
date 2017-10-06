@@ -61,7 +61,6 @@ public class PaginatedViewModel extends ViewModel {
 
     public PaginatedViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
-        setParentActivity(activity);
         mLoadNextPage = new PageDescriptor.PageDescriptorBuilder()
                 .setPageSize(20)
                 .setStartPage(1)
@@ -130,8 +129,8 @@ public class PaginatedViewModel extends ViewModel {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void dispose() {
+        super.dispose();
         handler.removeCallbacks(mRunnable);
     }
 

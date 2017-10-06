@@ -14,7 +14,7 @@ import android.view.View;
 import java.util.HashMap;
 import java.util.Map;
 
-import solutions.alterego.androidbound.android.BindingAppCompatActivity;
+import solutions.alterego.androidbound.android.support.BindingAppCompatActivity;
 import solutions.alterego.androidbound.android.ui.BindableRecyclerView;
 import solutions.alterego.androidbound.example.ExampleApplication;
 import solutions.alterego.androidbound.example.PaginatedRecyclerViewActivity;
