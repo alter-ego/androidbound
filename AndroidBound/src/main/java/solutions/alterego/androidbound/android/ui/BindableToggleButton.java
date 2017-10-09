@@ -2,7 +2,6 @@ package solutions.alterego.androidbound.android.ui;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
@@ -88,14 +87,6 @@ public class BindableToggleButton extends ToggleButton implements INotifyPropert
 
     public void setBackgroundDrawable(Drawable res) {
         super.setBackgroundDrawable(res);
-    }
-
-    public Typeface getTypeface() {
-        return super.getTypeface();
-    }
-
-    public void setTypeface(Typeface font) {
-        super.setTypeface(font);
     }
 
     public ColorStateList getTextColor() {
