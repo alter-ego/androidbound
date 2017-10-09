@@ -121,8 +121,8 @@ public class BindableCompatEditText extends AppCompatEditText implements INotify
         super.setBackgroundDrawable(res);
     }
 
-    public ColorStateList getTextColor() {
-        return super.getTextColors();
+    public int getTextColor() {
+        return super.getCurrentTextColor();
     }
 
     public void setTextColor(int color) {

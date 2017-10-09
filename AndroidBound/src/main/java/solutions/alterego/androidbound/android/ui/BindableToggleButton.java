@@ -89,8 +89,8 @@ public class BindableToggleButton extends ToggleButton implements INotifyPropert
         super.setBackgroundDrawable(res);
     }
 
-    public ColorStateList getTextColor() {
-        return super.getTextColors();
+    public int getTextColor() {
+        return super.getCurrentTextColor();
     }
 
     public void setTextColor(int color) {

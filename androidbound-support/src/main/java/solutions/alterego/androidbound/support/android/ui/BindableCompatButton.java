@@ -89,8 +89,8 @@ public class BindableCompatButton extends android.support.v7.widget.AppCompatBut
         super.setBackgroundDrawable(res);
     }
 
-    public ColorStateList getTextColor() {
-        return super.getTextColors();
+    public int getTextColor() {
+        return super.getCurrentTextColor();
     }
 
     public void setTextColor(int color) {

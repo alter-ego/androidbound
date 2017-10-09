@@ -89,8 +89,8 @@ public class BindableTextView extends TextView implements INotifyPropertyChanged
         super.setBackgroundDrawable(res);
     }
 
-    public ColorStateList getTextColor() {
-        return super.getTextColors();
+    public int getTextColor() {
+        return super.getCurrentTextColor();
     }
 
     public void setTextColor(int color) {
