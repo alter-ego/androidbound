@@ -89,6 +89,7 @@ subprojects { project ->
             classpath deps.android.gradlePlugin
             classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
             classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6"
+            classpath 'com.github.ben-manes:gradle-versions-plugin:0.15.0'
         }
     }
 }

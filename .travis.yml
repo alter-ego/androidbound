@@ -36,4 +36,4 @@ cache:
   directories:
     - $HOME/.gradle
 
-script: ./gradlew clean assembleDebug
+script: ./gradlew clean assemble dependencyUpdates
