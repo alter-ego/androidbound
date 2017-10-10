@@ -2,8 +2,6 @@ package solutions.alterego.androidbound.example.support.viewmodels;
 
 import android.app.Activity;
 
-import java.lang.ref.WeakReference;
-
 import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
@@ -17,7 +15,7 @@ public class ListItemDetailActivityViewModel extends AndroidViewModel {
 
     public ListItemDetailActivityViewModel(Activity activity, ILogger logger, String title, String imageUrl) {
         setLogger(logger);
-        setParentActivity(new WeakReference<Activity>(activity));
+        setParentActivity(activity);
 
         setTitle(title);
         setImageUrl(imageUrl);

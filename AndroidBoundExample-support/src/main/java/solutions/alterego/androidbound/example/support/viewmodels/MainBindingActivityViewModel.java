@@ -13,8 +13,6 @@ import android.text.Spanned;
 import android.text.style.UnderlineSpan;
 import android.widget.Toast;
 
-import java.lang.ref.WeakReference;
-
 import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.example.support.MainActivity;
 import solutions.alterego.androidbound.example.support.R;
@@ -36,7 +34,7 @@ public class MainBindingActivityViewModel extends AndroidViewModel {
 
     public MainBindingActivityViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
-        setParentActivity(new WeakReference<Activity>(activity));
+        setParentActivity(activity);
 
         setMainActivityTitle("Bindable Activity");
         setOpenNormalActivityText("Open Normal Activity");
