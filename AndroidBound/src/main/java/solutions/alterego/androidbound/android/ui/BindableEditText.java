@@ -2,21 +2,20 @@ package solutions.alterego.androidbound.android.ui;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
-import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.EditText;
 
 import io.reactivex.Observable;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-public class BindableEditText extends AppCompatEditText implements INotifyPropertyChanged {
+public class BindableEditText extends EditText implements INotifyPropertyChanged {
 
     protected BindableViewDelegate mDelegate;
 
@@ -121,16 +120,8 @@ public class BindableEditText extends AppCompatEditText implements INotifyProper
         super.setBackgroundDrawable(res);
     }
 
-    public Typeface getTypeface() {
-        return super.getTypeface();
-    }
-
-    public void setTypeface(Typeface font) {
-        super.setTypeface(font);
-    }
-
-    public ColorStateList getTextColor() {
-        return super.getTextColors();
+    public int getTextColor() {
+        return super.getCurrentTextColor();
     }
 
     public void setTextColor(int color) {

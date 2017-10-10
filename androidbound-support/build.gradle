@@ -1,4 +1,4 @@
-def artifactName = "androidbound"
+def artifactName = "androidbound-support"
 
 ext.bintrayuser = System.getenv("BINTRAY_USER")
 ext.bintraypwd = System.getenv("BINTRAY_PWD")
@@ -48,13 +48,15 @@ android {
 }
 
 dependencies {
+    compile project(':AndroidBound')
+
+    compile deps.support.appcompat
     compile deps.support.recyclerview
 
     compile deps.rx2.android
     compile deps.rx2.java
 
     provided deps.annotation
-    compile deps.lombok
 
     // Testing
     testCompile deps.kotlin.stdLibJre8

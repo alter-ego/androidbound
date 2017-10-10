@@ -1,36 +1,66 @@
-package solutions.alterego.androidbound.android.ui;
+package solutions.alterego.androidbound.support.android.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
+import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Switch;
 
 import io.reactivex.Observable;
+import solutions.alterego.androidbound.android.ui.BindableViewDelegate;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-@SuppressLint("NewApi")
-public class BindableSwitch extends Switch implements INotifyPropertyChanged {
+public class BindableCompatEditText extends AppCompatEditText implements INotifyPropertyChanged {
 
     protected BindableViewDelegate mDelegate;
 
-    public BindableSwitch(Context context) {
+    public BindableCompatEditText(Context context) {
         this(context, null);
     }
 
-    public BindableSwitch(Context context, AttributeSet attrs) {
+    public BindableCompatEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         mDelegate = createDelegate(this);
     }
 
-    public BindableSwitch(Context context, AttributeSet attrs, int defStyle) {
+    public BindableCompatEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mDelegate = createDelegate(this);
+    }
+
+    private final TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            mDelegate.notifyPropertyChanged("TextString");
+        }
+    };
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        addTextChangedListener(textWatcher);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        removeTextChangedListener(textWatcher);
     }
 
     /****** beginning of the delegated methods, to be copy/pasted in every bindable view ******/
@@ -132,4 +162,44 @@ public class BindableSwitch extends Switch implements INotifyPropertyChanged {
     }
 
     /****** end of the delegated methods, to be copy/pasted in every bindable view ******/
+
+    public String getTextString() {
+        return getText().toString();
+    }
+
+    public void setTextString(String text) {
+        setText(text);
+    }
+
+    public void setEditTextCharSequence(CharSequence text) {
+        super.setText(text);
+    }
+
+    public CharSequence getEditTextCharSequence() {
+        return getTextString();
+    }
+
+    public void setHintText(CharSequence hint) {
+        setHint(hint);
+    }
+
+    public CharSequence getHintText() {
+        return getHint();
+    }
+
+    public void setHintColor(int color) {
+        setHintTextColor(color);
+    }
+
+    public void setHintColor(ColorStateList color) {
+        setHintTextColor(color);
+    }
+
+    public void setErrorText(CharSequence text) {
+        setError(text);
+    }
+
+    public CharSequence getErrorText() {
+        return getError();
+    }
 }

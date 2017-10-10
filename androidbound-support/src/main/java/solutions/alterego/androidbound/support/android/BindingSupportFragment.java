@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.android.support;
+package solutions.alterego.androidbound.support.android;
 
 import android.content.Intent;
 import android.content.res.Configuration;

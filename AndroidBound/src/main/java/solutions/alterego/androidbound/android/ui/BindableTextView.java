@@ -2,19 +2,18 @@ package solutions.alterego.androidbound.android.ui;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
-import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
 
 import io.reactivex.Observable;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-public class BindableTextView extends AppCompatTextView implements INotifyPropertyChanged {
+public class BindableTextView extends TextView implements INotifyPropertyChanged {
 
     protected BindableViewDelegate mDelegate;
 
@@ -90,16 +89,8 @@ public class BindableTextView extends AppCompatTextView implements INotifyProper
         super.setBackgroundDrawable(res);
     }
 
-    public Typeface getTypeface() {
-        return super.getTypeface();
-    }
-
-    public void setTypeface(Typeface font) {
-        super.setTypeface(font);
-    }
-
-    public ColorStateList getTextColor() {
-        return super.getTextColors();
+    public int getTextColor() {
+        return super.getCurrentTextColor();
     }
 
     public void setTextColor(int color) {

@@ -1,34 +1,33 @@
-package solutions.alterego.androidbound.android.ui;
+package solutions.alterego.androidbound.support.android.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Switch;
 
 import io.reactivex.Observable;
+import solutions.alterego.androidbound.android.ui.BindableViewDelegate;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-@SuppressLint("NewApi")
-public class BindableSwitch extends Switch implements INotifyPropertyChanged {
+public class BindableCompatTextView extends AppCompatTextView implements INotifyPropertyChanged {
 
     protected BindableViewDelegate mDelegate;
 
-    public BindableSwitch(Context context) {
+    public BindableCompatTextView(Context context) {
         this(context, null);
     }
 
-    public BindableSwitch(Context context, AttributeSet attrs) {
+    public BindableCompatTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mDelegate = createDelegate(this);
     }
 
-    public BindableSwitch(Context context, AttributeSet attrs, int defStyle) {
+    public BindableCompatTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mDelegate = createDelegate(this);
     }
@@ -132,4 +131,5 @@ public class BindableSwitch extends Switch implements INotifyPropertyChanged {
     }
 
     /****** end of the delegated methods, to be copy/pasted in every bindable view ******/
+
 }

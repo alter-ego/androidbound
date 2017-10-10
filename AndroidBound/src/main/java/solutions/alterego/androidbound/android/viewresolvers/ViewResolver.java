@@ -19,7 +19,7 @@ import solutions.alterego.androidbound.android.ui.BindableProgressBar;
 import solutions.alterego.androidbound.android.ui.BindableRecyclerView;
 import solutions.alterego.androidbound.android.ui.BindableRelativeLayout;
 import solutions.alterego.androidbound.android.ui.BindableScrollView;
-import solutions.alterego.androidbound.android.ui.BindableSeekbar;
+import solutions.alterego.androidbound.android.ui.BindableSeekBar;
 import solutions.alterego.androidbound.android.ui.BindableSwipeRefreshLayout;
 import solutions.alterego.androidbound.android.ui.BindableSwitch;
 import solutions.alterego.androidbound.android.ui.BindableTextView;
@@ -49,31 +49,23 @@ public class ViewResolver implements IViewResolver {
             put("android.widget.ImageView", BindableImageView.class);
             put("android.widget.VideoView", BindableVideoView.class);
             put("android.widget.Button", BindableButton.class);
-            put("android.widget.SeekBar", BindableSeekbar.class);
+            put("android.widget.SeekBar", BindableSeekBar.class);
             put("android.widget.HorizontalScrollView", BindableHorizontalScrollView.class);
             put("android.widget.ScrollView", BindableScrollView.class);
             put("android.widget.RelativeLayout", BindableRelativeLayout.class);
             put("android.widget.LinearLayout", BindableLinearLayout.class);
             put("android.widget.GridView", BindableGridView.class);
-            if (android.os.Build.VERSION.SDK_INT > 13) {
-                put("android.widget.Switch", BindableSwitch.class);
-            }
+            put("android.widget.Switch", BindableSwitch.class);
             put("android.widget.ToggleButton", BindableToggleButton.class);
             put("android.widget.EditText", BindableEditText.class);
-            put("android.support.v7.widget.RecyclerView", BindableRecyclerView.class);
             put("android.widget.ProgressBar", BindableProgressBar.class);
             put("android.widget.FrameLayout", BindableFrameLayout.class);
+            put("android.support.v7.widget.RecyclerView", BindableRecyclerView.class);
             put("android.support.v4.widget.SwipeRefreshLayout", BindableSwipeRefreshLayout.class);
-
-            put("android.support.v7.widget.AppCompatButton", BindableButton.class);
-            put("android.support.v7.widget.AppCompatEditText", BindableEditText.class);
-            put("android.support.v7.widget.AppCompatImageView", BindableImageView.class);
-            put("android.support.v7.widget.AppCompatSeekBar", BindableSeekbar.class);
-            put("android.support.v7.widget.AppCompatTextView", BindableTextView.class);
         }
     };
 
-    private ILogger logger;
+    protected ILogger logger;
 
     public ViewResolver(ILogger logger) {
         setLogger(logger);
@@ -111,7 +103,7 @@ public class ViewResolver implements IViewResolver {
         return null;
     }
 
-    private Class<?> resolveName(String name) {
+    protected Class<?> resolveName(String name) {
         String result;
 
         if (name.contains(".")) {

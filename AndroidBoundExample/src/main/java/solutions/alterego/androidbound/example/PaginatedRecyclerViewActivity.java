@@ -8,12 +8,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 
-import solutions.alterego.androidbound.android.support.BindingAppCompatActivity;
 import solutions.alterego.androidbound.android.ui.BindableRecyclerView;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.example.viewmodels.PaginatedViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
+import solutions.alterego.androidbound.support.android.BindingAppCompatActivity;
 
 public class PaginatedRecyclerViewActivity extends BindingAppCompatActivity {
 

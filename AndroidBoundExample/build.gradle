@@ -41,7 +41,7 @@ dependencies {
     provided deps.lombok
     compile 'net.danlew:android.joda:2.9.9'
     compile 'com.github.brianPlummer:tinydancer:0.0.9'
-    compile project(':AndroidBound')
+    compile project(':androidbound-support')
 
     compile deps.aaloger
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'

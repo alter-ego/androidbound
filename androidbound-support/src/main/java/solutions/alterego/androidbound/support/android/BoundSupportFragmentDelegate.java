@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.android.support;
+package solutions.alterego.androidbound.support.android;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,7 +15,6 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Getter;
 import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewModel;
@@ -33,6 +32,7 @@ import solutions.alterego.androidbound.interfaces.IHasLogger;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
+import solutions.alterego.androidbound.support.android.interfaces.INeedsSupportFragmentManager;
 
 @Accessors(prefix = "m")
 public class BoundSupportFragmentDelegate
@@ -41,7 +41,6 @@ public class BoundSupportFragmentDelegate
 
     public static final String TAG_VIEWMODEL_MAIN = "androidbound_viewmodel_main";
 
-    @Getter
     private Map<String, ViewModel> mViewModels;
 
     private ILogger mLogger = NullLogger.instance;
@@ -322,5 +321,9 @@ public class BoundSupportFragmentDelegate
                 }
             }
         }
+    }
+
+    public Map<String, ViewModel> getViewModels() {
+        return this.mViewModels;
     }
 }

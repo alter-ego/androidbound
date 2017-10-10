@@ -9,15 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import solutions.alterego.androidbound.ViewBinder;
-import solutions.alterego.androidbound.android.support.BindingSupportFragment;
-import solutions.alterego.androidbound.android.support.BoundSupportFragmentDelegate;
 import solutions.alterego.androidbound.android.ui.BindableRecyclerView;
 import solutions.alterego.androidbound.example.R;
 import solutions.alterego.androidbound.example.fragment.viewmodel.FragmentViewModel;
 import solutions.alterego.androidbound.example.imageloader.UILImageLoader;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
+import solutions.alterego.androidbound.support.android.BindingSupportFragment;
+import solutions.alterego.androidbound.support.android.BoundSupportFragmentDelegate;
+import solutions.alterego.androidbound.support.SupportViewBinder;
 
 import static solutions.alterego.androidbound.example.MainActivity.LOGGING_TAG;
 
@@ -27,7 +27,7 @@ public class TestFragment extends BindingSupportFragment {
 
     @Override
     protected BoundSupportFragmentDelegate getBoundFragmentDelegate() {
-        IViewBinder viewBinder = new ViewBinder(getActivity(), new AdvancedAndroidLoggerAdapter(LOGGING_TAG, LOGGING_LEVEL));
+        IViewBinder viewBinder = new SupportViewBinder(getActivity(), new AdvancedAndroidLoggerAdapter(LOGGING_TAG, LOGGING_LEVEL));
         viewBinder.setImageLoader(new UILImageLoader(getActivity(), null));
         return new BoundSupportFragmentDelegate(this, viewBinder);
     }

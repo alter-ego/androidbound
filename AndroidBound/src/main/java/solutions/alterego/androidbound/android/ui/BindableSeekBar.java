@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
-import android.support.v7.widget.AppCompatSeekBar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.SeekBar;
@@ -13,7 +12,7 @@ import io.reactivex.Observable;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-public class BindableSeekbar extends AppCompatSeekBar implements INotifyPropertyChanged {
+public class BindableSeekBar extends SeekBar implements INotifyPropertyChanged {
 
     private ICommand progressTrackBegin = ICommand.empty;
 
@@ -23,17 +22,17 @@ public class BindableSeekbar extends AppCompatSeekBar implements INotifyProperty
 
     protected BindableViewDelegate mDelegate;
 
-    public BindableSeekbar(Context context) {
+    public BindableSeekBar(Context context) {
         this(context, null);
     }
 
-    public BindableSeekbar(Context context, AttributeSet attrs) {
+    public BindableSeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         mDelegate = createDelegate(this);
         setOnSeekBarChangeListener(internalSeekbarListener);
     }
 
-    public BindableSeekbar(Context context, AttributeSet attrs, int defStyle) {
+    public BindableSeekBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mDelegate = createDelegate(this);
         setOnSeekBarChangeListener(internalSeekbarListener);

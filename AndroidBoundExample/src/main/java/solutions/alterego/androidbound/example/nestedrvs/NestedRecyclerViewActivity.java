@@ -14,7 +14,6 @@ import android.view.View;
 import java.util.HashMap;
 import java.util.Map;
 
-import solutions.alterego.androidbound.android.support.BindingAppCompatActivity;
 import solutions.alterego.androidbound.android.ui.BindableRecyclerView;
 import solutions.alterego.androidbound.example.ExampleApplication;
 import solutions.alterego.androidbound.example.PaginatedRecyclerViewActivity;
@@ -24,6 +23,7 @@ import solutions.alterego.androidbound.example.nestedrvs.viewmodel.NestedViewMod
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
+import solutions.alterego.androidbound.support.android.BindingAppCompatActivity;
 
 public class NestedRecyclerViewActivity extends BindingAppCompatActivity {
 

@@ -1,39 +1,48 @@
-package solutions.alterego.androidbound.android.ui;
+package solutions.alterego.androidbound.support.android.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
+import android.net.Uri;
 import android.os.Build;
+import android.support.v7.widget.AppCompatImageView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Switch;
 
 import io.reactivex.Observable;
+import solutions.alterego.androidbound.android.interfaces.IImageLoader;
+import solutions.alterego.androidbound.android.interfaces.INeedsImageLoader;
+import solutions.alterego.androidbound.android.ui.BindableViewDelegate;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-@SuppressLint("NewApi")
-public class BindableSwitch extends Switch implements INotifyPropertyChanged {
+public class BindableCompatImageView extends AppCompatImageView implements INotifyPropertyChanged, INeedsImageLoader {
 
     protected BindableViewDelegate mDelegate;
 
-    public BindableSwitch(Context context) {
+    private int currentResId;
+
+    private String source;
+
+    private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
+
+    public BindableCompatImageView(Context context) {
         this(context, null);
     }
 
-    public BindableSwitch(Context context, AttributeSet attrs) {
+    public BindableCompatImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mDelegate = createDelegate(this);
     }
 
-    public BindableSwitch(Context context, AttributeSet attrs, int defStyle) {
+    public BindableCompatImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mDelegate = createDelegate(this);
     }
 
-    /****** beginning of the delegated methods, to be copy/pasted in every bindable view ******/
+    /****** beginning of the delegated methods ******/
 
     protected BindableViewDelegate createDelegate(View view) {
         return new BindableViewDelegate(view);
@@ -83,30 +92,6 @@ public class BindableSwitch extends Switch implements INotifyPropertyChanged {
         super.setBackgroundResource(res);
     }
 
-    public int getBackgroundDrawable() {
-        return 0;
-    }
-
-    public void setBackgroundDrawable(Drawable res) {
-        super.setBackgroundDrawable(res);
-    }
-
-    public int getTextColor() {
-        return super.getCurrentTextColor();
-    }
-
-    public void setTextColor(int color) {
-        super.setTextColor(color);
-    }
-
-    public ColorStateList getTextColorState() {
-        return super.getTextColors();
-    }
-
-    public void setTextColorState(ColorStateList colors) {
-        super.setTextColor(colors);
-    }
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -129,7 +114,53 @@ public class BindableSwitch extends Switch implements INotifyPropertyChanged {
     @Override
     public void dispose() {
         mDelegate.dispose();
+        mImageLoader = IImageLoader.nullImageLoader;
+        source = null;
+        currentResId = 0;
     }
 
-    /****** end of the delegated methods, to be copy/pasted in every bindable view ******/
+    /****** end of the delegated methods ******/
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String value) {
+        source = value;
+        mImageLoader.loadImageFromUri(source, this);
+    }
+
+    public Uri getSourceUri() {
+        if (!TextUtils.isEmpty(source)) {
+            return Uri.parse(source);
+        } else {
+            return Uri.EMPTY;
+        }
+    }
+
+    public void setSourceUri(Uri value) {
+        setSource(value.toString());
+    }
+
+    public void setBitmap(Bitmap bmp) {
+        setImageBitmap(bmp);
+    }
+
+    public void setDrawable(Drawable drawable) {
+        setImageDrawable(drawable);
+    }
+
+    public Integer getResource() {
+        return currentResId;
+    }
+
+    public void setResource(Integer resId) {
+        currentResId = resId;
+        setImageResource(currentResId);
+    }
+
+    @Override
+    public void setImageLoader(IImageLoader imageLoader) {
+        mImageLoader = imageLoader;
+    }
 }

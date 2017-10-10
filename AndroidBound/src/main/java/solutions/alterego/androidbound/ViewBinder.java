@@ -68,8 +68,7 @@ public class ViewBinder implements IViewBinder {
     private Field mLayoutInflaterFactory2Field = null;
 
     public ViewBinder(Context ctx) {
-        setContext(ctx);
-        init();
+        this(ctx, NullLogger.instance);
     }
 
     public ViewBinder(Context ctx, ILogger logger) {
