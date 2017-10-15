@@ -14,12 +14,12 @@ buildscript {
     ext.versions = [
             'minSdk'        : 14,
             'compileSdk'    : 26,
-            'buildTools'    : '26.0.1',
+            'buildTools'    : '26.0.2',
 
-            'supportLibrary': '26.0.1',
+            'supportLibrary': '26.1.0',
             'androidPlugin' : '2.3.3',
-            'androidTools'  : '26.0.1',
-            'kotlin'        : '1.1.2-4',
+            'androidTools'  : '26.0.2',
+            'kotlin'        : '1.1.51',
     ]
     ext.deps = [
             android       : [
@@ -42,7 +42,7 @@ buildscript {
                     'tests' : "com.android.tools.lint:lint-tests:${versions.androidTools}",
             ],
             rx2           : [
-                    'java'   : 'io.reactivex.rxjava2:rxjava:2.1.0',
+                    'java'   : 'io.reactivex.rxjava2:rxjava:2.1.5',
                     'android': "io.reactivex.rxjava2:rxandroid:2.0.1",
             ],
             annotation    : 'javax.annotation:jsr250-api:1.0',
@@ -53,7 +53,7 @@ buildscript {
             robolectric   : 'org.robolectric:robolectric:3.4-rc2',
             fest          : 'org.easytesting:fest-assert-core:2.0M10',
             lombok        : "org.projectlombok:lombok:1.16.12",
-            mockito       : 'org.mockito:mockito-core:1.9.5',
+            mockito       : 'org.mockito:mockito-core:2.10.0',
             aaloger       : 'solutions.alterego:advancedandroidlogger:1.0.9@aar',
             compiletesting: 'com.google.testing.compile:compile-testing:0.11',
             'auto'        : [
@@ -88,7 +88,8 @@ subprojects { project ->
         dependencies {
             classpath deps.android.gradlePlugin
             classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
-            classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6"
+            classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
+            classpath 'com.github.ben-manes:gradle-versions-plugin:0.15.0'
         }
     }
 }

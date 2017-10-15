@@ -9,6 +9,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
+apply plugin: 'com.github.ben-manes.versions'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -75,6 +76,12 @@ task javadoc(type: Javadoc) {
     failOnError false
     source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    android.libraryVariants.all { variant ->
+        if (variant.name == 'release') {
+            owner.classpath += variant.javaCompile.classpath
+        }
+    }
+    exclude '**/R.html', '**/R.*.html', '**/index.html'
 }
 
 // build a jar with javadoc
