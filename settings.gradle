@@ -1,1 +1,1 @@
-include ':AndroidBound', ':AndroidBoundExample', ':androidbound-support'
+include ':AndroidBound', ':AndroidBoundExample', ':androidbound-support', ':AndroidBoundExample-support'

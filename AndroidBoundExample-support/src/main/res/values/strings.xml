@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">AB Support Example</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="title_activity_LVWithObjects">List View With Objects</string>
+
+    <string name="title_activity_RV">Recycler View</string>
+
+    <string name="title_activity_RVWithObjects">Recycler View With Objects</string>
+</resources>

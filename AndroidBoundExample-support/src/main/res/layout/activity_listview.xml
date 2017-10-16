@@ -1,0 +1,45 @@
+<!-- A DrawerLayout is intended to be used as the top-level content view using match_parent for both width and height to consume the full space available. -->
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".support.MainActivity"
+        tools:ignore="MissingPrefix"
+        android:padding="16dp">
+
+    <TextView
+            android:id="@+id/activity_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            tools:text="title"
+            binding="{ Text @= ListViewActivityTitle }"/>
+
+    <Button
+            android:id="@+id/open_main_activity_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/activity_title"
+            android:textSize="16sp"
+            android:layout_margin="16dp"
+            tools:text="open main activity"
+            binding="{ Text @= OpenMainActivityText }; { Click @- OpenMainActivity }"/>
+
+    <ListView
+            android:id="@+id/listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/open_main_activity_button"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/black"
+            android:listSelector="@android:color/transparent"
+            android:dividerHeight="1dp"
+            itemTemplate="@layout/activity_listview_listitem"
+            binding="{Click @- SelectListItem}; {TemplatesForObjects @- LVTemplatesForObjects}; {ItemsSource @= ExampleList}"/>
+
+</RelativeLayout>

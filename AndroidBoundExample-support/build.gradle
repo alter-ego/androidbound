@@ -1,0 +1,49 @@
+apply plugin: 'com.android.application'
+
+repositories {
+    jcenter()
+    maven { url "https://github.com/alter-ego/advanced-android-logger/raw/develop/releases/" }
+}
+
+android {
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+
+    defaultConfig {
+        applicationId "solutions.alterego.androidbound.example.support"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.compileSdk
+        versionCode 1
+        versionName "1.0"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
+}
+
+dependencies {
+    compile deps.support.appcompat
+    compile deps.support.compat
+    compile 'net.danlew:android.joda:2.9.9'
+    compile 'com.github.brianPlummer:tinydancer:0.0.9'
+    compile project(':androidbound-support')
+
+    compile deps.aaloger
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+}

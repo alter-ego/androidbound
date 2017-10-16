@@ -4,13 +4,13 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 
 import android.os.Bundle;
 
+import solutions.alterego.androidbound.android.BindingActivity;
 import solutions.alterego.androidbound.example.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.example.viewmodels.MainBindingActivityViewModel;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
-import solutions.alterego.androidbound.support.android.BindingAppCompatActivity;
 
-public class MainBindingActivity extends BindingAppCompatActivity {
+public class MainBindingActivity extends BindingActivity {
 
     public static final String LOGGING_TAG = "TEST_APP";
 
