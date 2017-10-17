@@ -19,7 +19,7 @@ buildscript {
             'supportLibrary': '26.1.0',
             'androidPlugin' : '2.3.3',
             'androidTools'  : '26.0.2',
-            'kotlin'        : '1.1.51',
+            'kotlin'        : '1.1.51'
     ]
     ext.deps = [
             android       : [
@@ -55,6 +55,7 @@ buildscript {
             lombok        : "org.projectlombok:lombok:1.16.12",
             mockito       : 'org.mockito:mockito-core:2.10.0',
             aaloger       : 'solutions.alterego:advancedandroidlogger:1.0.9@aar',
+            abound        : "solutions.alterego:androidbound:${maven.artifactVersion}@aar",
             compiletesting: 'com.google.testing.compile:compile-testing:0.11',
             'auto'        : [
                     'service': 'com.google.auto.service:auto-service:1.0-rc3',
