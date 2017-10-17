@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
@@ -16,7 +15,6 @@ import solutions.alterego.androidbound.interfaces.IHasLogger;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
-@Accessors(prefix = "m")
 public abstract class BindingAppCompatActivity extends AppCompatActivity implements IBindableView, IBoundActivity, INeedsLogger, IHasLogger {
 
     protected BoundSupportActivityDelegate mBoundActivityDelegate;

@@ -15,7 +15,6 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IActivityFocus;
@@ -34,7 +33,6 @@ import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 import solutions.alterego.androidbound.support.android.interfaces.INeedsSupportFragmentManager;
 
-@Accessors(prefix = "m")
 public class BoundSupportFragmentDelegate
         implements IActivityLifecycle, IActivityFocus, IFragmentLifecycle, IBoundFragment, INeedsOnActivityResult, INeedsNewIntent, INeedsConfigurationChange,
         INeedsLogger, IHasLogger {

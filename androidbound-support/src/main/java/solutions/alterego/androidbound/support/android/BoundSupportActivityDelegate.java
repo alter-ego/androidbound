@@ -6,14 +6,12 @@ import android.view.View;
 
 import java.util.HashMap;
 
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.BoundActivityDelegate;
 import solutions.alterego.androidbound.android.interfaces.INeedsActivity;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 import solutions.alterego.androidbound.support.android.interfaces.INeedsSupportFragmentManager;
 
-@Accessors(prefix = "m")
 public class BoundSupportActivityDelegate extends BoundActivityDelegate {
 
     public BoundSupportActivityDelegate(Activity activity) {
