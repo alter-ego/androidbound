@@ -1,10 +1,12 @@
 package solutions.alterego.androidbound.android.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -214,5 +216,11 @@ public class BindableListView extends ListView implements OnItemClickListener, O
 
     public Map<Class<?>, Integer> getTemplatesForObjects() {
         return this.mTemplatesForObjects;
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return getAdapter() == null || super.onTouchEvent(ev);
     }
 }
