@@ -9,7 +9,7 @@ buildscript {
             'licenses': ["Apache-2.0"],
             'artifactVersion': '0.8.1-1',
             'artifactDesc': 'This library offers easy view bindings for Android.',
-            'artifactVersionCode': 40
+            'artifactVersionCode': 41
     ]
     ext.versions = [
             'minSdk'        : 14,
