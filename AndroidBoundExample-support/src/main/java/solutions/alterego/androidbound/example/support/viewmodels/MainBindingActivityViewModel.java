@@ -13,12 +13,14 @@ import android.text.Spanned;
 import android.text.style.UnderlineSpan;
 import android.widget.Toast;
 
+import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.example.support.MainActivity;
 import solutions.alterego.androidbound.example.support.R;
 import solutions.alterego.androidbound.interfaces.ILogger;
+import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
-public class MainBindingActivityViewModel extends AndroidViewModel {
+public class MainBindingActivityViewModel extends AndroidViewModel implements INeedsLogger {
 
     private Spannable mMainActivityTitle;
 
@@ -31,6 +33,8 @@ public class MainBindingActivityViewModel extends AndroidViewModel {
     private SpannableString mTextViewBoundToEditText = new SpannableString("empty");
 
     private String mBoundEditTextText = mEditTextText;
+
+    private ILogger mLogger = NullLogger.instance;
 
     public MainBindingActivityViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
@@ -185,5 +189,10 @@ public class MainBindingActivityViewModel extends AndroidViewModel {
 
     public void setBoundEditTextText(String mBoundEditTextText) {
         this.mBoundEditTextText = mBoundEditTextText;
+    }
+
+    @Override
+    public void setLogger(ILogger logger) {
+        mLogger = logger;
     }
 }

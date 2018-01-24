@@ -34,7 +34,6 @@ public class ListViewWithObjectsActivityViewModel extends AndroidViewModel {
     private List<Object> mExampleList = new ArrayList<Object>();
 
     public ListViewWithObjectsActivityViewModel(Activity activity, ILogger logger) {
-        setLogger(logger);
         setParentActivity(activity);
 
         setListViewActivityTitle("ListView with objects activity");

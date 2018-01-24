@@ -45,7 +45,7 @@ public class BoundFragmentDelegate
     @Getter
     private Map<String, ViewModel> mViewModels;
 
-    private ILogger mLogger = NullLogger.instance;
+    private transient ILogger mLogger = NullLogger.instance;
 
     private transient View mBoundView;
 
@@ -106,7 +106,10 @@ public class BoundFragmentDelegate
             ((INeedsFragmentManager) viewModel).setFragmentManager(getBoundActivity().getFragmentManager());
         }
 
-        viewModel.setLogger(getLogger());
+        if (viewModel instanceof INeedsLogger) {
+            ((INeedsLogger) viewModel).setLogger(mLogger);
+        }
+
         mViewModels.put(id, viewModel);
 
         View view = getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, parent, false);
@@ -305,7 +308,9 @@ public class BoundFragmentDelegate
 
         if (getViewModels() != null) {
             for (ViewModel viewModel : getViewModels().values()) {
-                viewModel.setLogger(getLogger());
+                if (viewModel instanceof INeedsLogger) {
+                    ((INeedsLogger) viewModel).setLogger(getLogger());
+                }
             }
         }
     }

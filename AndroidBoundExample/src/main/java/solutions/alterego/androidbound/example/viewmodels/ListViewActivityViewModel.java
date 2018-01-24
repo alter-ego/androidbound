@@ -30,7 +30,6 @@ public class ListViewActivityViewModel extends AndroidViewModel {
     private List<ListViewItem> mExampleList = new ArrayList<ListViewItem>();
 
     public ListViewActivityViewModel(Activity activity, ILogger logger) {
-        setLogger(logger);
         setParentActivity(activity);
 
         setListViewActivityTitle("ListView activity");

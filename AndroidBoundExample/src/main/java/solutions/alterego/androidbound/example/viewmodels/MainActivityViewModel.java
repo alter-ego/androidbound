@@ -27,7 +27,6 @@ public class MainActivityViewModel extends AndroidViewModel {
     private String mOpenBindableActivityText;
 
     public MainActivityViewModel(Activity activity, ILogger logger) {
-        setLogger(logger);
         setParentActivity(activity);
 
         setMainActivityTitle("Main Activity");

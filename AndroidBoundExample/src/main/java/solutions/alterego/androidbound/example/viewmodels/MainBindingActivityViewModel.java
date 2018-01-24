@@ -16,13 +16,15 @@ import android.widget.Toast;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.example.MainActivity;
 import solutions.alterego.androidbound.example.R;
 import solutions.alterego.androidbound.interfaces.ILogger;
+import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
 @Accessors(prefix = "m")
-public class MainBindingActivityViewModel extends AndroidViewModel {
+public class MainBindingActivityViewModel extends AndroidViewModel implements INeedsLogger {
 
     @Getter
     private Spannable mMainActivityTitle;
@@ -42,6 +44,8 @@ public class MainBindingActivityViewModel extends AndroidViewModel {
     @Getter
     @Setter
     private String mBoundEditTextText = mEditTextText;
+
+    private ILogger mLogger = NullLogger.instance;
 
     public MainBindingActivityViewModel(Activity activity, ILogger logger) {
         setLogger(logger);
@@ -168,5 +172,10 @@ public class MainBindingActivityViewModel extends AndroidViewModel {
 
     public void doTextViewLongClick() {
         Toast.makeText(getParentActivity(), "long clicked text view!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setLogger(ILogger logger) {
+        mLogger = logger;
     }
 }
