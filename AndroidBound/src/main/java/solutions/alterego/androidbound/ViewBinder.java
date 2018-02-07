@@ -71,7 +71,7 @@ public class ViewBinder implements IViewBinder {
 
         mViewResolver = new ChainedViewResolver(new ViewResolver(getLogger()));
         mInflaterFactory = new BindableLayoutInflaterFactory(this, mViewResolver);
-        setFontManager(new FontManager(getLogger()));
+        setFontManager(new FontManager());
 
         registerDefaultConverters();
     }
