@@ -137,7 +137,7 @@ bintray {
 publishing {
     publications {
         Publication(MavenPublication) {
-            artifact("$buildDir/outputs/aar/AndroidBound-release.aar")
+            artifact("$buildDir/outputs/aar/androidbound-support-release.aar")
             artifact sourcesJar
             artifact javadocJar
             groupId maven.artifactGroup
