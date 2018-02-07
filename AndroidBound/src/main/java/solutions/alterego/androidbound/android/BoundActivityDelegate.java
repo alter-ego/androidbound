@@ -104,7 +104,10 @@ public class BoundActivityDelegate
             ((INeedsFragmentManager) viewModel).setFragmentManager(getBoundActivity().getFragmentManager());
         }
 
-        viewModel.setLogger(getLogger());
+        if (viewModel instanceof INeedsLogger) {
+            ((INeedsLogger) viewModel).setLogger(getLogger());
+        }
+
         mViewModels.put(id, viewModel);
 
         View view = getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, null);
@@ -287,7 +290,9 @@ public class BoundActivityDelegate
 
         if (getViewModels() != null) {
             for (ViewModel viewModel : getViewModels().values()) {
-                viewModel.setLogger(getLogger());
+                if (viewModel instanceof INeedsLogger) {
+                    ((INeedsLogger) viewModel).setLogger(getLogger());
+                }
             }
         }
     }

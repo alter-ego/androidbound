@@ -31,7 +31,6 @@ public class RecyclerViewActivityViewModel extends AndroidViewModel {
     private List<Object> mExampleListLinear = new ArrayList<Object>();
 
     public RecyclerViewActivityViewModel(Activity activity, ILogger logger) {
-        setLogger(logger);
         setParentActivity(activity);
 
         setListViewActivityTitle("RecyclerView with objects activity");
