@@ -9,6 +9,7 @@ import java.util.HashMap;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.BoundActivityDelegate;
 import solutions.alterego.androidbound.android.interfaces.INeedsActivity;
+import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 import solutions.alterego.androidbound.support.android.interfaces.INeedsSupportFragmentManager;
 
@@ -48,7 +49,10 @@ public class BoundSupportActivityDelegate extends BoundActivityDelegate {
             ((INeedsSupportFragmentManager) viewModel).setFragmentManager(((FragmentActivity) getBoundActivity()).getSupportFragmentManager());
         }
 
-        viewModel.setLogger(getLogger());
+        if (viewModel instanceof INeedsLogger) {
+            ((INeedsLogger) viewModel).setLogger(getLogger());
+        }
+
         mViewModels.put(id, viewModel);
 
         View view = getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, null);

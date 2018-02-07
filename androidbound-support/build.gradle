@@ -49,8 +49,7 @@ android {
 }
 
 dependencies {
-//    compile project(':AndroidBound')
-    compile deps.abound
+    compile project(':AndroidBound')
 
     compile deps.support.appcompat
     compile deps.support.recyclerview
