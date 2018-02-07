@@ -11,9 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.android.interfaces.IImageLoader;
 import solutions.alterego.androidbound.android.interfaces.INeedsBoundView;
@@ -32,26 +29,18 @@ import solutions.alterego.androidbound.parsers.BindingSpecificationListParser;
 import solutions.alterego.androidbound.parsers.BindingSpecificationParser;
 import solutions.alterego.androidbound.resources.ResourceService;
 
-@Accessors(prefix="m")
 public class ViewBindingEngine implements IViewBindingEngine {
 
-    @Getter
-    @Setter
     private ILogger mLogger = NullLogger.instance;
 
-    @Setter
-    @Getter
     private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
 
-    @Getter
-    @Setter
     private boolean mDebugMode;
 
     private ValueConverterService mConverterService;
 
     private ResourceService mResourceService;
 
-    @Getter
     private IBinder mBinder;
 
     private Map<View, List<IBindingAssociationEngine>> mBoundViews = new ConcurrentHashMap<>();
@@ -269,4 +258,31 @@ public class ViewBindingEngine implements IViewBindingEngine {
         mLogger = NullLogger.instance;
     }
 
+    public ILogger getLogger() {
+        return mLogger;
+    }
+
+    public IImageLoader getImageLoader() {
+        return mImageLoader;
+    }
+
+    public boolean isDebugMode() {
+        return mDebugMode;
+    }
+
+    public IBinder getBinder() {
+        return mBinder;
+    }
+
+    public void setLogger(ILogger logger) {
+        mLogger = logger;
+    }
+
+    public void setImageLoader(IImageLoader imageLoader) {
+        mImageLoader = imageLoader;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        mDebugMode = debugMode;
+    }
 }

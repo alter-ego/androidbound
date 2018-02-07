@@ -9,7 +9,6 @@ import android.widget.BaseAdapter;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Getter;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.android.interfaces.INeedsBoundView;
@@ -25,13 +24,10 @@ public class BindableListAdapter extends BaseAdapter {
 
     private IViewBinder viewBinder;
 
-    @Getter
     private int mItemTemplate;
 
-    @Getter
     private Map<Class<?>, Integer> mTemplatesForObjects;
 
-    @Getter
     private List<?> itemsSource;
 
     private ILogger mLogger;
@@ -149,5 +145,17 @@ public class BindableListAdapter extends BaseAdapter {
         }
 
         return layoutToInflate;
+    }
+
+    public int getItemTemplate() {
+        return mItemTemplate;
+    }
+
+    public Map<Class<?>, Integer> getTemplatesForObjects() {
+        return mTemplatesForObjects;
+    }
+
+    public List<?> getItemsSource() {
+        return itemsSource;
     }
 }

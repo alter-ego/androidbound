@@ -5,31 +5,20 @@ import android.view.View;
 
 import java.lang.reflect.InvocationTargetException;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
-
-@Accessors(prefix = "m")
 public class CommandInfo {
 
-    @Getter
     public final String mCommandName;
 
-    @Getter
     public final boolean mInvokerHasParameter;
 
-    @Getter
     public final Class<?> mInvokerParameterType;
 
-    @Getter
     public final boolean mCheckerHasParameter;
 
-    @Getter
     public final Class<?> mCheckerParameterType;
 
-    @Getter
     public final MethodInfo mInvokerMethod;
 
-    @Getter
     public final MethodInfo mCheckerMethod;
 
     public CommandInfo(String name, Class<?> invokerParameterType,
@@ -90,4 +79,31 @@ public class CommandInfo {
         }
     }
 
+    public String getCommandName() {
+        return mCommandName;
+    }
+
+    public boolean isInvokerHasParameter() {
+        return mInvokerHasParameter;
+    }
+
+    public Class<?> getInvokerParameterType() {
+        return mInvokerParameterType;
+    }
+
+    public boolean isCheckerHasParameter() {
+        return mCheckerHasParameter;
+    }
+
+    public Class<?> getCheckerParameterType() {
+        return mCheckerParameterType;
+    }
+
+    public MethodInfo getInvokerMethod() {
+        return mInvokerMethod;
+    }
+
+    public MethodInfo getCheckerMethod() {
+        return mCheckerMethod;
+    }
 }

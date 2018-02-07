@@ -5,24 +5,17 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.lang.ref.WeakReference;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-@Accessors(prefix = "m")
 public class RecyclerViewGestureListener extends GestureDetector.SimpleOnGestureListener {
 
     protected WeakReference<BindableRecyclerView> mRecyclerView;
 
-    @Setter
-    @Getter
     private ICommand mRecyclerViewClickListener = ICommand.empty;
 
     public RecyclerViewGestureListener(BindableRecyclerView bindableRecyclerView) {
@@ -154,5 +147,13 @@ public class RecyclerViewGestureListener extends GestureDetector.SimpleOnGesture
             return null;
         }
         return mRecyclerView.get();
+    }
+
+    public ICommand getRecyclerViewClickListener() {
+        return mRecyclerViewClickListener;
+    }
+
+    public void setRecyclerViewClickListener(ICommand recyclerViewClickListener) {
+        mRecyclerViewClickListener = recyclerViewClickListener;
     }
 }

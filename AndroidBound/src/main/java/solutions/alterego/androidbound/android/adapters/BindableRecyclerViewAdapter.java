@@ -21,33 +21,24 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
 import static android.support.v7.util.DiffUtil.calculateDiff;
 
-@Accessors(prefix = "m")
 public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final IViewBinder mViewBinder;
 
-    @Getter
     private int mItemTemplate;
 
     private boolean mUseParentLayoutParams;
 
-    @Getter
     private Map<Class<?>, Integer> mTemplatesForObjects = new HashMap<>();
 
-    @Getter
     private List mItemsSource = new ArrayList<>();
 
     private SparseArray<Class<?>> mObjectIndex;
 
-    @Getter
-    @Setter
     private RecyclerView.LayoutManager mLayoutManager;
 
     private Disposable mSetValuesDisposable = Disposables.disposed();
@@ -280,5 +271,25 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         mRemoveItemsDisposable.dispose();
         mSetValuesDisposable.dispose();
         mAddValueDisposable.dispose();
+    }
+
+    public int getItemTemplate() {
+        return mItemTemplate;
+    }
+
+    public Map<Class<?>, Integer> getTemplatesForObjects() {
+        return mTemplatesForObjects;
+    }
+
+    public List getItemsSource() {
+        return mItemsSource;
+    }
+
+    public RecyclerView.LayoutManager getLayoutManager() {
+        return mLayoutManager;
+    }
+
+    public void setLayoutManager(RecyclerView.LayoutManager layoutManager) {
+        mLayoutManager = layoutManager;
     }
 }

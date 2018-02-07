@@ -17,9 +17,6 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.adapters.BindableRecyclerViewAdapter;
 import solutions.alterego.androidbound.android.adapters.PageDescriptor;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
@@ -28,7 +25,6 @@ import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
-@Accessors(prefix = "m")
 public class BindableRecyclerView extends RecyclerView implements IBindableView, INotifyPropertyChanged, RecyclerView.OnItemTouchListener {
 
     public static final String LAYOUTMANAGER_LINEAR = "linear";
@@ -39,17 +35,40 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     public static final String LAYOUTMANAGER_ORIENTATION_VERTICAL = "vertical";
 
-    @Accessors(prefix = "m")
+    public Map<Class<?>, Integer> getTemplatesForObjects() {
+        return this.mTemplatesForObjects;
+    }
+
+    public IViewBinder getViewBinder() {
+        return mViewBinder;
+    }
+
+    public BindableRecyclerViewAdapter getAdapter() {
+        return mAdapter;
+    }
+
+    public boolean isUseParentLayoutParams() {
+        return mUseParentLayoutParams;
+    }
+
+    public boolean isRtlLayout() {
+        return mRtlLayout;
+    }
+
+    public void setViewBinder(IViewBinder viewBinder) {
+        mViewBinder = viewBinder;
+    }
+
+    public void setUseParentLayoutParams(boolean useParentLayoutParams) {
+        mUseParentLayoutParams = useParentLayoutParams;
+    }
+
     private final class PageScrollListener extends OnScrollListener {
 
         private int[] mVisiblePosition;
 
-        @Getter
-        @Setter
         private PageDescriptor mPageDescriptor;
 
-        @Getter
-        @Setter
         private int mPage = 1;
 
 
@@ -87,6 +106,21 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
             return 0;
         }
 
+        public PageDescriptor getPageDescriptor() {
+            return mPageDescriptor;
+        }
+
+        public int getPage() {
+            return mPage;
+        }
+
+        public void setPageDescriptor(PageDescriptor pageDescriptor) {
+            this.mPageDescriptor = pageDescriptor;
+        }
+
+        public void setPage(int page) {
+            this.mPage = page;
+        }
     }
 
     protected PublishSubject<String> propertyChanged = PublishSubject.create();
@@ -95,21 +129,14 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     private final int mItemTemplate;
 
-    @Getter
     private Map<Class<?>, Integer> mTemplatesForObjects;
 
-    @Getter
-    @Setter
     private IViewBinder mViewBinder;
 
-    @Getter
     private BindableRecyclerViewAdapter mAdapter;
 
-    @Getter
-    @Setter
     private boolean mUseParentLayoutParams = false;
 
-    @Getter
     private boolean mRtlLayout = false;
 
     private String mLayoutManagerOrientationString = LAYOUTMANAGER_ORIENTATION_VERTICAL;

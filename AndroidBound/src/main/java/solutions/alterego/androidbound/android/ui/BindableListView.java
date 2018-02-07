@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.adapters.BindableListAdapter;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.android.ui.resources.BindingResources;
@@ -25,17 +23,14 @@ import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
-@Accessors(prefix = "m")
 public class BindableListView extends ListView implements OnItemClickListener, OnItemLongClickListener, IBindableView, INotifyPropertyChanged {
 
     protected BindableViewDelegate mDelegate;
 
     private int itemTemplate;
 
-    @Getter
     private BindableListAdapter mAdapter;
 
-    @Getter
     private Map<Class<?>, Integer> mTemplatesForObjects;
 
     private IViewBinder viewBinder;
@@ -213,4 +208,11 @@ public class BindableListView extends ListView implements OnItemClickListener, O
         }
     }
 
+    public BindableListAdapter getAdapter() {
+        return this.mAdapter;
+    }
+
+    public Map<Class<?>, Integer> getTemplatesForObjects() {
+        return this.mTemplatesForObjects;
+    }
 }

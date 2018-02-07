@@ -11,8 +11,6 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IActivityFocus;
@@ -30,24 +28,20 @@ import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
-@Accessors(prefix = "m")
 public class BoundActivityDelegate
         implements IActivityLifecycle, IActivityFocus, IBoundActivity, INeedsOnActivityResult, INeedsOnRequestPermissionResult, INeedsNewIntent,
         INeedsConfigurationChange, INeedsLogger, IHasLogger {
 
     public static final String TAG_VIEWMODEL_MAIN = "androidbound_viewmodel_main";
 
-    @Getter
     protected Map<String, ViewModel> mViewModels;
 
     private ILogger mLogger = null;
 
     private transient WeakReference<Activity> mBoundActivity;
 
-    @Getter
     private boolean mShouldCallCreate = false;
 
-    @Getter
     private Bundle mCreateBundle;
 
     protected IViewBinder mViewBinder;
@@ -318,5 +312,17 @@ public class BoundActivityDelegate
                 }
             }
         }
+    }
+
+    public Map<String, ViewModel> getViewModels() {
+        return this.mViewModels;
+    }
+
+    public boolean isShouldCallCreate() {
+        return this.mShouldCallCreate;
+    }
+
+    public Bundle getCreateBundle() {
+        return this.mCreateBundle;
     }
 }

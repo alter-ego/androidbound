@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IBoundFragment;
@@ -20,7 +19,6 @@ import solutions.alterego.androidbound.interfaces.IHasLogger;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 
-@Accessors(prefix = "m")
 public class BindingFragment extends Fragment implements IFragmentLifecycle, IBoundFragment, INeedsNewIntent, INeedsLogger, IHasLogger {
 
     private ILogger mLogger = NullLogger.instance;

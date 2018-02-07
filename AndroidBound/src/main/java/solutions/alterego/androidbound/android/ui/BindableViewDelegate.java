@@ -7,28 +7,21 @@ import android.widget.AbsListView;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-@Accessors(prefix = "m")
 public class BindableViewDelegate implements INotifyPropertyChanged, View.OnClickListener, View.OnLongClickListener {
 
     private View mOriginalView;
 
-    @Getter
     private boolean mDisposed = false;
 
     private PublishSubject<String> mPropertyChanged = PublishSubject.create();
 
-    @Getter
     private ICommand mClick = ICommand.empty;
 
-    @Getter
     private ICommand mLongClick = ICommand.empty;
 
-    @Getter
     private int mBackgroundColor = 0;
 
     private StateListDrawable mBackgroundDrawableState;
@@ -171,4 +164,19 @@ public class BindableViewDelegate implements INotifyPropertyChanged, View.OnClic
         }
     }
 
+    public boolean isDisposed() {
+        return mDisposed;
+    }
+
+    public ICommand getClick() {
+        return mClick;
+    }
+
+    public ICommand getLongClick() {
+        return mLongClick;
+    }
+
+    public int getBackgroundColor() {
+        return mBackgroundColor;
+    }
 }
