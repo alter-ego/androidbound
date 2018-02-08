@@ -3,7 +3,7 @@
   <groupId>solutions.alterego</groupId>
   <artifactId>androidbound</artifactId>
   <versioning>
-    <release>0.8.1-3</release>
+    <release>0.8.1-4</release>
     <versions>
       <version>0.3.4</version>
       <version>0.5.0</version>
@@ -31,7 +31,8 @@
       <version>0.8.1-1</version>
       <version>0.8.1-2</version>
       <version>0.8.1-3</version>
+      <version>0.8.1-4</version>
     </versions>
-    <lastUpdated>20180208132859</lastUpdated>
+    <lastUpdated>20180208144423</lastUpdated>
   </versioning>
 </metadata>
