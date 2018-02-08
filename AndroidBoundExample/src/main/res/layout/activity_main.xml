@@ -32,14 +32,6 @@
                     {ContentDescription @= OpenActivityButtonContentDescription}"/>
 
         <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_margin="10dp"
-                android:text="open fragment activity"
-                binding="{ Click @- OpenFragmentActivity }"/>
-
-        <Button
                 android:id="@+id/open_listview_activity_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,40 +48,6 @@
                 android:layout_margin="10dp"
                 android:text="open lv with objects activity"
                 binding="{ Click @- OpenListViewWithObjectsActivity }"/>
-
-        <Button
-                android:id="@+id/open_rv_activity_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_margin="10dp"
-                android:text="open rv activity"
-                binding="{ Click @- OpenRecyclerViewActivity }"/>
-
-        <Button
-                android:id="@+id/open_rvwithobjects_activity_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_margin="10dp"
-                android:text="open rv with objects activity"
-                binding="{ Click @- OpenRecyclerViewWithObjectsActivity }"/>
-
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_margin="10dp"
-                android:text="open paginated RV"
-                binding="{ Click @- OpenPaginatedRecyclerViewActivity }"/>
-
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_margin="10dp"
-                android:text="open NESTED RV"
-                binding="{ Click @- OpenNestedRecyclerViewActivity }"/>
 
     </LinearLayout>
 
