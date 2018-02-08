@@ -1,33 +1,35 @@
-package solutions.alterego.androidbound.android.ui;
+package solutions.alterego.androidbound.support.android.ui;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import io.reactivex.Observable;
+import solutions.alterego.androidbound.android.ui.BindableViewDelegate;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
-public class BindableProgressBar extends ProgressBar implements INotifyPropertyChanged {
+public class BindableCompatProgressBar extends ProgressBar implements INotifyPropertyChanged {
 
     private int mDrawableId;
 
     protected BindableViewDelegate mDelegate;
 
-    public BindableProgressBar(Context context) {
+    public BindableCompatProgressBar(Context context) {
         this(context, null);
     }
 
-    public BindableProgressBar(Context context, AttributeSet attrs) {
+    public BindableCompatProgressBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         mDelegate = createDelegate(this);
     }
 
-    public BindableProgressBar(Context context, AttributeSet attrs, int defStyle) {
+    public BindableCompatProgressBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mDelegate = createDelegate(this);
     }
@@ -127,7 +129,7 @@ public class BindableProgressBar extends ProgressBar implements INotifyPropertyC
         }
 
         mDrawableId = drawableId;
-        setProgressDrawable(getContext().getResources().getDrawable(drawableId));
+        setProgressDrawable(ContextCompat.getDrawable(getContext(), drawableId));
     }
 
 }
