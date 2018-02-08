@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.android.ui;
+package solutions.alterego.androidbound.support.android.ui;
 
 import android.graphics.PointF;
 import android.support.v4.view.ViewCompat;

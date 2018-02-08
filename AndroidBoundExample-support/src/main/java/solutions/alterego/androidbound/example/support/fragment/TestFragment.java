@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import solutions.alterego.androidbound.android.ui.BindableRecyclerView;
+import solutions.alterego.androidbound.support.android.ui.BindableRecyclerView;
 import solutions.alterego.androidbound.example.support.R;
 import solutions.alterego.androidbound.example.support.fragment.viewmodel.FragmentViewModel;
 import solutions.alterego.androidbound.example.support.imageloader.UILImageLoader;

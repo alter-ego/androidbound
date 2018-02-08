@@ -12,6 +12,7 @@ import solutions.alterego.androidbound.support.android.ui.BindableCompatImageVie
 import solutions.alterego.androidbound.support.android.ui.BindableCompatProgressBar;
 import solutions.alterego.androidbound.support.android.ui.BindableCompatSeekBar;
 import solutions.alterego.androidbound.support.android.ui.BindableCompatTextView;
+import solutions.alterego.androidbound.support.android.ui.BindableRecyclerView;
 import solutions.alterego.androidbound.support.android.ui.BindableSwipeRefreshLayout;
 
 public class SupportViewResolver extends ViewResolver {
@@ -31,6 +32,7 @@ public class SupportViewResolver extends ViewResolver {
             put("android.support.v7.widget.AppCompatImageView", BindableImageView.class);
             put("android.support.v7.widget.AppCompatSeekBar", BindableCompatSeekBar.class);
             put("android.support.v7.widget.AppCompatTextView", BindableCompatTextView.class);
+            put("android.support.v7.widget.RecyclerView", BindableRecyclerView.class);
             put("android.support.v4.widget.SwipeRefreshLayout", BindableSwipeRefreshLayout.class);
         }
     };

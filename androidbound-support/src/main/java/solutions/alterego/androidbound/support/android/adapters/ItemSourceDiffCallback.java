@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.android.adapters;
+package solutions.alterego.androidbound.support.android.adapters;
 
 import android.support.v7.util.DiffUtil;
 

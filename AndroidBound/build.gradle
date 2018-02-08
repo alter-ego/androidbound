@@ -49,8 +49,6 @@ android {
 }
 
 dependencies {
-    compile deps.support.recyclerview
-
     compile deps.rx2.android
     compile deps.rx2.java
 

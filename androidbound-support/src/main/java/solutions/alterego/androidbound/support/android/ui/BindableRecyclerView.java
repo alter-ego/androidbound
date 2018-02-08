@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.android.ui;
+package solutions.alterego.androidbound.support.android.ui;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -17,13 +17,14 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
-import solutions.alterego.androidbound.android.adapters.BindableRecyclerViewAdapter;
 import solutions.alterego.androidbound.android.adapters.PageDescriptor;
 import solutions.alterego.androidbound.android.interfaces.IBindableView;
 import solutions.alterego.androidbound.android.ui.resources.BindingResources;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
+import solutions.alterego.androidbound.support.android.adapters.BindableRecyclerViewAdapter;
+import solutions.alterego.androidbound.support.android.ui.resources.SupportBindingResources;
 
 public class BindableRecyclerView extends RecyclerView implements IBindableView, INotifyPropertyChanged, RecyclerView.OnItemTouchListener {
 
@@ -192,15 +193,15 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
 
     private void processAttrs(AttributeSet attrs) {
         if (attrs != null) {
-            mUseParentLayoutParams = attrs.getAttributeBooleanValue(null, BindingResources.attr.BindableRecyclerView.useParentLayoutParams, true);
-            mLayoutManagerOrientationString = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerOrientation);
-            mRtlLayout = attrs.getAttributeBooleanValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerReverse, mRtlLayout);
-            mSpanCount = attrs.getAttributeIntValue(null, BindingResources.attr.BindableRecyclerView.layoutManagerSpanCount, 1);
-            mInitialPrefetchCount = attrs.getAttributeIntValue(null, BindingResources.attr.BindableRecyclerView.initialPrefetchCount, 0);
-            mLayoutManagerType = attrs.getAttributeValue(null, BindingResources.attr.BindableRecyclerView.layoutManager);
+            mUseParentLayoutParams = attrs.getAttributeBooleanValue(null, SupportBindingResources.attr.BindableRecyclerView.useParentLayoutParams, true);
+            mLayoutManagerOrientationString = attrs.getAttributeValue(null, SupportBindingResources.attr.BindableRecyclerView.layoutManagerOrientation);
+            mRtlLayout = attrs.getAttributeBooleanValue(null, SupportBindingResources.attr.BindableRecyclerView.layoutManagerReverse, mRtlLayout);
+            mSpanCount = attrs.getAttributeIntValue(null, SupportBindingResources.attr.BindableRecyclerView.layoutManagerSpanCount, 1);
+            mInitialPrefetchCount = attrs.getAttributeIntValue(null, SupportBindingResources.attr.BindableRecyclerView.initialPrefetchCount, 0);
+            mLayoutManagerType = attrs.getAttributeValue(null, SupportBindingResources.attr.BindableRecyclerView.layoutManager);
 
             boolean nestedScrollingEnabled = attrs
-                    .getAttributeBooleanValue(null, BindingResources.attr.BindableRecyclerView.nestedScrollingEnabled, isNestedScrollingEnabled());
+                    .getAttributeBooleanValue(null, SupportBindingResources.attr.BindableRecyclerView.nestedScrollingEnabled, isNestedScrollingEnabled());
             if (nestedScrollingEnabled != isNestedScrollingEnabled()) {
                 setNestedScrollingEnabled(nestedScrollingEnabled);
             }
