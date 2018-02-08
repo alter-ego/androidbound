@@ -55,6 +55,7 @@ dependencies {
     compile deps.rx2.java
 
     provided deps.annotation
+    provided deps.support.annotations
 
     // Testing
     testCompile deps.kotlin.stdLibJre8
