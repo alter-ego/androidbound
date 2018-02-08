@@ -40,24 +40,6 @@
                 binding="{ Click @- OpenFragmentActivity }"/>
 
         <Button
-                android:id="@+id/open_listview_activity_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_margin="10dp"
-                android:text="open listview activity"
-                binding="{ Click @- OpenListViewActivity }"/>
-
-        <Button
-                android:id="@+id/open_listviewwithobjects_activity_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_margin="10dp"
-                android:text="open lv with objects activity"
-                binding="{ Click @- OpenListViewWithObjectsActivity }"/>
-
-        <Button
                 android:id="@+id/open_rv_activity_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

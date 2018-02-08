@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 
 import solutions.alterego.androidbound.android.AndroidViewModel;
-import solutions.alterego.androidbound.example.support.ListViewActivity;
-import solutions.alterego.androidbound.example.support.ListViewWithObjectsActivity;
 import solutions.alterego.androidbound.example.support.MainBindingActivity;
 import solutions.alterego.androidbound.example.support.PaginatedRecyclerViewActivity;
 import solutions.alterego.androidbound.example.support.RecyclerViewActivity;
@@ -64,28 +62,6 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     public int getButtonBackgroundColor() {
         return Color.rgb(255, 0, 50);
-    }
-
-    public boolean canOpenListViewActivity() {
-        return true;
-    }
-
-    public void doOpenListViewActivity() {
-        Intent activityIntent = new Intent(getParentActivity(), ListViewActivity.class);
-        if (getParentActivity() != null) {
-            getParentActivity().startActivity(activityIntent);
-        }
-    }
-
-    public boolean canOpenListViewWithObjectsActivity() {
-        return true;
-    }
-
-    public void doOpenListViewWithObjectsActivity() {
-        Intent activityIntent = new Intent(getParentActivity(), ListViewWithObjectsActivity.class);
-        if (getParentActivity() != null) {
-            getParentActivity().startActivity(activityIntent);
-        }
     }
 
     public boolean canOpenRecyclerViewActivity() {
