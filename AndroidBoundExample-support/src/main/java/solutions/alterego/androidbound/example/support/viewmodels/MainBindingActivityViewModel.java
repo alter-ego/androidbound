@@ -33,7 +33,6 @@ public class MainBindingActivityViewModel extends AndroidViewModel {
     private String mBoundEditTextText = mEditTextText;
 
     public MainBindingActivityViewModel(Activity activity, ILogger logger) {
-        setLogger(logger);
         setParentActivity(activity);
 
         setMainActivityTitle("Bindable Activity");
@@ -134,7 +133,6 @@ public class MainBindingActivityViewModel extends AndroidViewModel {
     }
 
     public void setEditTextText(String text) {
-        mLogger.info("text = " + text);
         mTextViewBoundToEditText = new SpannableString(text);
         raisePropertyChanged("TextViewBoundToEditText");
     }

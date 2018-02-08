@@ -29,7 +29,6 @@ public class RecyclerViewWithObjectsActivityViewModel extends AndroidViewModel {
     private List<Object> mExampleListStaggered = new ArrayList<Object>();
 
     public RecyclerViewWithObjectsActivityViewModel(Activity activity, ILogger logger) {
-        setLogger(logger);
         setParentActivity(activity);
 
         setListViewActivityTitle("RecyclerView with objects activity");

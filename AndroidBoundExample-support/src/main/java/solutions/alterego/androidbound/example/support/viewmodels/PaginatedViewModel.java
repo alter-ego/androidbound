@@ -129,7 +129,6 @@ public class PaginatedViewModel extends ViewModel {
     });
 
     public PaginatedViewModel(Activity activity, ILogger logger) {
-        setLogger(logger);
         mLoadNextPage = new PageDescriptor.PageDescriptorBuilder()
                 .setPageSize(20)
                 .setStartPage(1)
