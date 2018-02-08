@@ -1,7 +1,6 @@
 package solutions.alterego.androidbound.binding;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -43,7 +42,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
 
     private IBinder mBinder;
 
-    private Map<View, List<IBindingAssociationEngine>> mBoundViews = new ConcurrentHashMap<>();
+    protected Map<View, List<IBindingAssociationEngine>> mBoundViews = new ConcurrentHashMap<>();
 
     private Map<View, String> mLazyBoundViews = new ConcurrentHashMap<>();
 
@@ -147,7 +146,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
         return getBindingsForViewAndChildrenRecursive(rootView, new ArrayList<IBindingAssociationEngine>());
     }
 
-    private List<IBindingAssociationEngine> getBindingsForViewAndChildrenRecursive(View rootView, List<IBindingAssociationEngine> bindings) {
+    protected List<IBindingAssociationEngine> getBindingsForViewAndChildrenRecursive(View rootView, List<IBindingAssociationEngine> bindings) {
 
         if (mBoundViews.containsKey(rootView)) {
             bindings.addAll(mBoundViews.get(rootView));
@@ -161,7 +160,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
 
         for (int i = 0; i < vg.getChildCount(); i++) {
             View view = vg.getChildAt(i);
-            if (view instanceof RecyclerView || view instanceof AbsListView) {
+            if (view instanceof AbsListView) {
                 continue;
             }
             getBindingsForViewAndChildrenRecursive(view, bindings);

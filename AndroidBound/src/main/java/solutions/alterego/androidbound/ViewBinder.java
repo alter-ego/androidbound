@@ -67,13 +67,17 @@ public class ViewBinder implements IViewBinder {
     }
 
     private void init() {
-        mViewBindingEngine = new ViewBindingEngine(getLogger());
+        mViewBindingEngine = createViewBindingEngine(getLogger());
 
         mViewResolver = new ChainedViewResolver(new ViewResolver(getLogger()));
         mInflaterFactory = new BindableLayoutInflaterFactory(this, mViewResolver);
         setFontManager(new FontManager());
 
         registerDefaultConverters();
+    }
+
+    protected IViewBindingEngine createViewBindingEngine(ILogger logger) {
+        return new ViewBindingEngine(logger);
     }
 
     @Override
