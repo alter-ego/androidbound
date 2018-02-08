@@ -1,4 +1,4 @@
-package solutions.alterego.androidbound.android.ui;
+package solutions.alterego.androidbound.support.android.ui;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import io.reactivex.Observable;
+import solutions.alterego.androidbound.android.ui.BindableViewDelegate;
 import solutions.alterego.androidbound.binding.interfaces.INotifyPropertyChanged;
 import solutions.alterego.androidbound.interfaces.ICommand;
 
