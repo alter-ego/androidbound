@@ -15,8 +15,6 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IActivityFocus;
@@ -35,14 +33,12 @@ import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 
-@Accessors(prefix = "m")
 public class BoundFragmentDelegate
         implements IActivityLifecycle, IActivityFocus, IFragmentLifecycle, IBoundFragment, INeedsOnActivityResult, INeedsOnRequestPermissionResult, INeedsNewIntent, INeedsConfigurationChange,
         INeedsLogger, IHasLogger {
 
     public static final String TAG_VIEWMODEL_MAIN = "androidbound_viewmodel_main";
 
-    @Getter
     private Map<String, ViewModel> mViewModels;
 
     private ILogger mLogger = NullLogger.instance;
@@ -106,7 +102,10 @@ public class BoundFragmentDelegate
             ((INeedsFragmentManager) viewModel).setFragmentManager(getBoundActivity().getFragmentManager());
         }
 
-        viewModel.setLogger(getLogger());
+        if (viewModel instanceof INeedsLogger) {
+            ((INeedsLogger) viewModel).setLogger(getLogger());
+        }
+
         mViewModels.put(id, viewModel);
 
         View view = getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, parent, false);
@@ -305,7 +304,9 @@ public class BoundFragmentDelegate
 
         if (getViewModels() != null) {
             for (ViewModel viewModel : getViewModels().values()) {
-                viewModel.setLogger(getLogger());
+                if (viewModel instanceof INeedsLogger) {
+                    ((INeedsLogger) viewModel).setLogger(getLogger());
+                }
             }
         }
     }
@@ -330,5 +331,9 @@ public class BoundFragmentDelegate
                 }
             }
         }
+    }
+
+    public Map<String, ViewModel> getViewModels() {
+        return this.mViewModels;
     }
 }

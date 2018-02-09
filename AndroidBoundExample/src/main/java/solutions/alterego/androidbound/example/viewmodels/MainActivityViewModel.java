@@ -10,11 +10,6 @@ import solutions.alterego.androidbound.android.AndroidViewModel;
 import solutions.alterego.androidbound.example.ListViewActivity;
 import solutions.alterego.androidbound.example.ListViewWithObjectsActivity;
 import solutions.alterego.androidbound.example.MainBindingActivity;
-import solutions.alterego.androidbound.example.PaginatedRecyclerViewActivity;
-import solutions.alterego.androidbound.example.RecyclerViewActivity;
-import solutions.alterego.androidbound.example.RecyclerViewWithObjectsActivity;
-import solutions.alterego.androidbound.example.fragment.TestFragmentActivity;
-import solutions.alterego.androidbound.example.nestedrvs.NestedRecyclerViewActivity;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
 @Accessors(prefix = "m")
@@ -27,7 +22,6 @@ public class MainActivityViewModel extends AndroidViewModel {
     private String mOpenBindableActivityText;
 
     public MainActivityViewModel(Activity activity, ILogger logger) {
-        setLogger(logger);
         setParentActivity(activity);
 
         setMainActivityTitle("Main Activity");
@@ -42,10 +36,6 @@ public class MainActivityViewModel extends AndroidViewModel {
     public void setOpenBindableActivityText(String title) {
         mOpenBindableActivityText = title;
         raisePropertyChanged("OpenBindableActivityText");
-    }
-
-    public void doOpenPaginatedRecyclerViewActivity() {
-        getParentActivity().startActivity(new Intent(getParentActivity(), PaginatedRecyclerViewActivity.class));
     }
 
     public boolean canOpenBindableActivity() {
@@ -91,43 +81,6 @@ public class MainActivityViewModel extends AndroidViewModel {
         if (getParentActivity() != null) {
             getParentActivity().startActivity(activityIntent);
         }
-    }
-
-    public boolean canOpenRecyclerViewActivity() {
-        return true;
-    }
-
-    public void doOpenRecyclerViewActivity() {
-        Intent activityIntent = new Intent(getParentActivity(), RecyclerViewActivity.class);
-        if (getParentActivity() != null) {
-            getParentActivity().startActivity(activityIntent);
-        }
-    }
-
-    public boolean canOpenRecyclerViewWithObjectsActivity() {
-        return true;
-    }
-
-    public void doOpenRecyclerViewWithObjectsActivity() {
-        Intent activityIntent = new Intent(getParentActivity(), RecyclerViewWithObjectsActivity.class);
-        if (getParentActivity() != null) {
-            getParentActivity().startActivity(activityIntent);
-        }
-    }
-
-    public void  doOpenNestedRecyclerViewActivity() {
-        Intent activityIntent = new Intent(getParentActivity(), NestedRecyclerViewActivity.class);
-        if (getParentActivity() != null) {
-            getParentActivity().startActivity(activityIntent);
-        }
-    }
-
-    public void doOpenFragmentActivity() {
-        if (getParentActivity() != null) {
-            Intent intent = new Intent(getParentActivity(), TestFragmentActivity.class);
-            getParentActivity().startActivity(intent);
-        }
-
     }
 
     public String getOpenActivityButtonContentDescription() {

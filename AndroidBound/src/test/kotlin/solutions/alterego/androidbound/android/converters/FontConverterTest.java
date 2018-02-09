@@ -18,7 +18,7 @@ public class FontConverterTest {
 
     @Before
     public void setupFontConverter() {
-        mFontManager = new FontManager(NullLogger.instance);
+        mFontManager = new FontManager();
         mFontManager.setDefaultFont(Typeface.DEFAULT);
         mFontManager.registerFont("bold", Typeface.DEFAULT_BOLD);
         mFontManager.registerFont("sans", Typeface.SANS_SERIF);

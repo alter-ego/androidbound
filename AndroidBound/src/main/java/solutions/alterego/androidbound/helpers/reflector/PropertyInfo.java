@@ -3,43 +3,30 @@ package solutions.alterego.androidbound.helpers.reflector;
 
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.interfaces.ILogger;
 
-@Accessors(prefix = "m")
 public class PropertyInfo {
 
-    @Getter
     public final Class<?> mPropertyType;
 
-    @Getter
     public final String mPropertyName;
 
-    @Getter
     public final boolean mCanRead;
 
-    @Getter
     public final boolean mCanWrite;
 
-    @Getter
     private final FieldInfo mField;
 
-    @Getter
     private final MethodInfo mGetterMethod;
 
-    @Getter
     private final MethodInfo mSetterMethod;
 
     private final ILogger mLogger;
 
-    @Getter
     private final MethodInfo mAdder;
 
-    @Getter
     private final boolean mCanAdd;
 
-    @Getter
     private final boolean mCanRemove;
 
     private final MethodInfo mRemover;
@@ -127,5 +114,45 @@ public class PropertyInfo {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Class<?> getPropertyType() {
+        return this.mPropertyType;
+    }
+
+    public String getPropertyName() {
+        return this.mPropertyName;
+    }
+
+    public boolean isCanRead() {
+        return this.mCanRead;
+    }
+
+    public boolean isCanWrite() {
+        return this.mCanWrite;
+    }
+
+    public FieldInfo getField() {
+        return this.mField;
+    }
+
+    public MethodInfo getGetterMethod() {
+        return this.mGetterMethod;
+    }
+
+    public MethodInfo getSetterMethod() {
+        return this.mSetterMethod;
+    }
+
+    public MethodInfo getAdder() {
+        return this.mAdder;
+    }
+
+    public boolean isCanAdd() {
+        return this.mCanAdd;
+    }
+
+    public boolean isCanRemove() {
+        return this.mCanRemove;
     }
 }

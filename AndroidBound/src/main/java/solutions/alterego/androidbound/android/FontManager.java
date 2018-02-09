@@ -4,25 +4,16 @@ import android.graphics.Typeface;
 
 import java.util.HashMap;
 
-import lombok.Getter;
-import lombok.Setter;
-import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.android.interfaces.IFontManager;
-import solutions.alterego.androidbound.interfaces.ILogger;
 
 
 public class FontManager implements IFontManager {
 
-    private ILogger mLogger = NullLogger.instance;
-
-    @Getter
-    @Setter
     private Typeface mDefaultFont;
 
     private HashMap<String, Typeface> mRegisteredFonts = new HashMap<String, Typeface>();
 
-    public FontManager(ILogger logger) {
-        mLogger = logger;
+    public FontManager() {
     }
 
     @Override
@@ -48,5 +39,4 @@ public class FontManager implements IFontManager {
             return mDefaultFont;
         }
     }
-
 }

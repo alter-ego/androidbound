@@ -10,9 +10,6 @@ import android.view.ViewGroup;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.android.BindableLayoutInflaterFactory;
 import solutions.alterego.androidbound.android.FontManager;
 import solutions.alterego.androidbound.android.NullBindableLayoutInflaterFactory;
@@ -33,11 +30,8 @@ import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 import solutions.alterego.androidbound.interfaces.IViewBindingEngine;
 
-@Accessors(prefix = "m")
 public class ViewBinder implements IViewBinder {
 
-    @Getter
-    @Setter
     private ILogger mLogger = NullLogger.instance;
 
     private WeakReference<Context> mContext;
@@ -46,13 +40,10 @@ public class ViewBinder implements IViewBinder {
 
     private IViewResolver mViewResolver = NullViewResolver.instance;
 
-    @Getter
     private IFontManager mFontManager;
 
-    @Getter
     private boolean mDebugMode;
 
-    @Getter
     private IViewBindingEngine mViewBindingEngine = NullViewBindingEngine.instance;
 
     /**
@@ -61,10 +52,8 @@ public class ViewBinder implements IViewBinder {
      * that already had a Factory2 registered. We work around that bug here. If we can't we
      * log an error.
      */
-    @Getter
     private boolean mCheckedField = false;
 
-    @Getter
     private Field mLayoutInflaterFactory2Field = null;
 
     public ViewBinder(Context ctx) {
@@ -78,13 +67,17 @@ public class ViewBinder implements IViewBinder {
     }
 
     private void init() {
-        mViewBindingEngine = new ViewBindingEngine(getLogger());
+        mViewBindingEngine = createViewBindingEngine(getLogger());
 
         mViewResolver = new ChainedViewResolver(new ViewResolver(getLogger()));
         mInflaterFactory = new BindableLayoutInflaterFactory(this, mViewResolver);
-        setFontManager(new FontManager(getLogger()));
+        setFontManager(new FontManager());
 
         registerDefaultConverters();
+    }
+
+    protected IViewBindingEngine createViewBindingEngine(ILogger logger) {
+        return new ViewBindingEngine(logger);
     }
 
     @Override
@@ -256,5 +249,33 @@ public class ViewBinder implements IViewBinder {
         mInflaterFactory = NullBindableLayoutInflaterFactory.instance;
         mLogger = NullLogger.instance;
         mFontManager = null;
+    }
+
+    public ILogger getLogger() {
+        return this.mLogger;
+    }
+
+    public IFontManager getFontManager() {
+        return this.mFontManager;
+    }
+
+    public boolean isDebugMode() {
+        return this.mDebugMode;
+    }
+
+    public IViewBindingEngine getViewBindingEngine() {
+        return this.mViewBindingEngine;
+    }
+
+    public boolean isCheckedField() {
+        return this.mCheckedField;
+    }
+
+    public Field getLayoutInflaterFactory2Field() {
+        return this.mLayoutInflaterFactory2Field;
+    }
+
+    public void setLogger(ILogger mLogger) {
+        this.mLogger = mLogger;
     }
 }

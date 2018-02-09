@@ -6,8 +6,6 @@ import android.os.Bundle;
 
 import java.lang.ref.WeakReference;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IActivityFocus;
 import solutions.alterego.androidbound.android.interfaces.IActivityLifecycle;
@@ -16,16 +14,13 @@ import solutions.alterego.androidbound.android.interfaces.IHasFragmentManager;
 import solutions.alterego.androidbound.android.interfaces.INeedsActivity;
 import solutions.alterego.androidbound.android.interfaces.INeedsFragmentManager;
 
-@Accessors(prefix = "m")
 public class AndroidViewModel extends ViewModel
         implements IActivityLifecycle, IActivityFocus, INeedsActivity, IHasActivity, INeedsFragmentManager, IHasFragmentManager {
 
     private transient WeakReference<Activity> mParentActivity;
 
-    @Getter
     private boolean mCreated = false;
 
-    @Getter
     private FragmentManager mFragmentManager;
 
     @Override
@@ -102,5 +97,13 @@ public class AndroidViewModel extends ViewModel
     @Override
     public void onLostFocus() {
         //do nothing, to be overridden
+    }
+
+    public boolean isCreated() {
+        return mCreated;
+    }
+
+    public FragmentManager getFragmentManager() {
+        return mFragmentManager;
     }
 }

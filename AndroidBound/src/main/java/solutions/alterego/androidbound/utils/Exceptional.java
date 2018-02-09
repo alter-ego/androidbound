@@ -1,8 +1,5 @@
 package solutions.alterego.androidbound.utils;
 
-import lombok.ToString;
-
-@ToString
 public abstract class Exceptional<T> {
     private Exceptional() {
     }
@@ -13,7 +10,10 @@ public abstract class Exceptional<T> {
 
     public abstract Throwable exception();
 
-    @ToString
+    public String toString() {
+        return "Exceptional()";
+    }
+
     private static final class Right<T> extends Exceptional<T> {
         @Override
         public int hashCode() {
@@ -57,10 +57,21 @@ public abstract class Exceptional<T> {
         public Throwable exception() {
             return null;
         }
+
+        public String toString() {
+            return "Exceptional.Right(value=" + this.value + ")";
+        }
     }
 
-    @ToString
     private static final class Wrong<T> extends Exceptional<T> {
+
+        @Override
+        public String toString() {
+            return "Wrong{" +
+                    "exception=" + exception +
+                    '}';
+        }
+
         @Override
         public int hashCode() {
             final int prime = 31;

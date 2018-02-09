@@ -35,23 +35,8 @@
                 android:label="@string/title_activity_LVWithObjects" />
 
         <activity
-                android:name=".RecyclerViewActivity"
-                android:label="@string/title_activity_RV" />
-
-        <activity
-                android:name=".RecyclerViewWithObjectsActivity"
-                android:label="@string/title_activity_RVWithObjects" />
-        <activity
                 android:name=".ListItemDetailActivity"
                 android:label="@string/app_name"></activity>
-
-        <activity
-                android:name=".PaginatedRecyclerViewActivity"
-                android:label="@string/app_name"></activity>
-
-        <activity android:name=".nestedrvs.NestedRecyclerViewActivity" />
-
-        <activity android:name=".fragment.TestFragmentActivity" />
 
     </application>
 </manifest>

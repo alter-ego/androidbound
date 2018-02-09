@@ -49,13 +49,11 @@ android {
 }
 
 dependencies {
-    compile deps.support.recyclerview
-
     compile deps.rx2.android
     compile deps.rx2.java
 
     provided deps.annotation
-    compile deps.lombok
+    provided deps.support.annotations
 
     // Testing
     testCompile deps.kotlin.stdLibJre8

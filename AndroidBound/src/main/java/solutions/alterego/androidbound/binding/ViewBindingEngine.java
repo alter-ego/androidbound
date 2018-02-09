@@ -1,7 +1,6 @@
 package solutions.alterego.androidbound.binding;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -11,9 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.android.interfaces.IImageLoader;
 import solutions.alterego.androidbound.android.interfaces.INeedsBoundView;
@@ -32,29 +28,21 @@ import solutions.alterego.androidbound.parsers.BindingSpecificationListParser;
 import solutions.alterego.androidbound.parsers.BindingSpecificationParser;
 import solutions.alterego.androidbound.resources.ResourceService;
 
-@Accessors(prefix="m")
 public class ViewBindingEngine implements IViewBindingEngine {
 
-    @Getter
-    @Setter
     private ILogger mLogger = NullLogger.instance;
 
-    @Setter
-    @Getter
     private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
 
-    @Getter
-    @Setter
     private boolean mDebugMode;
 
     private ValueConverterService mConverterService;
 
     private ResourceService mResourceService;
 
-    @Getter
     private IBinder mBinder;
 
-    private Map<View, List<IBindingAssociationEngine>> mBoundViews = new ConcurrentHashMap<>();
+    protected Map<View, List<IBindingAssociationEngine>> mBoundViews = new ConcurrentHashMap<>();
 
     private Map<View, String> mLazyBoundViews = new ConcurrentHashMap<>();
 
@@ -158,7 +146,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
         return getBindingsForViewAndChildrenRecursive(rootView, new ArrayList<IBindingAssociationEngine>());
     }
 
-    private List<IBindingAssociationEngine> getBindingsForViewAndChildrenRecursive(View rootView, List<IBindingAssociationEngine> bindings) {
+    protected List<IBindingAssociationEngine> getBindingsForViewAndChildrenRecursive(View rootView, List<IBindingAssociationEngine> bindings) {
 
         if (mBoundViews.containsKey(rootView)) {
             bindings.addAll(mBoundViews.get(rootView));
@@ -172,7 +160,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
 
         for (int i = 0; i < vg.getChildCount(); i++) {
             View view = vg.getChildAt(i);
-            if (view instanceof RecyclerView || view instanceof AbsListView) {
+            if (view instanceof AbsListView) {
                 continue;
             }
             getBindingsForViewAndChildrenRecursive(view, bindings);
@@ -269,4 +257,31 @@ public class ViewBindingEngine implements IViewBindingEngine {
         mLogger = NullLogger.instance;
     }
 
+    public ILogger getLogger() {
+        return mLogger;
+    }
+
+    public IImageLoader getImageLoader() {
+        return mImageLoader;
+    }
+
+    public boolean isDebugMode() {
+        return mDebugMode;
+    }
+
+    public IBinder getBinder() {
+        return mBinder;
+    }
+
+    public void setLogger(ILogger logger) {
+        mLogger = logger;
+    }
+
+    public void setImageLoader(IImageLoader imageLoader) {
+        mImageLoader = imageLoader;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        mDebugMode = debugMode;
+    }
 }

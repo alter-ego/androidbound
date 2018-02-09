@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -15,7 +16,6 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.NullLogger;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IActivityFocus;
@@ -28,15 +28,16 @@ import solutions.alterego.androidbound.android.interfaces.INeedsConfigurationCha
 import solutions.alterego.androidbound.android.interfaces.INeedsFragmentManager;
 import solutions.alterego.androidbound.android.interfaces.INeedsNewIntent;
 import solutions.alterego.androidbound.android.interfaces.INeedsOnActivityResult;
+import solutions.alterego.androidbound.android.interfaces.INeedsOnRequestPermissionResult;
 import solutions.alterego.androidbound.interfaces.IHasLogger;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.INeedsLogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 import solutions.alterego.androidbound.support.android.interfaces.INeedsSupportFragmentManager;
 
-@Accessors(prefix = "m")
 public class BoundSupportFragmentDelegate
-        implements IActivityLifecycle, IActivityFocus, IFragmentLifecycle, IBoundFragment, INeedsOnActivityResult, INeedsNewIntent, INeedsConfigurationChange,
+        implements IActivityLifecycle, IActivityFocus, IFragmentLifecycle, IBoundFragment, INeedsOnActivityResult,
+        INeedsOnRequestPermissionResult, INeedsNewIntent, INeedsConfigurationChange,
         INeedsLogger, IHasLogger {
 
     public static final String TAG_VIEWMODEL_MAIN = "androidbound_viewmodel_main";
@@ -108,7 +109,10 @@ public class BoundSupportFragmentDelegate
             ((INeedsSupportFragmentManager) viewModel).setFragmentManager(((FragmentActivity) getBoundActivity()).getSupportFragmentManager());
         }
 
-        viewModel.setLogger(getLogger());
+        if (viewModel instanceof INeedsLogger) {
+            ((INeedsLogger) viewModel).setLogger(getLogger());
+        }
+
         mViewModels.put(id, viewModel);
 
         View view = getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, parent, false);
@@ -265,6 +269,17 @@ public class BoundSupportFragmentDelegate
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (getViewModels() != null) {
+            for (ViewModel viewModel : getViewModels().values()) {
+                if (viewModel instanceof INeedsOnRequestPermissionResult) {
+                    ((INeedsOnRequestPermissionResult) viewModel).onRequestPermissionsResult(requestCode, permissions, grantResults);
+                }
+            }
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         if (mBoundView != null) {
             getViewBinder().getViewBindingEngine().clearBindingForViewAndChildren(mBoundView);
@@ -296,7 +311,9 @@ public class BoundSupportFragmentDelegate
 
         if (getViewModels() != null) {
             for (ViewModel viewModel : getViewModels().values()) {
-                viewModel.setLogger(getLogger());
+                if (viewModel instanceof INeedsLogger) {
+                    ((INeedsLogger) viewModel).setLogger(getLogger());
+                }
             }
         }
     }

@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 
 import java.lang.ref.WeakReference;
 
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.interfaces.IActivityFocus;
 import solutions.alterego.androidbound.android.interfaces.IActivityLifecycle;
@@ -15,10 +14,8 @@ import solutions.alterego.androidbound.android.interfaces.INeedsActivity;
 import solutions.alterego.androidbound.support.android.interfaces.IHasSupportFragmentManager;
 import solutions.alterego.androidbound.support.android.interfaces.INeedsSupportFragmentManager;
 
-@Accessors(prefix = "m")
 public class SupportAndroidViewModel extends ViewModel
-        implements IActivityLifecycle, IActivityFocus, INeedsActivity, IHasActivity, INeedsSupportFragmentManager,
-        IHasSupportFragmentManager {
+        implements IActivityLifecycle, IActivityFocus, INeedsActivity, IHasActivity, INeedsSupportFragmentManager, IHasSupportFragmentManager {
 
     private transient WeakReference<Activity> mParentActivity;
 

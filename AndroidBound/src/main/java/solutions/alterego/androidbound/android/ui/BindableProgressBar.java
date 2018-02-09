@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -128,7 +127,7 @@ public class BindableProgressBar extends ProgressBar implements INotifyPropertyC
         }
 
         mDrawableId = drawableId;
-        setProgressDrawable(ContextCompat.getDrawable(getContext(), drawableId));
+        setProgressDrawable(getContext().getResources().getDrawable(drawableId));
     }
 
 }

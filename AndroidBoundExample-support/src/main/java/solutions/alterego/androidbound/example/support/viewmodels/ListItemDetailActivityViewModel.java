@@ -14,7 +14,6 @@ public class ListItemDetailActivityViewModel extends AndroidViewModel {
     private String mTitle;
 
     public ListItemDetailActivityViewModel(Activity activity, ILogger logger, String title, String imageUrl) {
-        setLogger(logger);
         setParentActivity(activity);
 
         setTitle(title);

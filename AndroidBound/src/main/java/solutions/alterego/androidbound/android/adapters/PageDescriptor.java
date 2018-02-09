@@ -1,24 +1,34 @@
 package solutions.alterego.androidbound.android.adapters;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
-@Accessors(prefix = "m")
 public class PageDescriptor {
 
-    @Getter
     private int mStartPage = 1;
 
-    @Getter
     private int mPageSize = 20;
 
-    @Getter
     private int mThreshold = 5;
 
-    @Getter
-    @Setter
     private int mCurrentPage;
+
+    public int getStartPage() {
+        return mStartPage;
+    }
+
+    public int getPageSize() {
+        return mPageSize;
+    }
+
+    public int getThreshold() {
+        return mThreshold;
+    }
+
+    public int getCurrentPage() {
+        return mCurrentPage;
+    }
+
+    public void setCurrentPage(int mCurrentPage) {
+        mCurrentPage = mCurrentPage;
+    }
 
     public static class PageDescriptorBuilder {
 

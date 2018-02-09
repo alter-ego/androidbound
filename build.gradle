@@ -7,19 +7,19 @@ buildscript {
             'userOrg': 'alterego-solutions',
             'artifactGroup': 'solutions.alterego',
             'licenses': ["Apache-2.0"],
-            'artifactVersion': '0.8.0',
+            'artifactVersion': '0.8.1-4',
             'artifactDesc': 'This library offers easy view bindings for Android.',
-            'artifactVersionCode': 40
+            'artifactVersionCode': 44
     ]
     ext.versions = [
             'minSdk'        : 14,
-            'compileSdk'    : 26,
-            'buildTools'    : '26.0.2',
+            'compileSdk'    : 27,
+            'buildTools'    : '27.0.2',
 
-            'supportLibrary': '26.1.0',
+            'supportLibrary': '27.0.2',
             'androidPlugin' : '2.3.3',
-            'androidTools'  : '26.0.2',
-            'kotlin'        : '1.1.51',
+            'androidTools'  : '27.0.2',
+            'kotlin'        : '1.2.21'
     ]
     ext.deps = [
             android       : [
@@ -42,7 +42,7 @@ buildscript {
                     'tests' : "com.android.tools.lint:lint-tests:${versions.androidTools}",
             ],
             rx2           : [
-                    'java'   : 'io.reactivex.rxjava2:rxjava:2.1.5',
+                    'java'   : 'io.reactivex.rxjava2:rxjava:2.1.9',
                     'android': "io.reactivex.rxjava2:rxandroid:2.0.1",
             ],
             annotation    : 'javax.annotation:jsr250-api:1.0',
@@ -53,8 +53,9 @@ buildscript {
             robolectric   : 'org.robolectric:robolectric:3.4-rc2',
             fest          : 'org.easytesting:fest-assert-core:2.0M10',
             lombok        : "org.projectlombok:lombok:1.16.12",
-            mockito       : 'org.mockito:mockito-core:2.10.0',
+            mockito       : 'org.mockito:mockito-core:2.13.0',
             aaloger       : 'solutions.alterego:advancedandroidlogger:1.0.9@aar',
+            abound        : "solutions.alterego:androidbound:${maven.artifactVersion}@aar",
             compiletesting: 'com.google.testing.compile:compile-testing:0.11',
             'auto'        : [
                     'service': 'com.google.auto.service:auto-service:1.0-rc3',
@@ -88,8 +89,8 @@ subprojects { project ->
         dependencies {
             classpath deps.android.gradlePlugin
             classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
-            classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
-            classpath 'com.github.ben-manes:gradle-versions-plugin:0.15.0'
+            classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0"
+            classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
         }
     }
 }
