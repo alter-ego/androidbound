@@ -35,19 +35,24 @@ android {
 }
 
 dependencies {
+    implementation project(':AndroidBound')
+    implementation project(':androidbound-support')
+
     annotationProcessor deps.lombok
-    provided deps.lombok
+    compileOnly deps.lombok
 
-    compile deps.support.appcompat
-    compile deps.support.compat
-    compile 'net.danlew:android.joda:2.9.9'
-    compile 'com.github.brianPlummer:tinydancer:0.0.9'
-    compile project(':androidbound-support')
+    implementation deps.support.appcompat
+    implementation deps.support.compat
+    implementation deps.support.recyclerview
+    implementation deps.rx2.android
+    implementation deps.rx2.java
 
+    implementation 'net.danlew:android.joda:2.9.9'
+    implementation 'com.github.brianPlummer:tinydancer:0.0.9'
 
-    compile deps.aaloger
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    implementation deps.aaloger
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 }

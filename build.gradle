@@ -17,7 +17,7 @@ buildscript {
             'buildTools'    : '27.0.2',
 
             'supportLibrary': '27.0.2',
-            'androidPlugin' : '2.3.3',
+            'androidPlugin' : '3.0.1',
             'androidTools'  : '27.0.2',
             'kotlin'        : '1.2.21',
             'jacoco'        : '0.8.0'

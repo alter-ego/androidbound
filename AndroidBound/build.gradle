@@ -47,19 +47,19 @@ android {
 }
 
 dependencies {
-    compile deps.rx2.android
-    compile deps.rx2.java
+    implementation deps.rx2.android
+    implementation deps.rx2.java
 
-    provided deps.annotation
-    provided deps.support.annotations
+    compileOnly deps.annotation
+    compileOnly deps.support.annotations
 
     // Testing
-    testCompile deps.kotlin.stdLibJre8
-    testCompile deps.kotlin.reflect
-    testCompile deps.kotlin.testjunit
-    testCompile deps.junit
-    testCompile deps.fest
-    testCompile deps.mockito
+    testImplementation deps.kotlin.stdLibJre8
+    testImplementation deps.kotlin.reflect
+    testImplementation deps.kotlin.testjunit
+    testImplementation deps.junit
+    testImplementation deps.fest
+    testImplementation deps.mockito
 }
 
 // build a jar with source files
