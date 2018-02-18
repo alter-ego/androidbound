@@ -1,8 +1,5 @@
 def artifactName = "androidbound-support"
 
-ext.bintrayuser = System.getenv("BINTRAY_USER")
-ext.bintraypwd = System.getenv("BINTRAY_PWD")
-
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
@@ -110,8 +107,8 @@ uploadArchives {
 }
 
 bintray {
-    user = bintrayuser
-    key = bintraypwd
+    user = System.getenv("BINTRAY_USER")
+    key = System.getenv("BINTRAY_PWD")
     dryRun = false
 
     publications = ['Publication']
