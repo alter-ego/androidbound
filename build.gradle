@@ -19,7 +19,8 @@ buildscript {
             'supportLibrary': '27.0.2',
             'androidPlugin' : '2.3.3',
             'androidTools'  : '27.0.2',
-            'kotlin'        : '1.2.21'
+            'kotlin'        : '1.2.21',
+            'jacoco'        : '0.8.0'
     ]
     ext.deps = [
             android       : [
