@@ -68,7 +68,17 @@ buildscript {
                     'testjunit' : "org.jetbrains.kotlin:kotlin-test-junit:${versions.kotlin}"
             ]
     ]
+
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+
+    dependencies {
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.1"
+    }
 }
+
+apply plugin: "org.sonarqube"
 
 subprojects { project ->
     repositories {
@@ -93,5 +103,25 @@ subprojects { project ->
             classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0"
             classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
         }
+    }
+}
+
+project.tasks["sonarqube"].dependsOn ':AndroidBound:testDebugUnitTestCoverage'
+project.tasks["sonarqube"].dependsOn ':androidbound-support:testDebugUnitTestCoverage'
+
+sonarqube {
+    properties {
+        def timeInMinutes = ((System.currentTimeMillis() / 60) / 1000).intValue()
+        def resolvedVersionCode = timeInMinutes - 24950331
+
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.organization", "alter-ego"
+        property "sonar.login", System.getenv("ALTEREGO_SONAR_LOGIN")
+        property "sonar.branch.name", System.getenv("TRAVIS_BRANCH")
+        property "sonar.branch.name", "develop"
+        property "sonar.projectKey", "androidbound"
+        property "sonar.projectName", "androidbound"
+        property "sonar.projectVersion", resolvedVersionCode
+        property "sonar.sourceEncoding", "UTF-8"
     }
 }

@@ -44,6 +44,14 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
+    sonarqube {
+        properties {
+            property "sonar.java.binaries", "build/intermediates/classes/debug"
+            property "sonar.junit.reportPaths", "build/test-results/testDebugUnitTest"
+            property "sonar.jacoco.reportPaths", "build/jacoco/testDebugUnitTest.exec"
+        }
+    }
 }
 
 dependencies {
