@@ -22,7 +22,7 @@ android:
     # Additional components
     - extra-android-m2repository
     - extra-google-m2repository
-    - addon-google_apis-google-26
+    - addon-google_apis-google-27
 
 before_install:
   - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
