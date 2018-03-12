@@ -6,12 +6,12 @@ import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class TargetBindingFactory extends SourceBindingFactory {
 
-    public TargetBindingFactory(ILogger logger) {
-        super(logger);
+    public TargetBindingFactory(ILogger logger, boolean debugMode) {
+        super(logger, debugMode);
     }
 
     @Override
     protected IBinding createLeaf(Object source, String property, boolean needChangesIfPossible) {
-        return new TargetPropertyBinding(source, property, needChangesIfPossible, mLogger);
+        return new TargetPropertyBinding(source, property, needChangesIfPossible, mLogger, mDebugMode);
     }
 }

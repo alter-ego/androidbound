@@ -24,8 +24,8 @@ public class ChainedBinding extends PropertyBinding {
     private String mMemberName;
 
     public ChainedBinding(Object source, String propertyName, List<String> tokens, boolean needChangesIfPossible, IBindingFactory factory,
-            ILogger logger) {
-        super(source, propertyName, needChangesIfPossible, logger);
+            ILogger logger, boolean debugMode) {
+        super(source, propertyName, needChangesIfPossible, logger, debugMode);
         mNeedChangesIfPossible = needChangesIfPossible;
         mMemberName = propertyName;
         mTokens = tokens;

@@ -14,10 +14,10 @@ public class PropertyBinding extends BindingBase {
 
     private PropertyInfo mPropertyInfo;
 
-    public PropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, ILogger logger) {
+    public PropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, ILogger logger, boolean debugMode) {
         super(subject, logger);
 
-        mPropertyInfo = Reflector.getProperty(subject.getClass(), propertyName, logger);
+        mPropertyInfo = Reflector.getProperty(subject.getClass(), propertyName, logger, debugMode);
         setupBinding(subject, mPropertyInfo.getPropertyName(), needChangesIfPossible);
     }
 

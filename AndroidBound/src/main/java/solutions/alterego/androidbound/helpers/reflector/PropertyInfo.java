@@ -23,6 +23,8 @@ public class PropertyInfo {
 
     private final ILogger mLogger;
 
+    private final boolean mDebugMode;
+
     private final MethodInfo mAdder;
 
     private final boolean mCanAdd;
@@ -32,7 +34,7 @@ public class PropertyInfo {
     private final MethodInfo mRemover;
 
     public PropertyInfo(String name, boolean canRead, boolean canWrite, boolean canAdd, boolean canRemove, Class<?> type,
-            MethodInfo getter, MethodInfo setter, MethodInfo adder, MethodInfo remover, FieldInfo field, ILogger logger) {
+            MethodInfo getter, MethodInfo setter, MethodInfo adder, MethodInfo remover, FieldInfo field, ILogger logger, boolean debugMode) {
         mPropertyType = type;
         mPropertyName = name;
         mCanRead = canRead;
@@ -45,6 +47,7 @@ public class PropertyInfo {
         mField = field;
         mAdder = adder;
         mLogger = logger;
+        mDebugMode = debugMode;
     }
 
     public Object getValue(Object obj) {
@@ -54,6 +57,9 @@ public class PropertyInfo {
                 result = mGetterMethod != null ? mGetterMethod.getOriginalMethod().invoke(obj) : mField.getFieldOriginal().get(obj);
             } catch (Exception e) {
                 mLogger.error("PropertyInfo getValue exception = " + e.getCause().toString() + " for object = " + obj);
+                if (mDebugMode) {
+                    throw new RuntimeException(e);
+                }
             }
         } else if (obj != null && obj instanceof Map) {
             result = ((Map) obj).get(mPropertyName);
@@ -98,7 +104,10 @@ public class PropertyInfo {
                                 + " can't be invoked on a field.");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            mLogger.error("PropertyInfo couldn't addValue using property, value = " + dst + " for object = " + src);
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -108,11 +117,14 @@ public class PropertyInfo {
                 mRemover.getOriginalMethod().invoke(src, dst);
             } else {
                 mLogger.verbose(
-                        "PropertyInfo addValue value = " + dst + " for object = " + src + " using field = "
+                        "PropertyInfo removeValue value = " + dst + " for object = " + src + " using field = "
                                 + " can't be invoked on a field.");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            mLogger.error("PropertyInfo couldn't removeValue using property, value = " + dst + " for object = " + src);
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

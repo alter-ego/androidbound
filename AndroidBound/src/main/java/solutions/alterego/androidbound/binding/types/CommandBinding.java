@@ -9,12 +9,15 @@ import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class CommandBinding extends BindingBase {
 
+    private final boolean mDebugMode;
+
     private ICommand mCommand = ICommand.empty;
 
     private CommandInfo mInfo;
 
-    public CommandBinding(Object subject, String commandName, ILogger logger) {
+    public CommandBinding(Object subject, String commandName, ILogger logger, boolean debugMode) {
         super(subject, logger);
+        mDebugMode = debugMode;
 
         mInfo = Reflector.getCommand(subject.getClass(), commandName);
 
@@ -39,6 +42,9 @@ public class CommandBinding extends BindingBase {
                         return mInfo.check(getSubject(), parameter);
                     } catch (Exception ex) {
                         getLogger().error("Error while checking command " + mInfo.getCommandName() + ": " + ex.getMessage());
+                        if (mDebugMode) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                     return true;
                 }
@@ -49,6 +55,9 @@ public class CommandBinding extends BindingBase {
                         mInfo.invoke(getSubject(), parameter);
                     } catch (Exception ex) {
                         getLogger().error("Error while raising command " + mInfo.getCommandName() + ": " + ex.getMessage());
+                        if (mDebugMode) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 }
 
@@ -58,6 +67,9 @@ public class CommandBinding extends BindingBase {
                         return mInfo.check(getSubject(), view, parameter);
                     } catch (Exception ex) {
                         getLogger().error("Error while checking command " + mInfo.getCommandName() + ": " + ex.getMessage());
+                        if (mDebugMode) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                     return true;
                 }
@@ -76,7 +88,11 @@ public class CommandBinding extends BindingBase {
                     try {
                         mInfo.invoke(getSubject(), parameter2);
                     } catch (Exception e) {
-                        execute(parameter);
+                        if (mDebugMode) {
+                            throw new RuntimeException(e);
+                        } else {
+                            execute(parameter);
+                        }
                     }
                 }
             };

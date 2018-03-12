@@ -9,8 +9,8 @@ public class TargetPropertyBinding extends PropertyBinding {
 
     private String propertyName;
 
-    public TargetPropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, ILogger logger) {
-        super(subject, propertyName, needChangesIfPossible, logger);
+    public TargetPropertyBinding(Object subject, String propertyName, boolean needChangesIfPossible, ILogger logger, boolean debugMode) {
+        super(subject, propertyName, needChangesIfPossible, logger, debugMode);
         this.propertyName = propertyName;
     }
 
