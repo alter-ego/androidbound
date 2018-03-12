@@ -79,6 +79,9 @@ public class ViewBindingEngine implements IViewBindingEngine {
     public void lazyBindView(View view, Object source) {
         if (source == null) {
             mLogger.error("ViewModel source cannot be null!");
+            if (mDebugMode) {
+                throw new RuntimeException("ViewModel source cannot be null! View = " + view);
+            }
             return;
         }
 

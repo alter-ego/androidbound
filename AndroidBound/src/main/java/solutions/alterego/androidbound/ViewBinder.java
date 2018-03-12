@@ -219,6 +219,9 @@ public class ViewBinder implements IViewBinder {
             } catch (NoSuchFieldException e) {
                 mLogger.error("forceSetFactory2 Could not find field 'mFactory2' on class " + LayoutInflater.class.getName()
                         + "; inflation may have unexpected results." + e.getMessage());
+                if (isDebugMode()) {
+                    throw new RuntimeException(e);
+                }
             }
             mCheckedField = true;
         }
@@ -229,6 +232,9 @@ public class ViewBinder implements IViewBinder {
                 mLogger.error(
                         "forceSetFactory2 could not set the Factory2 on LayoutInflater " + inflater + "; inflation may have unexpected results." + e
                                 .getMessage());
+                if (isDebugMode()) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
