@@ -79,11 +79,11 @@ public class BoundFragmentDelegate
     @Override
     public View addViewModel(int layoutResID, ViewModel viewModel, String id, @Nullable ViewGroup parent) {
         if (getBoundActivity() == null) {
-            throw new RuntimeException("Bound Activity is null!");
+            throw new RuntimeException("Bound Activity is null! ViewModel = " + viewModel);
         }
 
         if (viewModel == null) {
-            throw new RuntimeException("viewModel is null!");
+            throw new RuntimeException("ViewModel is null! Activity = " + getBoundActivity());
         }
 
         if (mViewModels == null) {
