@@ -72,7 +72,10 @@ public class BoundActivityDelegate
     @Override
     public void setContentView(int layoutResID, ViewModel viewModel) {
         if (mBoundActivity == null || getBoundActivity() == null) {
-            throw new RuntimeException("Bound Activity is null!");
+            throw new RuntimeException("Bound Activity is null! ViewModel = " + viewModel);
+        }
+        if (viewModel == null) {
+            throw new RuntimeException("Bound ViewModel is null! Activity = " + getBoundActivity());
         }
 
         getBoundActivity().setContentView(addViewModel(layoutResID, viewModel, TAG_VIEWMODEL_MAIN));
