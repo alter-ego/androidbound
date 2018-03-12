@@ -61,9 +61,12 @@ public class ViewResolver implements IViewResolver {
         }
     };
 
+    private final boolean mDebugMode;
+
     protected ILogger logger;
 
-    public ViewResolver(ILogger logger) {
+    public ViewResolver(ILogger logger, boolean debugMode) {
+        mDebugMode = debugMode;
         setLogger(logger);
     }
 
@@ -94,6 +97,9 @@ public class ViewResolver implements IViewResolver {
             throw new Exception("constructor not found");
         } catch (Exception e) {
             logger.warning("failed creating instance of class " + resolvedClass + ", exception: " + e);
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
 
         return null;
@@ -118,6 +124,9 @@ public class ViewResolver implements IViewResolver {
             logger.debug("Resolving " + name + " with " + result);
             return Class.forName(result);
         } catch (ClassNotFoundException e) {
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
             return null;
         }
     }

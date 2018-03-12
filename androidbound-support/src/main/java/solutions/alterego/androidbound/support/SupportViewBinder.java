@@ -21,7 +21,7 @@ public class SupportViewBinder extends ViewBinder {
 
     public SupportViewBinder(Context ctx, ILogger logger, boolean debugMode) {
         super(ctx, logger, debugMode);
-        registerViewResolver(new SupportViewResolver(logger));
+        registerViewResolver(new SupportViewResolver(logger, debugMode));
     }
 
     @Override

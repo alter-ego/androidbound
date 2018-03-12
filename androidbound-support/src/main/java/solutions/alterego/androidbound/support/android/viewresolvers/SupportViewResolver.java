@@ -37,8 +37,8 @@ public class SupportViewResolver extends ViewResolver {
         }
     };
 
-    public SupportViewResolver(ILogger logger) {
-        super(logger);
+    public SupportViewResolver(ILogger logger, boolean debugMode) {
+        super(logger, debugMode);
     }
 
     @Override
