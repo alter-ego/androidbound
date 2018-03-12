@@ -12,16 +12,20 @@ import solutions.alterego.androidbound.support.binding.SupportViewBindingEngine;
 public class SupportViewBinder extends ViewBinder {
 
     public SupportViewBinder(Context ctx) {
-        this(ctx, NullLogger.instance);
+        this(ctx, NullLogger.instance, false);
     }
 
     public SupportViewBinder(Context ctx, ILogger logger) {
-        super(ctx, logger);
+        this(ctx, logger, false);
+    }
+
+    public SupportViewBinder(Context ctx, ILogger logger, boolean debugMode) {
+        super(ctx, logger, debugMode);
         registerViewResolver(new SupportViewResolver(logger));
     }
 
     @Override
     protected IViewBindingEngine createViewBindingEngine(ILogger logger) {
-        return new SupportViewBindingEngine(logger);
+        return new SupportViewBindingEngine(logger, isDebugMode());
     }
 }
