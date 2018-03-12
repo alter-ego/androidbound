@@ -111,17 +111,29 @@ public class CommandBinding extends BindingBase {
 
     @Override
     public void setValue(Object value) {
-        getLogger().warning("Cannot set value for command " + mInfo.getCommandName());
+        String msg = "Cannot set value for command " + mInfo.getCommandName();
+        getLogger().warning(msg);
+        if (mDebugMode) {
+            throw new RuntimeException(msg);
+        }
     }
 
     @Override
     public void addValue(Object object) {
-        getLogger().warning("Cannot add value for command " + mInfo.getCommandName());
+        String msg = "Cannot add value for command " + mInfo.getCommandName();
+        getLogger().warning(msg);
+        if (mDebugMode) {
+            throw new RuntimeException(msg);
+        }
     }
 
     @Override
     public void removeValue(Object result) {
-        getLogger().warning("Cannot add value for command " + mInfo.getCommandName());
+        String msg = "Cannot remove value for command " + mInfo.getCommandName();
+        getLogger().warning(msg);
+        if (mDebugMode) {
+            throw new RuntimeException(msg);
+        }
     }
 
     @Override

@@ -47,7 +47,8 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
     private IBindingFactory mTargetFactory;
 
-    public BindingAssociationEngine(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, ILogger logger, boolean debugMode) {
+    public BindingAssociationEngine(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, ILogger logger,
+            boolean debugMode) {
         mMode = request.getSpecification().getMode();
         mSourceFactory = sourceFactory;
         mTargetFactory = targetFactory;
@@ -131,8 +132,11 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getSource()
-                        + " needs Disposable, but changes were not available");
+                String msg = "Binding " + mBindingSpecification.getSource() + " needs Disposable, but changes were not available = " + mBindingSpecification.toString();
+                mLogger.warning(msg);
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
         }
     }
@@ -152,7 +156,11 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.");
+                String msg = "Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.";
+                mLogger.warning(msg);
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
         }
     }
@@ -174,7 +182,11 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.");
+                String msg = "Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.";
+                mLogger.warning(msg);
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
         }
     }
@@ -196,7 +208,11 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getSource() + " needs Disposable, but changes were not available");
+                String msg = "Binding " + mBindingSpecification.getSource() + " needs Disposable, but changes were not available";
+                mLogger.warning(msg);
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
         }
     }
@@ -216,7 +232,11 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.");
+                String msg = "Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.";
+                mLogger.warning(msg);
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
         }
     }
@@ -289,8 +309,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                         "updating target type = " + mTargetBinding.getType() + " with unwrapped source = " + unwrap(source) + ", result = " + result
                                 + " using converter = " + converter);
             } else {
-                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getSource());
                 result = mBindingSpecification.getFallbackValue();
+                String msg = "Switching to fallback value for " + mBindingSpecification.getSource() + ", fallback = " + result;
+                mLogger.warning(msg);
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
 
             mTargetBinding.setValue(result);
@@ -343,8 +367,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                         "removing, source type = " + mSourceBinding.getType() + " with unwrapped obj = " + unwrap(obj) + ", result = " + result
                                 + " using converter = " + converter);
             } else {
-                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getSource());
                 result = mBindingSpecification.getFallbackValue();
+                String msg = "Switching to fallback value for " + mBindingSpecification.getSource() + ", fallback = " + result;
+                mLogger.warning(msg);
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
             mTargetBinding.removeValue(result);
         } catch (Exception e) {
@@ -369,8 +397,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                                 + " using converter = " + converter);
 
             } else {
-                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getSource());
+                String msg = "Switching to fallback value for " + mBindingSpecification.getSource();
+                mLogger.warning(msg);
                 result = mBindingSpecification.getFallbackValue();
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
             mTargetBinding.addValue(result);
         } catch (Exception e) {
@@ -391,8 +423,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             Locale.getDefault());
             mLogger.verbose(
                     "accumulating to source, source type = " + mSourceBinding.getType() + " with unwrapped obj = " + unwrap(obj) + ", result = "
-                            + result
-                            + " using converter = " + converter);
+                            + result + " using converter = " + converter);
 
             mSourceBinding.addValue(result);
         } catch (Exception e) {

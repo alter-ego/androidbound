@@ -65,7 +65,11 @@ public class PropertyInfo {
             result = ((Map) obj).get(mPropertyName);
         }
         if (result == null) {
-            mLogger.warning("PropertyInfo getValue returns null");
+            String msg = "PropertyInfo getValue returns null";
+            mLogger.warning(msg);
+            if (mDebugMode) {
+                throw new RuntimeException(msg);
+            }
         }
         return result;
     }
@@ -79,6 +83,9 @@ public class PropertyInfo {
                 mSetterMethod.getOriginalMethod().invoke(obj, value);
             } catch (Exception e) {
                 mLogger.warning("PropertyInfo couldn't setValue using method, value = " + value + " for object = " + obj);
+                if (mDebugMode) {
+                    throw new RuntimeException(e);
+                }
             }
         } else if (mField != null) {
             try {
@@ -88,6 +95,9 @@ public class PropertyInfo {
                 mField.getFieldOriginal().set(obj, value);
             } catch (Exception e) {
                 mLogger.warning("PropertyInfo couldn't setValue using property, value = " + value + " for object = " + obj);
+                if (mDebugMode) {
+                    throw new RuntimeException(e);
+                }
             }
         } else if (obj != null && obj instanceof Map) { //using local map of values
             ((Map) obj).put(mPropertyName, value);
