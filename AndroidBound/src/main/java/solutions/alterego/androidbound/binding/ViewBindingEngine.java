@@ -54,7 +54,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
 
         SourceBindingFactory sourceFactory = new SourceBindingFactory(getLogger(), mDebugMode);
         TargetBindingFactory targetFactory = new TargetBindingFactory(getLogger(), mDebugMode);
-        BindingSpecificationParser bindingParser = new BindingSpecificationParser(mConverterService, mResourceService, getLogger());
+        BindingSpecificationParser bindingParser = new BindingSpecificationParser(mConverterService, mResourceService, getLogger(), mDebugMode);
         BindingSpecificationListParser listParser = new BindingSpecificationListParser(bindingParser, getLogger());
 
         mBinder = new TextSpecificationBinder(listParser, sourceFactory, targetFactory, getLogger(), mDebugMode);
