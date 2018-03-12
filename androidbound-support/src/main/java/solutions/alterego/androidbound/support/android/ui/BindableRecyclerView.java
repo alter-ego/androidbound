@@ -1,5 +1,6 @@
 package solutions.alterego.androidbound.support.android.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -406,5 +407,11 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         removeOnItemTouchListener(this);
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return mAdapter == null || super.onTouchEvent(ev);
     }
 }
