@@ -86,8 +86,12 @@ public class BindableListAdapter extends BaseAdapter {
         convertView = checkInflatedView(convertView, position, parent);
 
         if (convertView == null) {
-            mLogger.warning("BindableListAdapter getView is null, returning ViewStub!");
+            String msg = "BindableListAdapter getView is null, returning ViewStub!";
+            mLogger.warning(msg);
             convertView = new ViewStub(context);
+            if (viewBinder.isDebugMode()) {
+                throw new RuntimeException(msg);
+            }
         }
         return convertView;
     }
