@@ -412,7 +412,7 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (getAdapter() != null) {
+        if (mAdapter != null) {
             return super.onTouchEvent(ev);
         } else {
             return true;
