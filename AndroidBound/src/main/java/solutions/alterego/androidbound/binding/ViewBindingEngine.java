@@ -57,7 +57,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
         BindingSpecificationParser bindingParser = new BindingSpecificationParser(mConverterService, mResourceService, getLogger());
         BindingSpecificationListParser listParser = new BindingSpecificationListParser(bindingParser, getLogger());
 
-        mBinder = new TextSpecificationBinder(listParser, sourceFactory, targetFactory, getLogger());
+        mBinder = new TextSpecificationBinder(listParser, sourceFactory, targetFactory, getLogger(), mDebugMode);
     }
 
     @Override

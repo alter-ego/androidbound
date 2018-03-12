@@ -21,17 +21,21 @@ public class TextSpecificationBinder implements IBinder {
 
     private final IBindingFactory mTargetFactory;
 
+    private final boolean mDebugMode;
+
     private ILogger mLogger;
 
     public TextSpecificationBinder(
             IParser<List<BindingSpecification>> parser,
             IBindingFactory sourceFactory,
             IBindingFactory targetFactory,
-            ILogger logger) {
+            ILogger logger,
+            boolean debugMode) {
 
         mParser = parser;
         mSourceFactory = sourceFactory;
         mTargetFactory = targetFactory;
+        mDebugMode = debugMode;
         setLogger(logger);
     }
 
@@ -47,7 +51,7 @@ public class TextSpecificationBinder implements IBinder {
 
                 mLogger.debug("Creating full binding for " + source + " " + target);
 
-                BindingAssociationEngine bindingAssociationEngine = new BindingAssociationEngine(request, mSourceFactory, mTargetFactory, mLogger);
+                BindingAssociationEngine bindingAssociationEngine = new BindingAssociationEngine(request, mSourceFactory, mTargetFactory, mLogger, mDebugMode);
                 bindings.add(bindingAssociationEngine);
             } else {
                 mLogger.debug("Cannot create binding for " + source + " " + target + ", path is null or empty!");

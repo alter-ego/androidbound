@@ -27,6 +27,8 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
     private BindingSpecification mBindingSpecification;
 
+    private boolean mDebugMode;
+
     private IBinding mSourceBinding;
 
     private IBinding mTargetBinding;
@@ -45,11 +47,12 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
     private IBindingFactory mTargetFactory;
 
-    public BindingAssociationEngine(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, ILogger logger) {
+    public BindingAssociationEngine(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, ILogger logger, boolean debugMode) {
         mMode = request.getSpecification().getMode();
         mSourceFactory = sourceFactory;
         mTargetFactory = targetFactory;
         mBindingSpecification = request.getSpecification();
+        mDebugMode = debugMode;
 
         setLogger(logger);
         createTargetBinding(request.getTarget());
@@ -263,15 +266,15 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
-    public boolean needsTargetAccumulate() {
+    protected boolean needsTargetAccumulate() {
         return mMode == BindingMode.Accumulate || mMode == BindingMode.AccumulateTwoWay;
     }
 
-    private boolean needsTargetRemove() {
+    protected boolean needsTargetRemove() {
         return mMode == BindingMode.RemoveSource;
     }
 
-    public boolean needsSourceAccumulate() {
+    protected boolean needsSourceAccumulate() {
         return mMode == BindingMode.AccumulateToSource || mMode == BindingMode.AccumulateTwoWay;
     }
 
@@ -295,6 +298,9 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             mLogger.error(
                     "Error occurred while binding " + mBindingSpecification.getSource() + " to target " + mBindingSpecification.getTarget() + ": " + e
                             .getMessage());
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -312,6 +318,9 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             mLogger.error(
                     "Error occurred while binding " + mBindingSpecification.getTarget() + " to source " + mBindingSpecification.getSource() + ": " + e
                             .getMessage());
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -342,6 +351,9 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             mLogger.error(
                     "Error occurred while binding " + mBindingSpecification.getSource() + " to target " + mBindingSpecification.getTarget() + ": " + e
                             .getMessage());
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -365,6 +377,9 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             mLogger.error(
                     "Error occurred while binding " + mBindingSpecification.getSource() + " to target " + mBindingSpecification.getTarget() + ": " + e
                             .getMessage());
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -384,6 +399,9 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             mLogger.error(
                     "Error occurred while binding " + mBindingSpecification.getTarget() + " to source " + mBindingSpecification.getSource() + ": " + e
                             .getMessage());
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
