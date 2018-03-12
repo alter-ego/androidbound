@@ -3,13 +3,14 @@
   <groupId>solutions.alterego</groupId>
   <artifactId>androidbound-support</artifactId>
   <versioning>
-    <release>0.8.1-4</release>
+    <release>0.9.0</release>
     <versions>
       <version>0.8.1-1</version>
       <version>0.8.1-2</version>
       <version>0.8.1-3</version>
       <version>0.8.1-4</version>
+      <version>0.9.0</version>
     </versions>
-    <lastUpdated>20180208144424</lastUpdated>
+    <lastUpdated>20180312101105</lastUpdated>
   </versioning>
 </metadata>

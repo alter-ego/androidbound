@@ -7,9 +7,9 @@ buildscript {
             'userOrg': 'alterego-solutions',
             'artifactGroup': 'solutions.alterego',
             'licenses': ["Apache-2.0"],
-            'artifactVersion': '0.8.1-4',
+            'artifactVersion': '0.9.0',
             'artifactDesc': 'This library offers easy view bindings for Android.',
-            'artifactVersionCode': 44
+            'artifactVersionCode': 45
     ]
     ext.versions = [
             'minSdk'        : 14,
