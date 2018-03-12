@@ -221,6 +221,6 @@ public class BindableListView extends ListView implements OnItemClickListener, O
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        return getAdapter() == null || super.onTouchEvent(ev);
+        return mAdapter == null || super.onTouchEvent(ev);
     }
 }
