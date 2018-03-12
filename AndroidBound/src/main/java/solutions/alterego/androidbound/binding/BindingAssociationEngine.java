@@ -1,5 +1,7 @@
 package solutions.alterego.androidbound.binding;
 
+import android.annotation.SuppressLint;
+
 import java.util.Locale;
 
 import io.reactivex.disposables.Disposable;
@@ -109,6 +111,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
+    @SuppressLint("RxSubscribeOnError")
     private void createSourceBinding(Object source) {
         boolean needsSubs = needsSourceDisposable();
 
@@ -131,6 +134,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
+    @SuppressLint("RxSubscribeOnError")
     private void createRemoveBinding(Object target) {
         boolean needsSubs = needsTargetRemove();
         mTargetBinding = mTargetFactory.create(target, mBindingSpecification.getTarget(), needsSubs);
@@ -150,6 +154,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
+    @SuppressLint("RxSubscribeOnError")
     private void createTargetBinding(Object target) {
         boolean needsSubs = needsTargetDisposable();
 
@@ -171,7 +176,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
-
+    @SuppressLint("RxSubscribeOnError")
     private void createAccumulateSourceBinding(Object source) {
         boolean needsSubs = needsTargetAccumulate();
 
@@ -193,6 +198,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
+    @SuppressLint("RxSubscribeOnError")
     private void createAccumulateTargetBinding(Object target) {
         boolean needsSubs = needsSourceAccumulate();
         mTargetBinding = mTargetFactory.create(target, mBindingSpecification.getTarget(), needsSubs);
