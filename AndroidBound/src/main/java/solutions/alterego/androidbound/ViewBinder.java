@@ -57,10 +57,15 @@ public class ViewBinder implements IViewBinder {
     private Field mLayoutInflaterFactory2Field = null;
 
     public ViewBinder(Context ctx) {
-        this(ctx, NullLogger.instance);
+        this(ctx, NullLogger.instance, false);
     }
 
     public ViewBinder(Context ctx, ILogger logger) {
+        this(ctx, logger, false);
+    }
+
+    public ViewBinder(Context ctx, ILogger logger, boolean debugMode) {
+        mDebugMode = debugMode;
         setLogger(logger);
         setContext(ctx);
         init();
@@ -77,13 +82,7 @@ public class ViewBinder implements IViewBinder {
     }
 
     protected IViewBindingEngine createViewBindingEngine(ILogger logger) {
-        return new ViewBindingEngine(logger);
-    }
-
-    @Override
-    public void setDebugMode(boolean debugMode) {
-        mDebugMode = debugMode;
-        mViewBindingEngine.setDebugMode(debugMode);
+        return new ViewBindingEngine(logger, mDebugMode);
     }
 
     @Override

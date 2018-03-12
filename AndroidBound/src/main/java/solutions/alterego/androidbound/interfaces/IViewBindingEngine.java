@@ -12,7 +12,7 @@ import solutions.alterego.androidbound.binding.interfaces.IBindingAssociationEng
 import solutions.alterego.androidbound.converters.interfaces.IValueConverterProvider;
 import solutions.alterego.androidbound.resources.interfaces.IResourceRegistry;
 
-public interface IViewBindingEngine extends IDisposable, INeedsImageLoader, IHasImageLoader, IHasLogger, IHasDebugMode, IResourceRegistry,
+public interface IViewBindingEngine extends IDisposable, INeedsImageLoader, IHasImageLoader, IHasLogger, IResourceRegistry,
         IValueConverterProvider {
 
     IBinder getBinder();

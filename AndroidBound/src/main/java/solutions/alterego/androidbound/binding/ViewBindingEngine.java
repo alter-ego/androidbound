@@ -34,7 +34,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
 
     private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
 
-    private boolean mDebugMode;
+    private boolean mDebugMode = false;
 
     private ValueConverterService mConverterService;
 
@@ -46,8 +46,9 @@ public class ViewBindingEngine implements IViewBindingEngine {
 
     private Map<View, String> mLazyBoundViews = new ConcurrentHashMap<>();
 
-    public ViewBindingEngine(ILogger logger) {
+    public ViewBindingEngine(ILogger logger, boolean debugMode) {
         setLogger(logger);
+        mDebugMode = debugMode;
         mConverterService = new ValueConverterService(getLogger());
         mResourceService = new ResourceService(getLogger());
 
@@ -212,7 +213,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
 
         mLogger.verbose("clearBindingsFor finished for view = " + view + ", remaining bound views size = " + mBoundViews.size());
 
-        if (isDebugMode()) {
+        if (mDebugMode) {
             for (View remainingview : mBoundViews.keySet()) {
                 if (remainingview.getContext() == view.getContext()) {
                     mLogger.verbose(
@@ -265,10 +266,6 @@ public class ViewBindingEngine implements IViewBindingEngine {
         return mImageLoader;
     }
 
-    public boolean isDebugMode() {
-        return mDebugMode;
-    }
-
     public IBinder getBinder() {
         return mBinder;
     }
@@ -281,7 +278,4 @@ public class ViewBindingEngine implements IViewBindingEngine {
         mImageLoader = imageLoader;
     }
 
-    public void setDebugMode(boolean debugMode) {
-        mDebugMode = debugMode;
-    }
 }
