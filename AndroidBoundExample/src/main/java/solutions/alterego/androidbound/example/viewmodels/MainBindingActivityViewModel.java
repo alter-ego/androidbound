@@ -52,7 +52,7 @@ public class MainBindingActivityViewModel extends AndroidViewModel {
 
     @Override
     public void onCreate(Bundle outState) {
-        //do nothing
+        super.onCreate(outState);
         raisePropertyChanged("BoundEditTextText");
     }
 

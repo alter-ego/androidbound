@@ -115,7 +115,7 @@ public class BoundFragmentDelegate
         }
 
         if (mShouldCallCreate) {
-            onCreate(mCreateBundle);
+            viewmodelOnCreate(viewModel, mCreateBundle);
         }
 
         return view;
@@ -139,19 +139,21 @@ public class BoundFragmentDelegate
     public void onCreate(Bundle savedInstanceState) {
         if (getViewModels() != null) {
             for (ViewModel viewModel : getViewModels().values()) {
-                if (viewModel instanceof IActivityLifecycle && !((IActivityLifecycle) viewModel).isCreated()) {
-                    ((IActivityLifecycle) viewModel).onCreate(savedInstanceState);
-                }
+                viewmodelOnCreate(viewModel, savedInstanceState);
             }
-
-            mShouldCallCreate = false;
         } else {
             mShouldCallCreate = true;
             mCreateBundle = savedInstanceState;
         }
+    }
 
-        if (getBoundActivity() != null && getBoundActivity().getIntent() != null) {
-            onNewIntent(getBoundActivity().getIntent()); //we call this manually so that you don't have to check in ViewModel.onCreate()
+    private void viewmodelOnCreate(ViewModel viewModel, Bundle savedInstanceState) {
+        if (viewModel instanceof IActivityLifecycle && !((IActivityLifecycle) viewModel).isCreated()) {
+            ((IActivityLifecycle) viewModel).onCreate(savedInstanceState);
+
+            if (getBoundActivity() != null && getBoundActivity().getIntent() != null) {
+                onNewIntent(getBoundActivity().getIntent()); //we call this manually so that you don't have to check in ViewModel.onCreate()
+            }
         }
     }
 

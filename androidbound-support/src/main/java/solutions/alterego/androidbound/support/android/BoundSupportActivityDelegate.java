@@ -58,7 +58,7 @@ public class BoundSupportActivityDelegate extends BoundActivityDelegate {
         View view = getViewBinder().inflate(getBoundActivity(), viewModel, layoutResID, null);
 
         if (isShouldCallCreate()) {
-            onCreate(getCreateBundle());
+            viewmodelOnCreate(viewModel, getCreateBundle());
         }
 
         return view;
