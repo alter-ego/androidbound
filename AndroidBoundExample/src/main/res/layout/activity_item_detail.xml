@@ -13,7 +13,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            binding="{Source @= ImageUrl}"
+            binding="{Source @- ImageUrl}"
             android:layout_margin="4dp"
             android:gravity="left"/>
 
@@ -24,7 +24,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/image"
             android:layout_toEndOf="@+id/image"
-            binding="{Text @= Title}"
+            binding="{Text @- Title}"
             android:gravity="left"
             android:layout_marginBottom="4dp"
             android:layout_marginLeft="10dp"
