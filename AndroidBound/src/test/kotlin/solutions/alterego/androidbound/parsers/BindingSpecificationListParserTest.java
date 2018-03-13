@@ -50,7 +50,7 @@ public class BindingSpecificationListParserTest {
         ValueConverterService converterService = new ValueConverterService(NullLogger.instance);
         ResourceService resourceService = new ResourceService(NullLogger.instance);
 
-        BindingSpecificationParser bindingParser = new BindingSpecificationParser(converterService, resourceService, NullLogger.instance);
+        BindingSpecificationParser bindingParser = new BindingSpecificationParser(converterService, resourceService, NullLogger.instance, false);
         mListParser = new BindingSpecificationListParser(bindingParser, NullLogger.instance);
     }
 
