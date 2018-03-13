@@ -74,7 +74,7 @@ public class ViewResolver implements IViewResolver {
     public View createView(String name, Context context, AttributeSet attrs) {
         Class<?> resolvedClass = resolveName(name);
         if (resolvedClass == null) {
-            logger.warning("View not found for name " + name);
+            logger.debug(getClass().getSimpleName() + " couldn't find view = " + name);
             return null;
         }
         try {
@@ -117,11 +117,12 @@ public class ViewResolver implements IViewResolver {
         }
 
         if (mappings.containsKey(result)) {
+            logger.debug(getClass().getSimpleName() + " mapping " + name + " to " + mappings.get(result));
             return mappings.get(result);
         }
 
         try {
-            logger.debug("Resolving " + name + " with " + result);
+            logger.debug(getClass().getSimpleName() + " resolving " + name + " with " + result);
             return Class.forName(result);
         } catch (ClassNotFoundException e) {
             if (mDebugMode) {

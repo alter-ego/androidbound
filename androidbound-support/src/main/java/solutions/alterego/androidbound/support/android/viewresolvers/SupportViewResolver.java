@@ -44,7 +44,7 @@ public class SupportViewResolver extends ViewResolver {
     @Override
     protected Class<?> resolveName(String name) {
         if (supportMappings.containsKey(name)) {
-            logger.debug("Resolved " + name);
+            logger.debug(getClass().getSimpleName() + " mapping " + name + " to " + supportMappings.get(name));
             return supportMappings.get(name);
         } else {
             return null;
