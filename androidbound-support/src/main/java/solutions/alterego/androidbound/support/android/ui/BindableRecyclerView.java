@@ -266,7 +266,7 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
         mAdapter.setItemsSource(value);
     }
 
-    public void addItems(List<?> value) {
+    public void addItemsSource(List<?> value) {
         createAdapterChecked();
         if (getLayoutManager() != null) {
             mAdapter.setLayoutManager(getLayoutManager());
@@ -281,11 +281,7 @@ public class BindableRecyclerView extends RecyclerView implements IBindableView,
     }
 
     public List<?> getRemoveItems() {
-        return getItems();
-    }
-
-    public List<?> getItems() {
-        return mAdapter != null ? mAdapter.getItemsSource() : null;
+        return getItemsSource();
     }
 
     @Override
