@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import lombok.experimental.Accessors;
 import solutions.alterego.androidbound.ViewModel;
 import solutions.alterego.androidbound.android.adapters.PageDescriptor;
 import solutions.alterego.androidbound.interfaces.ILogger;
@@ -35,7 +34,6 @@ public class PaginatedViewModel extends ViewModel {
         return this.mRemoveItems;
     }
 
-    @Accessors(prefix = "m")
     public static class RecyclerViewItem {
 
         private String mName;
@@ -110,11 +108,11 @@ public class PaginatedViewModel extends ViewModel {
 
     public PageDescriptor mLoadNextPage2;
 
-    private List<RecyclerViewItem> mDataItems;
+    private List<RecyclerViewItem> mDataItems = new ArrayList<RecyclerViewItem>();
 
-    private List<RecyclerViewItem> mDataItems2;
+    private List<RecyclerViewItem> mDataItems2 = new ArrayList<RecyclerViewItem>();
 
-    private List<RecyclerViewItem> mRemoveItems;
+    private List<RecyclerViewItem> mRemoveItems = new ArrayList<RecyclerViewItem>();
 
     private List<RecyclerViewItem> tmep = new ArrayList<RecyclerViewItem>();
 
