@@ -70,7 +70,8 @@ public class PropertyBinding extends BindingBase {
             return mPropertyInfo.getValue(getSubject());
         }
 
-        String msg = "Cannot get value for property " + mPropertyInfo.getPropertyName() + ": property is non-existent";
+        String msg = "Cannot get value for property " + mPropertyInfo.getPropertyName() + " of type " + mPropertyInfo.getPropertyType()
+                + ": property is non-existent";
         getLogger().warning(msg);
         if (mDebugMode) {
             throw new RuntimeException(msg);
@@ -86,10 +87,12 @@ public class PropertyBinding extends BindingBase {
             String msg;
 
             if (mPropertyInfo.isCanRead()) {
-                msg = "Cannot set value for property " + mPropertyInfo.getPropertyName() + ": property is read-only";
+                msg = "Cannot set value for property " + mPropertyInfo.getPropertyName() + " of type " + mPropertyInfo.getPropertyType()
+                        + " on object = " + mSubject + ": property is read-only";
                 getLogger().warning(msg);
             } else {
-                msg = "Cannot set value for property " + mPropertyInfo.getPropertyName() + ": property is non-existent";
+                msg = "Cannot set value for property " + mPropertyInfo.getPropertyName() + " of type " + mPropertyInfo.getPropertyType()
+                        + " on object = " + mSubject + ": property is non-existent";
                 getLogger().warning(msg);
             }
             if (mDebugMode) {
@@ -106,10 +109,12 @@ public class PropertyBinding extends BindingBase {
             String msg;
 
             if (mPropertyInfo.isCanRead()) {
-                msg = "Cannot add value for property " + mPropertyInfo.getPropertyName() + ": property is read-only";
+                msg = "Cannot add value for property " + mPropertyInfo.getPropertyName() + " of type " + mPropertyInfo.getPropertyType()
+                        + " on object = " + mSubject + ": property is read-only";
                 getLogger().warning(msg);
             } else {
-                msg = "Cannot add value for property " + mPropertyInfo.getPropertyName() + ": property is non-existent";
+                msg = "Cannot add value for property " + mPropertyInfo.getPropertyName() + " of type " + mPropertyInfo.getPropertyType()
+                        + " on object = " + mSubject + ": property is non-existent";
                 getLogger().warning(msg);
             }
             if (mDebugMode) {
@@ -126,10 +131,12 @@ public class PropertyBinding extends BindingBase {
             String msg;
 
             if (mPropertyInfo.isCanRead()) {
-                msg = "Cannot remove value for property " + mPropertyInfo.getPropertyName() + ": property is read-only";
+                msg = "Cannot remove value for property " + mPropertyInfo.getPropertyName() + " of type " + mPropertyInfo.getPropertyType()
+                        + " on object = " + mSubject + ": property is read-only";
                 getLogger().warning(msg);
             } else {
-                msg = "Cannot remove value for property " + mPropertyInfo.getPropertyName() + ": property is non-existent";
+                msg = "Cannot remove value for property " + mPropertyInfo.getPropertyName() + " of type " + mPropertyInfo.getPropertyType()
+                        + " on object = " + mSubject + ": property is non-existent";
                 getLogger().warning(msg);
             }
             if (mDebugMode) {

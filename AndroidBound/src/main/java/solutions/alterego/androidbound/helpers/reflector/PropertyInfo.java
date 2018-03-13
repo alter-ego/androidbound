@@ -56,7 +56,8 @@ public class PropertyInfo {
             try {
                 result = mGetterMethod != null ? mGetterMethod.getOriginalMethod().invoke(obj) : mField.getFieldOriginal().get(obj);
             } catch (Exception e) {
-                mLogger.error("PropertyInfo getValue exception = " + e.getCause().toString() + " for object = " + obj);
+                mLogger.error("PropertyInfo getValue exception = " + e.getCause().toString() + " for object = " + obj + " using field = " + mField
+                        + " and getter method = " + mGetterMethod);
                 if (mDebugMode) {
                     throw new RuntimeException(e);
                 }
@@ -64,12 +65,10 @@ public class PropertyInfo {
         } else if (obj != null && obj instanceof Map) {
             result = ((Map) obj).get(mPropertyName);
         }
+
         if (result == null) {
-            String msg = "PropertyInfo getValue returns null";
-            mLogger.warning(msg);
-            if (mDebugMode) {
-                throw new RuntimeException(msg);
-            }
+            mLogger.debug(
+                    "PropertyInfo getValue returns null, property name = " + mPropertyName + ", type = " + mPropertyType + " for object = " + obj);
         }
         return result;
     }
@@ -78,11 +77,12 @@ public class PropertyInfo {
         if (mSetterMethod != null) {
             try {
                 mLogger.verbose(
-                        "PropertyInfo setValue value = " + value + " for object = " + obj + " using method = "
-                                + mSetterMethod.getOriginalMethod().getName());
+                        "PropertyInfo setValue value = " + value + " for object = " + obj + " using method = " + mSetterMethod.getOriginalMethod()
+                                .getName());
                 mSetterMethod.getOriginalMethod().invoke(obj, value);
             } catch (Exception e) {
-                mLogger.warning("PropertyInfo couldn't setValue using method, value = " + value + " for object = " + obj);
+                mLogger.warning("PropertyInfo couldn't setValue using method, value = " + value + " for object = " + obj + " using method = "
+                        + mSetterMethod.getOriginalMethod().getName());
                 if (mDebugMode) {
                     throw new RuntimeException(e);
                 }
@@ -90,11 +90,12 @@ public class PropertyInfo {
         } else if (mField != null) {
             try {
                 mLogger.verbose(
-                        "PropertyInfo setValue value = " + value + " for object = " + obj + " using field = "
-                                + mField.getFieldOriginal().getName());
+                        "PropertyInfo setValue value = " + value + " for object = " + obj + " using field = " + mField.getFieldOriginal().getName());
                 mField.getFieldOriginal().set(obj, value);
             } catch (Exception e) {
-                mLogger.warning("PropertyInfo couldn't setValue using property, value = " + value + " for object = " + obj);
+                mLogger.warning(
+                        "PropertyInfo couldn't setValue using property, value = " + value + " for object = " + obj + " using field = " + mField
+                                .getFieldOriginal().getName());
                 if (mDebugMode) {
                     throw new RuntimeException(e);
                 }
