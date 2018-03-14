@@ -311,9 +311,11 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             } else {
                 result = mBindingSpecification.getFallbackValue();
                 String msg = "Switching to fallback value for " + mBindingSpecification.getSource() + ", fallback = " + result;
-                mLogger.warning(msg);
+
                 if (mDebugMode) {
-                    throw new RuntimeException(msg);
+                    mLogger.error(msg);
+                } else {
+                    mLogger.warning(msg);
                 }
             }
 
