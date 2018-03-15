@@ -88,11 +88,7 @@ public class CommandBinding extends BindingBase {
                     try {
                         mInfo.invoke(getSubject(), parameter2);
                     } catch (Exception e) {
-                        if (mDebugMode) {
-                            throw new RuntimeException(e);
-                        } else {
-                            execute(parameter);
-                        }
+                        execute(parameter);
                     }
                 }
             };
