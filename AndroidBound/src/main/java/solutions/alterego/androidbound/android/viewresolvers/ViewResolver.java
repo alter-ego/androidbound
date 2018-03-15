@@ -65,6 +65,8 @@ public class ViewResolver implements IViewResolver {
 
     protected ILogger logger;
 
+    protected String mLoggingTag = getClass().getSimpleName();
+
     public ViewResolver(ILogger logger, boolean debugMode) {
         mDebugMode = debugMode;
         setLogger(logger);
@@ -74,7 +76,7 @@ public class ViewResolver implements IViewResolver {
     public View createView(String name, Context context, AttributeSet attrs) {
         Class<?> resolvedClass = resolveName(name);
         if (resolvedClass == null) {
-            logger.debug(getClass().getSimpleName() + " couldn't find view = " + name);
+            logger.debug(mLoggingTag + " couldn't find view = " + name);
             return null;
         }
         try {
@@ -117,12 +119,12 @@ public class ViewResolver implements IViewResolver {
         }
 
         if (mappings.containsKey(result)) {
-            logger.debug(getClass().getSimpleName() + " mapping " + name + " to " + mappings.get(result));
+            logger.debug(mLoggingTag + " mapping " + name + " to " + mappings.get(result));
             return mappings.get(result);
         }
 
         try {
-            logger.debug(getClass().getSimpleName() + " resolving " + name + " with " + result);
+            logger.debug(mLoggingTag + " resolving " + name + " with " + result);
             return Class.forName(result);
         } catch (ClassNotFoundException e) {
             if (mDebugMode) {
