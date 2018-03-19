@@ -64,7 +64,7 @@ public class BindingSpecificationParserTest {
         mValueConverterService = new ValueConverterService(NullLogger.instance);
         ResourceService resourceService = new ResourceService(NullLogger.instance);
 
-        mParser = new BindingSpecificationParser(mValueConverterService, resourceService, NullLogger.instance);
+        mParser = new BindingSpecificationParser(mValueConverterService, resourceService, NullLogger.instance, false);
     }
 
     @Before

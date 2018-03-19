@@ -13,8 +13,8 @@ import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class SupportViewBindingEngine extends ViewBindingEngine {
 
-    public SupportViewBindingEngine(ILogger logger) {
-        super(logger);
+    public SupportViewBindingEngine(ILogger logger, boolean debugMode) {
+        super(logger, debugMode);
     }
 
     @Override

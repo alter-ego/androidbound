@@ -12,9 +12,12 @@ import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class SourceBindingFactory implements IBindingFactory {
 
+    protected final boolean mDebugMode;
+
     protected ILogger mLogger;
 
-    public SourceBindingFactory(ILogger logger) {
+    public SourceBindingFactory(ILogger logger, boolean debugMode) {
+        mDebugMode = debugMode;
         setLogger(logger);
     }
 
@@ -39,14 +42,14 @@ public class SourceBindingFactory implements IBindingFactory {
         if (property.equals("this")) {
             return new SelfBinding(source, mLogger);
         } else if (CommandBinding.isCommand(source, property)) {
-            return new CommandBinding(source, property, mLogger);
+            return new CommandBinding(source, property, mLogger, mDebugMode);
         } else {
-            return new PropertyBinding(source, property, needChangesIfPossible, mLogger);
+            return new PropertyBinding(source, property, needChangesIfPossible, mLogger, mDebugMode);
         }
     }
 
     protected IBinding createChained(Object source, String property, List<String> remainingTokens, boolean needChangesIfPossible) {
-        return new ChainedBinding(source, property, remainingTokens, needChangesIfPossible, this, mLogger);
+        return new ChainedBinding(source, property, remainingTokens, needChangesIfPossible, this, mLogger, mDebugMode);
     }
 
     public void setLogger(ILogger logger) {

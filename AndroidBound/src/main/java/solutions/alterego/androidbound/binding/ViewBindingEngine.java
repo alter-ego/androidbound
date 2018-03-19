@@ -34,7 +34,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
 
     private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
 
-    private boolean mDebugMode;
+    private boolean mDebugMode = false;
 
     private ValueConverterService mConverterService;
 
@@ -46,17 +46,18 @@ public class ViewBindingEngine implements IViewBindingEngine {
 
     private Map<View, String> mLazyBoundViews = new ConcurrentHashMap<>();
 
-    public ViewBindingEngine(ILogger logger) {
+    public ViewBindingEngine(ILogger logger, boolean debugMode) {
         setLogger(logger);
+        mDebugMode = debugMode;
         mConverterService = new ValueConverterService(getLogger());
         mResourceService = new ResourceService(getLogger());
 
-        SourceBindingFactory sourceFactory = new SourceBindingFactory(getLogger());
-        TargetBindingFactory targetFactory = new TargetBindingFactory(getLogger());
-        BindingSpecificationParser bindingParser = new BindingSpecificationParser(mConverterService, mResourceService, getLogger());
+        SourceBindingFactory sourceFactory = new SourceBindingFactory(getLogger(), mDebugMode);
+        TargetBindingFactory targetFactory = new TargetBindingFactory(getLogger(), mDebugMode);
+        BindingSpecificationParser bindingParser = new BindingSpecificationParser(mConverterService, mResourceService, getLogger(), mDebugMode);
         BindingSpecificationListParser listParser = new BindingSpecificationListParser(bindingParser, getLogger());
 
-        mBinder = new TextSpecificationBinder(listParser, sourceFactory, targetFactory, getLogger());
+        mBinder = new TextSpecificationBinder(listParser, sourceFactory, targetFactory, getLogger(), mDebugMode);
     }
 
     @Override
@@ -78,6 +79,9 @@ public class ViewBindingEngine implements IViewBindingEngine {
     public void lazyBindView(View view, Object source) {
         if (source == null) {
             mLogger.error("ViewModel source cannot be null!");
+            if (mDebugMode) {
+                throw new RuntimeException("ViewModel source cannot be null! View = " + view);
+            }
             return;
         }
 
@@ -212,7 +216,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
 
         mLogger.verbose("clearBindingsFor finished for view = " + view + ", remaining bound views size = " + mBoundViews.size());
 
-        if (isDebugMode()) {
+        if (mDebugMode) {
             for (View remainingview : mBoundViews.keySet()) {
                 if (remainingview.getContext() == view.getContext()) {
                     mLogger.verbose(
@@ -265,10 +269,6 @@ public class ViewBindingEngine implements IViewBindingEngine {
         return mImageLoader;
     }
 
-    public boolean isDebugMode() {
-        return mDebugMode;
-    }
-
     public IBinder getBinder() {
         return mBinder;
     }
@@ -281,7 +281,4 @@ public class ViewBindingEngine implements IViewBindingEngine {
         mImageLoader = imageLoader;
     }
 
-    public void setDebugMode(boolean debugMode) {
-        mDebugMode = debugMode;
-    }
 }

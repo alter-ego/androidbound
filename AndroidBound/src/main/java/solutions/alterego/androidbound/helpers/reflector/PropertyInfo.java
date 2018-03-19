@@ -23,6 +23,8 @@ public class PropertyInfo {
 
     private final ILogger mLogger;
 
+    private final boolean mDebugMode;
+
     private final MethodInfo mAdder;
 
     private final boolean mCanAdd;
@@ -32,7 +34,7 @@ public class PropertyInfo {
     private final MethodInfo mRemover;
 
     public PropertyInfo(String name, boolean canRead, boolean canWrite, boolean canAdd, boolean canRemove, Class<?> type,
-            MethodInfo getter, MethodInfo setter, MethodInfo adder, MethodInfo remover, FieldInfo field, ILogger logger) {
+            MethodInfo getter, MethodInfo setter, MethodInfo adder, MethodInfo remover, FieldInfo field, ILogger logger, boolean debugMode) {
         mPropertyType = type;
         mPropertyName = name;
         mCanRead = canRead;
@@ -45,6 +47,7 @@ public class PropertyInfo {
         mField = field;
         mAdder = adder;
         mLogger = logger;
+        mDebugMode = debugMode;
     }
 
     public Object getValue(Object obj) {
@@ -53,13 +56,19 @@ public class PropertyInfo {
             try {
                 result = mGetterMethod != null ? mGetterMethod.getOriginalMethod().invoke(obj) : mField.getFieldOriginal().get(obj);
             } catch (Exception e) {
-                mLogger.error("PropertyInfo getValue exception = " + e.getCause().toString() + " for object = " + obj);
+                mLogger.error("PropertyInfo getValue exception = " + e.getCause().toString() + " for object = " + obj + " using field = " + mField
+                        + " and getter method = " + mGetterMethod);
+                if (mDebugMode) {
+                    throw new RuntimeException(e);
+                }
             }
         } else if (obj != null && obj instanceof Map) {
             result = ((Map) obj).get(mPropertyName);
         }
+
         if (result == null) {
-            mLogger.warning("PropertyInfo getValue returns null");
+            mLogger.debug(
+                    "PropertyInfo getValue returns null, property name = " + mPropertyName + ", type = " + mPropertyType + " for object = " + obj);
         }
         return result;
     }
@@ -68,20 +77,28 @@ public class PropertyInfo {
         if (mSetterMethod != null) {
             try {
                 mLogger.verbose(
-                        "PropertyInfo setValue value = " + value + " for object = " + obj + " using method = "
-                                + mSetterMethod.getOriginalMethod().getName());
+                        "PropertyInfo setValue value = " + value + " for object = " + obj + " using method = " + mSetterMethod.getOriginalMethod()
+                                .getName());
                 mSetterMethod.getOriginalMethod().invoke(obj, value);
             } catch (Exception e) {
-                mLogger.warning("PropertyInfo couldn't setValue using method, value = " + value + " for object = " + obj);
+                mLogger.warning("PropertyInfo couldn't setValue using method, value = " + value + " for object = " + obj + " using method = "
+                        + mSetterMethod.getOriginalMethod().getName());
+                if (mDebugMode) {
+                    throw new RuntimeException(e);
+                }
             }
         } else if (mField != null) {
             try {
                 mLogger.verbose(
-                        "PropertyInfo setValue value = " + value + " for object = " + obj + " using field = "
-                                + mField.getFieldOriginal().getName());
+                        "PropertyInfo setValue value = " + value + " for object = " + obj + " using field = " + mField.getFieldOriginal().getName());
                 mField.getFieldOriginal().set(obj, value);
             } catch (Exception e) {
-                mLogger.warning("PropertyInfo couldn't setValue using property, value = " + value + " for object = " + obj);
+                mLogger.warning(
+                        "PropertyInfo couldn't setValue using property, value = " + value + " for object = " + obj + " using field = " + mField
+                                .getFieldOriginal().getName());
+                if (mDebugMode) {
+                    throw new RuntimeException(e);
+                }
             }
         } else if (obj != null && obj instanceof Map) { //using local map of values
             ((Map) obj).put(mPropertyName, value);
@@ -98,7 +115,10 @@ public class PropertyInfo {
                                 + " can't be invoked on a field.");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            mLogger.error("PropertyInfo couldn't addValue using property, value = " + dst + " for object = " + src);
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -108,11 +128,14 @@ public class PropertyInfo {
                 mRemover.getOriginalMethod().invoke(src, dst);
             } else {
                 mLogger.verbose(
-                        "PropertyInfo addValue value = " + dst + " for object = " + src + " using field = "
+                        "PropertyInfo removeValue value = " + dst + " for object = " + src + " using field = "
                                 + " can't be invoked on a field.");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            mLogger.error("PropertyInfo couldn't removeValue using property, value = " + dst + " for object = " + src);
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

@@ -22,11 +22,6 @@ public class NullViewBindingEngine implements IViewBindingEngine {
     }
 
     @Override
-    public void setDebugMode(boolean debugMode) {
-
-    }
-
-    @Override
     public ILogger getLogger() {
         return null;
     }

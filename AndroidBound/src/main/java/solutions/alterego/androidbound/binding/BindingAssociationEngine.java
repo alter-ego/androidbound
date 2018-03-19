@@ -1,5 +1,7 @@
 package solutions.alterego.androidbound.binding;
 
+import android.annotation.SuppressLint;
+
 import java.util.Locale;
 
 import io.reactivex.disposables.Disposable;
@@ -25,6 +27,8 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
     private BindingSpecification mBindingSpecification;
 
+    private boolean mDebugMode;
+
     private IBinding mSourceBinding;
 
     private IBinding mTargetBinding;
@@ -43,11 +47,13 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
 
     private IBindingFactory mTargetFactory;
 
-    public BindingAssociationEngine(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, ILogger logger) {
+    public BindingAssociationEngine(BindingRequest request, IBindingFactory sourceFactory, IBindingFactory targetFactory, ILogger logger,
+            boolean debugMode) {
         mMode = request.getSpecification().getMode();
         mSourceFactory = sourceFactory;
         mTargetFactory = targetFactory;
         mBindingSpecification = request.getSpecification();
+        mDebugMode = debugMode;
 
         setLogger(logger);
         createTargetBinding(request.getTarget());
@@ -109,6 +115,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
+    @SuppressLint("RxSubscribeOnError")
     private void createSourceBinding(Object source) {
         boolean needsSubs = needsSourceDisposable();
 
@@ -125,12 +132,16 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getSource()
-                        + " needs Disposable, but changes were not available");
+                String msg = "Binding " + mBindingSpecification.getSource() + " needs Disposable, but changes were not available = " + mBindingSpecification.toString();
+                mLogger.warning(msg);
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
         }
     }
 
+    @SuppressLint("RxSubscribeOnError")
     private void createRemoveBinding(Object target) {
         boolean needsSubs = needsTargetRemove();
         mTargetBinding = mTargetFactory.create(target, mBindingSpecification.getTarget(), needsSubs);
@@ -145,11 +156,16 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.");
+                String msg = "Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.";
+                mLogger.warning(msg);
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
         }
     }
 
+    @SuppressLint("RxSubscribeOnError")
     private void createTargetBinding(Object target) {
         boolean needsSubs = needsTargetDisposable();
 
@@ -166,12 +182,16 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.");
+                String msg = "Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.";
+                mLogger.warning(msg);
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
         }
     }
 
-
+    @SuppressLint("RxSubscribeOnError")
     private void createAccumulateSourceBinding(Object source) {
         boolean needsSubs = needsTargetAccumulate();
 
@@ -188,11 +208,16 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getSource() + " needs Disposable, but changes were not available");
+                String msg = "Binding " + mBindingSpecification.getSource() + " needs Disposable, but changes were not available";
+                mLogger.warning(msg);
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
         }
     }
 
+    @SuppressLint("RxSubscribeOnError")
     private void createAccumulateTargetBinding(Object target) {
         boolean needsSubs = needsSourceAccumulate();
         mTargetBinding = mTargetFactory.create(target, mBindingSpecification.getTarget(), needsSubs);
@@ -207,7 +232,11 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                mLogger.warning("Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.");
+                String msg = "Binding " + mBindingSpecification.getTarget() + " needs Disposable, but changes were not available.";
+                mLogger.warning(msg);
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
         }
     }
@@ -257,15 +286,15 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
         }
     }
 
-    public boolean needsTargetAccumulate() {
+    protected boolean needsTargetAccumulate() {
         return mMode == BindingMode.Accumulate || mMode == BindingMode.AccumulateTwoWay;
     }
 
-    private boolean needsTargetRemove() {
+    protected boolean needsTargetRemove() {
         return mMode == BindingMode.RemoveSource;
     }
 
-    public boolean needsSourceAccumulate() {
+    protected boolean needsSourceAccumulate() {
         return mMode == BindingMode.AccumulateToSource || mMode == BindingMode.AccumulateTwoWay;
     }
 
@@ -280,8 +309,14 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                         "updating target type = " + mTargetBinding.getType() + " with unwrapped source = " + unwrap(source) + ", result = " + result
                                 + " using converter = " + converter);
             } else {
-                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getSource());
                 result = mBindingSpecification.getFallbackValue();
+                String msg = "Switching to fallback value for " + mBindingSpecification.getSource() + ", fallback = " + result;
+
+                if (mDebugMode) {
+                    mLogger.error(msg);
+                } else {
+                    mLogger.warning(msg);
+                }
             }
 
             mTargetBinding.setValue(result);
@@ -289,6 +324,9 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             mLogger.error(
                     "Error occurred while binding " + mBindingSpecification.getSource() + " to target " + mBindingSpecification.getTarget() + ": " + e
                             .getMessage());
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -306,6 +344,9 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
             mLogger.error(
                     "Error occurred while binding " + mBindingSpecification.getTarget() + " to source " + mBindingSpecification.getSource() + ": " + e
                             .getMessage());
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -328,14 +369,21 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                         "removing, source type = " + mSourceBinding.getType() + " with unwrapped obj = " + unwrap(obj) + ", result = " + result
                                 + " using converter = " + converter);
             } else {
-                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getSource());
                 result = mBindingSpecification.getFallbackValue();
+                String msg = "Switching to fallback value for " + mBindingSpecification.getSource() + ", fallback = " + result;
+                mLogger.warning(msg);
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
             mTargetBinding.removeValue(result);
         } catch (Exception e) {
             mLogger.error(
                     "Error occurred while binding " + mBindingSpecification.getSource() + " to target " + mBindingSpecification.getTarget() + ": " + e
                             .getMessage());
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -351,14 +399,21 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                                 + " using converter = " + converter);
 
             } else {
-                mLogger.warning("Switching to fallback value for " + mBindingSpecification.getSource());
+                String msg = "Switching to fallback value for " + mBindingSpecification.getSource();
+                mLogger.warning(msg);
                 result = mBindingSpecification.getFallbackValue();
+                if (mDebugMode) {
+                    throw new RuntimeException(msg);
+                }
             }
             mTargetBinding.addValue(result);
         } catch (Exception e) {
             mLogger.error(
                     "Error occurred while binding " + mBindingSpecification.getSource() + " to target " + mBindingSpecification.getTarget() + ": " + e
                             .getMessage());
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -370,14 +425,16 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             Locale.getDefault());
             mLogger.verbose(
                     "accumulating to source, source type = " + mSourceBinding.getType() + " with unwrapped obj = " + unwrap(obj) + ", result = "
-                            + result
-                            + " using converter = " + converter);
+                            + result + " using converter = " + converter);
 
             mSourceBinding.addValue(result);
         } catch (Exception e) {
             mLogger.error(
                     "Error occurred while binding " + mBindingSpecification.getTarget() + " to source " + mBindingSpecification.getSource() + ": " + e
                             .getMessage());
+            if (mDebugMode) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

@@ -90,7 +90,7 @@ public class Reflector {
         }
     }
 
-    public static PropertyInfo getProperty(Class<?> type, String name, ILogger logger) {
+    public static PropertyInfo getProperty(Class<?> type, String name, ILogger logger, boolean debugMode) {
         MethodInfo propertyGetter = null;
         MethodInfo propertySetter = null;
         MethodInfo propertyAdd = null;
@@ -149,7 +149,8 @@ public class Reflector {
                 propertyAdd,
                 propertyRemove,
                 propertyField,
-                logger);
+                logger,
+                debugMode);
 
         synchronized (mSynchronizedObject) {
             SparseArray<PropertyInfo> sa = mObjectProperties.get(typeCode);

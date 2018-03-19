@@ -14,7 +14,7 @@ public abstract class BindingBase implements IBinding, INeedsLogger {
 
     private PublishSubject<Exceptional<Object>> mChanges = PublishSubject.create();
 
-    private Object mSubject;
+    protected Object mSubject;
 
     private ILogger mLogger = NullLogger.instance;
 

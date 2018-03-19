@@ -20,4 +20,8 @@ public class ListViewItem2 {
     public String toString() {
         return mTitle;
     }
+
+    public void doImageClicked() {
+        //do nothing
+    }
 }

@@ -37,14 +37,14 @@ public class SupportViewResolver extends ViewResolver {
         }
     };
 
-    public SupportViewResolver(ILogger logger) {
-        super(logger);
+    public SupportViewResolver(ILogger logger, boolean debugMode) {
+        super(logger, debugMode);
     }
 
     @Override
     protected Class<?> resolveName(String name) {
         if (supportMappings.containsKey(name)) {
-            logger.debug("Resolved " + name);
+            logger.debug(mLoggingTag + " mapping " + name + " to " + supportMappings.get(name));
             return supportMappings.get(name);
         } else {
             return null;

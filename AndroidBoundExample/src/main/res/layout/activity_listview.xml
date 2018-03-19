@@ -40,6 +40,6 @@
             android:listSelector="@android:color/transparent"
             android:dividerHeight="1dp"
             itemTemplate="@layout/activity_listview_listitem"
-            binding="{Click @- SelectListItem}; {TemplatesForObjects @- LVTemplatesForObjects}; {ItemsSource @= ExampleList}"/>
+            binding="{Click @- SelectListItem}; {ItemsSource @= ExampleList}"/>
 
 </RelativeLayout>

@@ -9,12 +9,15 @@ import solutions.alterego.androidbound.interfaces.ILogger;
 
 public class CommandBinding extends BindingBase {
 
+    private final boolean mDebugMode;
+
     private ICommand mCommand = ICommand.empty;
 
     private CommandInfo mInfo;
 
-    public CommandBinding(Object subject, String commandName, ILogger logger) {
+    public CommandBinding(Object subject, String commandName, ILogger logger, boolean debugMode) {
         super(subject, logger);
+        mDebugMode = debugMode;
 
         mInfo = Reflector.getCommand(subject.getClass(), commandName);
 
@@ -39,6 +42,9 @@ public class CommandBinding extends BindingBase {
                         return mInfo.check(getSubject(), parameter);
                     } catch (Exception ex) {
                         getLogger().error("Error while checking command " + mInfo.getCommandName() + ": " + ex.getMessage());
+                        if (mDebugMode) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                     return true;
                 }
@@ -49,6 +55,9 @@ public class CommandBinding extends BindingBase {
                         mInfo.invoke(getSubject(), parameter);
                     } catch (Exception ex) {
                         getLogger().error("Error while raising command " + mInfo.getCommandName() + ": " + ex.getMessage());
+                        if (mDebugMode) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 }
 
@@ -58,6 +67,9 @@ public class CommandBinding extends BindingBase {
                         return mInfo.check(getSubject(), view, parameter);
                     } catch (Exception ex) {
                         getLogger().error("Error while checking command " + mInfo.getCommandName() + ": " + ex.getMessage());
+                        if (mDebugMode) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                     return true;
                 }
@@ -95,17 +107,29 @@ public class CommandBinding extends BindingBase {
 
     @Override
     public void setValue(Object value) {
-        getLogger().warning("Cannot set value for command " + mInfo.getCommandName());
+        String msg = "Cannot set value for command " + mInfo.getCommandName();
+        getLogger().warning(msg);
+        if (mDebugMode) {
+            throw new RuntimeException(msg);
+        }
     }
 
     @Override
     public void addValue(Object object) {
-        getLogger().warning("Cannot add value for command " + mInfo.getCommandName());
+        String msg = "Cannot add value for command " + mInfo.getCommandName();
+        getLogger().warning(msg);
+        if (mDebugMode) {
+            throw new RuntimeException(msg);
+        }
     }
 
     @Override
     public void removeValue(Object result) {
-        getLogger().warning("Cannot add value for command " + mInfo.getCommandName());
+        String msg = "Cannot remove value for command " + mInfo.getCommandName();
+        getLogger().warning(msg);
+        if (mDebugMode) {
+            throw new RuntimeException(msg);
+        }
     }
 
     @Override

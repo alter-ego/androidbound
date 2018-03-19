@@ -30,9 +30,12 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
 
     private IResourceProvider mResourceProvider;
 
-    public BindingSpecificationParser(IValueConverterProvider converterProvider, IResourceProvider resourceProvider, ILogger logger) {
+    private final boolean mDebugMode;
+
+    public BindingSpecificationParser(IValueConverterProvider converterProvider, IResourceProvider resourceProvider, ILogger logger, boolean debugMode) {
         mValueConverterProvider = converterProvider;
         mResourceProvider = resourceProvider;
+        mDebugMode = debugMode;
         setLogger(logger);
     }
 
@@ -94,7 +97,11 @@ public class BindingSpecificationParser implements IParser<BindingSpecification>
             return BindingMode.RemoveSource;
         }
 
-        mLogger.warning("Invalid value '" + value + "' found for BindingMode. Switching to Default.");
+        String msg = "Invalid value '" + value + "' found for BindingMode. Switching to Default.";
+        mLogger.warning(msg);
+        if (mDebugMode) {
+            throw new RuntimeException(msg);
+        }
         return BindingMode.Default;
     }
 }

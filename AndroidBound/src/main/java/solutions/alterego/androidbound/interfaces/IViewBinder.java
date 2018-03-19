@@ -12,8 +12,7 @@ import solutions.alterego.androidbound.converters.interfaces.IValueConverterProv
 import solutions.alterego.androidbound.resources.interfaces.IResourceRegistry;
 
 
-public interface IViewBinder extends IResourceRegistry, IValueConverterProvider, IDisposable, INeedsImageLoader, IHasLogger, INeedsFontManager,
-        IHasDebugMode {
+public interface IViewBinder extends IResourceRegistry, IValueConverterProvider, IDisposable, INeedsImageLoader, IHasLogger, INeedsFontManager {
 
     void registerViewResolver(IViewResolver resolver);
 
@@ -34,5 +33,7 @@ public interface IViewBinder extends IResourceRegistry, IValueConverterProvider,
     View inflate(Context context, Object source, int layoutResID, ViewGroup viewGroup, IViewResolver additionalResolver);
 
     void disposeOf(Context context);
+
+    boolean isDebugMode();
 
 }

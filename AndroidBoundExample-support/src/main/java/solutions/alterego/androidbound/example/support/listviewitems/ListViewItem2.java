@@ -10,6 +10,10 @@ public class ListViewItem2 {
         mTitle = title;
     }
 
+    public void doImageClicked() {
+        //do nothing
+    }
+
     @Override
     public String toString() {
         return mTitle;

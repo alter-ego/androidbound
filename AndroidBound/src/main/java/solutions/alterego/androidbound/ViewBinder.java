@@ -57,10 +57,15 @@ public class ViewBinder implements IViewBinder {
     private Field mLayoutInflaterFactory2Field = null;
 
     public ViewBinder(Context ctx) {
-        this(ctx, NullLogger.instance);
+        this(ctx, NullLogger.instance, false);
     }
 
     public ViewBinder(Context ctx, ILogger logger) {
+        this(ctx, logger, false);
+    }
+
+    public ViewBinder(Context ctx, ILogger logger, boolean debugMode) {
+        mDebugMode = debugMode;
         setLogger(logger);
         setContext(ctx);
         init();
@@ -69,7 +74,7 @@ public class ViewBinder implements IViewBinder {
     private void init() {
         mViewBindingEngine = createViewBindingEngine(getLogger());
 
-        mViewResolver = new ChainedViewResolver(new ViewResolver(getLogger()));
+        mViewResolver = new ChainedViewResolver(new ViewResolver(getLogger(), mDebugMode));
         mInflaterFactory = new BindableLayoutInflaterFactory(this, mViewResolver);
         setFontManager(new FontManager());
 
@@ -77,13 +82,7 @@ public class ViewBinder implements IViewBinder {
     }
 
     protected IViewBindingEngine createViewBindingEngine(ILogger logger) {
-        return new ViewBindingEngine(logger);
-    }
-
-    @Override
-    public void setDebugMode(boolean debugMode) {
-        mDebugMode = debugMode;
-        mViewBindingEngine.setDebugMode(debugMode);
+        return new ViewBindingEngine(logger, mDebugMode);
     }
 
     @Override
@@ -220,6 +219,9 @@ public class ViewBinder implements IViewBinder {
             } catch (NoSuchFieldException e) {
                 mLogger.error("forceSetFactory2 Could not find field 'mFactory2' on class " + LayoutInflater.class.getName()
                         + "; inflation may have unexpected results." + e.getMessage());
+                if (isDebugMode()) {
+                    throw new RuntimeException(e);
+                }
             }
             mCheckedField = true;
         }
@@ -230,6 +232,9 @@ public class ViewBinder implements IViewBinder {
                 mLogger.error(
                         "forceSetFactory2 could not set the Factory2 on LayoutInflater " + inflater + "; inflation may have unexpected results." + e
                                 .getMessage());
+                if (isDebugMode()) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
