@@ -65,12 +65,11 @@ public class BindableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             layoutRes = mTemplatesForObjects.get(clazz);
             mViewBinder.getLogger().verbose(
                     "BindableRecyclerViewAdapter creating VH for viewType = " + viewType + " i.e. class = " + clazz
-                            + " using layoutRes = "
-                            + layoutRes);
+                            + " using layoutRes = " + layoutRes);
         } else if (layoutRes != 0) {
             mViewBinder.getLogger().verbose("BindableRecyclerViewAdapter creating VH using layoutRes = " + layoutRes);
         } else {
-            String msg = "BindableRecyclerViewAdapter cannot find templates for class = " + clazz
+            String msg = "BindableRecyclerViewAdapter cannot find templates for class = " + clazz + " in parent = " + parent
                     + ": did you call setTemplatesForObjects or set itemTemplate in XML?";
             mViewBinder.getLogger().error(msg);
             if (mViewBinder.isDebugMode()) {
