@@ -17,14 +17,14 @@ public class MainNestedViewModel extends ViewModel {
         mDataItems = new ArrayList<Object>();
         mDataItems.add(new NestedViewModel());
         for (int i = 0; i < 50; i++) {
-            mDataItems.add(new RecyclerViewItem("item " + i, "http://icons.iconarchive.com/icons/danleech/simple/128/android-icon.png"));
+            mDataItems.add(new NestedTwoViewModel("item " + i, "http://icons.iconarchive.com/icons/danleech/simple/128/android-icon.png"));
         }
     }
 
     public Map<Class<?>, Integer> getObjectTemplates() {
         Map<Class<?>, Integer> map = new HashMap<Class<?>, Integer>();
         map.put(NestedViewModel.class, R.layout.nested_recycler_view);
-        map.put(RecyclerViewItem.class, R.layout.activity_paginated_rv_item);
+        map.put(NestedTwoViewModel.class, R.layout.activity_nested_rv_item);
         return map;
     }
 

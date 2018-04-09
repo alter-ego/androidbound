@@ -1,10 +1,16 @@
 package solutions.alterego.androidbound.example.support.nestedrvs.viewmodel;
 
 
+import android.os.Build;
+import android.view.View;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import solutions.alterego.androidbound.ViewModel;
+
+import static android.text.TextUtils.getLayoutDirectionFromLocale;
 
 public class NestedViewModel extends ViewModel {
 
@@ -19,7 +25,11 @@ public class NestedViewModel extends ViewModel {
     }
 
     public boolean getIsRtl() {
-        return true;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            return getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL;
+        } else {
+            return true;
+        }
     }
 
     public List<RecyclerViewItem> getNestedDataSet() {

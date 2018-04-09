@@ -66,6 +66,6 @@ public class RecyclerViewItem {
     }
 
     public String toString() {
-        return "MainNestedViewModel.RecyclerViewItem(mName=" + this.getName() + ", mImageUrl=" + this.getImageUrl() + ")";
+        return "RecyclerViewItem(mName=" + this.getName() + ", mImageUrl=" + this.getImageUrl() + ")";
     }
 }
