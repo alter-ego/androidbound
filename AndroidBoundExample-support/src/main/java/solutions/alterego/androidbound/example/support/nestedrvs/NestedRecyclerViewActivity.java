@@ -31,14 +31,7 @@ public class NestedRecyclerViewActivity extends BindingAppCompatActivity {
         setLogger(logger);
         setContentView(R.layout.activity_nested_recyclerview, new MainNestedViewModel());
 
-        @SuppressLint("WrongViewCast") BindableRecyclerView mainRv = (BindableRecyclerView) findViewById(R.id.main_nested_rv);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-        Map<Class<?>, Integer> map = new HashMap<Class<?>, Integer>();
-        map.put(NestedViewModel.class, R.layout.nested_recycler_view);
-        map.put(MainNestedViewModel.RecyclerViewItem.class, R.layout.activity_paginated_rv_item);
-
-        mainRv.setTemplatesForObjects(map);
-
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -49,6 +42,7 @@ public class NestedRecyclerViewActivity extends BindingAppCompatActivity {
             }
         });
 
+        BindableRecyclerView mainRv = findViewById(R.id.main_nested_rv);
         mainRv.setNestedScrollingEnabled(false);
         mainRv.setLayoutManager(layoutManager);
         mainRv.addItemDecoration(new NestedRVItemDecoration(getResources()));
