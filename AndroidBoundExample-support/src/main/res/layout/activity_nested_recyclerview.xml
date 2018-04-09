@@ -9,6 +9,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             useParentLayoutParams="false"
-            itemTemplate="@layout/activity_paginated_rv_item"
-            binding="{ItemsSource @= DataItems};  "/>
+            layoutManager="linear"
+            layoutManagerOrientation="vertical"
+            binding="{ItemsSource @= DataItems}; {TemplatesForObjects @- ObjectTemplates}"/>
 </FrameLayout>

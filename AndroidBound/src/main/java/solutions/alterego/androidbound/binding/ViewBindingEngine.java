@@ -34,7 +34,7 @@ public class ViewBindingEngine implements IViewBindingEngine {
 
     private IImageLoader mImageLoader = IImageLoader.nullImageLoader;
 
-    private boolean mDebugMode = false;
+    private boolean mDebugMode;
 
     private ValueConverterService mConverterService;
 
@@ -150,8 +150,15 @@ public class ViewBindingEngine implements IViewBindingEngine {
         return getBindingsForViewAndChildrenRecursive(rootView, new ArrayList<IBindingAssociationEngine>());
     }
 
-    protected List<IBindingAssociationEngine> getBindingsForViewAndChildrenRecursive(View rootView, List<IBindingAssociationEngine> bindings) {
+    protected List<IBindingAssociationEngine> getBindingsForView(View rootView, List<IBindingAssociationEngine> bindings) {
+        if (mBoundViews.containsKey(rootView)) {
+            bindings.addAll(mBoundViews.get(rootView));
+        }
 
+        return bindings;
+    }
+
+    protected List<IBindingAssociationEngine> getBindingsForViewAndChildrenRecursive(View rootView, List<IBindingAssociationEngine> bindings) {
         if (mBoundViews.containsKey(rootView)) {
             bindings.addAll(mBoundViews.get(rootView));
         }
@@ -165,9 +172,10 @@ public class ViewBindingEngine implements IViewBindingEngine {
         for (int i = 0; i < vg.getChildCount(); i++) {
             View view = vg.getChildAt(i);
             if (view instanceof AbsListView) {
-                continue;
+                getBindingsForView(view, bindings);
+            } else {
+                getBindingsForViewAndChildrenRecursive(view, bindings);
             }
-            getBindingsForViewAndChildrenRecursive(view, bindings);
         }
         return bindings;
     }

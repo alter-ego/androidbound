@@ -132,7 +132,7 @@ public class BindingAssociationEngine implements IBindingAssociationEngine {
                             }
                         });
             } else {
-                String msg = "Binding " + mBindingSpecification.getSource() + " needs Disposable, but changes were not available = " + mBindingSpecification.toString();
+                String msg = "Binding " + mBindingSpecification.getSource() + " to source " + source + " needs Disposable, but changes were not available = " + mBindingSpecification.toString();
                 mLogger.warning(msg);
                 if (mDebugMode) {
                     throw new RuntimeException(msg);
