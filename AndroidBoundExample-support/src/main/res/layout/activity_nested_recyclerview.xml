@@ -9,5 +9,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             useParentLayoutParams="false"
+            layoutManager="linear"
+            layoutManagerOrientation="vertical"
             binding="{ItemsSource @= DataItems}; {TemplatesForObjects @- ObjectTemplates}"/>
 </FrameLayout>

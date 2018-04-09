@@ -5,7 +5,6 @@ import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.codemonkeylabs.fpslibrary.TinyDancer;
 
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 
 import solutions.alterego.androidbound.example.support.ExampleApplication;
 import solutions.alterego.androidbound.example.support.PaginatedRecyclerViewActivity;
@@ -31,21 +30,8 @@ public class NestedRecyclerViewActivity extends BindingAppCompatActivity {
         setLogger(logger);
         setContentView(R.layout.activity_nested_recyclerview, new MainNestedViewModel());
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (position == 0) {
-                    return 2;
-                }
-                return 1;
-            }
-        });
-
         BindableRecyclerView mainRv = findViewById(R.id.main_nested_rv);
         mainRv.setNestedScrollingEnabled(false);
-        mainRv.setLayoutManager(layoutManager);
-        mainRv.addItemDecoration(new NestedRVItemDecoration(getResources()));
     }
 
     @Override
