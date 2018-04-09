@@ -32,9 +32,10 @@ public class SupportViewBindingEngine extends ViewBindingEngine {
         for (int i = 0; i < vg.getChildCount(); i++) {
             View view = vg.getChildAt(i);
             if (view instanceof RecyclerView || view instanceof AbsListView) {
-                continue;
+                getBindingsForView(view, bindings);
+            } else {
+                getBindingsForViewAndChildrenRecursive(view, bindings);
             }
-            getBindingsForViewAndChildrenRecursive(view, bindings);
         }
         return bindings;
     }
