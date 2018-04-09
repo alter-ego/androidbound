@@ -4,26 +4,18 @@ package solutions.alterego.androidbound.example.support.nestedrvs;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.codemonkeylabs.fpslibrary.TinyDancer;
 
-import android.annotation.SuppressLint;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import solutions.alterego.androidbound.support.android.ui.BindableRecyclerView;
 import solutions.alterego.androidbound.example.support.ExampleApplication;
 import solutions.alterego.androidbound.example.support.PaginatedRecyclerViewActivity;
 import solutions.alterego.androidbound.example.support.R;
 import solutions.alterego.androidbound.example.support.nestedrvs.viewmodel.MainNestedViewModel;
-import solutions.alterego.androidbound.example.support.nestedrvs.viewmodel.NestedViewModel;
 import solutions.alterego.androidbound.example.support.util.AdvancedAndroidLoggerAdapter;
 import solutions.alterego.androidbound.interfaces.ILogger;
 import solutions.alterego.androidbound.interfaces.IViewBinder;
 import solutions.alterego.androidbound.support.android.BindingAppCompatActivity;
+import solutions.alterego.androidbound.support.android.ui.BindableRecyclerView;
 
 public class NestedRecyclerViewActivity extends BindingAppCompatActivity {
 
@@ -37,47 +29,15 @@ public class NestedRecyclerViewActivity extends BindingAppCompatActivity {
         TinyDancer.create().show(this);
 
         setLogger(logger);
-
         setContentView(R.layout.activity_nested_recyclerview, new MainNestedViewModel());
 
         @SuppressLint("WrongViewCast") BindableRecyclerView mainRv = (BindableRecyclerView) findViewById(R.id.main_nested_rv);
-        mainRv.setNestedScrollingEnabled(false);
-
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-        mainRv.setLayoutManager(layoutManager);
-
         Map<Class<?>, Integer> map = new HashMap<Class<?>, Integer>();
         map.put(NestedViewModel.class, R.layout.nested_recycler_view);
         map.put(MainNestedViewModel.RecyclerViewItem.class, R.layout.activity_paginated_rv_item);
 
         mainRv.setTemplatesForObjects(map);
-
-        final int categoryMargin = (int) (getResources().getDisplayMetrics().density * 16);
-        mainRv.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                int pos = parent.getChildAdapterPosition(view);
-
-                if (pos > 0) {
-
-                    outRect.top = categoryMargin;
-
-                    if (pos % 2 != 0) {
-                        outRect.left = categoryMargin;
-                        outRect.right = outRect.left / 2;
-                    } else {
-                        outRect.right = categoryMargin;
-                        outRect.left = outRect.right / 2;
-                    }
-
-                    outRect.bottom = categoryMargin;
-                } else {
-                    outRect.top = categoryMargin / 2;
-                    outRect.left = categoryMargin / 2;
-                    outRect.right = categoryMargin / 2;
-                }
-            }
-        });
 
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -88,6 +48,10 @@ public class NestedRecyclerViewActivity extends BindingAppCompatActivity {
                 return 1;
             }
         });
+
+        mainRv.setNestedScrollingEnabled(false);
+        mainRv.setLayoutManager(layoutManager);
+        mainRv.addItemDecoration(new NestedRVItemDecoration(getResources()));
     }
 
     @Override
