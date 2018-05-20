@@ -26,8 +26,8 @@ public class PageDescriptor {
         return mCurrentPage;
     }
 
-    public void setCurrentPage(int mCurrentPage) {
-        mCurrentPage = mCurrentPage;
+    public void setCurrentPage(int currentPage) {
+        mCurrentPage = currentPage;
     }
 
     public static class PageDescriptorBuilder {
