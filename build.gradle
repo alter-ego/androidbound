@@ -14,10 +14,10 @@ buildscript {
     ext.versions = [
             'minSdk'        : 14,
             'compileSdk'    : 27,
-            'buildTools'    : '27.0.2',
+            'buildTools'    : '27.0.3',
 
             'supportLibrary': '27.1.1',
-            'androidPlugin' : '2.3.3',
+            'androidPlugin' : '3.1.2',
             'androidTools'  : '27.0.2',
             'kotlin'        : '1.2.41'
     ]
@@ -62,7 +62,7 @@ buildscript {
                     'common' : 'com.google.auto:auto-common:0.8',
             ],
             'kotlin'      : [
-                    'stdLibJre8': "org.jetbrains.kotlin:kotlin-stdlib-jre8:${versions.kotlin}",
+                    'stdLibJre8': "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}",
                     'reflect'   : "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}",
                     'testjunit' : "org.jetbrains.kotlin:kotlin-test-junit:${versions.kotlin}"
             ]
