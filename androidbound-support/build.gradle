@@ -49,22 +49,22 @@ android {
 }
 
 dependencies {
-    compile "solutions.alterego:androidbound:${maven.artifactVersion}"
-    compile deps.support.appcompat
-    compile deps.support.recyclerview
+    api "solutions.alterego:androidbound:${maven.artifactVersion}"
+    implementation deps.support.appcompat
+    implementation deps.support.recyclerview
 
-    compile deps.rx2.android
-    compile deps.rx2.java
+    implementation deps.rx2.android
+    implementation deps.rx2.java
 
-    provided deps.annotation
+    compileOnly deps.annotation
 
     // Testing
-    testCompile deps.kotlin.stdLibJre8
-    testCompile deps.kotlin.reflect
-    testCompile deps.kotlin.testjunit
-    testCompile deps.junit
-    testCompile deps.fest
-    testCompile deps.mockito
+    testImplementation deps.kotlin.stdLibJre8
+    testImplementation deps.kotlin.reflect
+    testImplementation deps.kotlin.testjunit
+    testImplementation deps.junit
+    testImplementation deps.fest
+    testImplementation deps.mockito
 }
 
 // build a jar with source files
