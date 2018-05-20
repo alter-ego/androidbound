@@ -8,9 +8,9 @@
   <packaging>aar</packaging>
   <dependencies>
     <dependency>
-      <groupId>androidbound</groupId>
+      <groupId>solutions.alterego</groupId>
       <artifactId>androidbound</artifactId>
-      <version>unspecified</version>
+      <version>0.9.3</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
